@@ -2,9 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: "main" # Cambia a "master" si tu rama principal se llama así
+    branches: ["main"] # Cambia a "master" si tu rama principal se llama así
 
-# Permisos necesarios para GitHub Pages
 permissions:
   contents: read
   pages: write
@@ -18,7 +17,7 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +38,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist' # Esto le dice a GitHub que suba la carpeta compilada
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment
