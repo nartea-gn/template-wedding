@@ -1,8 +1,7 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import {db} from '../lib/firebaseClient'; // <-- Importamos Firebase
-import {addDoc, collection} from 'firebase/firestore'; // <-- Métodos de Firestore
-import {weddingConfig} from '../config/wedding.config';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
+import { weddingConfig } from '../config/wedding.config';
 
 const DIETARY_OPTIONS = [
     "Ninguna, como de todo",
@@ -34,7 +33,7 @@ export default function RsvpPage() {
             const updated = isSelected
                 ? prev.dietaryOptions.filter(item => item !== option)
                 : [...prev.dietaryOptions, option];
-            return {...prev, dietaryOptions: updated};
+            return { ...prev, dietaryOptions: updated };
         });
     };
 
@@ -46,8 +45,7 @@ export default function RsvpPage() {
         setLoading(true);
 
         try {
-            // Guardar documento en la colección 'rsvp_responses' de Firestore
-            await addDoc(collection(db, 'rsvp_responses'), {
+            const { error } = await supabase.from('rsvp_responses').insert([{
                 wedding_slug: weddingConfig.event.slug,
                 full_name: formData.fullName,
                 attending: formData.attending,
@@ -55,14 +53,14 @@ export default function RsvpPage() {
                 dietary_other: formData.dietaryOther || null,
                 bus_option: formData.busOption || null,
                 song_request: formData.songRequest || null,
-                message: formData.message || null,
-                created_at: new Date().toISOString() // Añadimos marca de tiempo manual para ordenar
-            });
+                message: formData.message || null
+            }]);
 
+            if (error) throw error;
             setSubmitted(true);
         } catch (err) {
             console.error(err);
-            alert("Hubo un error al guardar tu asistencia en Firebase.");
+            alert("Hubo un error al guardar tu asistencia.");
         } finally {
             setLoading(false);
         }
@@ -70,16 +68,14 @@ export default function RsvpPage() {
 
     if (submitted) {
         return (
-            <div
-                className="min-h-screen bg-wedding-bg text-wedding-dark flex flex-col items-center justify-center p-6 text-center font-sans">
+            <div className="min-h-screen bg-wedding-bg text-wedding-dark flex flex-col items-center justify-center p-6 text-center font-sans">
                 <div className="max-w-md bg-white p-8 rounded-2xl shadow-sm border border-wedding-primary/10 space-y-4">
                     <span className="text-4xl">✨</span>
                     <h2 className="font-serif text-3xl font-light">¡Muchas gracias!</h2>
                     <p className="text-wedding-primary/80 text-sm">
                         {formData.attending ? "Tu asistencia ha sido confirmada." : "Lamentamos que no puedas asistir."}
                     </p>
-                    <button onClick={() => navigate('/')}
-                            className="mt-4 px-6 py-2 border border-wedding-primary text-wedding-primary rounded-full text-xs uppercase tracking-wider hover:bg-wedding-primary hover:text-wedding-bg transition-colors">
+                    <button onClick={() => navigate('/')} className="mt-4 px-6 py-2 border border-wedding-primary text-wedding-primary rounded-full text-xs uppercase tracking-wider hover:bg-wedding-primary hover:text-wedding-bg transition-colors">
                         Volver al inicio
                     </button>
                 </div>
@@ -92,8 +88,7 @@ export default function RsvpPage() {
             <div className="w-full max-w-xl bg-white rounded-2xl shadow-sm border p-6 md:p-10">
 
                 <div className="w-full bg-wedding-bg h-1 rounded-full mb-8 overflow-hidden">
-                    <div className="bg-wedding-primary h-full transition-all duration-300"
-                         style={{width: `${(step / 4) * 100}%`}}/>
+                    <div className="bg-wedding-primary h-full transition-all duration-300" style={{ width: `${(step / 4) * 100}%` }}/>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -101,32 +96,22 @@ export default function RsvpPage() {
                         <div className="space-y-6 animate-fade-in">
                             <h2 className="font-serif text-2xl font-light">Asistencia</h2>
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wider font-semibold">Nombre y
-                                    Apellidos</label>
-                                <input type="text" required value={formData.fullName}
-                                       onChange={e => setFormData({...formData, fullName: e.target.value})}
-                                       className="w-full border-b py-2 outline-none focus:border-wedding-primary"/>
+                                <label className="text-xs uppercase tracking-wider font-semibold">Nombre y Apellidos</label>
+                                <input type="text" required value={formData.fullName} onChange={e => setFormData({...formData, fullName: e.target.value})} className="w-full border-b py-2 outline-none focus:border-wedding-primary"/>
                             </div>
                             <div className="space-y-3">
-                                <label className="text-xs uppercase tracking-wider font-semibold block">¿Podrás
-                                    asistir?</label>
+                                <label className="text-xs uppercase tracking-wider font-semibold block">¿Podrás asistir?</label>
                                 <label className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer">
-                                    <input type="radio" checked={formData.attending === true}
-                                           onChange={() => setFormData({...formData, attending: true})}
-                                           className="accent-wedding-primary"/>
+                                    <input type="radio" checked={formData.attending === true} onChange={() => setFormData({...formData, attending: true})} className="accent-wedding-primary"/>
                                     <span className="text-sm">Sí, ¡allí estaré!</span>
                                 </label>
                                 <label className="flex items-center gap-3 p-3 rounded-lg border cursor-pointer">
-                                    <input type="radio" checked={formData.attending === false}
-                                           onChange={() => setFormData({...formData, attending: false})}
-                                           className="accent-wedding-primary"/>
+                                    <input type="radio" checked={formData.attending === false} onChange={() => setFormData({...formData, attending: false})} className="accent-wedding-primary"/>
                                     <span className="text-sm">No podré asistir</span>
                                 </label>
                             </div>
                             <div className="flex justify-end">
-                                <button type="button" disabled={!formData.fullName || formData.attending === null}
-                                        onClick={formData.attending === false ? handleSubmit : nextStep}
-                                        className="px-6 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full disabled:opacity-40">
+                                <button type="button" disabled={!formData.fullName || formData.attending === null} onClick={formData.attending === false ? handleSubmit : nextStep} className="px-6 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full disabled:opacity-40">
                                     {formData.attending === false ? "Enviar Respuesta" : "Siguiente"}
                                 </button>
                             </div>
@@ -137,26 +122,18 @@ export default function RsvpPage() {
                         <div className="space-y-6 animate-fade-in">
                             <h2 className="font-serif text-2xl font-light">Banquete y Logística</h2>
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wider font-semibold block">Restricciones
-                                    alimentarias</label>
+                                <label className="text-xs uppercase tracking-wider font-semibold block">Restricciones alimentarias</label>
                                 {DIETARY_OPTIONS.map(option => (
                                     <label key={option} className="flex items-center gap-3 text-sm">
-                                        <input type="checkbox" checked={formData.dietaryOptions.includes(option)}
-                                               onChange={() => handleCheckboxChange(option)}
-                                               className="accent-wedding-primary"/>
+                                        <input type="checkbox" checked={formData.dietaryOptions.includes(option)} onChange={() => handleCheckboxChange(option)} className="accent-wedding-primary"/>
                                         <span>{option}</span>
                                     </label>
                                 ))}
-                                <input type="text" placeholder="Otros detalles..." value={formData.dietaryOther}
-                                       onChange={e => setFormData({...formData, dietaryOther: e.target.value})}
-                                       className="w-full border-b py-2 text-sm outline-none focus:border-wedding-primary"/>
+                                <input type="text" placeholder="Otros detalles..." value={formData.dietaryOther} onChange={e => setFormData({...formData, dietaryOther: e.target.value})} className="w-full border-b py-2 text-sm outline-none focus:border-wedding-primary"/>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wider font-semibold block">Plaza en
-                                    autobús</label>
-                                <select value={formData.busOption}
-                                        onChange={e => setFormData({...formData, busOption: e.target.value})}
-                                        className="w-full bg-transparent border-b py-2 text-sm outline-none">
+                                <label className="text-xs uppercase tracking-wider font-semibold block">Plaza en autobús</label>
+                                <select value={formData.busOption} onChange={e => setFormData({...formData, busOption: e.target.value})} className="w-full bg-transparent border-b py-2 text-sm outline-none">
                                     <option value="">Selecciona una opción...</option>
                                     <option value="ida_vuelta">Sí, para la ida y la vuelta</option>
                                     <option value="solo_ida">Sólo para la ida</option>
@@ -165,12 +142,8 @@ export default function RsvpPage() {
                                 </select>
                             </div>
                             <div className="flex justify-between">
-                                <button type="button" onClick={prevStep}
-                                        className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás
-                                </button>
-                                <button type="button" onClick={nextStep}
-                                        className="px-6 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full">Siguiente
-                                </button>
+                                <button type="button" onClick={prevStep} className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás</button>
+                                <button type="button" onClick={nextStep} className="px-6 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full">Siguiente</button>
                             </div>
                         </div>
                     )}
@@ -179,23 +152,15 @@ export default function RsvpPage() {
                         <div className="space-y-6 animate-fade-in">
                             <h2 className="font-serif text-2xl font-light">Luna de Miel & Ritmo</h2>
                             <div className="p-4 bg-wedding-bg/60 border rounded-xl text-xs leading-relaxed">
-                                Vuestra presencia es nuestro mejor regalo. Pero si deseas contribuir a nuestra nueva
-                                aventura, habilitaremos los detalles correspondientes. ¡Gracias!
+                                Vuestra presencia es nuestro mejor regalo. Pero si deseas contribuir a nuestra nueva aventura, habilitaremos los detalles correspondientes. ¡Gracias!
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs uppercase tracking-wider font-semibold block">Canción para la
-                                    pista</label>
-                                <input type="text" placeholder="Título y artista" value={formData.songRequest}
-                                       onChange={e => setFormData({...formData, songRequest: e.target.value})}
-                                       className="w-full border-b py-2 text-sm outline-none focus:border-wedding-primary"/>
+                                <label className="text-xs uppercase tracking-wider font-semibold block">Canción para la pista</label>
+                                <input type="text" placeholder="Título y artista" value={formData.songRequest} onChange={e => setFormData({...formData, songRequest: e.target.value})} className="w-full border-b py-2 text-sm outline-none focus:border-wedding-primary"/>
                             </div>
                             <div className="flex justify-between">
-                                <button type="button" onClick={prevStep}
-                                        className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás
-                                </button>
-                                <button type="button" onClick={nextStep}
-                                        className="px-6 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full">Siguiente
-                                </button>
+                                <button type="button" onClick={prevStep} className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás</button>
+                                <button type="button" onClick={nextStep} className="px-6 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full">Siguiente</button>
                             </div>
                         </div>
                     )}
@@ -203,15 +168,10 @@ export default function RsvpPage() {
                     {step === 4 && (
                         <div className="space-y-6 animate-fade-in">
                             <h2 className="font-serif text-2xl font-light">Dedicatoria</h2>
-                            <textarea rows={4} placeholder="Escribe aquí tu mensaje..." value={formData.message}
-                                      onChange={e => setFormData({...formData, message: e.target.value})}
-                                      className="w-full border rounded-xl p-3 text-sm outline-none focus:border-wedding-primary resize-none"/>
+                            <textarea rows={4} placeholder="Escribe aquí tu mensaje..." value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} className="w-full border rounded-xl p-3 text-sm outline-none focus:border-wedding-primary resize-none"/>
                             <div className="flex justify-between">
-                                <button type="button" onClick={prevStep}
-                                        className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás
-                                </button>
-                                <button type="submit" disabled={loading}
-                                        className="px-8 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full disabled:opacity-50">
+                                <button type="button" onClick={prevStep} className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás</button>
+                                <button type="submit" disabled={loading} className="px-8 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full disabled:opacity-50">
                                     {loading ? "Enviando..." : "Confirmar todo"}
                                 </button>
                             </div>
