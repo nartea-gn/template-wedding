@@ -1,11 +1,10 @@
-import {HashRouter, Navigate, Route, Routes} from 'react-router-dom'; // 1. Cambiado a HashRouter
+import {HashRouter, Route, Routes} from 'react-router-dom';
 import InvitationPage from '../pages/InvitationPage';
 import RsvpPage from '../pages/RsvpPage';
 import AdminRsvpPage from '../pages/AdminRsvpPage';
 
 export default function AppRouter() {
     return (
-        // 2. Usamos HashRouter (no requiere basename)
         <HashRouter>
             <Routes>
                 {/* Ruta principal pública */}
@@ -14,11 +13,13 @@ export default function AppRouter() {
                 {/* Ruta del formulario público */}
                 <Route path="/rsvp" element={<RsvpPage/>}/>
 
-                {/* Ruta de administración */}
+                {/* Ruta del panel de control de los novios */}
                 <Route path="/admin/rsvp" element={<AdminRsvpPage/>}/>
 
-                {/* Redirección por defecto si escriben cualquier otra ruta */}
-                <Route path="*" element={<Navigate to="/" replace/>}/>
+                {/* Cambiamos el redireccionamiento por un texto de prueba */}
+                <Route path="*"
+                       element={<div className="p-8 text-center text-red-500 font-mono">Ruta no encontrada dentro de
+                           React Router</div>}/>
             </Routes>
         </HashRouter>
     );
