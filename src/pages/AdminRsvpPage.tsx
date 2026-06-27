@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {db} from '../lib/firebaseClient'; // <-- Importamos Firebase
-import {collection, getDocs, orderBy, query, where} from 'firebase/firestore'; // <-- Filtros de Firestore
+import {supabase} from '../lib/supabaseClient';
 import {weddingConfig} from '../config/wedding.config';
 
 interface RsvpResponse {
@@ -49,28 +48,17 @@ export default function AdminRsvpPage() {
         async function fetchResponses() {
             try {
                 setLoading(true);
+                // Filtrado por slug de boda añadido aquí: .eq(...)
+                const {data, error} = await supabase
+                    .from('rsvp_responses')
+                    .select('*')
+                    .eq('wedding_slug', weddingConfig.event.slug)
+                    .order('created_at', {ascending: false});
 
-                // Hacemos la consulta filtrando por el slug de esta boda específica en Firestore
-                const q = query(
-                    collection(db, 'rsvp_responses'),
-                    where('wedding_slug', '==', weddingConfig.event.slug),
-                    orderBy('created_at', 'desc')
-                );
-
-                const querySnapshot = await getDocs(q);
-                const fetchedData: RsvpResponse[] = [];
-
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    fetchedData.push({
-                        id: doc.id,
-                        ...data
-                    } as RsvpResponse);
-                });
-
-                setResponses(fetchedData);
+                if (error) throw error;
+                setResponses(data || []);
             } catch (err) {
-                console.error("Error al leer datos de Firebase:", err);
+                console.error(err);
             } finally {
                 setLoading(false);
             }
@@ -159,8 +147,7 @@ export default function AdminRsvpPage() {
 
                 <main className="bg-white rounded-xl border overflow-hidden shadow-sm">
                     {loading ? (
-                        <div className="p-12 text-center text-sm text-wedding-primary/60">Cargando desde
-                            Firebase...</div>
+                        <div className="p-12 text-center text-sm text-wedding-primary/60">Cargando...</div>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
