@@ -20,3 +20,12 @@
         transform: translateY(0);
     }
 }
+
+/* Cuando el video entra en pantalla completa nativa del navegador */
+video:-webkit-full-screen {
+    object-fit: contain !important;
+}
+
+video:fullscreen {
+    object-fit: contain !important;
+}
