@@ -24,12 +24,12 @@ export interface WeddingConfig {
 
 export const weddingConfig: WeddingConfig = {
     couple: {
-        brideName: "Nombre Novia",
-        groomName: "Nombre Novio",
-        displayNames: "Nombre Novia & Nombre Novio",
+        brideName: "Gala",
+        groomName: "Valentin",
+        displayNames: "Gala & Valentin",
     },
     event: {
-        slug: "maria-y-juan",
+        slug: "gala-y-valentin",
         date: "2027-06-12",
         time: "18:00",
         venue: "Finca / Lugar de celebración",
@@ -38,7 +38,7 @@ export const weddingConfig: WeddingConfig = {
     invitation: {
         title: "Nos casamos",
         subtitle: "Queremos compartir este día contigo",
-        videoFileName: "video-boda.mp4",
+        videoFileName: "video.mp4",
         rsvpButtonText: "Confirmar asistencia",
     },
     admin: {
