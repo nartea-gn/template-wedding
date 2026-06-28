@@ -14,7 +14,6 @@ export interface WeddingConfig {
     invitation: {
         title: string;
         subtitle: string;
-        videoFileName: string;
         rsvpButtonText: string;
     };
     admin: {
@@ -38,7 +37,6 @@ export const weddingConfig: WeddingConfig = {
     invitation: {
         title: "Nos casamos",
         subtitle: "Queremos compartir este día contigo",
-        videoFileName: "video.mp4",
         rsvpButtonText: "Confirmar asistencia",
     },
     admin: {
