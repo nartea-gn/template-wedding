@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"] # Cambia a "master" si tu rama principal se llama así
+    branches: [ "main" ]
 
 permissions:
   contents: read
@@ -26,22 +26,18 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9 # Instala la versión de pnpm (puedes ajustarla si usas otra)
+          version: 10
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'pnpm' # <--- Ahora guarda en caché los archivos de pnpm
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build project
-        env:
-          VITE_ADMIN_PASSWORD: ${{ secrets.VITE_ADMIN_PASSWORD }}
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: pnpm run build
 
       - name: Upload artifact
