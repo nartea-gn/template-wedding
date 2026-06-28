@@ -1,5 +1,6 @@
 import {useNavigate} from 'react-router-dom';
 import {weddingConfig} from '../config/wedding.config';
+import miVideo from '../assets/video.mp4';
 
 export default function InvitationPage() {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export default function InvitationPage() {
             <main
                 className="w-full max-w-sm mx-auto my-8 aspect-[9/16] rounded-xl overflow-hidden shadow-sm border border-wedding-primary/10 bg-black/5">
                 <video
-                    src={`/media/${invitation.videoFileName}`}
+                    src={miVideo}
                     controls
                     playsInline
                     className="w-full h-full object-cover"
