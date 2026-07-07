@@ -15,7 +15,7 @@ export type RsvpInsert = Omit<RsvpFormData, 'attending'> & {
 }
 
 export type RsvpResponse = RsvpInsert & {
-    id: string
+    id: number
     wedding_slug: string
     created_at: string
 }

@@ -1,6 +1,6 @@
 CREATE TABLE rsvp_responses
 (
-    id              uuid PRIMARY KEY     DEFAULT gen_random_uuid(),
+    id              BIGSERIAL PRIMARY KEY,
     wedding_slug    TEXT        NOT NULL DEFAULT 'boda-general',
     full_name       TEXT        NOT NULL,
     attending       BOOLEAN     NOT NULL,
