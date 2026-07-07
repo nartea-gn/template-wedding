@@ -3,7 +3,7 @@ import {supabase} from '../lib/supabaseClient'
 import {weddingConfig} from '../config/wedding.config'
 import type {RsvpResponse} from '../types/rsvp'
 
-type Filter = 'all' | 'yes' | 'no'
+export type Filter = 'all' | 'yes' | 'no'
 
 type UseAdminDataReturn = {
     loading: boolean
