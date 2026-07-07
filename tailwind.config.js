@@ -7,15 +7,17 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                serif: ['"Playfair Display"', 'Georgia', 'serif'],
-                sans: ['"Montserrat"', 'sans-serif'],
+                serif: ['var(--font-heading)', 'Georgia', 'serif'],
+                sans: ['var(--font-body)', 'sans-serif'],
             },
             colors: {
                 wedding: {
-                    bg: '#FBF9F6',      // Fondo lino suave
-                    primary: '#4A5343', // Verde oliva elegante
-                    accent: '#D4AF37',  // Toques dorados sutiles
-                    dark: '#2C3029',    // Texto principal
+                    bg: 'var(--color-bg)',
+                    primary: 'var(--color-primary)',
+                    accent: '#D4AF37',
+                    dark: 'var(--color-text)',
+                    surface: 'var(--color-surface)',
+                    border: 'var(--color-border)',
                 }
             }
         },

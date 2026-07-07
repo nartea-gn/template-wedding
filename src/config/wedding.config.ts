@@ -19,6 +19,7 @@ export interface WeddingConfig {
     admin: {
         title: string;
     };
+    theme: 'royal' | 'boho' | 'dark' | 'magnolia' | 'linen';
 }
 
 export const weddingConfig: WeddingConfig = {
@@ -42,4 +43,5 @@ export const weddingConfig: WeddingConfig = {
     admin: {
         title: "Respuestas RSVP",
     },
+    theme: 'linen',
 };
