@@ -1,16 +1,20 @@
+type VenueItem = {
+    name: string
+    time?: string
+    address?: string
+    mapsQuery?: string
+}
+
 export interface WeddingConfig {
-    couple: {
-        brideName: string;
-        groomName: string;
-        displayNames: string;
-    };
-    event: {
-        slug: string;
-        date: string;
-        time: string;
-        venue: string;
-        city: string;
-    };
+    partners: { partner1: string; partner2: string }
+    date: string
+    venue: { ceremony: VenueItem; reception: VenueItem }
+    rsvpDeadline: string
+    hashtag: string
+    showVenue: boolean
+    showCountdown: boolean
+    slug: string
+    theme: 'royal' | 'boho' | 'dark' | 'magnolia' | 'linen';
     invitation: {
         title: string;
         subtitle: string;
@@ -22,18 +26,30 @@ export interface WeddingConfig {
 }
 
 export const weddingConfig: WeddingConfig = {
-    couple: {
-        brideName: "Gala",
-        groomName: "Valentin",
-        displayNames: "Gala & Valentin",
+    partners: {
+        partner1: "Gala",
+        partner2: "Valentin",
     },
-    event: {
-        slug: "gala-y-valentin",
-        date: "2027-06-12",
-        time: "18:00",
-        venue: "Finca / Lugar de celebración",
-        city: "Ciudad",
+    date: "2027-06-12",
+    venue: {
+        ceremony: {
+            name: 'Iglesia de San Pedro',
+            time: '12:00',
+            address: 'Calle Mayor, 1, Madrid',
+            mapsQuery: 'C. del Nuncio, 14, Centro, 28005 Madrid',
+        },
+        reception: {
+            name: 'Finca La Rosaleda',
+            time: '14:00',
+            address: 'Finca La Rosaleda, Madrid',
+            mapsQuery: 'P.º de Fernán Núñez, 4, Retiro, 28009 Madrid',
+        },
     },
+    rsvpDeadline: "2027-05-12",
+    hashtag: "#BodaGalaYValentin",
+    showVenue: true,
+    showCountdown: true,
+    slug: "gala-y-valentin",
     invitation: {
         title: "Nos casamos",
         subtitle: "Queremos compartir este día contigo",
@@ -42,4 +58,5 @@ export const weddingConfig: WeddingConfig = {
     admin: {
         title: "Respuestas RSVP",
     },
+    theme: 'linen',
 };
