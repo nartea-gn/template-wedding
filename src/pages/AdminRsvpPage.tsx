@@ -1,27 +1,22 @@
 import React, {useEffect, useState} from 'react';
-import {supabase} from '../lib/supabaseClient';
 import {weddingConfig} from '../config/wedding.config';
-
-interface RsvpResponse {
-    id: string;
-    wedding_slug: string;
-    full_name: string;
-    attending: boolean;
-    dietary_options: string[];
-    dietary_other: string | null;
-    bus_option: string | null;
-    song_request: string | null;
-    message: string | null;
-    created_at: string;
-}
+import {useAdminData} from '../hooks/useAdminData';
 
 export default function AdminRsvpPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
     const [passwordError, setPasswordError] = useState(false);
-    const [responses, setResponses] = useState<RsvpResponse[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState<'all' | 'yes' | 'no'>('all');
+    const {
+        loading,
+        filter,
+        setFilter,
+        totalRespuestas,
+        confirmados,
+        declinados,
+        necesitanBus,
+        filteredResponses,
+        refetch,
+    } = useAdminData(isAuthenticated);
 
     const CORRECT_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'boda2027';
 
@@ -41,42 +36,6 @@ export default function AdminRsvpPage() {
             setIsAuthenticated(true);
         }
     }, []);
-
-    useEffect(() => {
-        if (!isAuthenticated) return;
-
-        async function fetchResponses() {
-            try {
-                setLoading(true);
-                // Filtrado por slug de boda añadido aquí: .eq(...)
-                const {data, error} = await supabase
-                    .from('rsvp_responses')
-                    .select('*')
-                    .eq('wedding_slug', weddingConfig.event.slug)
-                    .order('created_at', {ascending: false});
-
-                if (error) throw error;
-                setResponses(data || []);
-            } catch (err) {
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchResponses();
-    }, [isAuthenticated]);
-
-    const totalRespuestas = responses.length;
-    const confirmados = responses.filter(r => r.attending).length;
-    const declinados = responses.filter(r => !r.attending).length;
-    const necesitanBus = responses.filter(r => r.attending && r.bus_option && r.bus_option !== 'no').length;
-
-    const filteredResponses = responses.filter(r => {
-        if (filter === 'yes') return r.attending;
-        if (filter === 'no') return !r.attending;
-        return true;
-    });
 
     if (!isAuthenticated) {
         return (
@@ -105,11 +64,17 @@ export default function AdminRsvpPage() {
                         <h1 className="font-serif text-3xl font-light">{weddingConfig.admin.title}</h1>
                         <p className="text-xs text-wedding-primary/70">{weddingConfig.couple.displayNames}</p>
                     </div>
-                    <button onClick={() => {
-                        sessionStorage.removeItem('admin_authed');
-                        setIsAuthenticated(false);
-                    }} className="text-xs uppercase tracking-wider text-red-600 border px-4 py-1.5 rounded-full">Cerrar
-                    </button>
+                    <div className="flex gap-2">
+                        <button onClick={() => refetch()}
+                                className="text-xs uppercase tracking-wider text-wedding-primary border px-4 py-1.5 rounded-full">Refrescar
+                        </button>
+                        <button onClick={() => {
+                            sessionStorage.removeItem('admin_authed');
+                            setIsAuthenticated(false);
+                        }}
+                                className="text-xs uppercase tracking-wider text-red-600 border px-4 py-1.5 rounded-full">Cerrar
+                        </button>
+                    </div>
                 </header>
 
                 <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -164,13 +129,13 @@ export default function AdminRsvpPage() {
                                 <tbody className="divide-y text-sm">
                                 {filteredResponses.map((item) => (
                                     <tr key={item.id} className="hover:bg-wedding-bg/20">
-                                        <td className="p-4 font-medium">{item.full_name}</td>
+                                        <td className="p-4 font-medium">{item.fullName}</td>
                                         <td className="p-4"><span
                                             className={`px-2 py-0.5 rounded-full text-xs ${item.attending ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{item.attending ? 'Sí' : 'No'}</span>
                                         </td>
-                                        <td className="p-4 text-xs">{item.dietary_options.join(', ')} {item.dietary_other && `(${item.dietary_other})`}</td>
-                                        <td className="p-4 text-xs capitalize">{item.bus_option?.replace('_', ' ') || '—'}</td>
-                                        <td className="p-4 text-xs italic">{item.song_request || '—'}</td>
+                                        <td className="p-4 text-xs">{item.dietaryOptions.join(', ')} {item.dietaryOther && `(${item.dietaryOther})`}</td>
+                                        <td className="p-4 text-xs capitalize">{item.busOption?.replace('_', ' ') || '—'}</td>
+                                        <td className="p-4 text-xs italic">{item.songRequest || '—'}</td>
                                         <td className="p-4 text-xs text-wedding-primary/80">{item.message || '—'}</td>
                                     </tr>
                                 ))}

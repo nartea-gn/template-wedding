@@ -14,7 +14,7 @@ export default function AppRouter() {
                 <Route path="/rsvp" element={<RsvpPage/>}/>
 
                 {/* Ruta del panel de control de los novios */}
-                <Route path="/admin/rsvp" element={<AdminRsvpPage/>}/>
+                <Route path="/admin" element={<AdminRsvpPage/>}/>
 
                 {/* Cambiamos el redireccionamiento por un texto de prueba */}
                 <Route path="*"

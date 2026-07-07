@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {supabase} from '../lib/supabaseClient';
-import {weddingConfig} from '../config/wedding.config';
+import {useRsvp} from '../hooks/useRsvp';
+import type {RsvpFormData, RsvpInsert} from '../types/rsvp';
 
 const DIETARY_OPTIONS = [
     "Ninguna, como de todo",
@@ -14,21 +14,19 @@ const DIETARY_OPTIONS = [
 export default function RsvpPage() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+    const {submitRsvp, isLoading, isSuccess, isError, error, reset} = useRsvp();
 
-    // Estado para controlar si el usuario ha intentado avanzar/enviar sin rellenar campos obligatorios
-    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<RsvpFormData>({
         fullName: '',
-        attending: null as boolean | null,
-        dietaryOptions: [] as string[],
+        attending: null,
+        dietaryOptions: [],
         dietaryOther: '',
         busOption: '',
         songRequest: '',
         message: ''
     });
+
+    const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
 
     const handleCheckboxChange = (option: string) => {
         setFormData(prev => {
@@ -40,23 +38,19 @@ export default function RsvpPage() {
         });
     };
 
-    // Validación manual para el Paso 1 antes de avanzar o enviar
     const validateStep1 = () => {
         const newErrors = {
             fullName: !formData.fullName.trim(),
             attending: formData.attending === null
         };
         setErrors(newErrors);
-
-        // Retorna true si todo está correcto (ningún error es true)
         return !newErrors.fullName && !newErrors.attending;
     };
 
-    const handleNextStep1 = () => {
+    const handleNextStep1 = async () => {
         if (validateStep1()) {
             if (formData.attending === false) {
-                // Si no asiste, se salta directamente al envío simulando el submit
-                handleSubmitNoAssistance();
+                await handleSubmitNoAssistance();
             } else {
                 nextStep();
             }
@@ -66,61 +60,29 @@ export default function RsvpPage() {
     const nextStep = () => setStep(prev => prev + 1);
     const prevStep = () => setStep(prev => prev - 1);
 
-    // Función auxiliar para enviar cuando marcan "No asistiré" en el paso 1
     const handleSubmitNoAssistance = async () => {
-        setLoading(true);
-        try {
-            const {error} = await supabase.from('rsvp_responses').insert([{
-                wedding_slug: weddingConfig.event.slug,
-                full_name: formData.fullName,
-                attending: false,
-                dietary_options: [],
-                dietary_other: null,
-                bus_option: null,
-                song_request: null,
-                message: null
-            }]);
-
-            if (error) throw error;
-            setSubmitted(true);
-        } catch (err) {
-            console.error(err);
-            alert("Hubo un error al guardar tu asistencia.");
-        } finally {
-            setLoading(false);
-        }
+        const insert: RsvpInsert = {
+            fullName: formData.fullName,
+            attending: false,
+            dietaryOptions: [],
+            dietaryOther: '',
+            busOption: '',
+            songRequest: '',
+            message: ''
+        };
+        await submitRsvp(insert);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Doble check por si acaso
         if (!validateStep1()) return;
+        if (formData.attending === null) return;
 
-        setLoading(true);
-        try {
-            const {error} = await supabase.from('rsvp_responses').insert([{
-                wedding_slug: weddingConfig.event.slug,
-                full_name: formData.fullName,
-                attending: formData.attending,
-                dietary_options: formData.dietaryOptions,
-                dietary_other: formData.dietaryOther || null,
-                bus_option: formData.busOption || null,
-                song_request: formData.songRequest || null,
-                message: formData.message || null
-            }]);
-
-            if (error) throw error;
-            setSubmitted(true);
-        } catch (err) {
-            console.error(err);
-            alert("Hubo un error al guardar tu asistencia.");
-        } finally {
-            setLoading(false);
-        }
+        const insert: RsvpInsert = {...formData, attending: formData.attending};
+        await submitRsvp(insert);
     };
 
-    if (submitted) {
+    if (isSuccess) {
         return (
             <div
                 className="min-h-screen bg-wedding-bg text-wedding-dark flex flex-col items-center justify-center p-6 text-center font-sans">
@@ -130,7 +92,10 @@ export default function RsvpPage() {
                     <p className="text-wedding-primary/80 text-sm">
                         {formData.attending ? "Tu asistencia ha sido confirmada." : "Lamentamos que no puedas asistir."}
                     </p>
-                    <button onClick={() => navigate('/')}
+                    <button onClick={() => {
+                        reset();
+                        navigate('/');
+                    }}
                             className="mt-4 px-6 py-2 border border-wedding-primary text-wedding-primary rounded-full text-xs uppercase tracking-wider hover:bg-wedding-primary hover:text-wedding-bg transition-colors">
                         Volver al inicio
                     </button>
@@ -153,7 +118,6 @@ export default function RsvpPage() {
                         <div className="space-y-6 animate-fade-in">
                             <h2 className="font-serif text-2xl font-light">Asistencia</h2>
 
-                            {/* Input de Nombre con borde rojo condicional */}
                             <div className="space-y-2">
                                 <label className="text-xs uppercase tracking-wider font-semibold flex justify-between">
                                     <span>Nombre y Apellidos *</span>
@@ -171,7 +135,6 @@ export default function RsvpPage() {
                                 />
                             </div>
 
-                            {/* Opciones de asistencia con recuadros rojos condicionales */}
                             <div className="space-y-3">
                                 <label className="text-xs uppercase tracking-wider font-semibold flex justify-between">
                                     <span>¿Podrás asistir? *</span>
@@ -286,12 +249,19 @@ export default function RsvpPage() {
                                 <button type="button" onClick={prevStep}
                                         className="text-xs uppercase tracking-wider text-wedding-primary/70">Atrás
                                 </button>
-                                <button type="submit" disabled={loading}
+                                <button type="submit" disabled={isLoading}
                                         className="px-8 py-2.5 bg-wedding-primary text-wedding-bg text-xs uppercase tracking-wider rounded-full disabled:opacity-50">
-                                    {loading ? "Enviando..." : "Confirmar todo"}
+                                    {isLoading ? "Enviando..." : "Confirmar todo"}
                                 </button>
                             </div>
                         </div>
+                    )}
+
+                    {isError && (
+                        <p className="text-red-500 text-sm text-center" role="alert">
+                            Hubo un error al guardar tu asistencia. Inténtalo de nuevo.
+                            {error?.message && <span className="block text-xs mt-1 opacity-80">{error.message}</span>}
+                        </p>
                     )}
                 </form>
             </div>
