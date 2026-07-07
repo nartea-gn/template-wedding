@@ -2,12 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {weddingConfig} from '../config/wedding.config';
 import {useAdminData} from '../hooks/useAdminData';
 
-export default function AdminRsvpPage() {
+export default function Admin() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const {
         loading,
+        error,
         filter,
         setFilter,
         totalRespuestas,
@@ -18,7 +19,7 @@ export default function AdminRsvpPage() {
         refetch,
     } = useAdminData(isAuthenticated);
 
-    const CORRECT_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'boda2027';
+    const CORRECT_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
 
     const handlePasswordSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -62,7 +63,7 @@ export default function AdminRsvpPage() {
                 <header className="flex justify-between items-center border-b pb-4">
                     <div>
                         <h1 className="font-serif text-3xl font-light">{weddingConfig.admin.title}</h1>
-                        <p className="text-xs text-wedding-primary/70">{weddingConfig.couple.displayNames}</p>
+                        <p className="text-xs text-wedding-primary/70">{weddingConfig.partners.partner1} & {weddingConfig.partners.partner2}</p>
                     </div>
                     <div className="flex gap-2">
                         <button onClick={() => refetch()}
@@ -111,7 +112,11 @@ export default function AdminRsvpPage() {
                 </div>
 
                 <main className="bg-white rounded-xl border overflow-hidden shadow-sm">
-                    {loading ? (
+                    {error ? (
+                        <div className="p-12 text-center text-sm text-red-600" role="alert">
+                            No se pudieron cargar las respuestas: {error}
+                        </div>
+                    ) : loading ? (
                         <div className="p-12 text-center text-sm text-wedding-primary/60">Cargando...</div>
                     ) : (
                         <div className="overflow-x-auto">

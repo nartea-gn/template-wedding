@@ -7,6 +7,7 @@ type Filter = 'all' | 'yes' | 'no'
 
 type UseAdminDataReturn = {
     loading: boolean
+    error: string | null
     filter: Filter
     setFilter: (filter: Filter) => void
     totalRespuestas: number
@@ -20,18 +21,20 @@ type UseAdminDataReturn = {
 export function useAdminData(isAuthenticated: boolean): UseAdminDataReturn {
     const [responses, setResponses] = useState<RsvpResponse[]>([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const [filter, setFilter] = useState<Filter>('all')
 
     const fetchResponses = useCallback(async () => {
         try {
             setLoading(true)
-            const {data, error} = await supabase
+            setError(null)
+            const {data, error: dbError} = await supabase
                 .from('rsvp_responses')
                 .select('*')
-                .eq('wedding_slug', weddingConfig.event.slug)
+                .eq('wedding_slug', weddingConfig.slug)
                 .order('created_at', {ascending: false})
 
-            if (error) throw error
+            if (dbError) throw dbError
             setResponses((data || []).map(r => ({
                 id: r.id,
                 wedding_slug: r.wedding_slug,
@@ -45,7 +48,7 @@ export function useAdminData(isAuthenticated: boolean): UseAdminDataReturn {
                 message: r.message ?? '',
             })))
         } catch (err) {
-            console.error(err)
+            setError(err instanceof Error ? err.message : 'Error al cargar las respuestas')
         } finally {
             setLoading(false)
         }
@@ -68,6 +71,7 @@ export function useAdminData(isAuthenticated: boolean): UseAdminDataReturn {
 
     return {
         loading,
+        error,
         filter,
         setFilter,
         totalRespuestas,

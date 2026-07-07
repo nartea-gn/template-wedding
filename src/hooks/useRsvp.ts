@@ -24,8 +24,8 @@ export function useRsvp(): UseRsvpReturn {
         setIsError(false)
         setError(null)
         try {
-            const {error} = await supabase.from('rsvp_responses').insert([{
-                wedding_slug: weddingConfig.event.slug,
+            const {error: dbError} = await supabase.from('rsvp_responses').insert([{
+                wedding_slug: weddingConfig.slug,
                 full_name: data.fullName,
                 attending: data.attending,
                 dietary_options: data.dietaryOptions,
@@ -34,12 +34,11 @@ export function useRsvp(): UseRsvpReturn {
                 song_request: data.songRequest || null,
                 message: data.message || null,
             }])
-            if (error) throw error
+            if (dbError) throw dbError
             setIsSuccess(true)
         } catch (err) {
             setIsError(true)
             setError(err instanceof Error ? err : new Error('Unknown error'))
-            console.error('[useRsvp] submit failed:', err)
         } finally {
             setIsLoading(false)
         }

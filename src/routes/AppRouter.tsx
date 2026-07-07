@@ -1,20 +1,20 @@
 import {HashRouter, Route, Routes} from 'react-router-dom';
-import InvitationPage from '../pages/InvitationPage';
-import RsvpPage from '../pages/RsvpPage';
-import AdminRsvpPage from '../pages/AdminRsvpPage';
+import Landing from '../pages/Landing.tsx';
+import Rsvp from '../pages/Rsvp.tsx';
+import Admin from '../pages/Admin.tsx';
 
 export default function AppRouter() {
     return (
         <HashRouter>
             <Routes>
                 {/* Ruta principal pública */}
-                <Route path="/" element={<InvitationPage/>}/>
+                <Route path="/" element={<Landing/>}/>
 
                 {/* Ruta del formulario público */}
-                <Route path="/rsvp" element={<RsvpPage/>}/>
+                <Route path="/rsvp" element={<Rsvp/>}/>
 
                 {/* Ruta del panel de control de los novios */}
-                <Route path="/admin" element={<AdminRsvpPage/>}/>
+                <Route path="/admin" element={<Admin/>}/>
 
                 {/* Cambiamos el redireccionamiento por un texto de prueba */}
                 <Route path="*"

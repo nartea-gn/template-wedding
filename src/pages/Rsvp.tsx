@@ -11,7 +11,7 @@ const DIETARY_OPTIONS = [
     "Alergia a frutos secos o marisco"
 ];
 
-export default function RsvpPage() {
+export default function Rsvp() {
     const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const {submitRsvp, isLoading, isSuccess, isError, error, reset} = useRsvp();
@@ -76,9 +76,8 @@ export default function RsvpPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateStep1()) return;
-        if (formData.attending === null) return;
 
-        const insert: RsvpInsert = {...formData, attending: formData.attending};
+        const insert: RsvpInsert = {...formData, attending: formData.attending ?? false};
         await submitRsvp(insert);
     };
 
