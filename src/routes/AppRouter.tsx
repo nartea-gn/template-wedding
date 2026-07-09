@@ -20,7 +20,7 @@ export default function AppRouter() {
                 {/* Cambiamos el redireccionamiento por un texto de prueba */}
                 <Route path="*"
                        element={<div className="route-not-found">Ruta no encontrada dentro de
-                            React Router</div>}/>
+                           React Router</div>}/>
             </Routes>
         </HashRouter>
     );

@@ -12,7 +12,7 @@
 }
 
 .responses-state--muted {
-    @apply text-wedding-muted;
+    @apply text-(--color-wedding-muted);
 }
 
 .responses-state-icon {
@@ -20,7 +20,7 @@
 }
 
 .responses-spinner {
-    @apply inline-block w-6 h-6 border-2 border-wedding-primary border-t-transparent rounded-full animate-spin mb-3;
+    @apply inline-block w-6 h-6 border-2 border-(--color-wedding-primary) border-t-transparent rounded-full animate-spin mb-3;
 }
 
 .responses-scroll {
@@ -32,7 +32,7 @@
 }
 
 .responses-head-row {
-    @apply bg-wedding-surface/50 border-b border-wedding-border text-xs uppercase text-wedding-muted;
+    @apply bg-(--color-wedding-surface)/50 border-b border-(--color-wedding-border) text-xs uppercase text-(--color-wedding-muted);
 }
 
 .responses-th {
@@ -40,31 +40,31 @@
 }
 
 .responses-body {
-    @apply divide-y divide-wedding-border/50 text-sm;
+    @apply divide-y divide-(--color-wedding-border)/50 text-sm;
 }
 
 .responses-row {
-    @apply hover:bg-wedding-surface/30 transition-colors;
+    @apply hover:bg-(--color-wedding-surface)/30 transition-colors;
 }
 
 .responses-td {
-    @apply p-4 font-medium text-wedding-text;
+    @apply p-4 font-medium text-(--color-wedding-text);
 }
 
 .responses-td-muted {
-    @apply p-4 text-xs text-wedding-text/70;
+    @apply p-4 text-xs text-(--color-wedding-text)/70;
 }
 
 .responses-td-cap {
-    @apply p-4 text-xs text-wedding-text/70 capitalize;
+    @apply p-4 text-xs text-(--color-wedding-text)/70 capitalize;
 }
 
 .responses-td-italic {
-    @apply p-4 text-xs italic text-wedding-text/70;
+    @apply p-4 text-xs italic text-(--color-wedding-text)/70;
 }
 
 .responses-td-message {
-    @apply p-4 text-xs text-wedding-primary/80 max-w-[200px] truncate;
+    @apply p-4 text-xs text-(--color-wedding-primary)/80 max-w-[200px] truncate;
 }
 
 .responses-badge {

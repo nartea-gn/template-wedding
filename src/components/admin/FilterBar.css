@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 /* FilterBar component styles */
 .filter-bar {
     @apply flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between;

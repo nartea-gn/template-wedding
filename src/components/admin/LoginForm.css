@@ -1,6 +1,8 @@
+@reference "tailwindcss";
+
 /* LoginForm component styles */
 .login-page {
-    @apply min-h-screen bg-wedding-bg flex flex-col items-center justify-center p-4;
+    @apply min-h-screen bg-(--color-wedding-bg) flex flex-col items-center justify-center p-4;
 }
 
 .login-card {
@@ -12,7 +14,7 @@
 }
 
 .login-title {
-    @apply font-serif text-2xl md:text-3xl font-light text-wedding-primary;
+    @apply font-serif text-2xl md:text-3xl font-light text-(--color-wedding-primary);
 }
 
 .login-form {

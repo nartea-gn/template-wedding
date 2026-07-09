@@ -55,7 +55,7 @@ export default function Admin() {
     }
 
     return (
-                <div className="admin-page">
+        <div className="admin-page">
             <div className="admin-container">
                 <header className="admin-header">
                     <div className="admin-title-block">

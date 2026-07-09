@@ -1,6 +1,8 @@
+@reference "tailwindcss";
+
 /* Landing page styles */
 .landing-page {
-    @apply min-h-screen flex flex-col items-center px-6 py-20 md:py-28 text-center bg-wedding-bg text-wedding-dark;
+    @apply min-h-screen flex flex-col items-center px-6 py-20 md:py-28 text-center bg-(--color-wedding-bg) text-(--color-wedding-text);
 }
 
 .landing-hero {
@@ -8,19 +10,19 @@
 }
 
 .landing-title {
-    @apply font-serif text-5xl md:text-7xl font-bold text-wedding-primary leading-tight tracking-tight;
+    @apply font-serif text-5xl md:text-7xl font-bold text-(--color-wedding-primary) leading-tight tracking-tight;
 }
 
 .landing-title-amp {
-    @apply block md:inline text-wedding-text/30 font-normal italic mx-2;
+    @apply block md:inline opacity-30 font-normal italic mx-2;
 }
 
 .landing-subtitle {
-    @apply text-lg md:text-xl italic text-wedding-text/70 mt-2;
+    @apply text-lg md:text-xl italic opacity-70 mt-2;
 }
 
 .landing-date {
-    @apply text-xs uppercase tracking-[0.2em] text-wedding-text/40 mt-3;
+    @apply text-xs uppercase tracking-[0.2em] opacity-40 mt-3;
 }
 
 .landing-ornament {
@@ -28,11 +30,11 @@
 }
 
 .landing-ornament-line {
-    @apply flex-1 h-px bg-wedding-border;
+    @apply flex-1 h-px bg-(--color-wedding-border);
 }
 
 .landing-ornament-icon {
-    @apply text-wedding-primary/60 text-xs;
+    @apply opacity-60 text-xs;
 }
 
 .landing-video {
@@ -44,7 +46,7 @@
 }
 
 .landing-venue-label {
-    @apply text-xs uppercase tracking-[0.14em] text-wedding-text/40 mb-8;
+    @apply text-xs uppercase tracking-[0.14em] opacity-40 mb-8;
 }
 
 .landing-venue-grid {
@@ -56,19 +58,19 @@
 }
 
 .landing-venue-type {
-    @apply text-[0.7rem] uppercase tracking-[0.14em] text-wedding-text/40;
+    @apply text-[0.7rem] uppercase tracking-[0.14em] opacity-40;
 }
 
 .landing-venue-name {
-    @apply font-serif text-xl italic text-wedding-primary;
+    @apply font-serif text-xl italic text-(--color-wedding-primary);
 }
 
 .landing-venue-time {
-    @apply text-xs uppercase tracking-[0.12em] text-wedding-text/50;
+    @apply text-xs uppercase tracking-[0.12em] opacity-50;
 }
 
 .landing-venue-address {
-    @apply text-sm text-wedding-text/60 leading-relaxed;
+    @apply text-sm opacity-60 leading-relaxed;
 }
 
 .landing-venue-map {
@@ -80,7 +82,7 @@
 }
 
 .landing-countdown-label {
-    @apply text-xs uppercase tracking-[0.14em] text-wedding-text/40;
+    @apply text-xs uppercase tracking-[0.14em] opacity-40;
 }
 
 .landing-countdown-row {
@@ -96,15 +98,15 @@
 }
 
 .landing-countdown-value {
-    @apply font-serif text-4xl md:text-5xl font-bold text-wedding-primary leading-none;
+    @apply font-serif text-4xl md:text-5xl font-bold text-(--color-wedding-primary) leading-none;
 }
 
 .landing-countdown-unit-label {
-    @apply text-[0.625rem] uppercase tracking-[0.12em] text-wedding-text/40;
+    @apply text-[0.625rem] uppercase tracking-[0.12em] opacity-40;
 }
 
 .landing-countdown-sep {
-    @apply font-serif text-2xl md:text-3xl text-wedding-primary/30 mx-1 md:mx-2 leading-none mt-1;
+    @apply font-serif text-2xl md:text-3xl opacity-30 mx-1 md:mx-2 leading-none mt-1;
 }
 
 .landing-cta {
@@ -116,5 +118,5 @@
 }
 
 .landing-hashtag {
-    @apply text-sm italic text-wedding-text/30 tracking-wide;
+    @apply text-sm italic opacity-30 tracking-wide;
 }

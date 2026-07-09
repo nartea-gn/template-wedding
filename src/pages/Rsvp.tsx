@@ -82,7 +82,7 @@ export default function Rsvp() {
         await submitRsvp(insert);
     };
 
-        if (isSuccess) {
+    if (isSuccess) {
         return (
             <div className="rsvp-success-page">
                 <div className="card rsvp-success-card">
