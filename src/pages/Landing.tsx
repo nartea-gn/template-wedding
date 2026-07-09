@@ -54,62 +54,6 @@ export default function Landing() {
                 </p>
             </section>
 
-            {/* Ornament */}
-            <div className="landing-ornament" aria-hidden="true">
-                <span className="landing-ornament-line"/>
-                <span className="landing-ornament-icon">✦</span>
-                <span className="landing-ornament-line"/>
-            </div>
-
-            {/* Video */}
-            <section className="landing-video">
-                <VideoHero/>
-            </section>
-
-            {/* Venue */}
-            {weddingConfig.showVenue && (
-                <section className="landing-venue">
-                    <p className="landing-venue-label">
-                        La celebración
-                    </p>
-                    <div className="landing-venue-grid">
-                        {(['ceremony', 'reception'] as const).map((key) => {
-                            const item = weddingConfig.venue[key]
-                            return (
-                                <div key={key} className="landing-venue-card">
-                                    <p className="landing-venue-type">
-                                        {key === 'ceremony' ? 'Ceremonia' : 'Recepción'}
-                                    </p>
-                                    <p className="landing-venue-name">
-                                        {item.name}
-                                    </p>
-                                    {item.time && (
-                                        <p className="landing-venue-time">
-                                            {item.time}
-                                        </p>
-                                    )}
-                                    {item.address && (
-                                        <p className="landing-venue-address">
-                                            {item.address}
-                                        </p>
-                                    )}
-                                    {item.mapsQuery && (
-                                        <a
-                                            href={`https://maps.google.com/maps?q=${encodeURIComponent(item.mapsQuery)}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="landing-venue-map"
-                                        >
-                                            Ver en el mapa
-                                        </a>
-                                    )}
-                                </div>
-                            )
-                        })}
-                    </div>
-                </section>
-            )}
-
             {/* Countdown */}
             {weddingConfig.showCountdown && timeLeft && (
                 <section className="landing-countdown">
@@ -143,10 +87,66 @@ export default function Landing() {
                 </section>
             )}
 
+            {/* Ornament */}
+            <div className="landing-ornament" aria-hidden="true">
+                <span className="landing-ornament-line"/>
+                <span className="landing-ornament-icon">✦</span>
+                <span className="landing-ornament-line"/>
+            </div>
+
+            {/* Video */}
+            <section className="landing-video">
+                <VideoHero/>
+            </section>
+
+            {/* Venue */}
+            {weddingConfig.showVenue && (
+                <section className="landing-venue">
+                    <p className="landing-venue-label">
+                        La celebración
+                    </p>
+                    <div className="landing-venue-grid">
+                        {(['ceremony', 'reception'] as const).map((key) => {
+                            const item = weddingConfig.venue[key]
+                            return (
+                                <div key={key} className="landing-venue-card card">
+                                    <p className="landing-venue-type">
+                                        {key === 'ceremony' ? 'Ceremonia' : 'Recepción'}
+                                    </p>
+                                    <p className="landing-venue-name">
+                                        {item.name}
+                                    </p>
+                                    {item.time && (
+                                        <p className="landing-venue-time">
+                                            {item.time}
+                                        </p>
+                                    )}
+                                    {item.address && (
+                                        <p className="landing-venue-address">
+                                            {item.address}
+                                        </p>
+                                    )}
+                                    {item.mapsQuery && (
+                                        <a
+                                            href={`https://maps.google.com/maps?q=${encodeURIComponent(item.mapsQuery)}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="landing-venue-map btn btn--outline"
+                                        >
+                                            Ver en el mapa
+                                        </a>
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
+                </section>
+            )}
+
             {/* CTA */}
             <section className="landing-cta">
                 <button
-                    className="landing-cta-btn"
+                    className="landing-cta-btn btn btn--primary"
                     onClick={() => navigate('/rsvp')}
                 >
                     {weddingConfig.invitation.rsvpButtonText}

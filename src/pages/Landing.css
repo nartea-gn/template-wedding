@@ -24,7 +24,7 @@
 }
 
 .landing-date {
-    @apply text-xs uppercase tracking-[0.2em] opacity-40 mt-3;
+    @apply text-xl uppercase tracking-[0.2em] opacity-40 mt-3;
 }
 
 .landing-ornament {
@@ -85,7 +85,7 @@
 }
 
 .landing-venue-map {
-    @apply mt-2 text-xs py-2 px-6;
+    @apply mt-2;
 }
 
 .landing-countdown {

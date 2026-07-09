@@ -58,5 +58,5 @@ export const weddingConfig: WeddingConfig = {
     admin: {
         title: "Respuestas RSVP",
     },
-    theme: 'linen',
+    theme: 'royal',
 };
