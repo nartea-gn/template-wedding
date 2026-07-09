@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 /* AppRouter styles */
 .route-not-found {
     @apply p-8 text-center text-red-500 font-mono;

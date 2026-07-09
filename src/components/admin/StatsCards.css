@@ -1,10 +1,12 @@
+@reference "tailwindcss";
+
 /* StatsCards component styles */
 .stats-grid {
     @apply grid grid-cols-2 md:grid-cols-4 gap-4;
 }
 
 .stat-card {
-    @apply card p-5 md:p-6 text-center hover:scale-[1.02];
+    @apply p-5 md:p-6 text-center hover:scale-[1.02];
 }
 
 .stat-icon {

@@ -6,7 +6,9 @@
 }
 
 .landing-hero {
-    @apply flex flex-col items-center gap-3 mb-16 animate-fade-up;
+    @apply flex flex-col items-center gap-3 mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
 }
 
 .landing-title {
@@ -26,7 +28,10 @@
 }
 
 .landing-ornament {
-    @apply flex items-center gap-4 w-full max-w-xs mb-16 animate-fade-up animate-delay-100;
+    @apply flex items-center gap-4 w-full max-w-xs mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.1s;
 }
 
 .landing-ornament-line {
@@ -38,11 +43,17 @@
 }
 
 .landing-video {
-    @apply w-full max-w-[380px] mb-16 animate-fade-up animate-delay-200;
+    @apply w-full max-w-[380px] mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
 }
 
 .landing-venue {
-    @apply w-full max-w-3xl mb-16 animate-fade-up animate-delay-300;
+    @apply w-full max-w-3xl mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.3s;
 }
 
 .landing-venue-label {
@@ -78,7 +89,10 @@
 }
 
 .landing-countdown {
-    @apply flex flex-col items-center gap-4 mb-16 animate-fade-up animate-delay-400;
+    @apply flex flex-col items-center gap-4 mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.4s;
 }
 
 .landing-countdown-label {
@@ -110,7 +124,10 @@
 }
 
 .landing-cta {
-    @apply flex flex-col items-center gap-4 animate-fade-up animate-delay-500;
+    @apply flex flex-col items-center gap-4;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.5s;
 }
 
 .landing-cta-btn {

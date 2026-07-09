@@ -47,7 +47,9 @@
 }
 
 .rsvp-step {
-    @apply space-y-8 animate-fade-in;
+    @apply space-y-8;
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
 }
 
 .rsvp-section-title {
