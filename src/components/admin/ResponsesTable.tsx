@@ -9,7 +9,7 @@ type ResponsesTableProps = {
 
 export function ResponsesTable({responses, loading, error}: ResponsesTableProps) {
     return (
-        <main className="responses-table">
+        <main className="card responses-table">
             {error ? (
                 <div className="responses-state responses-state--error" role="alert">
                     <span className="responses-state-icon">⚠️</span>

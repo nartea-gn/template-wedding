@@ -76,7 +76,7 @@ export default function Landing() {
                         {(['ceremony', 'reception'] as const).map((key) => {
                             const item = weddingConfig.venue[key]
                             return (
-                                <div key={key} className="landing-venue-card">
+                                <div key={key} className="landing-venue-card card">
                                     <p className="landing-venue-type">
                                         {key === 'ceremony' ? 'Ceremonia' : 'Recepción'}
                                     </p>
@@ -98,7 +98,7 @@ export default function Landing() {
                                             href={`https://maps.google.com/maps?q=${encodeURIComponent(item.mapsQuery)}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="landing-venue-map"
+                                            className="landing-venue-map btn btn--outline"
                                         >
                                             Ver en el mapa
                                         </a>
@@ -146,7 +146,7 @@ export default function Landing() {
             {/* CTA */}
             <section className="landing-cta">
                 <button
-                    className="landing-cta-btn"
+                    className="landing-cta-btn btn btn--primary"
                     onClick={() => navigate('/rsvp')}
                 >
                     {weddingConfig.invitation.rsvpButtonText}

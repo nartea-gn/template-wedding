@@ -1,6 +1,8 @@
+@reference "tailwindcss";
+
 /* ResponsesTable component styles */
 .responses-table {
-    @apply card overflow-hidden;
+    @apply overflow-hidden;
 }
 
 .responses-state {

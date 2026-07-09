@@ -10,11 +10,11 @@ export function FilterBar({filter, setFilter}: FilterBarProps) {
     return (
         <div className="filter-bar">
             <div className="filter-group">
-                <label className="filter-label">Filtrar:</label>
+                <label className="label filter-label">Filtrar:</label>
                 <select
                     value={filter}
-                    onChange={e => setFilter(e.target.value)}
-                    className="filter-select"
+                    onChange={e => setFilter(e.target.value as Filter)}
+                    className="input filter-select"
                 >
                     <option value="all">Todos</option>
                     <option value="confirmed">Confirmados</option>

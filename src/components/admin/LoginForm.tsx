@@ -17,7 +17,7 @@ export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
 
     return (
         <div className="login-page">
-            <div className="login-card">
+            <div className="card login-card">
                 <div>
                     <span className="login-icon">🔐</span>
                     <h2 className="login-title">
@@ -31,7 +31,7 @@ export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
                             placeholder="Contraseña"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
-                            className="login-input"
+                            className="input login-input"
                             autoFocus
                         />
                     </div>
@@ -42,7 +42,7 @@ export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
                     )}
                     <button
                         type="submit"
-                        className="login-submit"
+                        className="btn btn--primary w-full login-submit"
                     >
                         Acceder
                     </button>
