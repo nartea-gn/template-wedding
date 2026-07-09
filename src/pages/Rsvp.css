@@ -1,0 +1,145 @@
+/* Rsvp page styles */
+.rsvp-success-page {
+    @apply min-h-screen bg-wedding-bg text-wedding-dark flex flex-col items-center justify-center p-6 text-center font-sans;
+}
+
+.rsvp-success-card {
+    @apply max-w-md p-8 md:p-10 space-y-6;
+}
+
+.rsvp-success-icon {
+    @apply text-5xl block mb-2;
+}
+
+.rsvp-success-title {
+    @apply font-serif text-3xl md:text-4xl font-light text-wedding-primary;
+}
+
+.rsvp-success-text {
+    @apply text-wedding-muted text-sm leading-relaxed;
+}
+
+.rsvp-success-btn {
+    @apply mt-6;
+}
+
+.rsvp-page {
+    @apply min-h-screen bg-wedding-bg text-wedding-dark flex flex-col items-center justify-center p-4 md:p-8;
+}
+
+.rsvp-card {
+    @apply w-full max-w-xl p-6 md:p-10;
+}
+
+.rsvp-progress {
+    @apply w-full bg-wedding-surface h-1.5 rounded-full mb-10 overflow-hidden;
+}
+
+.rsvp-progress-bar {
+    @apply bg-wedding-primary h-full rounded-full transition-all duration-500 ease-out;
+    width: var(--progress, 0%);
+}
+
+.rsvp-form {
+    @apply space-y-8;
+}
+
+.rsvp-step {
+    @apply space-y-8 animate-fade-in;
+}
+
+.rsvp-section-title {
+    @apply mb-1;
+}
+
+.rsvp-field {
+    @apply space-y-3;
+}
+
+.rsvp-option-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-3;
+}
+
+.rsvp-dietary-list {
+    @apply space-y-3;
+}
+
+.rsvp-actions-end {
+    @apply flex justify-end pt-2;
+}
+
+.rsvp-actions-between {
+    @apply flex justify-between pt-4;
+}
+
+.rsvp-input--error {
+    @apply border-red-400 focus:border-red-500;
+}
+
+.rsvp-error-text {
+    @apply text-red-500 text-xs italic;
+}
+
+.rsvp-option {
+    @apply flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200;
+}
+
+.rsvp-option--selected {
+    @apply border-wedding-primary bg-wedding-primary/5;
+}
+
+.rsvp-option--error {
+    @apply border-red-200 bg-red-50/30;
+}
+
+.rsvp-radio {
+    @apply accent-wedding-primary w-4 h-4;
+}
+
+.rsvp-option-label {
+    @apply text-sm font-medium;
+}
+
+.rsvp-checkbox-option {
+    @apply flex items-center gap-3 p-3 rounded-lg border border-wedding-border cursor-pointer transition-colors hover:bg-wedding-surface;
+}
+
+.rsvp-checkbox {
+    @apply accent-wedding-primary w-4 h-4 rounded;
+}
+
+.rsvp-input-other {
+    @apply mt-3;
+}
+
+.rsvp-select {
+    @apply cursor-pointer;
+}
+
+.rsvp-textarea {
+    @apply resize-none;
+}
+
+.rsvp-info-box {
+    @apply p-5 bg-wedding-surface/60 border border-wedding-border rounded-xl text-sm leading-relaxed text-wedding-text/80;
+}
+
+.rsvp-btn-ghost {
+    @apply text-wedding-primary/70;
+}
+
+.rsvp-btn-submit {
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.rsvp-error-box {
+    @apply p-4 bg-red-50 border border-red-200 rounded-xl text-center;
+}
+
+.rsvp-error-box-text {
+    @apply text-red-600 text-sm;
+}
+
+.rsvp-error-box-detail {
+    @apply block text-xs mt-2 opacity-80 text-red-500;
+}

@@ -1,24 +1,27 @@
 import type {Filter} from '../../hooks/useAdminData';
+import './FilterBar.css';
 
 type FilterBarProps = {
     filter: Filter;
-    setFilter: (filter: Filter) => void;
+    setFilter: (value: Filter) => void;
 };
-
-const FILTERS: { key: Filter; label: string; activeClass: string }[] = [
-    {key: 'all', label: 'Todos', activeClass: 'bg-wedding-primary text-wedding-bg'},
-    {key: 'yes', label: 'Confirmados', activeClass: 'bg-green-700 text-white'},
-    {key: 'no', label: 'No asisten', activeClass: 'bg-red-700 text-white'},
-];
 
 export function FilterBar({filter, setFilter}: FilterBarProps) {
     return (
-        <div className="flex gap-2">
-            {FILTERS.map(({key, label, activeClass}) => (
-                <button key={key} onClick={() => setFilter(key)}
-                        className={`px-4 py-1.5 rounded-full text-xs uppercase tracking-wider ${filter === key ? activeClass : 'bg-white border'}`}>{label}
-                </button>
-            ))}
+        <div className="filter-bar">
+            <div className="filter-group">
+                <label className="filter-label">Filtrar:</label>
+                <select
+                    value={filter}
+                    onChange={e => setFilter(e.target.value)}
+                    className="filter-select"
+                >
+                    <option value="all">Todos</option>
+                    <option value="confirmed">Confirmados</option>
+                    <option value="declined">Declinados</option>
+                    <option value="bus">Necesitan bus</option>
+                </select>
+            </div>
         </div>
     );
 }

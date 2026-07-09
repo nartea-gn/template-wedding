@@ -1,3 +1,5 @@
+import './StatsCards.css';
+
 type StatsCardsProps = {
     total: number;
     confirmados: number;
@@ -5,27 +7,37 @@ type StatsCardsProps = {
     necesitanBus: number;
 };
 
+type Tone = 'default' | 'green' | 'red';
+
 type Stat = {
     label: string;
     value: number;
-    labelClass: string;
-    valueClass?: string;
+    tone: Tone;
+    icon?: string;
 };
 
 export function StatsCards({total, confirmados, declinados, necesitanBus}: StatsCardsProps) {
     const stats: Stat[] = [
-        {label: 'Respuestas', value: total, labelClass: 'text-wedding-primary/60'},
-        {label: 'Asistirán', value: confirmados, labelClass: 'text-green-600/70', valueClass: 'text-green-700'},
-        {label: 'No Asistirán', value: declinados, labelClass: 'text-red-600/70', valueClass: 'text-red-700'},
-        {label: 'Autobús', value: necesitanBus, labelClass: 'text-wedding-primary/60'},
+        {label: 'Respuestas', value: total, tone: 'default', icon: '📋'},
+        {label: 'Asistirán', value: confirmados, tone: 'green', icon: '💚'},
+        {label: 'No Asistirán', value: declinados, tone: 'red', icon: '💔'},
+        {label: 'Autobús', value: necesitanBus, tone: 'default', icon: '🚌'},
     ];
 
     return (
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {stats.map(({label, value, labelClass, valueClass}) => (
-                <div key={label} className="bg-white p-4 rounded-xl border text-center">
-                    <span className={`text-xs uppercase ${labelClass} font-semibold block`}>{label}</span>
-                    <span className={`font-serif text-3xl font-light ${valueClass ?? ''} block mt-1`}>{value}</span>
+        <section className="stats-grid">
+            {stats.map(({label, value, tone, icon}) => (
+                <div
+                    key={label}
+                    className="stat-card"
+                >
+                    <span className="stat-icon">{icon}</span>
+                    <span className={`stat-label stat-label--${tone}`}>
+                        {label}
+                    </span>
+                    <span className={`stat-value stat-value--${tone}`}>
+                        {value}
+                    </span>
                 </div>
             ))}
         </section>

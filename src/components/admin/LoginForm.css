@@ -1,0 +1,40 @@
+/* LoginForm component styles */
+.login-page {
+    @apply min-h-screen bg-wedding-bg flex flex-col items-center justify-center p-4;
+}
+
+.login-card {
+    @apply w-full max-w-sm card p-8 md:p-10 text-center space-y-8;
+}
+
+.login-icon {
+    @apply text-4xl block mb-3;
+}
+
+.login-title {
+    @apply font-serif text-2xl md:text-3xl font-light text-wedding-primary;
+}
+
+.login-form {
+    @apply space-y-6;
+}
+
+.login-field {
+    @apply space-y-2;
+}
+
+.login-input {
+    @apply input text-center tracking-widest;
+}
+
+.login-error {
+    @apply p-3 bg-red-50 border border-red-200 rounded-lg;
+}
+
+.login-error-text {
+    @apply text-xs text-red-600;
+}
+
+.login-submit {
+    @apply btn btn--primary w-full;
+}

@@ -1,0 +1,16 @@
+/* FilterBar component styles */
+.filter-bar {
+    @apply flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between;
+}
+
+.filter-group {
+    @apply flex items-center gap-2;
+}
+
+.filter-label {
+    @apply label mb-0;
+}
+
+.filter-select {
+    @apply input w-auto;
+}

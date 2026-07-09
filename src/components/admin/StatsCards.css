@@ -1,0 +1,44 @@
+/* StatsCards component styles */
+.stats-grid {
+    @apply grid grid-cols-2 md:grid-cols-4 gap-4;
+}
+
+.stat-card {
+    @apply card p-5 md:p-6 text-center hover:scale-[1.02];
+}
+
+.stat-icon {
+    @apply text-2xl mb-2 block;
+}
+
+.stat-label {
+    @apply text-xs uppercase font-semibold block mb-1;
+}
+
+.stat-label--default {
+    @apply text-wedding-muted;
+}
+
+.stat-label--green {
+    @apply text-green-600/70;
+}
+
+.stat-label--red {
+    @apply text-red-600/70;
+}
+
+.stat-value {
+    @apply font-serif text-3xl md:text-4xl font-light block;
+}
+
+.stat-value--default {
+    @apply text-wedding-primary;
+}
+
+.stat-value--green {
+    @apply text-green-700;
+}
+
+.stat-value--red {
+    @apply text-red-700;
+}

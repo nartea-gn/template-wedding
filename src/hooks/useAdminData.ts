@@ -3,7 +3,7 @@ import {supabase} from '../lib/supabaseClient'
 import {weddingConfig} from '../config/wedding.config'
 import type {RsvpResponse} from '../types/rsvp'
 
-export type Filter = 'all' | 'yes' | 'no'
+export type Filter = 'all' | 'confirmed' | 'declined' | 'bus'
 
 type UseAdminDataReturn = {
     loading: boolean
@@ -64,8 +64,9 @@ export function useAdminData(isAuthenticated: boolean): UseAdminDataReturn {
     const necesitanBus = responses.filter(r => r.attending && r.busOption && r.busOption !== 'no').length
 
     const filteredResponses = responses.filter(r => {
-        if (filter === 'yes') return r.attending
-        if (filter === 'no') return !r.attending
+        if (filter === 'confirmed') return r.attending
+        if (filter === 'declined') return !r.attending
+        if (filter === 'bus') return r.attending && r.busOption && r.busOption !== 'no'
         return true
     })
 
