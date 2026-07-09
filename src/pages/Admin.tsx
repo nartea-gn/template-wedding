@@ -5,6 +5,7 @@ import {LoginForm} from '../components/admin/LoginForm';
 import {StatsCards} from '../components/admin/StatsCards';
 import {FilterBar} from '../components/admin/FilterBar';
 import {ResponsesTable} from '../components/admin/ResponsesTable';
+import './Admin.css';
 
 const ADMIN_AUTH_KEY = 'admin_authed';
 
@@ -54,22 +55,32 @@ export default function Admin() {
     }
 
     return (
-        <div className="min-h-screen bg-wedding-bg text-wedding-dark p-4 md:p-8">
-            <div className="max-w-6xl mx-auto space-y-8">
-                <header className="flex justify-between items-center border-b pb-4">
-                    <div>
-                        <h1 className="font-serif text-3xl font-light">{weddingConfig.admin.title}</h1>
-                        <p className="text-xs text-wedding-primary/70">{weddingConfig.partners.partner1} & {weddingConfig.partners.partner2}</p>
+        <div className="admin-page">
+            <div className="admin-container">
+                <header className="admin-header">
+                    <div className="admin-title-block">
+                        <h1 className="admin-title">
+                            {weddingConfig.admin.title}
+                        </h1>
+                        <p className="admin-subtitle">
+                            {weddingConfig.partners.partner1} & {weddingConfig.partners.partner2}
+                        </p>
                     </div>
-                    <div className="flex gap-2">
-                        <button onClick={() => refetch()}
-                                className="text-xs uppercase tracking-wider text-wedding-primary border px-4 py-1.5 rounded-full">Refrescar
+                    <div className="admin-actions">
+                        <button
+                            onClick={() => refetch()}
+                            className="btn btn--outline admin-btn-refresh"
+                        >
+                            ↻ Refrescar
                         </button>
-                        <button onClick={() => {
-                            sessionStorage.removeItem(ADMIN_AUTH_KEY);
-                            setIsAuthenticated(false);
-                        }}
-                                className="text-xs uppercase tracking-wider text-red-600 border px-4 py-1.5 rounded-full">Cerrar
+                        <button
+                            onClick={() => {
+                                sessionStorage.removeItem(ADMIN_AUTH_KEY);
+                                setIsAuthenticated(false);
+                            }}
+                            className="btn btn--ghost admin-btn-logout"
+                        >
+                            Cerrar sesión
                         </button>
                     </div>
                 </header>

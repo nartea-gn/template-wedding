@@ -18,8 +18,11 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+.kilocode
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+AGENTS.md
+docs

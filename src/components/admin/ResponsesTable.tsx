@@ -1,4 +1,5 @@
 import type {RsvpResponse} from '../../types/rsvp';
+import './ResponsesTable.css';
 
 type ResponsesTableProps = {
     responses: RsvpResponse[];
@@ -8,39 +9,63 @@ type ResponsesTableProps = {
 
 export function ResponsesTable({responses, loading, error}: ResponsesTableProps) {
     return (
-        <main className="bg-white rounded-xl border overflow-hidden shadow-sm">
+        <main className="card responses-table">
             {error ? (
-                <div className="p-12 text-center text-sm text-red-600" role="alert">
+                <div className="responses-state responses-state--error" role="alert">
+                    <span className="responses-state-icon">⚠️</span>
                     No se pudieron cargar las respuestas: {error}
                 </div>
             ) : loading ? (
-                <div className="p-12 text-center text-sm text-wedding-primary/60">Cargando...</div>
+                <div className="responses-state responses-state--muted">
+                    <div className="responses-spinner"/>
+                    Cargando...
+                </div>
             ) : responses.length === 0 ? (
-                <div className="p-12 text-center text-sm text-wedding-primary/60">No hay respuestas que mostrar.</div>
+                <div className="responses-state responses-state--muted">
+                    <span className="responses-state-icon">📭</span>
+                    No hay respuestas que mostrar.
+                </div>
             ) : (
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                <div className="responses-scroll">
+                    <table className="responses-table-el">
                         <thead>
-                        <tr className="bg-wedding-bg/50 border-b text-xs uppercase text-wedding-primary/70">
-                            <th className="p-4 font-semibold">Invitado</th>
-                            <th className="p-4 font-semibold">Asiste</th>
-                            <th className="p-4 font-semibold">Menú</th>
-                            <th className="p-4 font-semibold">Autobús</th>
-                            <th className="p-4 font-semibold">Canción</th>
-                            <th className="p-4 font-semibold">Mensaje</th>
+                        <tr className="responses-head-row">
+                            <th className="responses-th">Invitado</th>
+                            <th className="responses-th">Asiste</th>
+                            <th className="responses-th">Restricciones alimentarias</th>
+                            <th className="responses-th">Autobús</th>
+                            <th className="responses-th">Canción</th>
+                            <th className="responses-th">Mensaje</th>
                         </tr>
                         </thead>
-                        <tbody className="divide-y text-sm">
+                        <tbody className="responses-body">
                         {responses.map((item) => (
-                            <tr key={item.id} className="hover:bg-wedding-bg/20">
-                                <td className="p-4 font-medium">{item.fullName}</td>
-                                <td className="p-4"><span
-                                    className={`px-2 py-0.5 rounded-full text-xs ${item.attending ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{item.attending ? 'Sí' : 'No'}</span>
+                            <tr key={item.id} className="responses-row">
+                                <td className="responses-td">{item.fullName}</td>
+                                <td className="responses-td">
+                                    <span
+                                        className={`responses-badge ${
+                                            item.attending
+                                                ? 'responses-badge--yes'
+                                                : 'responses-badge--no'
+                                        }`}
+                                    >
+                                        {item.attending ? '✓ Sí' : '✗ No'}
+                                    </span>
                                 </td>
-                                <td className="p-4 text-xs">{item.dietaryOptions.join(', ')} {item.dietaryOther && `(${item.dietaryOther})`}</td>
-                                <td className="p-4 text-xs capitalize">{item.busOption?.replaceAll('_', ' ') || '—'}</td>
-                                <td className="p-4 text-xs italic">{item.songRequest || '—'}</td>
-                                <td className="p-4 text-xs text-wedding-primary/80">{item.message || '—'}</td>
+                                <td className="responses-td-muted">
+                                    {item.dietaryOptions.join(', ') || '—'}
+                                    {item.dietaryOther && ` (${item.dietaryOther})`}
+                                </td>
+                                <td className="responses-td-cap">
+                                    {item.busOption?.replaceAll('_', ' ') || '—'}
+                                </td>
+                                <td className="responses-td-italic">
+                                    {item.songRequest || '—'}
+                                </td>
+                                <td className="responses-td-message" title={item.message || ''}>
+                                    {item.message || '—'}
+                                </td>
                             </tr>
                         ))}
                         </tbody>

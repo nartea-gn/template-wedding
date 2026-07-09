@@ -6,10 +6,15 @@ type Props = { theme: Theme; children: ReactNode }
 export function ThemeProvider({theme, children}: Readonly<Props>) {
     useEffect(() => {
         const tokens = themes[theme]
+        const root = document.documentElement
+
+        // Apply all theme tokens
         for (const [key, value] of Object.entries(tokens)) {
-            document.documentElement.style.setProperty(key, value)
+            root.style.setProperty(key, value)
         }
-        document.documentElement.dataset.theme = theme
+
+        // Set data attribute for CSS selectors
+        root.dataset.theme = theme
     }, [theme])
 
     return <>{children}</>

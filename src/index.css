@@ -1,14 +1,70 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Josefin+Sans:wght@300;400;600&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;600&family=Nunito:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Raleway:wght@300;400;600&display=swap');
-
+@import "tailwindcss";
 @import './themes/patterns.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+    /* Wedding color tokens — valores por defecto del tema 'linen' */
+    --color-wedding-bg: #FBF9F6;
+    --color-wedding-primary: #4A5343;
+    --color-wedding-accent: #D4AF37;
+    --color-wedding-dark: #2C3029;
+    --color-wedding-text: #2C3029;
+    --color-wedding-surface: #F5F3EF;
+    --color-wedding-border: #D4C5B0;
+    --color-wedding-muted: #6B7264;
+    --color-wedding-success: #22c55e;
+    --color-wedding-warning: #f59e0b;
+    --color-wedding-error: #ef4444;
+    --color-wedding-info: #3b82f6;
 
-@layer utilities {
-    .animate-fade-in {
-        animation: fadeIn 0.8s ease-out forwards;
+    --font-serif: var(--font-heading), Georgia, serif;
+    --font-sans: var(--font-body), sans-serif;
+
+    --shadow-wedding: var(--shadow-card);
+    --shadow-wedding-lg: var(--shadow-card-lg);
+    --shadow-wedding-sm: var(--shadow-card-sm);
+
+    --radius-wedding: var(--radius-card);
+    --radius-wedding-sm: var(--radius-sm);
+    --radius-wedding-lg: var(--radius-lg);
+    --radius-wedding-xl: var(--radius-xl);
+
+    --spacing-18: 4.5rem;
+    --spacing-88: 22rem;
+    --spacing-128: 32rem;
+
+    --duration-400: 400ms;
+    --duration-600: 600ms;
+
+    --animate-fade-in: fadeIn 0.8s ease-out forwards;
+    --animate-fade-up: fadeUp 0.9s ease both;
+    --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
+    --animate-shimmer: shimmer 2s linear infinite;
+}
+
+/* Base styles */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+        transition: background-color 0.5s ease, color 0.5s ease;
+        min-height: 100vh;
+    }
+
+    /* Focus styles */
+    *:focus-visible {
+        outline: 2px solid var(--color-wedding-primary);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    /* Selection */
+    ::selection {
+        background-color: var(--color-wedding-primary);
+        color: var(--color-wedding-bg);
     }
 }
 
@@ -23,11 +79,229 @@
     }
 }
 
-/* Cuando el video entra en pantalla completa nativa del navegador */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseSoft {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Custom component classes */
+@layer components {
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: var(--font-body);
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        line-height: 1;
+        padding: 0.95rem 2.25rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .btn:hover::before {
+        left: 100%;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-card-lg);
+    }
+
+    .btn:active {
+        transform: translateY(0) scale(0.98);
+    }
+
+    .btn--primary {
+        background-color: var(--color-wedding-primary);
+        color: var(--color-wedding-bg);
+        border-color: var(--color-wedding-primary);
+    }
+
+    .btn--primary:hover {
+        filter: brightness(1.1);
+    }
+
+    .btn--outline {
+        background-color: transparent;
+        color: var(--color-wedding-primary);
+        border-color: var(--color-wedding-primary);
+    }
+
+    .btn--outline:hover {
+        background-color: var(--color-wedding-primary);
+        color: var(--color-wedding-bg);
+    }
+
+    .btn--ghost {
+        background-color: transparent;
+        color: var(--color-wedding-text);
+        border-color: transparent;
+    }
+
+    .btn--ghost:hover {
+        background-color: var(--color-wedding-surface);
+    }
+
+    .card {
+        background-color: var(--color-wedding-surface);
+        border: 1px solid var(--color-wedding-border);
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-card);
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: var(--shadow-card-lg);
+        transform: translateY(-2px);
+    }
+
+    .input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--color-wedding-border);
+        border-radius: var(--radius-sm);
+        background-color: var(--color-wedding-bg);
+        color: var(--color-wedding-text);
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .input:focus {
+        outline: none;
+        border-color: var(--color-wedding-primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-wedding-primary) 10%, transparent);
+    }
+
+    .input::placeholder {
+        color: var(--color-wedding-muted);
+        opacity: 0.6;
+    }
+
+    .label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-wedding-text);
+        margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+        font-family: var(--font-heading);
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 600;
+        color: var(--color-wedding-primary);
+        line-height: 1.2;
+    }
+
+    .section-subtitle {
+        font-size: 0.875rem;
+        color: var(--color-wedding-muted);
+        letter-spacing: 0.05em;
+    }
+}
+
+/* Custom utilities */
+@layer utilities {
+    .animate-delay-100 {
+        animation-delay: 0.1s;
+    }
+
+    .animate-delay-200 {
+        animation-delay: 0.2s;
+    }
+
+    .animate-delay-300 {
+        animation-delay: 0.3s;
+    }
+
+    .animate-delay-400 {
+        animation-delay: 0.4s;
+    }
+
+    .animate-delay-500 {
+        animation-delay: 0.5s;
+    }
+
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .bg-gradient-wedding {
+        background: linear-gradient(135deg, var(--color-wedding-bg) 0%, var(--color-wedding-surface) 100%);
+    }
+}
+
+/* Video fullscreen */
 video:-webkit-full-screen {
     object-fit: contain !important;
 }
 
 video:fullscreen {
     object-fit: contain !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-wedding-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-wedding-border);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-wedding-muted);
 }

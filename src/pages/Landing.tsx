@@ -37,46 +37,68 @@ export default function Landing() {
     })
 
     return (
-        <main className="landing">
+        <main className="landing-page">
 
-            <section className="landing__hero">
-                <h1 className="landing__names">
+            {/* Hero Section */}
+            <section className="landing-hero">
+                <h1 className="landing-title">
                     {weddingConfig.partners.partner1}
-                    <span className="landing__ampersand"> & </span>
+                    <span className="landing-title-amp">&</span>
                     {weddingConfig.partners.partner2}
                 </h1>
-                <p className="landing__tagline">Celebra con nosotros</p>
-                <p className="landing__date">{displayDate}</p>
+                <p className="landing-subtitle">
+                    {weddingConfig.invitation.subtitle}
+                </p>
+                <p className="landing-date">
+                    {displayDate}
+                </p>
             </section>
 
-            <div className="landing__ornament" aria-hidden="true">
-                <span className="landing__ornament-line"/>
-                <span className="landing__ornament-gem">✦</span>
-                <span className="landing__ornament-line"/>
+            {/* Ornament */}
+            <div className="landing-ornament" aria-hidden="true">
+                <span className="landing-ornament-line"/>
+                <span className="landing-ornament-icon">✦</span>
+                <span className="landing-ornament-line"/>
             </div>
 
-            <section className="landing__video">
+            {/* Video */}
+            <section className="landing-video">
                 <VideoHero/>
             </section>
 
+            {/* Venue */}
             {weddingConfig.showVenue && (
-                <section className="landing__venue">
-                    <p className="landing__section-label">La celebración</p>
-                    <div className="landing__venue-grid">
+                <section className="landing-venue">
+                    <p className="landing-venue-label">
+                        La celebración
+                    </p>
+                    <div className="landing-venue-grid">
                         {(['ceremony', 'reception'] as const).map((key) => {
                             const item = weddingConfig.venue[key]
                             return (
-                                <div key={key} className="venue-card">
-                                    <p className="venue-card__label">{key === 'ceremony' ? 'Ceremonia' : 'Recepción'}</p>
-                                    <p className="venue-card__name">{item.name}</p>
-                                    {item.time && <p className="venue-card__time">{item.time}</p>}
-                                    {item.address && <p className="venue-card__address">{item.address}</p>}
+                                <div key={key} className="landing-venue-card">
+                                    <p className="landing-venue-type">
+                                        {key === 'ceremony' ? 'Ceremonia' : 'Recepción'}
+                                    </p>
+                                    <p className="landing-venue-name">
+                                        {item.name}
+                                    </p>
+                                    {item.time && (
+                                        <p className="landing-venue-time">
+                                            {item.time}
+                                        </p>
+                                    )}
+                                    {item.address && (
+                                        <p className="landing-venue-address">
+                                            {item.address}
+                                        </p>
+                                    )}
                                     {item.mapsQuery && (
                                         <a
                                             href={`https://maps.google.com/maps?q=${encodeURIComponent(item.mapsQuery)}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="btn btn--primary venue-card__map-btn"
+                                            className="landing-venue-map"
                                         >
                                             Ver en el mapa
                                         </a>
@@ -88,41 +110,51 @@ export default function Landing() {
                 </section>
             )}
 
+            {/* Countdown */}
             {weddingConfig.showCountdown && timeLeft && (
-                <section className="landing__countdown">
-                    <p className="landing__countdown-label">Falta para el gran día</p>
-                    <div className="landing__countdown-units">
-                        <div className="landing__countdown-unit">
-                            <span className="landing__countdown-number">{timeLeft.days}</span>
-                            <span className="landing__countdown-unit-label">días</span>
-                        </div>
-                        <span className="landing__countdown-sep" aria-hidden="true">:</span>
-                        <div className="landing__countdown-unit">
-                            <span className="landing__countdown-number">{String(timeLeft.hours).padStart(2, '0')}</span>
-                            <span className="landing__countdown-unit-label">horas</span>
-                        </div>
-                        <span className="landing__countdown-sep" aria-hidden="true">:</span>
-                        <div className="landing__countdown-unit">
-                            <span
-                                className="landing__countdown-number">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                            <span className="landing__countdown-unit-label">minutos</span>
-                        </div>
-                        <span className="landing__countdown-sep" aria-hidden="true">:</span>
-                        <div className="landing__countdown-unit">
-                            <span
-                                className="landing__countdown-number">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                            <span className="landing__countdown-unit-label">segundos</span>
-                        </div>
+                <section className="landing-countdown">
+                    <p className="landing-countdown-label">
+                        Falta para el gran día
+                    </p>
+                    <div className="landing-countdown-row">
+                        {[
+                            {value: timeLeft.days, label: 'días'},
+                            {value: String(timeLeft.hours).padStart(2, '0'), label: 'horas'},
+                            {value: String(timeLeft.minutes).padStart(2, '0'), label: 'minutos'},
+                            {value: String(timeLeft.seconds).padStart(2, '0'), label: 'segundos'},
+                        ].map((item, index, arr) => (
+                            <div key={item.label} className="landing-countdown-item">
+                                <div className="landing-countdown-unit">
+                                    <span className="landing-countdown-value">
+                                        {item.value}
+                                    </span>
+                                    <span className="landing-countdown-unit-label">
+                                        {item.label}
+                                    </span>
+                                </div>
+                                {index < arr.length - 1 && (
+                                    <span className="landing-countdown-sep">
+                                        :
+                                    </span>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </section>
             )}
 
-            <section className="landing__cta">
-                <button className="btn btn--primary" onClick={() => navigate('/rsvp')}>
-                    Confirmar asistencia
+            {/* CTA */}
+            <section className="landing-cta">
+                <button
+                    className="landing-cta-btn"
+                    onClick={() => navigate('/rsvp')}
+                >
+                    {weddingConfig.invitation.rsvpButtonText}
                 </button>
                 {weddingConfig.hashtag && (
-                    <p className="landing__hashtag">{weddingConfig.hashtag}</p>
+                    <p className="landing-hashtag">
+                        {weddingConfig.hashtag}
+                    </p>
                 )}
             </section>
         </main>

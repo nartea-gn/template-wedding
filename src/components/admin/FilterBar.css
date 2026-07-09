@@ -1,0 +1,18 @@
+@reference "tailwindcss";
+
+/* FilterBar component styles */
+.filter-bar {
+    @apply flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between;
+}
+
+.filter-group {
+    @apply flex items-center gap-2;
+}
+
+.filter-label {
+    @apply block text-sm font-medium text-(--color-wedding-text) mb-0;
+}
+
+.filter-select {
+    @apply rounded-xl border border-(--color-wedding-border) bg-(--color-wedding-surface) px-4 py-2.5 text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-primary) w-auto;
+}

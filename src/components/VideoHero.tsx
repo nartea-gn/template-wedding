@@ -1,5 +1,6 @@
 import {useRef, useState} from 'react'
 import videoSrc from '../assets/video.mp4'
+import './VideoHero.css'
 
 export function VideoHero() {
     const videoRef = useRef<HTMLVideoElement>(null)

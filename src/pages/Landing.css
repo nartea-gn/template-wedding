@@ -1,392 +1,139 @@
-.landing {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 5rem 1.5rem 3rem;
-    text-align: center;
-    background: var(--color-bg);
-    color: var(--color-text);
+@reference "tailwindcss";
+
+/* Landing page styles */
+.landing-page {
+    @apply min-h-screen flex flex-col items-center px-6 py-20 md:py-28 text-center bg-(--color-wedding-bg) text-(--color-wedding-text);
 }
 
-.landing__hero {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 2.5rem;
+.landing-hero {
+    @apply flex flex-col items-center gap-3 mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
 }
 
-.landing__names {
-    font-size: clamp(2.75rem, 9vw, 5.5rem);
-    font-weight: 700;
-    color: var(--color-primary);
-    line-height: 1.05;
-    letter-spacing: -0.01em;
+.landing-title {
+    @apply font-serif text-5xl md:text-7xl font-bold text-(--color-wedding-primary) leading-tight tracking-tight;
 }
 
-.landing__ampersand {
-    color: var(--color-text);
-    opacity: 0.3;
-    font-style: italic;
-    font-weight: 400;
+.landing-title-amp {
+    @apply block md:inline opacity-30 font-normal italic mx-2;
 }
 
-.landing__tagline {
-    font-size: clamp(1rem, 2.5vw, 1.35rem);
-    font-style: italic;
-    opacity: 0.7;
-    margin-top: 0.25rem;
+.landing-subtitle {
+    @apply text-lg md:text-xl italic opacity-70 mt-2;
 }
 
-.landing__date {
-    font-size: 0.8rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0.45;
-    margin-top: 0.5rem;
+.landing-date {
+    @apply text-xs uppercase tracking-[0.2em] opacity-40 mt-3;
 }
 
-.landing__ornament {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    max-width: 280px;
-    margin-bottom: 2.5rem;
+.landing-ornament {
+    @apply flex items-center gap-4 w-full max-w-xs mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.1s;
 }
 
-.landing__ornament-line {
-    flex: 1;
-    height: 1px;
-    background: var(--color-border);
+.landing-ornament-line {
+    @apply flex-1 h-px bg-(--color-wedding-border);
 }
 
-.landing__ornament-gem {
-    font-size: 0.625rem;
-    color: var(--color-primary);
-    opacity: 0.65;
+.landing-ornament-icon {
+    @apply opacity-60 text-xs;
 }
 
-.landing__video {
-    width: 100%;
-    max-width: 380px;
-    margin-bottom: 2.5rem;
+.landing-video {
+    @apply w-full max-w-[380px] mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.2s;
 }
 
-.video-hero {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 9 / 16;
-    background: var(--color-surface);
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
+.landing-venue {
+    @apply w-full max-w-3xl mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.3s;
 }
 
-.video-hero video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+.landing-venue-label {
+    @apply text-xs uppercase tracking-[0.14em] opacity-40 mb-8;
 }
 
-.play-btn {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.42);
-    color: white;
-    border: 2px solid rgba(255, 255, 255, 0.75);
-    border-radius: 50%;
-    width: 4.5rem;
-    height: 4.5rem;
-    font-size: 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, transform 0.2s, border-color 0.2s;
-    backdrop-filter: blur(4px);
+.landing-venue-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
 }
 
-.play-btn:hover {
-    background: rgba(0, 0, 0, 0.62);
-    border-color: white;
-    transform: translate(-50%, -50%) scale(1.08);
+.landing-venue-card {
+    @apply p-8 flex flex-col items-center gap-3 text-center;
 }
 
-.landing__cta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+.landing-venue-type {
+    @apply text-[0.7rem] uppercase tracking-[0.14em] opacity-40;
 }
 
-.landing__hashtag {
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    opacity: 0.35;
-    font-style: italic;
+.landing-venue-name {
+    @apply font-serif text-xl italic text-(--color-wedding-primary);
 }
 
-/* Botones */
-.btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    font-family: var(--font-body);
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    line-height: 1;
-    padding: 0.95rem 2.25rem;
-    border-radius: 999px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.25s ease, color 0.25s ease,
-    border-color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease,
-    opacity 0.25s ease;
+.landing-venue-time {
+    @apply text-xs uppercase tracking-[0.12em] opacity-50;
 }
 
-.btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+.landing-venue-address {
+    @apply text-sm opacity-60 leading-relaxed;
 }
 
-.btn:active {
-    transform: translateY(0);
+.landing-venue-map {
+    @apply mt-2 text-xs py-2 px-6;
 }
 
-.btn:focus-visible {
-    outline: 2px solid var(--color-primary);
-    outline-offset: 3px;
+.landing-countdown {
+    @apply flex flex-col items-center gap-4 mb-16;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.4s;
 }
 
-.btn--primary {
-    background-color: var(--color-primary);
-    color: var(--color-bg);
-    border-color: var(--color-primary);
+.landing-countdown-label {
+    @apply text-xs uppercase tracking-[0.14em] opacity-40;
 }
 
-.btn--primary:hover {
-    opacity: 0.92;
+.landing-countdown-row {
+    @apply flex items-start gap-2;
 }
 
-.landing__cta .btn {
-    width: 100%;
-    max-width: 340px;
+.landing-countdown-item {
+    @apply flex items-center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    @keyframes fadeUp {
-        from {
-            opacity: 0;
-            transform: translateY(18px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .landing__hero {
-        animation: fadeUp 0.9s ease both;
-    }
-
-    .landing__ornament {
-        animation: fadeUp 0.9s 0.1s ease both;
-    }
-
-    .landing__video {
-        animation: fadeUp 0.9s 0.15s ease both;
-    }
-
-    .landing__cta {
-        animation: fadeUp 0.9s 0.2s ease both;
-    }
-
-    .landing__venue {
-        animation: fadeUp 0.9s 0.2s ease both;
-    }
-
-    .landing__countdown {
-        animation: fadeUp 0.9s 0.25s ease both;
-    }
+.landing-countdown-unit {
+    @apply flex flex-col items-center gap-1 min-w-[3.5rem] md:min-w-[4.5rem];
 }
 
-
-@media (max-width: 480px) {
-    .landing {
-        padding: 4rem 1rem 2.5rem;
-    }
-
-    .landing__hero {
-        margin-bottom: 2rem;
-    }
-
-    .landing__ornament {
-        margin-bottom: 2rem;
-    }
-
-    .landing__video {
-        margin-bottom: 2rem;
-    }
-
-    .play-btn {
-        width: 3.75rem;
-        height: 3.75rem;
-        font-size: 1.1rem;
-    }
+.landing-countdown-value {
+    @apply font-serif text-4xl md:text-5xl font-bold text-(--color-wedding-primary) leading-none;
 }
 
-/* Venue section */
-.landing__venue {
-    width: 100%;
-    max-width: 720px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2.5rem;
+.landing-countdown-unit-label {
+    @apply text-[0.625rem] uppercase tracking-[0.12em] opacity-40;
 }
 
-.landing__section-label {
-    font-size: 0.775rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.45;
-    text-align: center;
+.landing-countdown-sep {
+    @apply font-serif text-2xl md:text-3xl opacity-30 mx-1 md:mx-2 leading-none mt-1;
 }
 
-.landing__venue-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    width: 100%;
+.landing-cta {
+    @apply flex flex-col items-center gap-4;
+    animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
+    animation-delay: 0.5s;
 }
 
-.venue-card {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
-    padding: 1.5rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    text-align: center;
-    align-items: center;
+.landing-cta-btn {
+    @apply w-full max-w-xs;
 }
 
-.venue-card__label {
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.45;
-}
-
-.venue-card__name {
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    color: var(--color-primary);
-    font-style: italic;
-}
-
-.venue-card__time {
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.55;
-}
-
-.venue-card__address {
-    font-size: 0.85rem;
-    opacity: 0.65;
-    line-height: 1.4;
-}
-
-.venue-card__map-btn {
-    margin-top: 0.75rem;
-    text-decoration: none;
-    font-size: 0.75rem;
-    padding: 0.55rem 1.5rem;
-}
-
-/* Countdown section */
-.landing__countdown {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 2.5rem;
-}
-
-.landing__countdown-label {
-    font-size: 0.775rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    opacity: 0.45;
-    text-align: center;
-}
-
-.landing__countdown-units {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.25rem;
-}
-
-.landing__countdown-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-    min-width: clamp(3rem, 12vw, 4.5rem);
-}
-
-.landing__countdown-number {
-    font-family: var(--font-heading);
-    font-size: clamp(2.25rem, 8vw, 3.75rem);
-    color: var(--color-primary);
-    font-weight: 700;
-    line-height: 1;
-}
-
-.landing__countdown-unit-label {
-    font-size: 0.625rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    opacity: 0.45;
-}
-
-.landing__countdown-sep {
-    font-family: var(--font-heading);
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
-    color: var(--color-primary);
-    opacity: 0.3;
-    line-height: 1;
-    margin-top: 0.3rem;
-    user-select: none;
-}
-
-/* Responsive */
-@media (max-width: 520px) {
-    .landing__video {
-        max-width: min(100%, 320px);
-        margin-bottom: 2rem;
-    }
-
-    .landing__venue-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .landing__venue {
-        margin-bottom: 2rem;
-    }
-
-    .landing__countdown {
-        margin-bottom: 2rem;
-    }
+.landing-hashtag {
+    @apply text-sm italic opacity-30 tracking-wide;
 }

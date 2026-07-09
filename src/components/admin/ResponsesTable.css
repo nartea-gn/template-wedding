@@ -1,0 +1,82 @@
+@reference "tailwindcss";
+
+/* ResponsesTable component styles */
+.responses-table {
+    @apply overflow-hidden;
+}
+
+.responses-state {
+    @apply p-12 text-center text-sm;
+}
+
+.responses-state--error {
+    @apply text-red-600;
+}
+
+.responses-state--muted {
+    @apply text-(--color-wedding-muted);
+}
+
+.responses-state-icon {
+    @apply text-3xl block mb-3;
+}
+
+.responses-spinner {
+    @apply inline-block w-6 h-6 border-2 border-(--color-wedding-primary) border-t-transparent rounded-full animate-spin mb-3;
+}
+
+.responses-scroll {
+    @apply overflow-x-auto;
+}
+
+.responses-table-el {
+    @apply w-full text-left border-collapse;
+}
+
+.responses-head-row {
+    @apply bg-(--color-wedding-surface)/50 border-b border-(--color-wedding-border) text-xs uppercase text-(--color-wedding-muted);
+}
+
+.responses-th {
+    @apply p-4 font-semibold;
+}
+
+.responses-body {
+    @apply divide-y divide-(--color-wedding-border)/50 text-sm;
+}
+
+.responses-row {
+    @apply hover:bg-(--color-wedding-surface)/30 transition-colors;
+}
+
+.responses-td {
+    @apply p-4 font-medium text-(--color-wedding-text);
+}
+
+.responses-td-muted {
+    @apply p-4 text-xs text-(--color-wedding-text)/70;
+}
+
+.responses-td-cap {
+    @apply p-4 text-xs text-(--color-wedding-text)/70 capitalize;
+}
+
+.responses-td-italic {
+    @apply p-4 text-xs italic text-(--color-wedding-text)/70;
+}
+
+.responses-td-message {
+    @apply p-4 text-xs text-(--color-wedding-primary)/80 max-w-[200px] truncate;
+}
+
+.responses-badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.responses-badge--yes {
+    @apply bg-green-100 text-green-800;
+}
+
+.responses-badge--no {
+    @apply bg-red-100 text-red-800;
+}

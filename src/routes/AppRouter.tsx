@@ -2,6 +2,7 @@ import {HashRouter, Route, Routes} from 'react-router-dom';
 import Landing from '../pages/Landing.tsx';
 import Rsvp from '../pages/Rsvp.tsx';
 import Admin from '../pages/Admin.tsx';
+import './AppRouter.css';
 
 export default function AppRouter() {
     return (
@@ -18,7 +19,7 @@ export default function AppRouter() {
 
                 {/* Cambiamos el redireccionamiento por un texto de prueba */}
                 <Route path="*"
-                       element={<div className="p-8 text-center text-red-500 font-mono">Ruta no encontrada dentro de
+                       element={<div className="route-not-found">Ruta no encontrada dentro de
                            React Router</div>}/>
             </Routes>
         </HashRouter>

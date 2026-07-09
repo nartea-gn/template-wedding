@@ -1,0 +1,38 @@
+@reference "tailwindcss";
+
+/* Admin page styles */
+.admin-page {
+    @apply min-h-screen bg-(--color-wedding-bg) text-(--color-wedding-text) p-4 md:p-8;
+}
+
+.admin-container {
+    @apply max-w-6xl mx-auto space-y-8;
+}
+
+.admin-header {
+    @apply flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-6 border-b border-(--color-wedding-border);
+}
+
+.admin-title-block {
+    @apply flex flex-col;
+}
+
+.admin-title {
+    @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-primary);
+}
+
+.admin-subtitle {
+    @apply text-sm text-(--color-wedding-muted) mt-1;
+}
+
+.admin-actions {
+    @apply flex gap-3;
+}
+
+.admin-btn-refresh {
+    @apply text-xs;
+}
+
+.admin-btn-logout {
+    @apply text-red-600 hover:text-red-700 text-xs;
+}
