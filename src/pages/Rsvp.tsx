@@ -2,18 +2,21 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useRsvp} from '../hooks/useRsvp';
 import type {RsvpFormData, RsvpInsert} from '../types/rsvp';
+import {useLocalization} from '../app/providers/useLocalization';
+import type {WeddingMessageKey} from '../invitations/wedding';
 import './Rsvp.css';
 
 const DIETARY_OPTIONS = [
-    "Ninguna, como de todo",
-    "Celíaco / intolerante al gluten",
-    "Vegetariano / vegano",
-    "Intolerante a la lactosa",
-    "Alergia a frutos secos o marisco"
-];
+    {value: 'none', label: 'rsvp.dietary.none'},
+    {value: 'gluten', label: 'rsvp.dietary.gluten'},
+    {value: 'vegetarian', label: 'rsvp.dietary.vegetarian'},
+    {value: 'lactose', label: 'rsvp.dietary.lactose'},
+    {value: 'nuts_seafood', label: 'rsvp.dietary.nutsSeafood'},
+] as const satisfies ReadonlyArray<{value: string; label: WeddingMessageKey}>;
 
 export default function Rsvp() {
     const navigate = useNavigate();
+    const {t} = useLocalization<WeddingMessageKey>();
     const [step, setStep] = useState(1);
     const {submitRsvp, isLoading, isSuccess, isError, error, reset} = useRsvp();
 
@@ -88,12 +91,12 @@ export default function Rsvp() {
                 <div className="card rsvp-success-card">
                     <span className="rsvp-success-icon">✨</span>
                     <h2 className="rsvp-success-title">
-                        ¡Muchas gracias!
+                        {t('rsvp.success.title')}
                     </h2>
                     <p className="rsvp-success-text">
                         {formData.attending
-                            ? "Tu asistencia ha sido confirmada. ¡Nos vemos pronto!"
-                            : "Lamentamos que no puedas asistir. Te echaremos de menos."}
+                            ? t('rsvp.success.attending')
+                            : t('rsvp.success.declined')}
                     </p>
                     <button
                         onClick={() => {
@@ -102,7 +105,7 @@ export default function Rsvp() {
                         }}
                         className="btn btn--outline rsvp-success-btn"
                     >
-                        Volver al inicio
+                        {t('rsvp.success.home')}
                     </button>
                 </div>
             </div>
@@ -125,12 +128,12 @@ export default function Rsvp() {
                     {step === 1 && (
                         <div className="rsvp-step">
                             <div>
-                                <h2 className="section-title rsvp-section-title">Asistencia</h2>
-                                <p className="section-subtitle">Confírmanos tu presencia</p>
+                                <h2 className="section-title rsvp-section-title">{t('rsvp.step.attendance.title')}</h2>
+                                <p className="section-subtitle">{t('rsvp.step.attendance.subtitle')}</p>
                             </div>
 
                             <div className="rsvp-field">
-                                <label className="label">Nombre y Apellidos *</label>
+                                <label className="label">{t('rsvp.fullName.label')}</label>
                                 <input
                                     type="text"
                                     value={formData.fullName}
@@ -139,21 +142,21 @@ export default function Rsvp() {
                                         if (errors.fullName) setErrors({...errors, fullName: false});
                                     }}
                                     className={`input ${errors.fullName ? 'rsvp-input--error' : ''}`}
-                                    placeholder="Tu nombre completo"
+                                    placeholder={t('rsvp.fullName.placeholder')}
                                 />
                                 {errors.fullName && (
                                     <p className="rsvp-error-text">
-                                        Este campo es obligatorio
+                                        {t('rsvp.required')}
                                     </p>
                                 )}
                             </div>
 
                             <div className="rsvp-field">
-                                <label className="label">¿Podrás asistir? *</label>
+                                <label className="label">{t('rsvp.attending.label')}</label>
                                 <div className="rsvp-option-grid">
                                     {[
-                                        {value: true, label: 'Sí, ¡allí estaré!', emoji: '💍'},
-                                        {value: false, label: 'No podré asistir', emoji: '💔'},
+                                        {value: true, label: t('rsvp.attending.yes'), emoji: '💍'},
+                                        {value: false, label: t('rsvp.attending.no'), emoji: '💔'},
                                     ].map(option => (
                                         <label
                                             key={String(option.value)}
@@ -180,7 +183,7 @@ export default function Rsvp() {
                                 </div>
                                 {errors.attending && (
                                     <p className="rsvp-error-text">
-                                        Por favor, selecciona una opción
+                                        {t('rsvp.attending.required')}
                                     </p>
                                 )}
                             </div>
@@ -191,7 +194,7 @@ export default function Rsvp() {
                                     onClick={handleNextStep1}
                                     className="btn btn--primary"
                                 >
-                                    {formData.attending === false ? "Enviar Respuesta" : "Siguiente"}
+                                    {formData.attending === false ? t('rsvp.send') : t('rsvp.next')}
                                 </button>
                             </div>
                         </div>
@@ -200,31 +203,31 @@ export default function Rsvp() {
                     {step === 2 && (
                         <div className="rsvp-step">
                             <div>
-                                <h2 className="section-title rsvp-section-title">Banquete y Logística</h2>
-                                <p className="section-subtitle">Ayúdanos a organizarlo todo</p>
+                                <h2 className="section-title rsvp-section-title">{t('rsvp.step.meal.title')}</h2>
+                                <p className="section-subtitle">{t('rsvp.step.meal.subtitle')}</p>
                             </div>
 
                             <div className="rsvp-field">
-                                <label className="label">Restricciones alimentarias</label>
+                                <label className="label">{t('rsvp.dietary.label')}</label>
                                 <div className="rsvp-dietary-list">
                                     {DIETARY_OPTIONS.map(option => (
                                         <label
-                                            key={option}
+                                            key={option.value}
                                             className="rsvp-checkbox-option"
                                         >
                                             <input
                                                 type="checkbox"
-                                                checked={formData.dietaryOptions.includes(option)}
-                                                onChange={() => handleCheckboxChange(option)}
+                                                checked={formData.dietaryOptions.includes(option.value)}
+                                                onChange={() => handleCheckboxChange(option.value)}
                                                 className="rsvp-checkbox"
                                             />
-                                            <span className="text-sm">{option}</span>
+                                            <span className="text-sm">{t(option.label)}</span>
                                         </label>
                                     ))}
                                 </div>
                                 <input
                                     type="text"
-                                    placeholder="Otros detalles..."
+                                    placeholder={t('rsvp.dietary.other')}
                                     value={formData.dietaryOther}
                                     onChange={e => setFormData({...formData, dietaryOther: e.target.value})}
                                     className="input rsvp-input-other"
@@ -232,17 +235,17 @@ export default function Rsvp() {
                             </div>
 
                             <div className="rsvp-field">
-                                <label className="label">Plaza en autobús</label>
+                                <label className="label">{t('rsvp.bus.label')}</label>
                                 <select
                                     value={formData.busOption}
                                     onChange={e => setFormData({...formData, busOption: e.target.value})}
                                     className="input rsvp-select"
                                 >
-                                    <option value="">Selecciona una opción...</option>
-                                    <option value="ida_vuelta">Sí, para la ida y la vuelta</option>
-                                    <option value="solo_ida">Sólo para la ida</option>
-                                    <option value="solo_vuelta">Sólo para la vuelta</option>
-                                    <option value="no">No, iré en mi propio transporte</option>
+                                    <option value="">{t('rsvp.bus.placeholder')}</option>
+                                    <option value="ida_vuelta">{t('rsvp.bus.roundTrip')}</option>
+                                    <option value="solo_ida">{t('rsvp.bus.outbound')}</option>
+                                    <option value="solo_vuelta">{t('rsvp.bus.return')}</option>
+                                    <option value="no">{t('rsvp.bus.no')}</option>
                                 </select>
                             </div>
 
@@ -252,14 +255,14 @@ export default function Rsvp() {
                                     onClick={prevStep}
                                     className="btn btn--ghost rsvp-btn-ghost"
                                 >
-                                    Atrás
+                                    {t('rsvp.back')}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={nextStep}
                                     className="btn btn--primary"
                                 >
-                                    Siguiente
+                                    {t('rsvp.next')}
                                 </button>
                             </div>
                         </div>
@@ -268,20 +271,19 @@ export default function Rsvp() {
                     {step === 3 && (
                         <div className="rsvp-step">
                             <div>
-                                <h2 className="section-title rsvp-section-title">Luna de Miel & Ritmo</h2>
-                                <p className="section-subtitle">Ayúdanos a crear la banda sonora</p>
+                                <h2 className="section-title rsvp-section-title">{t('rsvp.step.music.title')}</h2>
+                                <p className="section-subtitle">{t('rsvp.step.music.subtitle')}</p>
                             </div>
 
                             <div className="rsvp-info-box">
-                                Vuestra presencia es nuestro mejor regalo. Pero si deseas contribuir a nuestra nueva
-                                aventura, habilitaremos los detalles correspondientes. ¡Gracias!
+                                {t('rsvp.gift.info')}
                             </div>
 
                             <div className="rsvp-field">
-                                <label className="label">Canción para la pista</label>
+                                <label className="label">{t('rsvp.song.label')}</label>
                                 <input
                                     type="text"
-                                    placeholder="Título y artista"
+                                    placeholder={t('rsvp.song.placeholder')}
                                     value={formData.songRequest}
                                     onChange={e => setFormData({...formData, songRequest: e.target.value})}
                                     className="rsvp-input"
@@ -294,14 +296,14 @@ export default function Rsvp() {
                                     onClick={prevStep}
                                     className="btn btn--ghost rsvp-btn-ghost"
                                 >
-                                    Atrás
+                                    {t('rsvp.back')}
                                 </button>
                                 <button
                                     type="button"
                                     onClick={nextStep}
                                     className="btn btn--primary"
                                 >
-                                    Siguiente
+                                    {t('rsvp.next')}
                                 </button>
                             </div>
                         </div>
@@ -310,15 +312,15 @@ export default function Rsvp() {
                     {step === 4 && (
                         <div className="rsvp-step">
                             <div>
-                                <h2 className="section-title rsvp-section-title">Dedicatoria</h2>
-                                <p className="section-subtitle">Déjanos un mensaje especial</p>
+                                <h2 className="section-title rsvp-section-title">{t('rsvp.step.message.title')}</h2>
+                                <p className="section-subtitle">{t('rsvp.step.message.subtitle')}</p>
                             </div>
 
                             <div className="rsvp-field">
-                                <label className="label">Tu mensaje</label>
+                                <label className="label">{t('rsvp.message.label')}</label>
                                 <textarea
                                     rows={4}
-                                    placeholder="Escribe aquí tu mensaje..."
+                                    placeholder={t('rsvp.message.placeholder')}
                                     value={formData.message}
                                     onChange={e => setFormData({...formData, message: e.target.value})}
                                     className="input rsvp-textarea"
@@ -331,14 +333,14 @@ export default function Rsvp() {
                                     onClick={prevStep}
                                     className="btn btn--ghost rsvp-btn-ghost"
                                 >
-                                    Atrás
+                                    {t('rsvp.back')}
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={isLoading}
                                     className="btn btn--primary rsvp-btn-submit"
                                 >
-                                    {isLoading ? "Enviando..." : "Confirmar todo"}
+                                    {isLoading ? t('rsvp.submitting') : t('rsvp.submit')}
                                 </button>
                             </div>
                         </div>
@@ -347,7 +349,7 @@ export default function Rsvp() {
                     {isError && (
                         <div className="rsvp-error-box">
                             <p className="rsvp-error-box-text" role="alert">
-                                Hubo un error al guardar tu asistencia. Inténtalo de nuevo.
+                                {t('rsvp.error.submit')}
                             </p>
                             {error?.message && (
                                 <span className="rsvp-error-box-detail">

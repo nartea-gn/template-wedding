@@ -5,13 +5,11 @@
 
 ## Contexto y opciones
 
-La aplicación ya funciona y se despliega. Se valoró reescribir, mantener dos aplicaciones o sustituir piezas
-verticalmente.
+La aplicación ya funciona y se despliega. Se valoró reescribir, mantener dos aplicaciones o sustituir piezas verticalmente.
 
 ## Decisión
 
-Evolucionar la aplicación actual. Cada hito mantiene el despliegue funcional y elimina la pieza anterior al validar su
-reemplazo.
+Evolucionar la aplicación actual. Cada hito mantiene el despliegue funcional y elimina la pieza anterior al validar su reemplazo.
 
 ## Consecuencias
 

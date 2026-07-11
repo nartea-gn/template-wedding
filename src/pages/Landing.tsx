@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react'
 import {useNavigate} from 'react-router-dom'
 import {VideoHero} from '../components/VideoHero'
 import {weddingConfig} from '../config/wedding.config'
+import {useLocalization} from '../app/providers/useLocalization'
+import type {WeddingMessageKey} from '../invitations/wedding'
 import './Landing.css'
 
 type TimeLeft = { days: number; hours: number; minutes: number; seconds: number }
@@ -29,10 +31,11 @@ function useCountdown(target: string): TimeLeft | null {
 
 export default function Landing() {
     const navigate = useNavigate()
+    const {t, formatDate} = useLocalization<WeddingMessageKey>()
     const eventDateTime = `${weddingConfig.date}T${weddingConfig.venue.ceremony.time}`
     const timeLeft = useCountdown(eventDateTime)
 
-    const displayDate = new Date(eventDateTime).toLocaleDateString('es-ES', {
+    const displayDate = formatDate(eventDateTime, {
         year: 'numeric', month: 'long', day: 'numeric',
     })
 
@@ -42,12 +45,12 @@ export default function Landing() {
             {/* Hero Section */}
             <section className="landing-hero">
                 <h1 className="landing-title">
-                    {weddingConfig.partners.partner1}
+                    {t('hero.partnerOne')}
                     <span className="landing-title-amp">&</span>
-                    {weddingConfig.partners.partner2}
+                    {t('hero.partnerTwo')}
                 </h1>
                 <p className="landing-subtitle">
-                    {weddingConfig.invitation.subtitle}
+                    {t('hero.subtitle')}
                 </p>
                 <p className="landing-date">
                     {displayDate}
@@ -58,14 +61,14 @@ export default function Landing() {
             {weddingConfig.showCountdown && timeLeft && (
                 <section className="landing-countdown">
                     <p className="landing-countdown-label">
-                        Falta para el gran día
+                        {t('countdown.label')}
                     </p>
                     <div className="landing-countdown-row">
                         {[
-                            {value: timeLeft.days, label: 'días'},
-                            {value: String(timeLeft.hours).padStart(2, '0'), label: 'horas'},
-                            {value: String(timeLeft.minutes).padStart(2, '0'), label: 'minutos'},
-                            {value: String(timeLeft.seconds).padStart(2, '0'), label: 'segundos'},
+                            {value: timeLeft.days, label: t('countdown.days')},
+                            {value: String(timeLeft.hours).padStart(2, '0'), label: t('countdown.hours')},
+                            {value: String(timeLeft.minutes).padStart(2, '0'), label: t('countdown.minutes')},
+                            {value: String(timeLeft.seconds).padStart(2, '0'), label: t('countdown.seconds')},
                         ].map((item, index, arr) => (
                             <div key={item.label} className="landing-countdown-item">
                                 <div className="landing-countdown-unit">
@@ -103,7 +106,7 @@ export default function Landing() {
             {weddingConfig.showVenue && (
                 <section className="landing-venue">
                     <p className="landing-venue-label">
-                        La celebración
+                        {t('venue.label')}
                     </p>
                     <div className="landing-venue-grid">
                         {(['ceremony', 'reception'] as const).map((key) => {
@@ -111,10 +114,10 @@ export default function Landing() {
                             return (
                                 <div key={key} className="landing-venue-card card">
                                     <p className="landing-venue-type">
-                                        {key === 'ceremony' ? 'Ceremonia' : 'Recepción'}
+                                        {t(key === 'ceremony' ? 'venue.ceremony.type' : 'venue.reception.type')}
                                     </p>
                                     <p className="landing-venue-name">
-                                        {item.name}
+                                        {t(key === 'ceremony' ? 'venue.ceremony.name' : 'venue.reception.name')}
                                     </p>
                                     {item.time && (
                                         <p className="landing-venue-time">
@@ -123,7 +126,7 @@ export default function Landing() {
                                     )}
                                     {item.address && (
                                         <p className="landing-venue-address">
-                                            {item.address}
+                                            {t(key === 'ceremony' ? 'venue.ceremony.address' : 'venue.reception.address')}
                                         </p>
                                     )}
                                     {item.mapsQuery && (
@@ -133,7 +136,7 @@ export default function Landing() {
                                             rel="noopener noreferrer"
                                             className="landing-venue-map btn btn--outline"
                                         >
-                                            Ver en el mapa
+                                            {t('venue.map')}
                                         </a>
                                     )}
                                 </div>
@@ -149,7 +152,7 @@ export default function Landing() {
                     className="landing-cta-btn btn btn--primary"
                     onClick={() => navigate('/rsvp')}
                 >
-                    {weddingConfig.invitation.rsvpButtonText}
+                    {t('rsvp.cta')}
                 </button>
                 {weddingConfig.hashtag && (
                     <p className="landing-hashtag">

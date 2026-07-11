@@ -5,8 +5,7 @@
 
 ## Contexto
 
-La configuración anterior mezclaba datos de la boda con una forma diseñada para las páginas actuales. La nueva
-definición debe servir al futuro renderer, permitir localización y permanecer independiente de React e infraestructura.
+La configuración anterior mezclaba datos de la boda con una forma diseñada para las páginas actuales. La nueva definición debe servir al futuro renderer, permitir localización y permanecer independiente de React e infraestructura.
 
 ## Opciones
 
@@ -16,11 +15,9 @@ definición debe servir al futuro renderer, permitir localización y permanecer 
 
 ## Decisión
 
-Adoptar la opción 3. `InvitationDefinition<Locale, Message>` es serializable y las secciones utilizan `Message`. Cada
-catálogo TypeScript deriva su unión de claves mediante `MessageKey`.
+Adoptar la opción 3. `InvitationDefinition<Locale, Message>` es serializable y las secciones utilizan `Message`. Cada catálogo TypeScript deriva su unión de claves mediante `MessageKey`.
 
-El Core modela únicamente las secciones presentes: Hero, Countdown, Video, Venue y RSVP CTA. RSVP y Admin aparecen como
-capabilities estructurales, sin implementar todavía su motor.
+El Core modela únicamente las secciones presentes: Hero, Countdown, Video, Venue y RSVP CTA. RSVP y Admin aparecen como capabilities estructurales, sin implementar todavía su motor.
 
 ## Consecuencias
 
@@ -32,5 +29,4 @@ capabilities estructurales, sin implementar todavía su motor.
 
 ## Validación
 
-La definición comprueba locales, IDs únicos y coherencia entre RSVP CTA, RSVP y Admin al cargar el módulo. Lint y build
-se ejecutan con TypeScript 7.
+La definición comprueba locales, IDs únicos y coherencia entre RSVP CTA, RSVP y Admin al cargar el módulo. Lint y build se ejecutan con TypeScript 7.

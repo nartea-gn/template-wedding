@@ -1,6 +1,7 @@
 import type {InvitationDefinition} from '../../core/invitation'
 import {validateInvitationDefinition} from '../../core/invitation'
 import type {WeddingMessageKey} from './locales/es'
+import type {WeddingLocale} from './locales/types'
 
 export const weddingInvitation = {
     id: 'gala-y-valentin',
@@ -20,9 +21,9 @@ export const weddingInvitation = {
     },
     localization: {
         defaultLocale: 'es',
-        supportedLocales: ['es'],
+        supportedLocales: ['es', 'en', 'bg'],
         selector: {
-            visible: false,
+            visible: true,
         },
     },
     sections: [
@@ -98,10 +99,9 @@ export const weddingInvitation = {
             source: 'rsvp',
         },
     },
-} as const satisfies InvitationDefinition<'es', WeddingMessageKey>
+} as const satisfies InvitationDefinition<WeddingLocale, WeddingMessageKey>
 
 const definitionErrors = validateInvitationDefinition(weddingInvitation)
 if (definitionErrors.length > 0) {
     throw new Error(`Invalid wedding invitation: ${definitionErrors.join('; ')}`)
 }
-

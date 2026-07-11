@@ -4,13 +4,23 @@ import './index.css'
 import App from './App'
 import {ThemeProvider} from './components/ThemeProvider'
 import {weddingInvitation} from './invitations/wedding'
+import {esMessages, weddingCatalogLoaders} from './invitations/wedding'
+import {LocalizationProvider} from './app/providers/LocalizationProvider'
 
 const rootElement = document.getElementById('root')
 if (!rootElement) throw new Error('Root element #root not found in index.html')
 createRoot(rootElement).render(
     <StrictMode>
-        <ThemeProvider theme={weddingInvitation.theme.id}>
-            <App/>
-        </ThemeProvider>
+        <LocalizationProvider
+            invitationId={weddingInvitation.id}
+            definition={weddingInvitation.localization}
+            defaultCatalog={esMessages}
+            loaders={weddingCatalogLoaders}
+            timeZone={weddingInvitation.event.timezone}
+        >
+            <ThemeProvider theme={weddingInvitation.theme.id}>
+                <App/>
+            </ThemeProvider>
+        </LocalizationProvider>
     </StrictMode>,
 )

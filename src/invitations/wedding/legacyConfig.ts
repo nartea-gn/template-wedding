@@ -1,8 +1,8 @@
 import type {InvitationSection, VenueItemDefinition} from '../../core/invitation'
 import type {ThemeId} from '../../design/themes'
 import {weddingInvitation} from './invitation'
-import type {WeddingMessageKey} from './locales/es'
 import {esMessages} from './locales/es'
+import type {WeddingMessageKey} from './locales/es'
 
 type WeddingSection = InvitationSection<WeddingMessageKey>
 

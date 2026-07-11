@@ -15,8 +15,7 @@ La configuración actual centraliza datos, pero páginas y rutas fijan orden, te
 
 ## Decisión
 
-Adoptar la opción 3 incrementalmente. La configuración expresa metadatos, contenido, secciones, tema y capabilities;
-nunca funciones, componentes o infraestructura.
+Adoptar la opción 3 incrementalmente. La configuración expresa metadatos, contenido, secciones, tema y capabilities; nunca funciones, componentes o infraestructura.
 
 ## Consecuencias
 

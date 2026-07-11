@@ -3,8 +3,11 @@ import Landing from '../pages/Landing.tsx';
 import Rsvp from '../pages/Rsvp.tsx';
 import Admin from '../pages/Admin.tsx';
 import './AppRouter.css';
+import {useLocalization} from '../app/providers/useLocalization';
+import type {WeddingMessageKey} from '../invitations/wedding';
 
 export default function AppRouter() {
+    const {t} = useLocalization<WeddingMessageKey>();
     return (
         <HashRouter>
             <Routes>
@@ -19,8 +22,7 @@ export default function AppRouter() {
 
                 {/* Cambiamos el redireccionamiento por un texto de prueba */}
                 <Route path="*"
-                       element={<div className="route-not-found">Ruta no encontrada dentro de
-                           React Router</div>}/>
+                       element={<div className="route-not-found">{t('route.notFound')}</div>}/>
             </Routes>
         </HashRouter>
     );

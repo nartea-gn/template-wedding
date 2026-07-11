@@ -9,11 +9,9 @@
 
 ## Decisión
 
-Las features usarán servicios dependientes de contratos de repositorio. Adaptadores en `infrastructure` implementarán
-esos contratos para Supabase.
+Las features usarán servicios dependientes de contratos de repositorio. Adaptadores en `infrastructure` implementarán esos contratos para Supabase.
 
 ## Consecuencias
 
-Centraliza mapeos y permite cambiar proveedor a cambio de más estructura. No modifica todavía comportamiento ni esquema.
-La contraseña cliente y las RLS actuales continúan en v1; no constituyen autenticación robusta.
+Centraliza mapeos y permite cambiar proveedor a cambio de más estructura. No modifica todavía comportamiento ni esquema. La contraseña cliente y las RLS actuales continúan en v1; no constituyen autenticación robusta.
 

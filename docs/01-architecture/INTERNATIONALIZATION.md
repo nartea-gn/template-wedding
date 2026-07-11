@@ -2,23 +2,21 @@
 
 ## Objetivo
 
-Cada invitación define qué idiomas admite, cuál es el predeterminado y si ofrece selector. El modo monolingüe debe ser
-el camino más simple y ligero.
+Cada invitación define qué idiomas admite, cuál es el predeterminado y si ofrece selector. El modo monolingüe debe ser el camino más simple y ligero.
 
 ## Contrato conceptual
 
 ```ts
 type LocalizationConfig<Locale extends string> = {
-    defaultLocale: Locale
-    supportedLocales: readonly Locale[]
-    selector: {
-        visible: boolean
-    }
+  defaultLocale: Locale
+  supportedLocales: readonly Locale[]
+  selector: {
+    visible: boolean
+  }
 }
 ```
 
-Los catálogos se mantienen fuera del Core y se registran por invitación. Los componentes de contenido usan claves
-tipadas; los cargadores permanecerán en la composición de la aplicación para que la definición siga siendo serializable.
+Los catálogos se mantienen fuera del Core y se registran por invitación. Los componentes de contenido usan claves tipadas; los cargadores permanecerán en la composición de la aplicación para que la definición siga siendo serializable.
 
 ## Modos
 
@@ -48,8 +46,7 @@ tipadas; los cargadores permanecerán en la composición de la aplicación para 
 2. Preferencia persistida, solo si la invitación ofrece varios idiomas.
 3. `defaultLocale`.
 
-Una clave ausente produce un diagnóstico en desarrollo. En producción puede recurrir al catálogo predeterminado, pero
-nunca debe mostrar silenciosamente la clave técnica.
+Una clave ausente produce un diagnóstico en desarrollo. En producción puede recurrir al catálogo predeterminado, pero nunca debe mostrar silenciosamente la clave técnica.
 
 ## Contenido cubierto
 
@@ -62,8 +59,7 @@ nunca debe mostrar silenciosamente la clave técnica.
 
 ## Fechas y formatos
 
-Se usarán `Intl.DateTimeFormat`, `Intl.NumberFormat` y APIs equivalentes. El idioma controla el formato;
-`event.timezone` controla la zona horaria. Los componentes no concatenan manualmente nombres de meses ni unidades.
+Se usarán `Intl.DateTimeFormat`, `Intl.NumberFormat` y APIs equivalentes. El idioma controla el formato; `event.timezone` controla la zona horaria. Los componentes no concatenan manualmente nombres de meses ni unidades.
 
 ## Accesibilidad
 
@@ -74,9 +70,7 @@ Se usarán `Intl.DateTimeFormat`, `Intl.NumberFormat` y APIs equivalentes. El id
 
 ## Rendimiento
 
-Los catálogos se dividirán por locale mediante imports dinámicos en Sprint 2.1. La primera invitación contiene
-únicamente `es`, por lo que no incluye catálogos secundarios. No se añadirá una librería hasta comparar su coste y
-funciones con las necesidades reales.
+Los catálogos se dividirán por locale mediante imports dinámicos en Sprint 2.1. La primera invitación contiene únicamente `es`, por lo que no incluye catálogos secundarios. No se añadirá una librería hasta comparar su coste y funciones con las necesidades reales.
 
 ## Fuera de alcance inicial
 
