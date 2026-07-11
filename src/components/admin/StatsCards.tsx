@@ -27,10 +27,10 @@ export function StatsCards({total, confirmados, declinados, necesitanBus}: Stats
     return (
         <section className="stats-grid">
             {stats.map(({label, value, tone, icon}) => (
-                    <div
-                        key={label}
-                        className="card stat-card"
-                    >
+                <div
+                    key={label}
+                    className="card stat-card"
+                >
                     <span className="stat-icon">{icon}</span>
                     <span className={`stat-label stat-label--${tone}`}>
                         {label}
