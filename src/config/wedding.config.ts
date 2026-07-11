@@ -1,3 +1,5 @@
+import type {ThemeId} from '../design/themes'
+
 type VenueItem = {
     name: string
     time?: string
@@ -14,7 +16,7 @@ export interface WeddingConfig {
     showVenue: boolean
     showCountdown: boolean
     slug: string
-    theme: 'royal' | 'boho' | 'dark' | 'magnolia' | 'linen';
+    theme: ThemeId;
     invitation: {
         title: string;
         subtitle: string;
