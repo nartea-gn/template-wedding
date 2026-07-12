@@ -1,5 +1,7 @@
 import {type FormEvent, useState} from 'react';
 import './LoginForm.css';
+import {useLocalization} from '../../app/providers/useLocalization';
+import type {WeddingMessageKey} from '../../invitations/wedding';
 
 type LoginFormProps = {
     title: string;
@@ -8,6 +10,7 @@ type LoginFormProps = {
 };
 
 export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
+    const {t} = useLocalization<WeddingMessageKey>();
     const [password, setPassword] = useState('');
 
     const handleSubmit = (e: FormEvent) => {
@@ -28,7 +31,7 @@ export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
                     <div className="login-field">
                         <input
                             type="password"
-                            placeholder="Contraseña"
+                            placeholder={t('admin.password')}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             className="input login-input"
@@ -44,7 +47,7 @@ export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
                         type="submit"
                         className="btn btn--primary w-full login-submit"
                     >
-                        Acceder
+                        {t('admin.access')}
                     </button>
                 </form>
             </div>

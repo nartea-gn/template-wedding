@@ -9,6 +9,10 @@ CREATE TABLE rsvp_responses
     bus_option      TEXT,
     song_request    TEXT,
     message         TEXT,
+    form_id         TEXT,
+    form_version    INTEGER,
+    locale          TEXT,
+    answers         JSONB,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

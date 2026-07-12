@@ -1,20 +1,24 @@
 import {type ReactNode, useEffect} from 'react'
-import {type Theme, themes} from '../themes'
+import {themes, toCssVariables} from '../design/themes'
+import type {ThemeId} from '../design/themes'
 
-type Props = { theme: Theme; children: ReactNode }
+type Props = { theme: ThemeId; children: ReactNode }
 
 export function ThemeProvider({theme, children}: Readonly<Props>) {
     useEffect(() => {
-        const tokens = themes[theme]
+        const variables = toCssVariables(themes[theme])
         const root = document.documentElement
 
-        // Apply all theme tokens
-        for (const [key, value] of Object.entries(tokens)) {
+        for (const [key, value] of Object.entries(variables)) {
             root.style.setProperty(key, value)
         }
 
-        // Set data attribute for CSS selectors
         root.dataset.theme = theme
+
+        return () => {
+            for (const key of Object.keys(variables)) root.style.removeProperty(key)
+            delete root.dataset.theme
+        }
     }, [theme])
 
     return <>{children}</>

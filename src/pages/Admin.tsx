@@ -1,15 +1,17 @@
 import {useState} from 'react';
-import {weddingConfig} from '../config/wedding.config';
 import {useAdminData} from '../hooks/useAdminData';
 import {LoginForm} from '../components/admin/LoginForm';
 import {StatsCards} from '../components/admin/StatsCards';
 import {FilterBar} from '../components/admin/FilterBar';
 import {ResponsesTable} from '../components/admin/ResponsesTable';
 import './Admin.css';
+import {useLocalization} from '../app/providers/useLocalization';
+import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding';
 
 const ADMIN_AUTH_KEY = 'admin_authed';
 
 export default function Admin() {
+    const {t} = useLocalization<WeddingMessageKey>();
     const [isAuthenticated, setIsAuthenticated] = useState(
         () => sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true'
     );
@@ -28,6 +30,8 @@ export default function Admin() {
     } = useAdminData(isAuthenticated);
 
     const CORRECT_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+    const rsvp = weddingInvitation.capabilities.rsvp;
+    const admin = weddingInvitation.capabilities.admin;
     const isConfigured = CORRECT_PASSWORD !== undefined;
 
     const handlePasswordSubmit = (password: string) => {
@@ -43,11 +47,11 @@ export default function Admin() {
     if (!isAuthenticated) {
         return (
             <LoginForm
-                title={weddingConfig.admin.title}
+                title={t('admin.title')}
                 errorMessage={
                     passwordError
-                        ? 'Contraseña incorrecta.'
-                        : (!isConfigured ? 'Error de configuración: falta ADMIN_PASSWORD.' : null)
+                        ? t('admin.password.invalid')
+                        : (!isConfigured ? t('admin.password.missing') : null)
                 }
                 onSubmit={handlePasswordSubmit}
             />
@@ -60,10 +64,10 @@ export default function Admin() {
                 <header className="admin-header">
                     <div className="admin-title-block">
                         <h1 className="admin-title">
-                            {weddingConfig.admin.title}
+                            {t('admin.title')}
                         </h1>
                         <p className="admin-subtitle">
-                            {weddingConfig.partners.partner1} & {weddingConfig.partners.partner2}
+                            {t('hero.partnerOne')} & {t('hero.partnerTwo')}
                         </p>
                     </div>
                     <div className="admin-actions">
@@ -71,7 +75,7 @@ export default function Admin() {
                             onClick={() => refetch()}
                             className="btn btn--outline admin-btn-refresh"
                         >
-                            ↻ Refrescar
+                            ↻ {t('admin.refresh')}
                         </button>
                         <button
                             onClick={() => {
@@ -80,7 +84,7 @@ export default function Admin() {
                             }}
                             className="btn btn--ghost admin-btn-logout"
                         >
-                            Cerrar sesión
+                            {t('admin.logout')}
                         </button>
                     </div>
                 </header>
@@ -98,6 +102,8 @@ export default function Admin() {
                     responses={filteredResponses}
                     loading={loading}
                     error={error}
+                    form={rsvp!.form}
+                    columns={admin!.columns}
                 />
             </div>
         </div>
