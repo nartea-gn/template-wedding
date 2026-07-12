@@ -5,7 +5,8 @@
 
 ## Contexto
 
-Los valores visuales estaban repartidos entre `src/themes/index.ts`, `src/index.css` y `src/themes/patterns.css`. Los tipos de tema también se duplicaban en configuración.
+Los valores visuales estaban repartidos entre `src/themes/index.ts`, `src/index.css` y `src/themes/patterns.css`. Los
+tipos de tema también se duplicaban en configuración.
 
 ## Opciones
 
@@ -15,7 +16,8 @@ Los valores visuales estaban repartidos entre `src/themes/index.ts`, `src/index.
 
 ## Decisión
 
-Adoptar la opción 3. No se añade generador ni dependencia. CSS y Tailwind consumen la salida mediante las variables existentes.
+Adoptar la opción 3. No se añade generador ni dependencia. CSS y Tailwind consumen la salida mediante las variables
+existentes.
 
 ## Consecuencias
 
@@ -27,4 +29,5 @@ Adoptar la opción 3. No se añade generador ni dependencia. CSS y Tailwind cons
 
 ## Trabajo futuro
 
-Medir el flash de tema, revisar carga de fuentes y retirar aliases de compatibilidad solo cuando todos los consumidores hayan migrado.
+Medir el flash de tema, revisar carga de fuentes y retirar aliases de compatibilidad solo cuando todos los consumidores
+hayan migrado.

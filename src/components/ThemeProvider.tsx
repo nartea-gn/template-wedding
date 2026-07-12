@@ -1,6 +1,6 @@
 import {type ReactNode, useEffect} from 'react'
-import {themes, toCssVariables} from '../design/themes'
 import type {ThemeId} from '../design/themes'
+import {themes, toCssVariables} from '../design/themes'
 
 type Props = { theme: ThemeId; children: ReactNode }
 

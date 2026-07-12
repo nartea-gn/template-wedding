@@ -6,8 +6,13 @@ type DatabaseRow = Record<string, unknown>
 export function toInsertRow(submission: RsvpSubmission) {
     const answers = submission.answers
     return {
-        wedding_slug: submission.invitationId, form_id: submission.formId, form_version: submission.formVersion, locale: submission.locale, answers,
-        full_name: String(answers.fullName ?? ''), attending: Boolean(answers.attending),
+        wedding_slug: submission.invitationId,
+        form_id: submission.formId,
+        form_version: submission.formVersion,
+        locale: submission.locale,
+        answers,
+        full_name: String(answers.fullName ?? ''),
+        attending: Boolean(answers.attending),
         dietary_options: Array.isArray(answers.dietaryOptions) ? answers.dietaryOptions : [],
         dietary_other: answers.dietaryOther ? String(answers.dietaryOther) : null,
         bus_option: answers.busOption ? String(answers.busOption) : null,
@@ -24,5 +29,13 @@ export function fromDatabaseRow(row: DatabaseRow): RsvpSubmissionRecord {
         songRequest: String(row.song_request ?? ''), message: String(row.message ?? ''),
     }
     const answers = row.answers && typeof row.answers === 'object' && !Array.isArray(row.answers) ? row.answers as FormAnswers : legacyAnswers
-    return {id: Number(row.id), createdAt: String(row.created_at), invitationId: String(row.wedding_slug), formId: String(row.form_id ?? 'legacy-wedding-rsvp'), formVersion: Number(row.form_version ?? 0), locale: String(row.locale ?? 'es'), answers}
+    return {
+        id: Number(row.id),
+        createdAt: String(row.created_at),
+        invitationId: String(row.wedding_slug),
+        formId: String(row.form_id ?? 'legacy-wedding-rsvp'),
+        formVersion: Number(row.form_version ?? 0),
+        locale: String(row.locale ?? 'es'),
+        answers
+    }
 }

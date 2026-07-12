@@ -14,11 +14,14 @@ export function useAdminData(isAuthenticated: boolean) {
     const metrics = weddingInvitation.capabilities.admin?.metrics;
     const fetchResponses = useCallback(async () => {
         try {
-            setLoading(true); setError(null);
+            setLoading(true);
+            setError(null);
             setResponses(await listRsvpResponses(weddingRsvpRepository, weddingInvitation.id));
         } catch (cause) {
             setError(cause instanceof Error ? cause.message : 'Error al cargar las respuestas');
-        } finally { setLoading(false); }
+        } finally {
+            setLoading(false);
+        }
     }, []);
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- authenticated data fetching is intentional
@@ -36,9 +39,11 @@ export function useAdminData(isAuthenticated: boolean) {
         if (filter === 'bus') return needsTransport(response);
         return true;
     });
-    return {loading, error, filter, setFilter, totalRespuestas: responses.length,
+    return {
+        loading, error, filter, setFilter, totalRespuestas: responses.length,
         confirmados: responses.filter(attending).length,
         declinados: responses.filter(response => !attending(response)).length,
         necesitanBus: responses.filter(needsTransport).length,
-        filteredResponses, refetch: fetchResponses};
+        filteredResponses, refetch: fetchResponses
+    };
 }

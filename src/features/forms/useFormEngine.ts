@@ -1,5 +1,12 @@
 import {useMemo, useState} from 'react'
-import {isConditionMet, type FormAnswers, type FormDefinition, type FormErrors, type FormValue, validateElements} from '../../core/forms'
+import {
+    type FormAnswers,
+    type FormDefinition,
+    type FormErrors,
+    type FormValue,
+    isConditionMet,
+    validateElements
+} from '../../core/forms'
 
 function createInitialAnswers<Message extends string>(definition: FormDefinition<Message>): FormAnswers {
     return Object.fromEntries(definition.steps.flatMap(step => step.elements).filter(element => element.type !== 'info').map(element => [element.id, element.initialValue ?? (element.type === 'checkbox-group' ? [] : '')]))
@@ -15,7 +22,11 @@ export function useFormEngine<Message extends string>(definition: FormDefinition
 
     const setValue = (fieldId: string, value: FormValue) => {
         setAnswers(previous => ({...previous, [fieldId]: value}))
-        setErrors(previous => { const next = {...previous}; delete next[fieldId]; return next })
+        setErrors(previous => {
+            const next = {...previous};
+            delete next[fieldId];
+            return next
+        })
     }
 
     const validateCurrent = () => {

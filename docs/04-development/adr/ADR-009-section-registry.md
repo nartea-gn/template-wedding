@@ -5,13 +5,17 @@
 
 ## Contexto
 
-`InvitationDefinition.sections` describía la experiencia, pero Landing seguía componiendo Hero, Countdown, Video, Venue y CTA manualmente. El Core debe continuar independiente de React.
+`InvitationDefinition.sections` describía la experiencia, pero Landing seguía componiendo Hero, Countdown, Video, Venue
+y CTA manualmente. El Core debe continuar independiente de React.
 
 ## Decisión
 
-Mantener contratos y discriminantes en `src/core/invitation` y ubicar `InvitationRenderer` y `SectionRegistry` en `src/app/invitation`. Las secciones visuales viven en `src/features/sections`; cada invitación compone su registro y resuelve assets serializables.
+Mantener contratos y discriminantes en `src/core/invitation` y ubicar `InvitationRenderer` y `SectionRegistry` en
+`src/app/invitation`. Las secciones visuales viven en `src/features/sections`; cada invitación compone su registro y
+resuelve assets serializables.
 
-El registro es un mapa explícito de los tipos existentes, no un sistema de plugins. Una única aserción de tipo queda encapsulada en la frontera dinámica entre el discriminante y React.
+El registro es un mapa explícito de los tipos existentes, no un sistema de plugins. Una única aserción de tipo queda
+encapsulada en la frontera dinámica entre el discriminante y React.
 
 ## Consecuencias
 
@@ -25,4 +29,5 @@ El registro es un mapa explícito de los tipos existentes, no un sistema de plug
 
 ## Trabajo futuro
 
-Las rutas asociadas a capabilities y el Form Engine se abordarán en sprints posteriores. No se añadirá descubrimiento dinámico de plugins sin una segunda necesidad real.
+Las rutas asociadas a capabilities y el Form Engine se abordarán en sprints posteriores. No se añadirá descubrimiento
+dinámico de plugins sin una segunda necesidad real.

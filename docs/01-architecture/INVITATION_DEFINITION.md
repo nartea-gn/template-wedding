@@ -1,6 +1,7 @@
 # Invitation Definition
 
-Contrato declarativo entre una invitación y el motor. No contiene componentes, callbacks, consultas ni detalles de proveedor. La primera implementación vive en `src/core/invitation` y la boda actual en `src/invitations/wedding`.
+Contrato declarativo entre una invitación y el motor. No contiene componentes, callbacks, consultas ni detalles de
+proveedor. La primera implementación vive en `src/core/invitation` y la boda actual en `src/invitations/wedding`.
 
 ```ts
 type InvitationDefinition<Locale extends string, Message extends string> = {
@@ -18,9 +19,12 @@ type InvitationDefinition<Locale extends string, Message extends string> = {
 }
 ```
 
-Las secciones serán una unión discriminada y el array determina su orden. RSVP soportará inicialmente `text`, `textarea`, `select`, `radio` y `checkbox-group`, con ID, etiqueta, ayuda, obligatoriedad, opciones y validación básica.
+Las secciones serán una unión discriminada y el array determina su orden. RSVP soportará inicialmente `text`,
+`textarea`, `select`, `radio` y `checkbox-group`, con ID, etiqueta, ayuda, obligatoriedad, opciones y validación básica.
 
-Los textos se expresan mediante claves de catálogo tipadas. Los catálogos y sus futuros cargadores permanecen fuera de la definición para mantenerla serializable. `MessageKey<typeof catalog>` evita utilizar claves inexistentes dentro de una invitación TypeScript.
+Los textos se expresan mediante claves de catálogo tipadas. Los catálogos y sus futuros cargadores permanecen fuera de
+la definición para mantenerla serializable. `MessageKey<typeof catalog>` evita utilizar claves inexistentes dentro de
+una invitación TypeScript.
 
 ## Invariantes
 
@@ -35,7 +39,8 @@ Los textos se expresan mediante claves de catálogo tipadas. Los catálogos y su
 - Un selector visible requiere al menos dos locales.
 - Todos los catálogos comparten las claves obligatorias.
 
-La definición podrá dividirse en archivos de contenido, tema, secciones y formularios; el motor recibe el objeto agregado.
+La definición podrá dividirse en archivos de contenido, tema, secciones y formularios; el motor recibe el objeto
+agregado.
 
 ## Compatibilidad temporal
 

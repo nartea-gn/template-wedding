@@ -5,9 +5,12 @@
 
 ## Decisión
 
-El Core define `DEFAULT_LOCALE = 'es'`, contratos, validación y utilidades independientes del tipo de evento. La aplicación aporta un provider React pequeño; cada invitación declara sus locales y aporta catálogos y loaders propios.
+El Core define `DEFAULT_LOCALE = 'es'`, contratos, validación y utilidades independientes del tipo de evento. La
+aplicación aporta un provider React pequeño; cada invitación declara sus locales y aporta catálogos y loaders propios.
 
-El catálogo predeterminado se carga síncronamente y los secundarios mediante imports dinámicos. La preferencia se persiste por invitación únicamente cuando existen varios idiomas. No se incorpora una librería i18n hasta necesitar plurales o interpolación avanzada.
+El catálogo predeterminado se carga síncronamente y los secundarios mediante imports dinámicos. La preferencia se
+persiste por invitación únicamente cuando existen varios idiomas. No se incorpora una librería i18n hasta necesitar
+plurales o interpolación avanzada.
 
 ## Consecuencias
 

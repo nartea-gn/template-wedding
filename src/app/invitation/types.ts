@@ -2,7 +2,7 @@ import type {ComponentType} from 'react'
 import type {InvitationDefinition, InvitationSection} from '../../core/invitation'
 
 export type SectionComponentProps<Message extends string, Type extends InvitationSection<Message>['type']> = {
-    section: Extract<InvitationSection<Message>, {type: Type}>
+    section: Extract<InvitationSection<Message>, { type: Type }>
     event: InvitationDefinition<string, Message>['event']
 }
 

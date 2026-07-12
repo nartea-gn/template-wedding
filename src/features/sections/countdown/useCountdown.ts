@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react'
 
-export type TimeLeft = {days: number; hours: number; minutes: number; seconds: number}
+export type TimeLeft = { days: number; hours: number; minutes: number; seconds: number }
 
 function getTimeLeft(target: string): TimeLeft | null {
     const milliseconds = new Date(target).getTime() - Date.now()

@@ -2,7 +2,7 @@ export type FormPrimitive = string | number | boolean | null
 export type FormValue = FormPrimitive | string[]
 export type FormAnswers = Record<string, FormValue>
 
-export type VisibilityCondition = {fieldId: string; equals: FormPrimitive}
+export type VisibilityCondition = { fieldId: string; equals: FormPrimitive }
 
 export type FormOption<Message extends string> = {
     value: string | boolean
@@ -23,15 +23,23 @@ type FieldBase<Type extends string, Message extends string> = ElementBase<Type, 
     required?: boolean
     placeholder?: Message
     initialValue?: FormValue
-    validation?: {minLength?: number; maxLength?: number}
+    validation?: { minLength?: number; maxLength?: number }
 }
 
 export type TextField<Message extends string> = FieldBase<'text' | 'email' | 'number' | 'date' | 'textarea', Message>
-export type ChoiceField<Message extends string> = FieldBase<'radio' | 'select', Message> & {options: readonly FormOption<Message>[]}
-export type CheckboxGroupField<Message extends string> = FieldBase<'checkbox-group', Message> & {options: readonly FormOption<Message>[]}
+export type ChoiceField<Message extends string> = FieldBase<'radio' | 'select', Message> & {
+    options: readonly FormOption<Message>[]
+}
+export type CheckboxGroupField<Message extends string> = FieldBase<'checkbox-group', Message> & {
+    options: readonly FormOption<Message>[]
+}
 export type InfoElement<Message extends string> = ElementBase<'info', Message>
 
-export type FormElement<Message extends string> = TextField<Message> | ChoiceField<Message> | CheckboxGroupField<Message> | InfoElement<Message>
+export type FormElement<Message extends string> =
+    TextField<Message>
+    | ChoiceField<Message>
+    | CheckboxGroupField<Message>
+    | InfoElement<Message>
 
 export type FormStep<Message extends string> = {
     id: string
@@ -45,10 +53,10 @@ export type FormDefinition<Message extends string> = {
     id: string
     version: number
     steps: readonly FormStep<Message>[]
-    submission: {identityFieldId: string; attendanceFieldId?: string}
+    submission: { identityFieldId: string; attendanceFieldId?: string }
     messages: {
         next: Message; back: Message; submit: Message; submitting: Message
-        errors: {required: Message; email: Message; minLength: Message; maxLength: Message}
+        errors: { required: Message; email: Message; minLength: Message; maxLength: Message }
     }
 }
 
