@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import {supabase} from '../lib/supabaseClient'
-import {weddingConfig} from '../config/wedding.config'
+import {weddingInvitation} from '../invitations/wedding'
 import type {RsvpInsert} from '../types/rsvp'
 
 type UseRsvpReturn = {
@@ -25,7 +25,7 @@ export function useRsvp(): UseRsvpReturn {
         setError(null)
         try {
             const {error: dbError} = await supabase.from('rsvp_responses').insert([{
-                wedding_slug: weddingConfig.slug,
+                wedding_slug: weddingInvitation.id,
                 full_name: data.fullName,
                 attending: data.attending,
                 dietary_options: data.dietaryOptions,

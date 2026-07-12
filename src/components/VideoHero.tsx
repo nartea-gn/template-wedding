@@ -1,8 +1,9 @@
 import {useRef, useState} from 'react'
-import videoSrc from '../assets/video.mp4'
 import './VideoHero.css'
 
-export function VideoHero() {
+type Props = { src: string; label: string; playLabel: string }
+
+export function VideoHero({src, label, playLabel}: Readonly<Props>) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [playing, setPlaying] = useState(false)
 
@@ -19,15 +20,15 @@ export function VideoHero() {
         <div className="video-hero">
             <video
                 ref={videoRef}
-                src={videoSrc}
+                src={src}
                 controls={playing}
                 playsInline
                 preload="auto"
-                aria-label="Video de la pareja"
+                aria-label={label}
                 onEnded={() => setPlaying(false)}
             />
             {!playing && (
-                <button className="play-btn" onClick={handlePlay} aria-label="Reproducir video">
+                <button className="play-btn" onClick={handlePlay} aria-label={playLabel}>
                     ▶
                 </button>
             )}

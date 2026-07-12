@@ -39,4 +39,5 @@ La definición podrá dividirse en archivos de contenido, tema, secciones y form
 
 ## Compatibilidad temporal
 
-`src/invitations/wedding/legacyConfig.ts` deriva la antigua forma `WeddingConfig` desde la nueva definición. Este adaptador permite migrar páginas verticalmente y se retirará en Sprint 3; no es una segunda fuente de verdad.
+El adaptador `WeddingConfig` fue retirado en Sprint 3. Landing y los hooks actuales consumen directamente
+`weddingInvitation`; `sections` gobierna el orden y visibilidad reales.

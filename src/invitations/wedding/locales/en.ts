@@ -12,6 +12,8 @@ export const enMessages = {
     'countdown.hours': 'hours',
     'countdown.minutes': 'minutes',
     'countdown.seconds': 'seconds',
+    'video.label': 'Video of the couple',
+    'video.play': 'Play video',
     'venue.label': 'The celebration',
     'venue.ceremony.type': 'Ceremony',
     'venue.ceremony.name': 'San Pedro Church',

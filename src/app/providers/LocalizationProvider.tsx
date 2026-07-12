@@ -1,10 +1,22 @@
 import {type ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react'
-import {getLocaleStorageKey, isSupportedLocale, type LocalizationRuntimeConfig, type MessageCatalog} from '../../core/localization'
+import {
+    getLocaleStorageKey,
+    isSupportedLocale,
+    type LocalizationRuntimeConfig,
+    type MessageCatalog
+} from '../../core/localization'
 import {LocalizationContext, type LocalizationContextValue} from './LocalizationContext'
 
 type Props<Locale extends string> = LocalizationRuntimeConfig<Locale> & { timeZone: string; children: ReactNode }
 
-export function LocalizationProvider<Locale extends string>({invitationId, definition, defaultCatalog, loaders, timeZone, children}: Readonly<Props<Locale>>) {
+export function LocalizationProvider<Locale extends string>({
+                                                                invitationId,
+                                                                definition,
+                                                                defaultCatalog,
+                                                                loaders,
+                                                                timeZone,
+                                                                children
+                                                            }: Readonly<Props<Locale>>) {
     const [locale, setActiveLocale] = useState<Locale>(definition.defaultLocale)
     const [catalog, setCatalog] = useState<MessageCatalog>(defaultCatalog)
     const [isLoading, setIsLoading] = useState(false)
@@ -32,7 +44,9 @@ export function LocalizationProvider<Locale extends string>({invitationId, defin
         }
     }, [defaultCatalog, definition, hasMultipleLocales, loaders, locale, storageKey])
 
-    useEffect(() => { document.documentElement.lang = locale }, [locale])
+    useEffect(() => {
+        document.documentElement.lang = locale
+    }, [locale])
 
     useEffect(() => {
         if (!hasMultipleLocales) {
@@ -55,7 +69,16 @@ export function LocalizationProvider<Locale extends string>({invitationId, defin
         new Intl.DateTimeFormat(locale, {timeZone, ...options}).format(new Date(value))
     ), [locale, timeZone])
 
-    const contextValue = useMemo<LocalizationContextValue>(() => ({locale, supportedLocales: definition.supportedLocales, selectorVisible: definition.selector.visible && hasMultipleLocales, isLoading, error, t, setLocale, formatDate}), [definition.selector.visible, definition.supportedLocales, error, formatDate, hasMultipleLocales, isLoading, locale, setLocale, t])
+    const contextValue = useMemo<LocalizationContextValue>(() => ({
+        locale,
+        supportedLocales: definition.supportedLocales,
+        selectorVisible: definition.selector.visible && hasMultipleLocales,
+        isLoading,
+        error,
+        t,
+        setLocale,
+        formatDate
+    }), [definition.selector.visible, definition.supportedLocales, error, formatDate, hasMultipleLocales, isLoading, locale, setLocale, t])
 
     return <LocalizationContext.Provider value={contextValue}>{children}</LocalizationContext.Provider>
 }

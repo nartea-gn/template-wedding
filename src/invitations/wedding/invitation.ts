@@ -44,6 +44,12 @@ export const weddingInvitation = {
             content: {
                 label: 'countdown.label',
                 target: '2027-06-12T12:00:00+02:00',
+                unitLabels: {
+                    days: 'countdown.days',
+                    hours: 'countdown.hours',
+                    minutes: 'countdown.minutes',
+                    seconds: 'countdown.seconds'
+                },
             },
         },
         {
@@ -52,6 +58,8 @@ export const weddingInvitation = {
             enabled: true,
             content: {
                 assetId: 'wedding-hero-video',
+                label: 'video.label',
+                playLabel: 'video.play',
             },
         },
         {
@@ -60,6 +68,7 @@ export const weddingInvitation = {
             enabled: true,
             content: {
                 label: 'venue.label',
+                mapLabel: 'venue.map',
                 items: [
                     {
                         id: 'ceremony',

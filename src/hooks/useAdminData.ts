@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react'
 import {supabase} from '../lib/supabaseClient'
-import {weddingConfig} from '../config/wedding.config'
+import {weddingInvitation} from '../invitations/wedding'
 import type {RsvpResponse} from '../types/rsvp'
 
 export type Filter = 'all' | 'confirmed' | 'declined' | 'bus'
@@ -31,7 +31,7 @@ export function useAdminData(isAuthenticated: boolean): UseAdminDataReturn {
             const {data, error: dbError} = await supabase
                 .from('rsvp_responses')
                 .select('*')
-                .eq('wedding_slug', weddingConfig.slug)
+                .eq('wedding_slug', weddingInvitation.id)
                 .order('created_at', {ascending: false})
 
             if (dbError) throw dbError

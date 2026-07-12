@@ -3,6 +3,8 @@ import {enMessages} from './en'
 
 export const bgMessages = {
     ...enMessages,
+    'video.label': 'Видео на двойката',
+    'video.play': 'Пуснете видеото',
     'event.title': 'Ще се женим',
     'event.seoTitle': 'Сватбена покана на Гала и Валентин',
     'event.seoDescription': 'Присъединете се към нас, за да отпразнуваме специалния ни ден.',

@@ -5,7 +5,8 @@
 3. **Hito 1.1 — Modern frontend baseline (completado):** React 19.2.7, React Router 7.18.1 y TypeScript 7.0.2; compatibilidad de ESLint mediante TypeScript 6 side-by-side.
 4. **Sprint 2 — Invitation contract (implementado; validación manual pendiente):** contratos Core, catálogo español, primera definición y adaptador temporal desde la configuración actual.
 5. **Sprint 2.1 — Localization foundation (implementado; validación manual pendiente):** runtime Core con español por defecto, catálogos tipados, inglés diferido, `Intl`, persistencia y selector opcional.
-6. **Sprint 3 — Section engine:** registro tipado, renderer y migración incremental. Reordenar, traducir o desactivar no exigirá editar el renderer.
+6. **Sprint 3 — Section engine (implementado; validación manual pendiente):** registro tipado, renderer React en `app`,
+   cinco secciones compartidas, assets inyectados y eliminación del adaptador legacy.
 7. **Sprint 4 — RSVP:** Form Engine mínimo, repositorio y adaptador Supabase con preguntas y validaciones localizables.
 8. **Sprint 5 — Optional Admin:** ruta condicional y respuestas dinámicas, conservando la contraseña v1; interfaz localizable según el alcance de la invitación.
 9. **Sprint 6 — Premium experience:** UI, responsive, accesibilidad, motion responsable y rendimiento.

@@ -16,10 +16,13 @@ export type HeroSection<Message extends string> = Section<'hero', {
 export type CountdownSection<Message extends string> = Section<'countdown', {
     label: Message
     target: string
+    unitLabels: { days: Message; hours: Message; minutes: Message; seconds: Message }
 }>
 
-export type VideoSection = Section<'video', {
+export type VideoSection<Message extends string> = Section<'video', {
     assetId: string
+    label: Message
+    playLabel: Message
 }>
 
 export type VenueItemDefinition<Message extends string> = {
@@ -33,6 +36,7 @@ export type VenueItemDefinition<Message extends string> = {
 
 export type VenueSection<Message extends string> = Section<'venue', {
     label: Message
+    mapLabel: Message
     items: readonly VenueItemDefinition<Message>[]
 }>
 
@@ -43,7 +47,7 @@ export type RsvpCtaSection<Message extends string> = Section<'rsvp-cta', {
 export type InvitationSection<Message extends string> =
     | HeroSection<Message>
     | CountdownSection<Message>
-    | VideoSection
+    | VideoSection<Message>
     | VenueSection<Message>
     | RsvpCtaSection<Message>
 
@@ -78,4 +82,3 @@ export type InvitationDefinition<Locale extends string, Message extends string> 
     sections: readonly InvitationSection<Message>[]
     capabilities: InvitationCapabilities
 }
-
