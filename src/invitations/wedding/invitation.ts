@@ -2,6 +2,7 @@ import type {InvitationDefinition} from '../../core/invitation'
 import {validateInvitationDefinition} from '../../core/invitation'
 import type {WeddingMessageKey} from './locales/es'
 import type {WeddingLocale} from './locales/types'
+import {weddingRsvpForm} from './rsvpForm'
 
 export const weddingInvitation = {
     id: 'gala-y-valentin',
@@ -102,10 +103,13 @@ export const weddingInvitation = {
         rsvp: {
             enabled: true,
             deadline: '2027-05-12',
+            form: weddingRsvpForm,
         },
         admin: {
             enabled: true,
             source: 'rsvp',
+            columns: ['fullName', 'attending', 'dietaryOptions', 'busOption', 'songRequest', 'message'],
+            metrics: {attendanceFieldId: 'attending', transportFieldId: 'busOption', ownTransportValue: 'no'},
         },
     },
 } as const satisfies InvitationDefinition<WeddingLocale, WeddingMessageKey>

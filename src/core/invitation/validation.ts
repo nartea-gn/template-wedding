@@ -1,4 +1,5 @@
 import type {InvitationDefinition} from './types'
+import {validateFormDefinition} from '../forms'
 
 export function validateInvitationDefinition<Locale extends string, Message extends string>(
     definition: InvitationDefinition<Locale, Message>,
@@ -32,6 +33,7 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         errors.push('An enabled RSVP CTA requires the RSVP capability')
     }
 
+    if (definition.capabilities.rsvp) errors.push(...validateFormDefinition(definition.capabilities.rsvp.form))
+
     return errors
 }
-

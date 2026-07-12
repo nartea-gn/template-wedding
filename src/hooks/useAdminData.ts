@@ -1,86 +1,44 @@
-import {useCallback, useEffect, useState} from 'react'
-import {supabase} from '../lib/supabaseClient'
-import {weddingInvitation} from '../invitations/wedding'
-import type {RsvpResponse} from '../types/rsvp'
+import {useCallback, useEffect, useState} from 'react';
+import {listRsvpResponses} from '../features/rsvp/application/listRsvpResponses';
+import type {RsvpSubmissionRecord} from '../features/rsvp/domain/RsvpSubmission';
+import {weddingInvitation} from '../invitations/wedding';
+import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
 
-export type Filter = 'all' | 'confirmed' | 'declined' | 'bus'
+export type Filter = 'all' | 'confirmed' | 'declined' | 'bus';
 
-type UseAdminDataReturn = {
-    loading: boolean
-    error: string | null
-    filter: Filter
-    setFilter: (filter: Filter) => void
-    totalRespuestas: number
-    confirmados: number
-    declinados: number
-    necesitanBus: number
-    filteredResponses: RsvpResponse[]
-    refetch: () => void
-}
-
-export function useAdminData(isAuthenticated: boolean): UseAdminDataReturn {
-    const [responses, setResponses] = useState<RsvpResponse[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-    const [filter, setFilter] = useState<Filter>('all')
-
+export function useAdminData(isAuthenticated: boolean) {
+    const [responses, setResponses] = useState<RsvpSubmissionRecord[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [filter, setFilter] = useState<Filter>('all');
+    const metrics = weddingInvitation.capabilities.admin?.metrics;
     const fetchResponses = useCallback(async () => {
         try {
-            setLoading(true)
-            setError(null)
-            const {data, error: dbError} = await supabase
-                .from('rsvp_responses')
-                .select('*')
-                .eq('wedding_slug', weddingInvitation.id)
-                .order('created_at', {ascending: false})
-
-            if (dbError) throw dbError
-            setResponses((data || []).map(r => ({
-                id: r.id,
-                wedding_slug: r.wedding_slug,
-                created_at: r.created_at,
-                fullName: r.full_name,
-                attending: r.attending,
-                dietaryOptions: r.dietary_options ?? [],
-                dietaryOther: r.dietary_other ?? '',
-                busOption: r.bus_option ?? '',
-                songRequest: r.song_request ?? '',
-                message: r.message ?? '',
-            })))
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Error al cargar las respuestas')
-        } finally {
-            setLoading(false)
-        }
-    }, [])
-
+            setLoading(true); setError(null);
+            setResponses(await listRsvpResponses(weddingRsvpRepository, weddingInvitation.id));
+        } catch (cause) {
+            setError(cause instanceof Error ? cause.message : 'Error al cargar las respuestas');
+        } finally { setLoading(false); }
+    }, []);
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- data fetching in effect is intentional
-        if (isAuthenticated) fetchResponses()
-    }, [isAuthenticated, fetchResponses])
-
-    const totalRespuestas = responses.length
-    const confirmados = responses.filter(r => r.attending).length
-    const declinados = responses.filter(r => !r.attending).length
-    const necesitanBus = responses.filter(r => r.attending && r.busOption && r.busOption !== 'no').length
-
-    const filteredResponses = responses.filter(r => {
-        if (filter === 'confirmed') return r.attending
-        if (filter === 'declined') return !r.attending
-        if (filter === 'bus') return r.attending && r.busOption && r.busOption !== 'no'
-        return true
-    })
-
-    return {
-        loading,
-        error,
-        filter,
-        setFilter,
-        totalRespuestas,
-        confirmados,
-        declinados,
-        necesitanBus,
-        filteredResponses,
-        refetch: fetchResponses,
-    }
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- authenticated data fetching is intentional
+        if (isAuthenticated) void fetchResponses();
+    }, [isAuthenticated, fetchResponses]);
+    const attending = (response: RsvpSubmissionRecord) => metrics ? response.answers[metrics.attendanceFieldId] === true : false;
+    const needsTransport = (response: RsvpSubmissionRecord) => {
+        if (!metrics?.transportFieldId || !attending(response)) return false;
+        const value = response.answers[metrics.transportFieldId];
+        return Boolean(value) && value !== metrics.ownTransportValue;
+    };
+    const filteredResponses = responses.filter(response => {
+        if (filter === 'confirmed') return attending(response);
+        if (filter === 'declined') return !attending(response);
+        if (filter === 'bus') return needsTransport(response);
+        return true;
+    });
+    return {loading, error, filter, setFilter, totalRespuestas: responses.length,
+        confirmados: responses.filter(attending).length,
+        declinados: responses.filter(response => !attending(response)).length,
+        necesitanBus: responses.filter(needsTransport).length,
+        filteredResponses, refetch: fetchResponses};
 }

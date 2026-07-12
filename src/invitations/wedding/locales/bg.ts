@@ -3,6 +3,10 @@ import {enMessages} from './en'
 
 export const bgMessages = {
     ...enMessages,
+    'form.error.required': 'Това поле е задължително',
+    'form.error.email': 'Въведете валиден имейл адрес',
+    'form.error.minLength': 'Стойността е твърде кратка',
+    'form.error.maxLength': 'Стойността е твърде дълга',
     'video.label': 'Видео на двойката',
     'video.play': 'Пуснете видеото',
     'event.title': 'Ще се женим',

@@ -6,7 +6,7 @@ import {FilterBar} from '../components/admin/FilterBar';
 import {ResponsesTable} from '../components/admin/ResponsesTable';
 import './Admin.css';
 import {useLocalization} from '../app/providers/useLocalization';
-import type {WeddingMessageKey} from '../invitations/wedding';
+import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding';
 
 const ADMIN_AUTH_KEY = 'admin_authed';
 
@@ -30,6 +30,8 @@ export default function Admin() {
     } = useAdminData(isAuthenticated);
 
     const CORRECT_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD;
+    const rsvp = weddingInvitation.capabilities.rsvp;
+    const admin = weddingInvitation.capabilities.admin;
     const isConfigured = CORRECT_PASSWORD !== undefined;
 
     const handlePasswordSubmit = (password: string) => {
@@ -100,6 +102,8 @@ export default function Admin() {
                     responses={filteredResponses}
                     loading={loading}
                     error={error}
+                    form={rsvp!.form}
+                    columns={admin!.columns}
                 />
             </div>
         </div>

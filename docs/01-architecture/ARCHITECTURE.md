@@ -1,39 +1,35 @@
 # Architecture
 
-## Estado actual
+## Current composition
 
-`main.tsx -> ThemeProvider -> AppRouter -> Landing | Rsvp | Admin`. `Landing` consume `weddingConfig`; `Rsvp` y `Admin` llegan a Supabase mediante hooks que importan el cliente directamente.
+`main.tsx → ThemeProvider → LocalizationProvider → AppRouter`.
 
-Ya existe contenido centralizado en `src/config/wedding.config.ts` y un sistema de temas tipado en `src/design`. Sin embargo, las rutas son fijas, `Landing.tsx` decide el orden, `Rsvp.tsx` define las preguntas y los textos visibles no tienen todavía un contrato de localización.
+The wedding invitation is an `InvitationDefinition` containing event metadata, localization, ordered sections, theme and optional capabilities. `InvitationRenderer` resolves sections through a typed registry. RSVP and Admin routes are registered only when their capabilities are enabled and are loaded lazily.
 
-## Capas objetivo
+## Layers
 
-| Capa | Responsabilidad | No conoce |
+| Layer | Responsibility | Must not know |
 | --- | --- | --- |
-| `app` | Arranque, providers, routing y composición | Reglas de una invitación concreta |
-| `core` | Contratos, validación y renderer | Bodas, Supabase o estilos concretos |
-| `design` | Tokens, temas y primitivas | Negocio o persistencia |
-| `features` | Capacidades verticales | Proveedores externos directos |
-| `infrastructure` | Supabase, auth y despliegue | Composición visual |
-| `invitations` | Definiciones y contenido | Renderizado o persistencia |
-| `shared` | Utilidades transversales | Features o invitaciones |
+| `app` | Bootstrap, providers, routing and composition | Rules of a concrete event |
+| `core` | Framework-neutral contracts and pure validation | React, weddings, Supabase or concrete styling |
+| `design` | Tokens, themes and visual foundations | Business rules or persistence |
+| `features` | Reusable vertical capabilities | External providers directly |
+| `infrastructure` | Supabase adapters and external integrations | Visual composition |
+| `invitations` | Event definitions, catalogs and composition choices | Rendering implementation details |
+| `shared` | Cross-cutting utilities | Invitations or product features |
 
-La localización cruza `invitations`, `core` y `app`: la invitación declara locales y catálogos; el Core define contratos de resolución; `app` gestiona el locale activo y sincroniza el documento. Las features reciben contenido resuelto y nunca importan catálogos de una invitación concreta.
+## Dependency rules
 
-## Dependencias
+`invitations → core contracts`; `features → core + design`; `infrastructure → feature contracts`; `app` composes all layers. Core never imports React, features or infrastructure. UI and feature hooks never import the Supabase client.
 
-`invitations -> core contracts`; `features -> core + design`; `infrastructure -> contracts`; `app` compone todas. El Core nunca importa features.
+Localization is a Core capability configured by each invitation. Spanish is the default runtime locale; supported locales are invitation data. Form labels and option labels use the same typed message catalogs.
 
-Se conservan `HashRouter` y `/template-wedding/` para GitHub Pages. Las rutas RSVP/Admin solo existirán cuando sus capabilities estén activas.
+## Persistence and deployment
 
-## Migración
+RSVP uses a minimal `RsvpRepository`, implemented by `SupabaseRsvpRepository`. Form answers are persisted with form ID, version and locale while legacy columns remain compatible during migration.
 
-1. Tokens TypeScript sin cambiar UI.
-2. Actualizar React 19 y React Router 7; evaluar TypeScript 7 con puerta de compatibilidad.
-3. Adaptar configuración a `InvitationDefinition`, incluyendo localización.
-4. Introducir resolución de catálogos y selector opcional.
-5. Renderer mínimo y migración sección a sección.
-6. RSVP configurable y Supabase en infraestructura.
-7. Admin compuesto solo con dependencias activas.
+GitHub Pages remains the static host with `HashRouter` and `/template-wedding/`. GitHub Actions validates code, applies pending Supabase migrations and then deploys Pages. Database administration never runs in the browser.
 
-No habrá dos aplicaciones ni una carpeta `legacy` permanente.
+## Evolution rule
+
+Generalize only after a capability is needed by more than one concrete use case. New event types should be expressible through definitions and registered features without changing Core business assumptions.

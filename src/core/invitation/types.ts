@@ -1,4 +1,5 @@
 import type {LocalizationDefinition} from '../localization'
+import type {FormDefinition} from '../forms'
 
 type Section<Type extends string, Content> = {
     id: string
@@ -51,14 +52,17 @@ export type InvitationSection<Message extends string> =
     | VenueSection<Message>
     | RsvpCtaSection<Message>
 
-export type InvitationCapabilities = {
+export type InvitationCapabilities<Message extends string> = {
     rsvp?: {
         enabled: boolean
         deadline: string
+        form: FormDefinition<Message>
     }
     admin?: {
         enabled: boolean
         source: 'rsvp'
+        columns: readonly string[]
+        metrics: {attendanceFieldId: string; transportFieldId?: string; ownTransportValue?: string}
     }
 }
 
@@ -80,5 +84,5 @@ export type InvitationDefinition<Locale extends string, Message extends string> 
     }
     localization: LocalizationDefinition<Locale>
     sections: readonly InvitationSection<Message>[]
-    capabilities: InvitationCapabilities
+    capabilities: InvitationCapabilities<Message>
 }
