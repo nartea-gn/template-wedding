@@ -62,7 +62,7 @@ export type InvitationCapabilities<Message extends string> = {
         enabled: boolean
         source: 'rsvp'
         columns: readonly string[]
-        metrics: {attendanceFieldId: string; transportFieldId?: string; ownTransportValue?: string}
+        metrics: { attendanceFieldId: string; transportFieldId?: string; ownTransportValue?: string }
     }
 }
 

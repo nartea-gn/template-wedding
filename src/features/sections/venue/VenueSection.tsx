@@ -14,7 +14,8 @@ export function VenueSection<Message extends string>({section}: Readonly<Section
                         {item.time && <p className="landing-venue-time">{item.time}</p>}
                         {item.address && <p className="landing-venue-address">{t(item.address)}</p>}
                         {item.mapsQuery && (
-                            <a href={`https://maps.google.com/maps?q=${encodeURIComponent(item.mapsQuery)}`} target="_blank" rel="noopener noreferrer" className="landing-venue-map btn btn--outline">
+                            <a href={`https://maps.google.com/maps?q=${encodeURIComponent(item.mapsQuery)}`}
+                               target="_blank" rel="noopener noreferrer" className="landing-venue-map btn btn--outline">
                                 {t(section.content.mapLabel)}
                             </a>
                         )}

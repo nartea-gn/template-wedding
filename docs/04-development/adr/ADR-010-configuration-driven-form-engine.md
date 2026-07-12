@@ -9,8 +9,10 @@ Different events require different questions, steps and optional RSVP flows with
 
 ## Decision
 
-Use a typed, versioned and localized `FormDefinition`. Core owns data contracts and validation; the React feature owns rendering; invitations own field configuration.
+Use a typed, versioned and localized `FormDefinition`. Core owns data contracts and validation; the React feature owns
+rendering; invitations own field configuration.
 
 ## Consequences
 
-Forms can evolve without wedding-specific Core code. Stable field IDs and explicit versions become part of the persisted data contract. Complex branching, schema builders and visual editors remain outside v1.
+Forms can evolve without wedding-specific Core code. Stable field IDs and explicit versions become part of the persisted
+data contract. Complex branching, schema builders and visual editors remain outside v1.

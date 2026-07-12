@@ -9,7 +9,15 @@ const localeLabelKeys: Record<string, WeddingMessageKey> = {
 }
 
 export function LanguageSelector() {
-    const {locale, supportedLocales, selectorVisible, isLoading, error, setLocale, t} = useLocalization<WeddingMessageKey>()
+    const {
+        locale,
+        supportedLocales,
+        selectorVisible,
+        isLoading,
+        error,
+        setLocale,
+        t
+    } = useLocalization<WeddingMessageKey>()
     if (!selectorVisible) return null
 
     return (

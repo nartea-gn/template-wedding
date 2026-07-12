@@ -21,6 +21,7 @@ export default function Rsvp() {
     const handleSubmit = async (answers: FormAnswers) => {
         setSubmittedAnswers(answers);
         await submission.submit({
+            invitationId: weddingInvitation.id,
             formId: rsvpCapability.form.id,
             formVersion: rsvpCapability.form.version,
             locale,

@@ -35,9 +35,18 @@
     cursor: pointer;
 }
 
-.language-selector-status:empty { display: none; }
-.language-selector-status { font-size: 0.7rem; color: var(--color-wedding-muted); }
+.language-selector-status:empty {
+    display: none;
+}
+
+.language-selector-status {
+    font-size: 0.7rem;
+    color: var(--color-wedding-muted);
+}
 
 @media (max-width: 480px) {
-    .language-selector { top: 0.75rem; right: 0.75rem; }
+    .language-selector {
+        top: 0.75rem;
+        right: 0.75rem;
+    }
 }

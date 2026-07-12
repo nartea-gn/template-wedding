@@ -5,7 +5,8 @@
 
 ## Contexto
 
-Los textos actuales viven parcialmente en configuración y parcialmente en JSX. Las invitaciones pueden requerir uno o varios idiomas y un selector visible u oculto.
+Los textos actuales viven parcialmente en configuración y parcialmente en JSX. Las invitaciones pueden requerir uno o
+varios idiomas y un selector visible u oculto.
 
 ## Opciones
 
@@ -15,7 +16,8 @@ Los textos actuales viven parcialmente en configuración y parcialmente en JSX. 
 
 ## Decisión
 
-Adoptar la opción 3. Una invitación declara locale predeterminado, locales soportados y visibilidad del selector. Los catálogos secundarios se cargan bajo demanda.
+Adoptar la opción 3. Una invitación declara locale predeterminado, locales soportados y visibilidad del selector. Los
+catálogos secundarios se cargan bajo demanda.
 
 ## Consecuencias
 
@@ -26,4 +28,5 @@ Adoptar la opción 3. Una invitación declara locale predeterminado, locales sop
 
 ## Decisión diferida
 
-La elección entre una librería consolidada y un resolvedor pequeño propio se hará después de definir el contrato y medir necesidades de plurales, interpolación y división de bundles.
+La elección entre una librería consolidada y un resolvedor pequeño propio se hará después de definir el contrato y medir
+necesidades de plurales, interpolación y división de bundles.

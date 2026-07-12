@@ -3,8 +3,7 @@ import {createRoot} from 'react-dom/client'
 import './index.css'
 import App from './App'
 import {ThemeProvider} from './components/ThemeProvider'
-import {weddingInvitation} from './invitations/wedding'
-import {esMessages, weddingCatalogLoaders} from './invitations/wedding'
+import {esMessages, weddingCatalogLoaders, weddingInvitation} from './invitations/wedding'
 import {LocalizationProvider} from './app/providers/LocalizationProvider'
 
 const rootElement = document.getElementById('root')

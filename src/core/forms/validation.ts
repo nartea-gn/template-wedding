@@ -30,7 +30,10 @@ export function validateElements<Message extends string>(elements: readonly Form
     for (const element of elements) {
         if (element.type === 'info' || !isConditionMet(element.visibleWhen, answers)) continue
         const value = answers[element.id]
-        if (element.required && isEmpty(value)) { errors[element.id] = 'required'; continue }
+        if (element.required && isEmpty(value)) {
+            errors[element.id] = 'required';
+            continue
+        }
         if (isEmpty(value) || Array.isArray(value) || typeof value !== 'string') continue
         if (element.validation?.minLength && value.length < element.validation.minLength) errors[element.id] = 'minLength'
         if (element.validation?.maxLength && value.length > element.validation.maxLength) errors[element.id] = 'maxLength'

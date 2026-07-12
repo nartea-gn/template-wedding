@@ -9,8 +9,10 @@ RSVP and Admin need persistence, but the product must not couple UI or Core to S
 
 ## Decision
 
-Features consume `RsvpRepository`; infrastructure supplies `SupabaseRsvpRepository`. Persist generic versioned answers and keep an additive dual-write compatibility period for legacy columns.
+Features consume `RsvpRepository`; infrastructure supplies `SupabaseRsvpRepository`. Persist generic versioned answers
+and keep an additive dual-write compatibility period for legacy columns.
 
 ## Consequences
 
-Providers can be replaced at the composition boundary, old responses remain readable and migration risk stays low. The current client-side password and read policy remain a documented v1 limitation.
+Providers can be replaced at the composition boundary, old responses remain readable and migration risk stays low. The
+current client-side password and read policy remain a documented v1 limitation.
