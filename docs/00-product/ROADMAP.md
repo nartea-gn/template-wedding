@@ -25,9 +25,17 @@
     panel,
     persistir el estado por invitación y aplicarlo al CTA y a la ruta pública. Requiere autenticación o validación en
     servidor, autorización y políticas restrictivas antes de implementar escrituras.
-12. **Sprint 6 — Premium experience:** UI, responsive, accesibilidad, motion responsable, optimización de medios
-    pesados,
-    rendimiento medido y revisión Lighthouse, sin añadir nuevas capacidades de negocio.
+12. **Sprint 6 — Premium experience:** dividido en incrementos verificables sin añadir nuevas capacidades de negocio:
+    - **6.1 Experience foundations:** una sola superficie RSVP, fallback de rutas lazy, accesibilidad del Form Engine,
+      iconografía propia mínima, motion acotado y selector de idioma no flotante en todos los breakpoints.
+    - **6.2 Media and perceived performance:** política configurable de vídeo, poster, carga bajo demanda, presupuesto
+      de
+      medios, fuentes y baseline reproducible.
+    - **6.3 Visual refinement:** hero adaptable, ritmo narrativo, jerarquía compartida y validación responsive, teclado,
+      zoom y contraste.
+    - **6.4 Theme Engine v2:** evolución prioritaria del contrato visual a partir de las necesidades medidas en 6.1–6.3;
+      podrá gobernar tipografía, motion, iconografía, decoración y variantes de composición sin introducir lógica de
+      dominio en los componentes.
 13. **Sprint 7 — Release hardening:** estabilización de flujos críticos, pruebas proporcionadas, accesibilidad,
     compatibilidad, seguridad/RLS, privacidad, operación, documentación de despliegue y preparación de `1.0.0`.
 

@@ -42,6 +42,20 @@ Blocking dependencies:
 - Optimize heavy media, especially the hero video, and measure the result.
 - Use Lighthouse and real-device checks without adding business capabilities.
 
+### Sprint 6.4: Theme Engine v2 — prioritized architectural evolution
+
+- Evolve the typed theme contract beyond colors, typography, shadows and radius using requirements verified in Sprint 6.
+- Support theme-owned motion, icon treatment, decoration and approved composition variants without moving business
+  rules into themes.
+- Preserve CSS-variable output and migration compatibility so existing invitations remain functional during adoption.
+- Define the contract and migration through an RFC/ADR before changing implementations.
+
+Dependencies:
+
+- complete Sprint 6.1–6.3 and inventory the visual decisions that genuinely vary by theme;
+- distinguish brand identity from event content, capability flags and section order;
+- define backwards compatibility and migration criteria for the five current themes.
+
 ### Sprint 7: Release hardening
 
 - Validate critical invitation, localization, RSVP and Admin flows.
@@ -79,6 +93,21 @@ Blocking dependencies:
 - Curated guest list, invitation codes or household grouping.
 - Seating, menu totals or transport manifests as separate features, not additions to the Core Form Engine.
 
+### Invitation content modules
+
+- Deferred until after Theme Engine v2 and until a concrete client need is approved.
+- Gallery as an optional registered section with configurable assets, layout and accessible captions.
+- Story or timeline as an event-owned content module rendered through the existing Section Registry.
+- Music as an optional capability with explicit playback consent and no autoplay by default.
+- Additional section types only after their content contract and reuse boundary are defined; Core remains unchanged.
+
+### Media workflow
+
+- External image and video optimization guidance, budgets and validation before deployment.
+- Automated media tooling only if repeated production use justifies ownership and maintenance.
+- Self-hosted or per-invitation font packaging after performance and privacy measurements justify replacing the current
+  loading strategy.
+
 ## Conditional — only after repeated demand
 
 ### Platform
@@ -95,6 +124,21 @@ Blocking dependencies:
 - Product analytics and operational observability.
 - Automated visual regression testing and Storybook.
 - Bulk email, messaging or CRM integrations.
+
+## Deferred-work traceability register
+
+| Evolution                          | Destination                      | Activation condition                                                                         | Preparation preserved now                                                                                 |
+|------------------------------------|----------------------------------|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| Remote RSVP closure                | Sprint 5.1B                      | Server-validated authorization and restrictive policies approved                             | Admin control remains optional; runtime state is kept outside static invitation configuration             |
+| Admin authentication and RLS       | Sprint 7 / Admin security        | Provider, session model and invitation-scoped authorization approved                         | Auth remains separated from Dashboard; repositories isolate data access                                   |
+| Gallery, story and music           | Later invitation content modules | Theme Engine v2 is stable and a concrete client definition and content contract are approved | Section Registry and capability model accept new modules without changing Core orchestration              |
+| Additional event packages          | Conditional platform evolution   | A second real event domain validates reusable abstractions                                   | Core localization, forms, sections and themes remain domain-neutral                                       |
+| Theme Engine v2                    | Sprint 6.4 — prioritized         | Sprint 6.1–6.3 identify and document the visual dimensions that must vary                    | Current themes remain behind `ThemeDefinition` and CSS-variable output, enabling an incremental migration |
+| Media automation                   | Media workflow                   | Repeated production volume makes manual optimization unreliable                              | Sprint 6.2 defines budgets and an external process before owning tooling                                  |
+| Lighthouse target above 95         | Sprint 6.2 / Sprint 7            | Reproducible baseline and representative deployment exist                                    | Measurements are recorded before a numeric target becomes a release gate                                  |
+| Third-party icon or motion library | Conditional design evolution     | Internal primitives cannot meet an identified accessible interaction                         | Sprint 6.1 uses small owned SVG primitives and existing reduced-motion support                            |
+| XLSX, reports and charts           | Export and reporting             | Clients identify decisions CSV cannot support                                                | CSV stays provider-independent and presentation-based                                                     |
+| Server-side response queries       | Response experience              | Measured volume or latency makes client-side processing inadequate                           | Repository boundary can be extended with query, count and range contracts                                 |
 
 ## Prioritization rule
 
