@@ -6,11 +6,23 @@
 }
 
 .stat-card {
-    @apply p-5 md:p-6 text-center hover:scale-[1.02];
+    @apply p-5 md:p-6 text-center;
 }
 
 .stat-icon {
-    @apply text-2xl mb-2 block;
+    @apply size-6 mx-auto mb-2;
+}
+
+.stat-icon--default {
+    @apply text-(--color-wedding-primary);
+}
+
+.stat-icon--green {
+    @apply text-green-700;
+}
+
+.stat-icon--red {
+    @apply text-red-700;
 }
 
 .stat-label {

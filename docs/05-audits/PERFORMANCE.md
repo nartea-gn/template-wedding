@@ -2,20 +2,19 @@
 
 ## Observaciones verificadas
 
-- El vídeo local `src/assets/video.mp4` se incluye desde la aplicación y puede dominar transferencia y LCP percibido.
-- Las tres rutas se importan estáticamente en `AppRouter.tsx`; RSVP y Admin entran en el bundle inicial.
-- Supabase se crea al cargar su módulo y exige variables incluso en experiencias que en el futuro podrían no usar RSVP.
-- Las fuentes se cargan globalmente desde `index.html` para varios temas.
-- Las animaciones y transiciones globales no muestran todavía una estrategia de reducción de movimiento.
+- El vídeo local `src/assets/video.mp4` pesa 12,5 MB, usa `preload="auto"` y puede dominar transferencia y rendimiento
+  percibido; es la prioridad de Sprint 6.2.
+- RSVP y Admin se cargan mediante `lazy`; Sprint 6.1 añade un fallback estable y localizado.
+- La composición de Supabase queda detrás de rutas/capabilities opcionales y del contrato Repository.
+- Las fuentes se declaran globalmente para los cinco temas; su coste y estrategia se medirán en Sprint 6.2.
+- `prefers-reduced-motion` reduce animación y transiciones; Sprint 6.1 acota propiedades animadas adicionales.
 
 ## Prioridades
 
 1. Medir antes de fijar objetivos Lighthouse.
-2. Cargar rutas opcionales de forma diferida.
-3. Evitar inicializar adaptadores de capabilities desactivadas.
-4. Definir política de vídeo: poster, preload, formato, tamaño y alternativa.
-5. Cargar únicamente las familias tipográficas necesarias por estrategia acordada.
-6. Auditar CLS, LCP e interacción en móvil real.
+2. Definir política de vídeo: poster, preload, formato, tamaño y alternativa.
+3. Cargar únicamente las familias tipográficas necesarias por estrategia acordada.
+4. Auditar CLS, LCP e interacción en móvil real.
+5. Mantener rutas opcionales lazy y evitar regresiones de inicialización de infraestructura.
 
 No se afirma una puntuación actual porque no se ha ejecutado una medición reproducible en este sprint documental.
-

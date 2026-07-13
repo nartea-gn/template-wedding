@@ -9,6 +9,7 @@ export const weddingRsvpForm = {
         back: 'rsvp.back',
         submit: 'rsvp.submit',
         submitting: 'rsvp.submitting',
+        submitError: 'rsvp.error.submit',
         errors: {
             required: 'form.error.required',
             email: 'form.error.email',
@@ -36,11 +37,11 @@ export const weddingRsvpForm = {
                     label: 'rsvp.attending.label',
                     required: true,
                     initialValue: null,
-                    options: [{value: true, label: 'rsvp.attending.yes', icon: '💍'}, {
+                    options: [{value: true, label: 'rsvp.attending.yes', icon: 'check'}, {
                         value: false,
                         label: 'rsvp.attending.no',
                         completesForm: true,
-                        icon: '💔'
+                        icon: 'close'
                     }]
                 },
             ]

@@ -110,6 +110,18 @@ export const weddingInvitation = {
             source: 'rsvp',
             columns: ['fullName', 'attending', 'dietaryOptions', 'busOption', 'songRequest', 'message'],
             metrics: {attendanceFieldId: 'attending', transportFieldId: 'busOption', ownTransportValue: 'no'},
+            controls: {
+                csvExport: {enabled: true},
+                search: {enabled: true},
+                sorting: {enabled: true, default: 'newest'},
+                pagination: {
+                    enabled: true,
+                    pageSize: 10,
+                    pageSizeSelector: {enabled: true, options: [10, 25, 50, 100]},
+                },
+                resultCount: {enabled: true},
+                freshness: {enabled: true},
+            },
         },
     },
 } as const satisfies InvitationDefinition<WeddingLocale, WeddingMessageKey>

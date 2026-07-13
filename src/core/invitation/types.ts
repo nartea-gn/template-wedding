@@ -52,6 +52,21 @@ export type InvitationSection<Message extends string> =
     | VenueSection<Message>
     | RsvpCtaSection<Message>
 
+export type AdminSortOrder = 'newest' | 'oldest' | 'identity-asc' | 'identity-desc'
+
+export type AdminReadControls = {
+    csvExport?: { enabled: boolean }
+    search?: { enabled: boolean }
+    sorting?: { enabled: boolean; default: AdminSortOrder }
+    pagination?: {
+        enabled: boolean
+        pageSize: number
+        pageSizeSelector?: { enabled: boolean; options: readonly number[] }
+    }
+    resultCount?: { enabled: boolean }
+    freshness?: { enabled: boolean }
+}
+
 export type InvitationCapabilities<Message extends string> = {
     rsvp?: {
         enabled: boolean
@@ -63,6 +78,7 @@ export type InvitationCapabilities<Message extends string> = {
         source: 'rsvp'
         columns: readonly string[]
         metrics: { attendanceFieldId: string; transportFieldId?: string; ownTransportValue?: string }
+        controls?: AdminReadControls
     }
 }
 

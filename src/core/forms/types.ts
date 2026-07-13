@@ -55,7 +55,7 @@ export type FormDefinition<Message extends string> = {
     steps: readonly FormStep<Message>[]
     submission: { identityFieldId: string; attendanceFieldId?: string }
     messages: {
-        next: Message; back: Message; submit: Message; submitting: Message
+        next: Message; back: Message; submit: Message; submitting: Message; submitError: Message
         errors: { required: Message; email: Message; minLength: Message; maxLength: Message }
     }
 }

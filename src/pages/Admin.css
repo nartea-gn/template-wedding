@@ -29,6 +29,18 @@
     @apply flex gap-3;
 }
 
+.admin-action-icon {
+    @apply size-4;
+}
+
+.admin-action-block {
+    @apply flex flex-col items-start md:items-end gap-2;
+}
+
+.admin-freshness {
+    @apply text-xs text-(--color-wedding-muted);
+}
+
 .admin-btn-refresh {
     @apply text-xs;
 }

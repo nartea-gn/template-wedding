@@ -1,5 +1,6 @@
 import {useRef, useState} from 'react'
 import './VideoHero.css'
+import {InterfaceIcon} from './ui/InterfaceIcon'
 
 type Props = { src: string; label: string; playLabel: string }
 
@@ -29,7 +30,7 @@ export function VideoHero({src, label, playLabel}: Readonly<Props>) {
             />
             {!playing && (
                 <button className="play-btn" onClick={handlePlay} aria-label={playLabel}>
-                    ▶
+                    <InterfaceIcon name="play" className="play-btn-icon"/>
                 </button>
             )}
         </div>

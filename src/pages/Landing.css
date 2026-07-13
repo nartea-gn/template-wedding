@@ -39,7 +39,7 @@
 }
 
 .landing-ornament-icon {
-    @apply opacity-60 text-xs;
+    @apply size-3 shrink-0 opacity-60;
 }
 
 .landing-video {

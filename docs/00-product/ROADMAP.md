@@ -15,9 +15,31 @@
    adaptador Supabase, persistencia versionada y compatibilidad legacy.
 8. **Sprint 4.1 — Database migrations pipeline (implementado; activación en GitHub pendiente):** migraciones Supabase
    versionadas y despliegue automático antes de GitHub Pages.
-9. **Sprint 5 — Optional Admin (base implementada; validación final pendiente):** ruta condicional, métricas y
-   respuestas derivadas de la definición del formulario, conservando la contraseña v1.
-10. **Sprint 6 — Premium experience:** UI, responsive, accesibilidad, motion responsable y rendimiento.
+9. **Sprint 5 — Optional Admin (implementado y validado):** ruta condicional, métricas,
+   respuestas dinámicas, recuperación ante error, responsive y accesibilidad, conservando la contraseña v1.
+10. **Sprint 5.1A — Read-only Admin operations (implementado y validado):** capacidades configurables para
+    exportar resultados a CSV, buscar, ordenar y paginar respuestas con tamaño seleccionable, mostrar el número de
+    resultados y la fecha de la
+    última actualización correcta.
+11. **Sprint 5.1B — Protected Admin operations (bloqueado por seguridad):** abrir o cerrar confirmaciones desde el
+    panel,
+    persistir el estado por invitación y aplicarlo al CTA y a la ruta pública. Requiere autenticación o validación en
+    servidor, autorización y políticas restrictivas antes de implementar escrituras.
+12. **Sprint 6 — Premium experience:** dividido en incrementos verificables sin añadir nuevas capacidades de negocio:
+    - **6.1 Experience foundations (completado y validado):** una sola superficie RSVP, fallback de rutas
+      lazy, accesibilidad del Form Engine,
+      iconografía propia mínima, motion acotado y selector de idioma no flotante en todos los breakpoints.
+    - **6.2 Media and perceived performance:** política configurable de vídeo, poster, carga bajo demanda, presupuesto
+      de
+      medios, fuentes y baseline reproducible.
+    - **6.3 Visual refinement:** hero adaptable, ritmo narrativo, jerarquía compartida y validación responsive, teclado,
+      zoom y contraste.
+    - **6.4 Theme Engine v2:** evolución prioritaria del contrato visual a partir de las necesidades medidas en 6.1–6.3;
+      podrá gobernar tipografía, motion, iconografía, decoración y variantes de composición sin introducir lógica de
+      dominio en los componentes.
+13. **Sprint 7 — Release hardening:** estabilización de flujos críticos, pruebas proporcionadas, accesibilidad,
+    compatibilidad, seguridad/RLS, privacidad, operación, documentación de despliegue y preparación de `1.0.0`.
 
-Cada sprint termina con `pnpm lint`, `pnpm build` y revisión manual proporcional. Auth robusta, staging, SaaS, editor,
-plugins, monorepo, SDK y CLI quedan diferidos hasta que exista una necesidad real.
+Cada sprint termina con `pnpm lint`, `pnpm build` y revisión manual proporcional. El detalle y las dependencias de los
+evolutivos se mantienen en [`PRODUCT_BACKLOG.md`](./PRODUCT_BACKLOG.md); una entrada en ese backlog no equivale a un
+compromiso de implementación.

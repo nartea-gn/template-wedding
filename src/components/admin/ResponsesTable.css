@@ -6,7 +6,7 @@
 }
 
 .responses-state {
-    @apply p-12 text-center text-sm;
+    @apply p-8 md:p-12 text-center text-sm flex flex-col items-center gap-3;
 }
 
 .responses-state--error {
@@ -18,7 +18,7 @@
 }
 
 .responses-state-icon {
-    @apply text-3xl block mb-3;
+    @apply size-8 block;
 }
 
 .responses-spinner {
@@ -26,11 +26,11 @@
 }
 
 .responses-scroll {
-    @apply overflow-x-auto;
+    @apply overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--color-wedding-primary);
 }
 
 .responses-table-el {
-    @apply w-full text-left border-collapse;
+    @apply w-full min-w-[760px] text-left border-collapse;
 }
 
 .responses-head-row {
@@ -38,7 +38,7 @@
 }
 
 .responses-th {
-    @apply p-4 font-semibold;
+    @apply p-4 font-semibold whitespace-nowrap;
 }
 
 .responses-body {
@@ -50,7 +50,11 @@
 }
 
 .responses-td {
-    @apply p-4 font-medium text-(--color-wedding-text);
+    @apply p-4 align-top font-medium text-(--color-wedding-text) whitespace-normal break-words max-w-72;
+}
+
+.responses-retry {
+    @apply mt-2 text-xs;
 }
 
 .responses-td-muted {
@@ -71,6 +75,10 @@
 
 .responses-badge {
     @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+}
+
+.responses-badge-icon {
+    @apply size-3.5 shrink-0;
 }
 
 .responses-badge--yes {

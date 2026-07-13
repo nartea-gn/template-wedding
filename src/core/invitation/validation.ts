@@ -29,6 +29,30 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         errors.push('Admin requires the RSVP capability to be enabled')
     }
 
+    const pageSize = definition.capabilities.admin?.controls?.pagination?.pageSize
+    if (pageSize !== undefined && (!Number.isInteger(pageSize) || pageSize < 1)) {
+        errors.push('Admin pagination pageSize must be a positive integer')
+    }
+
+    const pageSizeSelector = definition.capabilities.admin?.controls?.pagination?.pageSizeSelector
+    if (pageSizeSelector) {
+        if (pageSizeSelector.enabled && definition.capabilities.admin?.controls?.pagination?.enabled !== true) {
+            errors.push('Admin pagination pageSizeSelector requires pagination to be enabled')
+        }
+        const hasInvalidOption = pageSizeSelector.options.some(
+            option => !Number.isInteger(option) || option < 1,
+        )
+        if (pageSizeSelector.options.length === 0 || hasInvalidOption) {
+            errors.push('Admin pagination pageSizeSelector options must be positive integers')
+        }
+        if (new Set(pageSizeSelector.options).size !== pageSizeSelector.options.length) {
+            errors.push('Admin pagination pageSizeSelector options must be unique')
+        }
+        if (pageSizeSelector.enabled && pageSize !== undefined && !pageSizeSelector.options.includes(pageSize)) {
+            errors.push('Admin pagination pageSize must be included in pageSizeSelector options')
+        }
+    }
+
     if (hasEnabledRsvpCta && !hasEnabledRsvp) {
         errors.push('An enabled RSVP CTA requires the RSVP capability')
     }
