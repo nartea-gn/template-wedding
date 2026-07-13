@@ -1,7 +1,8 @@
-import type {FormDefinition, FormElement, FormValue} from '../../core/forms';
+import type {FormDefinition} from '../../core/forms';
 import type {RsvpSubmissionRecord} from '../../features/rsvp/domain/RsvpSubmission';
 import {useLocalization} from '../../app/providers/useLocalization';
 import type {WeddingMessageKey} from '../../invitations/wedding';
+import {formatResponseValue, getFormFields} from '../../features/admin/presentation/responsePresentation';
 import './ResponsesTable.css';
 
 type Props = {
@@ -12,17 +13,7 @@ type Props = {
 
 export function ResponsesTable({responses, loading, hasError, form, columns, onRetry}: Props) {
     const {t} = useLocalization<WeddingMessageKey>();
-    const fields = new Map(form.steps.flatMap(step => step.elements).map(field => [field.id, field]));
-    const formatValue = (value: FormValue | undefined, field?: FormElement<WeddingMessageKey>) => {
-        if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) return '—';
-        if (typeof value === 'boolean') return value ? `✓ ${t('common.yes')}` : `✗ ${t('common.no')}`;
-        const options = field && 'options' in field ? field.options : [];
-        const labelFor = (item: string) => {
-            const option = options.find(candidate => String(candidate.value) === item);
-            return option ? t(option.label) : item;
-        };
-        return Array.isArray(value) ? value.map(labelFor).join(', ') : labelFor(String(value));
-    };
+    const fields = getFormFields(form);
     return <main className="card responses-table" aria-busy={loading}>
         {hasError ?
             <div className="responses-state responses-state--error" role="alert">
@@ -45,8 +36,13 @@ export function ResponsesTable({responses, loading, hasError, form, columns, onR
                             </thead>
                             <tbody className="responses-body">{responses.map(response => <tr key={response.id}
                                                                                              className="responses-row">
-                                {columns.map(id => <td key={id}
-                                                       className="responses-td">{formatValue(response.answers[id], fields.get(id))}</td>)}
+                                {columns.map(id => <td key={id} className="responses-td">{formatResponseValue(
+                                    response.answers[id],
+                                    fields.get(id),
+                                    t,
+                                    {yes: 'common.yes', no: 'common.no'},
+                                    true,
+                                )}</td>)}
                             </tr>)}</tbody>
                         </table>
                     </div>}

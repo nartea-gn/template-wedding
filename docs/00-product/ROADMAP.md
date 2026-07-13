@@ -15,10 +15,12 @@
    adaptador Supabase, persistencia versionada y compatibilidad legacy.
 8. **Sprint 4.1 — Database migrations pipeline (implementado; activación en GitHub pendiente):** migraciones Supabase
    versionadas y despliegue automático antes de GitHub Pages.
-9. **Sprint 5 — Optional Admin (implementado; validación automática y manual pendientes):** ruta condicional, métricas,
+9. **Sprint 5 — Optional Admin (implementado y validado):** ruta condicional, métricas,
    respuestas dinámicas, recuperación ante error, responsive y accesibilidad, conservando la contraseña v1.
-10. **Sprint 5.1A — Read-only Admin operations (planificado):** capacidades configurables para exportar la vista a CSV,
-    buscar y ordenar respuestas, mostrar el número de resultados y la fecha de la última actualización correcta.
+10. **Sprint 5.1A — Read-only Admin operations (implementado y validado):** capacidades configurables para
+    exportar resultados a CSV, buscar, ordenar y paginar respuestas con tamaño seleccionable, mostrar el número de
+    resultados y la fecha de la
+    última actualización correcta.
 11. **Sprint 5.1B — Protected Admin operations (bloqueado por seguridad):** abrir o cerrar confirmaciones desde el
     panel,
     persistir el estado por invitación y aplicarlo al CTA y a la ruta pública. Requiere autenticación o validación en

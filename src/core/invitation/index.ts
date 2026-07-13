@@ -1,4 +1,6 @@
 export type {
+    AdminReadControls,
+    AdminSortOrder,
     CountdownSection,
     HeroSection,
     InvitationCapabilities,

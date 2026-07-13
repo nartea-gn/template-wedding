@@ -7,17 +7,19 @@ An item moves to the roadmap only after its value, dependencies and implementati
 
 ## Next — approved direction
 
-### Sprint 5.1A: Read-only Admin operations
+### Sprint 5.1A: Read-only Admin operations — implemented and validated
 
 - Configurable CSV export of the currently presented Admin table.
 - Guest search using the configured identity field.
 - Sorting by submission date and guest name.
+- Configurable client-side pagination and optional page-size selector over the normalized result set.
 - Visible result count and last successful refresh time.
 
 Dependencies:
 
 - finalize the Admin capability contract;
 - preserve the Repository boundary and provider independence.
+- revisit server-side query, counting and pagination only after measured scale requires it.
 
 ### Sprint 5.1B: Protected Admin operations
 

@@ -1,0 +1,5 @@
+@reference "tailwindcss";
+
+.admin-pagination { @apply flex flex-wrap items-center justify-center gap-3; }
+.admin-pagination-button { @apply text-xs; }
+.admin-pagination-status { @apply min-w-24 text-center text-sm text-(--color-wedding-muted); }

@@ -29,15 +29,20 @@ labels and metrics use the current form definition. Unknown historical values re
 ## Sprint 5.1A — Read-only Admin operations
 
 Sprint 5.1A adds optional read-only operations without turning Admin into a guest-management CRM. Configuration decides
-whether each control is available. The following shape is illustrative and must be finalized in the implementation
-plan; it is not a current contract:
+whether each control is available. The implemented contract is:
 
 ```ts
 admin: {
     controls: {
-        export: {enabled: true, format: 'csv', scope: 'visible'},
+        csvExport: {enabled: true},
         search: {enabled: true},
-        sorting: {enabled: true},
+        sorting: {enabled: true, default: 'newest'},
+        pagination: {
+            enabled: true,
+            pageSize: 25,
+            pageSizeSelector: {enabled: true, options: [10, 25, 50, 100]}
+        },
+        resultCount: {enabled: true},
         freshness: {enabled: true}
     }
 }
@@ -48,7 +53,7 @@ admin: {
 CSV export operates on the Admin view model, not raw database rows. The first version exports:
 
 - configured and visible columns in their displayed order;
-- rows remaining after the active filter and search;
+- all rows remaining after active filter and search, not only the current table page;
 - localized headers and option labels;
 - normalized legacy and current answers;
 - UTF-8 content with correct CSV escaping and a deterministic invitation/date filename.
@@ -60,6 +65,11 @@ dependency and format-specific behavior.
 
 - Search initially targets the configured identity field, normally the guest name.
 - Sorting initially supports submission date and guest name.
+- Filtering, searching and sorting run in memory over normalized responses; the table then paginates that result.
+- Server-side query and pagination are deferred until measured volume or latency justifies extending the Repository.
+- Changing filter, search or sorting resets navigation to the first page.
+- The optional page-size selector also resets navigation and only offers values allowed by configuration.
+- The selected page size is intentionally session-local; persistence remains a future enhancement if demanded.
 - The interface displays the current result count and last successful refresh time.
 - Filters, search, sorting and export operate on the same presented dataset so exported content matches the screen.
 
