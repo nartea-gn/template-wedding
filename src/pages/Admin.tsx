@@ -9,6 +9,7 @@ import {useLocalization} from '../app/providers/useLocalization';
 import {buildResponsesCsv} from '../features/admin/export/buildResponsesCsv';
 import {downloadCsv} from '../features/admin/export/downloadCsv';
 import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding';
+import {InterfaceIcon} from '../components/ui/InterfaceIcon';
 import './Admin.css';
 
 const ADMIN_AUTH_KEY = 'admin_authed';
@@ -75,7 +76,7 @@ export default function Admin() {
                     <div className="admin-actions">
                         <button onClick={() => refetch()} disabled={loading}
                                 className="btn btn--outline admin-btn-refresh">
-                            ↻ {t('admin.refresh')}
+                            <InterfaceIcon name="refresh" className="admin-action-icon"/> {t('admin.refresh')}
                         </button>
                         <button onClick={() => {
                             sessionStorage.removeItem(ADMIN_AUTH_KEY);

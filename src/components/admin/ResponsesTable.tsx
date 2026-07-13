@@ -3,6 +3,7 @@ import type {RsvpSubmissionRecord} from '../../features/rsvp/domain/RsvpSubmissi
 import {useLocalization} from '../../app/providers/useLocalization';
 import type {WeddingMessageKey} from '../../invitations/wedding';
 import {formatResponseValue, getFormFields} from '../../features/admin/presentation/responsePresentation';
+import {InterfaceIcon} from '../ui/InterfaceIcon';
 import './ResponsesTable.css';
 
 type Props = {
@@ -17,7 +18,8 @@ export function ResponsesTable({responses, loading, hasError, form, columns, onR
     return <main className="card responses-table" aria-busy={loading}>
         {hasError ?
             <div className="responses-state responses-state--error" role="alert">
-                <span>⚠️ {t('admin.loadError')}</span>
+                <InterfaceIcon name="alert-triangle" className="responses-state-icon"/>
+                <span>{t('admin.loadError')}</span>
                 <button type="button" className="btn btn--outline responses-retry" onClick={onRetry}>
                     {t('admin.retry')}
                 </button>
@@ -26,7 +28,10 @@ export function ResponsesTable({responses, loading, hasError, form, columns, onR
                     <div className="responses-spinner"/>
                     {t('admin.loading')}</div>
                 : responses.length === 0 ?
-                    <div className="responses-state responses-state--muted" role="status">📭 {t('admin.empty')}</div>
+                    <div className="responses-state responses-state--muted" role="status">
+                        <InterfaceIcon name="inbox" className="responses-state-icon"/>
+                        <span>{t('admin.empty')}</span>
+                    </div>
                     : <div className="responses-scroll" role="region" aria-label={t('admin.table.label')} tabIndex={0}>
                         <table className="responses-table-el">
                             <caption className="sr-only">{t('admin.table.label')}</caption>
@@ -36,13 +41,23 @@ export function ResponsesTable({responses, loading, hasError, form, columns, onR
                             </thead>
                             <tbody className="responses-body">{responses.map(response => <tr key={response.id}
                                                                                              className="responses-row">
-                                {columns.map(id => <td key={id} className="responses-td">{formatResponseValue(
-                                    response.answers[id],
-                                    fields.get(id),
-                                    t,
-                                    {yes: 'common.yes', no: 'common.no'},
-                                    true,
-                                )}</td>)}
+                                {columns.map(id => {
+                                    const value = response.answers[id];
+                                    const formattedValue = formatResponseValue(
+                                        value,
+                                        fields.get(id),
+                                        t,
+                                        {yes: 'common.yes', no: 'common.no'},
+                                    );
+                                    return <td key={id} className="responses-td">
+                                        {typeof value === 'boolean' ? <span
+                                            className={`responses-badge responses-badge--${value ? 'yes' : 'no'}`}>
+                                            <InterfaceIcon name={value ? 'check' : 'close'}
+                                                           className="responses-badge-icon"/>
+                                            {formattedValue}
+                                        </span> : formattedValue}
+                                    </td>;
+                                })}
                             </tr>)}</tbody>
                         </table>
                     </div>}

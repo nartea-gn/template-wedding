@@ -119,6 +119,7 @@ export const enMessages = {
     'common.yes': 'Yes',
     'common.no': 'No',
     'route.notFound': 'Page not found',
+    'route.loading': 'Loading experience',
     'language.label': 'Language',
     'language.es': 'Español',
     'language.en': 'English',

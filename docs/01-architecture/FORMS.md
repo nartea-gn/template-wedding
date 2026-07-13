@@ -12,3 +12,15 @@ supports declining an invitation without wedding-specific branching in the rende
 
 Field IDs are persistent data identifiers. Renaming a label is safe; changing an ID requires a new form version and a
 data migration strategy. The engine emits `FormAnswers` and never persists data or imports an infrastructure provider.
+
+## Accessible presentation contract
+
+- Choice groups render as `fieldset` and `legend`; radios share a stable field name.
+- Help and validation messages have stable IDs referenced through `aria-describedby`.
+- Invalid controls expose `aria-invalid`, and validation moves focus to the first invalid control.
+- Step changes move focus to the new heading without stealing focus on the initial render.
+- Submission failure is a localized form message announced through an alert; provider details are not exposed publicly.
+- The form exposes busy and progress state while persistence remains owned by the RSVP application layer.
+
+Presentation hints such as optional icon IDs do not change validation or stored answers. Unknown hints render no icon,
+keeping the form functional and provider-independent.

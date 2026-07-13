@@ -10,7 +10,7 @@
 }
 
 .rsvp-success-icon {
-    @apply text-5xl block mb-2;
+    @apply size-12 mx-auto mb-2 text-(--color-wedding-primary);
 }
 
 .rsvp-success-title {
@@ -38,18 +38,22 @@
 }
 
 .rsvp-progress-bar {
-    @apply bg-(--color-wedding-primary) h-full rounded-full transition-all duration-500 ease-out;
+    @apply bg-(--color-wedding-primary) h-full rounded-full transition-[width] duration-500 ease-out;
     width: var(--progress, 0%);
 }
 
 .rsvp-form {
-    @apply space-y-8;
+    @apply w-full;
 }
 
 .rsvp-step {
-    @apply space-y-8;
+    @apply flex flex-col gap-9 md:gap-10;
     animation: fadeIn 0.6s ease-out forwards;
     opacity: 0;
+}
+
+.rsvp-step-header {
+    @apply mb-1;
 }
 
 .rsvp-section-title {
@@ -57,23 +61,36 @@
 }
 
 .rsvp-field {
-    @apply space-y-3;
+    @apply min-w-0 m-0 p-0 border-0 space-y-3;
+}
+
+.rsvp-field > .label {
+    @apply mb-0;
+}
+
+.rsvp-help-text {
+    @apply text-xs leading-relaxed text-(--color-wedding-muted);
 }
 
 .rsvp-option-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 gap-3;
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
 }
 
 .rsvp-dietary-list {
-    @apply space-y-3;
+    @apply space-y-4;
 }
 
 .rsvp-actions-end {
-    @apply flex justify-end pt-2;
+    @apply flex justify-end pt-5 border-t border-(--color-wedding-border)/60;
 }
 
 .rsvp-actions-between {
-    @apply flex justify-between pt-4;
+    @apply flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-5 border-t border-(--color-wedding-border)/60;
+}
+
+.rsvp-actions-end .btn,
+.rsvp-actions-between .btn {
+    @apply w-full sm:w-auto;
 }
 
 .rsvp-input--error {
@@ -85,7 +102,7 @@
 }
 
 .rsvp-option {
-    @apply flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all duration-200;
+    @apply flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors duration-200;
 }
 
 .rsvp-option--selected {
@@ -101,7 +118,11 @@
 }
 
 .rsvp-option-label {
-    @apply text-sm font-medium;
+    @apply flex items-center gap-2 text-sm font-medium;
+}
+
+.rsvp-option-icon {
+    @apply size-4 shrink-0;
 }
 
 .rsvp-checkbox-option {

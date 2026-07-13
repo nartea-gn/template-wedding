@@ -6,6 +6,7 @@ import {useRsvpSubmission} from '../features/rsvp/hooks/useRsvpSubmission';
 import {useLocalization} from '../app/providers/useLocalization';
 import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding';
 import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
+import {InterfaceIcon} from '../components/ui/InterfaceIcon';
 import './Rsvp.css';
 
 const rsvpCapability = weddingInvitation.capabilities.rsvp;
@@ -33,7 +34,7 @@ export default function Rsvp() {
         return (
             <div className="rsvp-success-page">
                 <div className="card rsvp-success-card">
-                    <span className="rsvp-success-icon" aria-hidden="true">✨</span>
+                    <InterfaceIcon name="sparkles" className="rsvp-success-icon"/>
                     <h2 className="rsvp-success-title">{t('rsvp.success.title')}</h2>
                     <p className="rsvp-success-text">
                         {submittedAnswers.attending
@@ -57,14 +58,12 @@ export default function Rsvp() {
 
     return (
         <div className="rsvp-page">
-            <div className="card rsvp-card">
-                <FormEngine
-                    definition={rsvpCapability.form}
-                    isSubmitting={submission.isLoading}
-                    submissionError={submission.error?.message}
-                    onSubmit={handleSubmit}
-                />
-            </div>
+            <FormEngine
+                definition={rsvpCapability.form}
+                isSubmitting={submission.isLoading}
+                hasSubmissionError={Boolean(submission.error)}
+                onSubmit={handleSubmit}
+            />
         </div>
     );
 }

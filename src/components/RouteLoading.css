@@ -1,0 +1,18 @@
+@reference "tailwindcss";
+
+.route-loading {
+    @apply min-h-screen flex flex-col items-center justify-center gap-4 bg-(--color-wedding-bg) text-(--color-wedding-muted);
+}
+
+.route-loading-indicator {
+    @apply size-8 rounded-full border-2 border-(--color-wedding-border) border-t-(--color-wedding-primary);
+    animation: route-loading-spin 0.8s linear infinite;
+}
+
+.route-loading-label {
+    @apply text-xs uppercase tracking-[0.14em];
+}
+
+@keyframes route-loading-spin {
+    to { transform: rotate(360deg); }
+}

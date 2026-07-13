@@ -39,7 +39,9 @@ admin: {
         sorting: {enabled: true, default: 'newest'},
         pagination: {
             enabled: true,
-            pageSize: 25,
+                pageSize
+        :
+            10,
             pageSizeSelector: {enabled: true, options: [10, 25, 50, 100]}
         },
         resultCount: {enabled: true},

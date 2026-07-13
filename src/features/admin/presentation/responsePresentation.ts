@@ -11,12 +11,10 @@ export function formatResponseValue<Message extends string>(
     field: FormElement<Message> | undefined,
     translate: Translate<Message>,
     booleanLabels: { yes: Message; no: Message },
-    decorateBoolean = false,
 ) {
     if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) return '—'
     if (typeof value === 'boolean') {
-        const label = translate(value ? booleanLabels.yes : booleanLabels.no)
-        return decorateBoolean ? `${value ? '✓' : '✕'} ${label}` : label
+        return translate(value ? booleanLabels.yes : booleanLabels.no)
     }
     const options = field && 'options' in field ? field.options : []
     const labelFor = (item: string) => {

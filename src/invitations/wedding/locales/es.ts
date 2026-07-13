@@ -119,6 +119,7 @@ export const esMessages = {
     'common.yes': 'Sí',
     'common.no': 'No',
     'route.notFound': 'Ruta no encontrada',
+    'route.loading': 'Cargando experiencia',
     'language.label': 'Idioma',
     'language.es': 'Español',
     'language.en': 'English',

@@ -121,6 +121,7 @@ export const bgMessages = {
     'common.yes': 'Да',
     'common.no': 'Не',
     'route.notFound': 'Страницата не е намерена',
+    'route.loading': 'Зареждане на преживяването',
     'language.label': 'Език',
     'language.es': 'Español',
     'language.en': 'English',

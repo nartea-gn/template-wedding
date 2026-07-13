@@ -26,7 +26,8 @@
     persistir el estado por invitación y aplicarlo al CTA y a la ruta pública. Requiere autenticación o validación en
     servidor, autorización y políticas restrictivas antes de implementar escrituras.
 12. **Sprint 6 — Premium experience:** dividido en incrementos verificables sin añadir nuevas capacidades de negocio:
-    - **6.1 Experience foundations:** una sola superficie RSVP, fallback de rutas lazy, accesibilidad del Form Engine,
+    - **6.1 Experience foundations (completado y validado):** una sola superficie RSVP, fallback de rutas
+      lazy, accesibilidad del Form Engine,
       iconografía propia mínima, motion acotado y selector de idioma no flotante en todos los breakpoints.
     - **6.2 Media and perceived performance:** política configurable de vídeo, poster, carga bajo demanda, presupuesto
       de

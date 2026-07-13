@@ -1,6 +1,7 @@
 import type {SectionComponentProps} from '../../../app/invitation'
 import {useLocalization} from '../../../app/providers/useLocalization'
 import {VideoHero} from '../../../components/VideoHero'
+import {InterfaceIcon} from '../../../components/ui/InterfaceIcon'
 
 type Props<Message extends string> = SectionComponentProps<Message, 'video'> & { src: string }
 
@@ -9,7 +10,8 @@ export function VideoSection<Message extends string>({section, src}: Readonly<Pr
     return (
         <>
             <div className="landing-ornament" aria-hidden="true">
-                <span className="landing-ornament-line"/><span className="landing-ornament-icon">✦</span><span
+                <span className="landing-ornament-line"/><InterfaceIcon name="ornament"
+                                                                        className="landing-ornament-icon"/><span
                 className="landing-ornament-line"/>
             </div>
             <section className="landing-video">
