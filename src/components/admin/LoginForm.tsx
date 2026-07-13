@@ -29,17 +29,20 @@ export function LoginForm({title, errorMessage, onSubmit}: LoginFormProps) {
                 </div>
                 <form onSubmit={handleSubmit} className="login-form">
                     <div className="login-field">
+                        <label htmlFor="admin-password" className="sr-only">{t('admin.password')}</label>
                         <input
+                            id="admin-password"
                             type="password"
                             placeholder={t('admin.password')}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
                             className="input login-input"
+                            autoComplete="current-password"
                             autoFocus
                         />
                     </div>
                     {errorMessage && (
-                        <div className="login-error">
+                        <div className="login-error" role="alert">
                             <p className="login-error-text">{errorMessage}</p>
                         </div>
                     )}

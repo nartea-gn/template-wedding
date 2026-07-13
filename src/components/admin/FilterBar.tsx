@@ -13,8 +13,9 @@ export function FilterBar({filter, setFilter}: FilterBarProps) {
     return (
         <div className="filter-bar">
             <div className="filter-group">
-                <label className="label filter-label">{t('admin.filter.label')}</label>
+                <label htmlFor="admin-response-filter" className="label filter-label">{t('admin.filter.label')}</label>
                 <select
+                    id="admin-response-filter"
                     value={filter}
                     onChange={e => setFilter(e.target.value as Filter)}
                     className="input filter-select"

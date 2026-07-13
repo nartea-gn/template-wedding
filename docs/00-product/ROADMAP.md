@@ -15,9 +15,20 @@
    adaptador Supabase, persistencia versionada y compatibilidad legacy.
 8. **Sprint 4.1 — Database migrations pipeline (implementado; activación en GitHub pendiente):** migraciones Supabase
    versionadas y despliegue automático antes de GitHub Pages.
-9. **Sprint 5 — Optional Admin (base implementada; validación final pendiente):** ruta condicional, métricas y
-   respuestas derivadas de la definición del formulario, conservando la contraseña v1.
-10. **Sprint 6 — Premium experience:** UI, responsive, accesibilidad, motion responsable y rendimiento.
+9. **Sprint 5 — Optional Admin (implementado; validación automática y manual pendientes):** ruta condicional, métricas,
+   respuestas dinámicas, recuperación ante error, responsive y accesibilidad, conservando la contraseña v1.
+10. **Sprint 5.1A — Read-only Admin operations (planificado):** capacidades configurables para exportar la vista a CSV,
+    buscar y ordenar respuestas, mostrar el número de resultados y la fecha de la última actualización correcta.
+11. **Sprint 5.1B — Protected Admin operations (bloqueado por seguridad):** abrir o cerrar confirmaciones desde el
+    panel,
+    persistir el estado por invitación y aplicarlo al CTA y a la ruta pública. Requiere autenticación o validación en
+    servidor, autorización y políticas restrictivas antes de implementar escrituras.
+12. **Sprint 6 — Premium experience:** UI, responsive, accesibilidad, motion responsable, optimización de medios
+    pesados,
+    rendimiento medido y revisión Lighthouse, sin añadir nuevas capacidades de negocio.
+13. **Sprint 7 — Release hardening:** estabilización de flujos críticos, pruebas proporcionadas, accesibilidad,
+    compatibilidad, seguridad/RLS, privacidad, operación, documentación de despliegue y preparación de `1.0.0`.
 
-Cada sprint termina con `pnpm lint`, `pnpm build` y revisión manual proporcional. Auth robusta, staging, SaaS, editor,
-plugins, monorepo, SDK y CLI quedan diferidos hasta que exista una necesidad real.
+Cada sprint termina con `pnpm lint`, `pnpm build` y revisión manual proporcional. El detalle y las dependencias de los
+evolutivos se mantienen en [`PRODUCT_BACKLOG.md`](./PRODUCT_BACKLOG.md); una entrada en ese backlog no equivale a un
+compromiso de implementación.

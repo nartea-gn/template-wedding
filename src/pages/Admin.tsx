@@ -18,7 +18,7 @@ export default function Admin() {
     const [passwordError, setPasswordError] = useState(false);
     const {
         loading,
-        error,
+        hasError,
         filter,
         setFilter,
         totalRespuestas,
@@ -33,6 +33,8 @@ export default function Admin() {
     const rsvp = weddingInvitation.capabilities.rsvp;
     const admin = weddingInvitation.capabilities.admin;
     const isConfigured = CORRECT_PASSWORD !== undefined;
+
+    if (!rsvp?.enabled || !admin?.enabled) return null;
 
     const handlePasswordSubmit = (password: string) => {
         if (password === CORRECT_PASSWORD) {
@@ -73,6 +75,7 @@ export default function Admin() {
                     <div className="admin-actions">
                         <button
                             onClick={() => refetch()}
+                            disabled={loading}
                             className="btn btn--outline admin-btn-refresh"
                         >
                             ↻ {t('admin.refresh')}
@@ -101,9 +104,10 @@ export default function Admin() {
                 <ResponsesTable
                     responses={filteredResponses}
                     loading={loading}
-                    error={error}
-                    form={rsvp!.form}
-                    columns={admin!.columns}
+                    hasError={hasError}
+                    form={rsvp.form}
+                    columns={admin.columns}
+                    onRetry={() => refetch()}
                 />
             </div>
         </div>

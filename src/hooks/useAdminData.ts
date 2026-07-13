@@ -9,16 +9,17 @@ export type Filter = 'all' | 'confirmed' | 'declined' | 'bus';
 export function useAdminData(isAuthenticated: boolean) {
     const [responses, setResponses] = useState<RsvpSubmissionRecord[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const [hasError, setHasError] = useState(false);
     const [filter, setFilter] = useState<Filter>('all');
     const metrics = weddingInvitation.capabilities.admin?.metrics;
     const fetchResponses = useCallback(async () => {
         try {
             setLoading(true);
-            setError(null);
+            setHasError(false);
             setResponses(await listRsvpResponses(weddingRsvpRepository, weddingInvitation.id));
         } catch (cause) {
-            setError(cause instanceof Error ? cause.message : 'Error al cargar las respuestas');
+            console.error('Failed to load RSVP responses', cause);
+            setHasError(true);
         } finally {
             setLoading(false);
         }
@@ -40,7 +41,7 @@ export function useAdminData(isAuthenticated: boolean) {
         return true;
     });
     return {
-        loading, error, filter, setFilter, totalRespuestas: responses.length,
+        loading, hasError, filter, setFilter, totalRespuestas: responses.length,
         confirmados: responses.filter(attending).length,
         declinados: responses.filter(response => !attending(response)).length,
         necesitanBus: responses.filter(needsTransport).length,
