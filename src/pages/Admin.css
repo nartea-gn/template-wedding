@@ -30,7 +30,7 @@
 }
 
 .admin-action-icon {
-    @apply size-4;
+    @apply size-4 shrink-0;
 }
 
 .admin-action-block {
@@ -42,7 +42,11 @@
 }
 
 .admin-btn-refresh {
-    @apply text-xs;
+    @apply text-xs gap-2;
+}
+
+.admin-btn-refresh .admin-action-icon {
+    @apply size-4 md:size-[1.125rem];
 }
 
 .admin-btn-logout {

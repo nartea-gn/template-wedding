@@ -47,21 +47,21 @@
 }
 
 .rsvp-step {
-    @apply flex flex-col gap-9 md:gap-10;
+    @apply flex flex-col gap-10 md:gap-11;
     animation: fadeIn 0.6s ease-out forwards;
     opacity: 0;
 }
 
 .rsvp-step-header {
-    @apply mb-1;
+    @apply mb-2;
 }
 
 .rsvp-section-title {
-    @apply mb-1;
+    @apply mb-2;
 }
 
 .rsvp-field {
-    @apply min-w-0 m-0 p-0 border-0 space-y-3;
+    @apply min-w-0 m-0 p-0 border-0 space-y-4;
 }
 
 .rsvp-field > .label {
@@ -118,15 +118,15 @@
 }
 
 .rsvp-option-label {
-    @apply flex items-center gap-2 text-sm font-medium;
+    @apply flex items-center gap-2 text-[0.95rem] font-medium leading-snug;
 }
 
 .rsvp-option-icon {
-    @apply size-4 shrink-0;
+    @apply size-5 shrink-0;
 }
 
 .rsvp-checkbox-option {
-    @apply flex items-center gap-3 p-3 rounded-lg border border-(--color-wedding-border) cursor-pointer transition-colors hover:bg-(--color-wedding-surface);
+    @apply flex items-center gap-3 p-3.5 rounded-lg border border-(--color-wedding-border) cursor-pointer transition-colors hover:bg-(--color-wedding-surface);
 }
 
 .rsvp-checkbox {

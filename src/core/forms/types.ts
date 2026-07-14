@@ -23,7 +23,7 @@ type FieldBase<Type extends string, Message extends string> = ElementBase<Type, 
     required?: boolean
     placeholder?: Message
     initialValue?: FormValue
-    validation?: { minLength?: number; maxLength?: number }
+    validation?: { minLength?: number; maxLength?: number; minWords?: number }
 }
 
 export type TextField<Message extends string> = FieldBase<'text' | 'email' | 'number' | 'date' | 'textarea', Message>
@@ -56,8 +56,8 @@ export type FormDefinition<Message extends string> = {
     submission: { identityFieldId: string; attendanceFieldId?: string }
     messages: {
         next: Message; back: Message; submit: Message; submitting: Message; submitError: Message
-        errors: { required: Message; email: Message; minLength: Message; maxLength: Message }
+        errors: { required: Message; email: Message; minLength: Message; maxLength: Message; minWords: Message }
     }
 }
 
-export type FormErrors = Record<string, 'required' | 'minLength' | 'maxLength' | 'email'>
+export type FormErrors = Record<string, 'required' | 'minLength' | 'maxLength' | 'minWords' | 'email'>

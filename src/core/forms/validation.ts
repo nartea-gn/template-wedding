@@ -35,8 +35,18 @@ export function validateElements<Message extends string>(elements: readonly Form
             continue
         }
         if (isEmpty(value) || Array.isArray(value) || typeof value !== 'string') continue
-        if (element.validation?.minLength && value.length < element.validation.minLength) errors[element.id] = 'minLength'
-        if (element.validation?.maxLength && value.length > element.validation.maxLength) errors[element.id] = 'maxLength'
+        if (element.validation?.minWords && value.trim().split(/\s+/).filter(Boolean).length < element.validation.minWords) {
+            errors[element.id] = 'minWords'
+            continue
+        }
+        if (element.validation?.minLength && value.length < element.validation.minLength) {
+            errors[element.id] = 'minLength'
+            continue
+        }
+        if (element.validation?.maxLength && value.length > element.validation.maxLength) {
+            errors[element.id] = 'maxLength'
+            continue
+        }
         if (element.type === 'email' && !/^\S+@\S+\.\S+$/.test(value)) errors[element.id] = 'email'
     }
     return errors

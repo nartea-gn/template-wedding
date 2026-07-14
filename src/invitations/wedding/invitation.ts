@@ -59,8 +59,13 @@ export const weddingInvitation = {
             enabled: true,
             content: {
                 assetId: 'wedding-hero-video',
+                posterAssetId: 'wedding-hero-video-poster',
+                preload: 'none',
+                aspectRatio: '9 / 16',
                 label: 'video.label',
                 playLabel: 'video.play',
+                loadingLabel: 'video.loading',
+                errorLabel: 'video.error',
             },
         },
         {

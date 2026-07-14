@@ -2,7 +2,7 @@
 .video-hero {
     position: relative;
     width: 100%;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: var(--video-aspect-ratio, 9 / 16);
     background: var(--color-wedding-surface);
     border-radius: var(--radius-card);
     overflow: hidden;
@@ -17,11 +17,19 @@
     display: block;
 }
 
-.play-btn {
+.video-hero-overlay {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    pointer-events: none;
+}
+
+.play-btn {
+    position: relative;
     background: rgba(0, 0, 0, 0.42);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.75);
@@ -35,6 +43,11 @@
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
     backdrop-filter: blur(4px);
     cursor: pointer;
+    pointer-events: auto;
+}
+
+.play-btn:disabled {
+    cursor: wait;
 }
 
 .play-btn-icon {
@@ -45,11 +58,37 @@
 .play-btn:hover {
     background: rgba(0, 0, 0, 0.62);
     border-color: white;
-    transform: translate(-50%, -50%) scale(1.08);
+    transform: scale(1.08);
 }
 
 .play-btn:active {
-    transform: translate(-50%, -50%) scale(0.95);
+    transform: scale(0.95);
+}
+
+.video-loading-spinner {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: video-spin 0.8s linear infinite;
+}
+
+@keyframes video-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.video-error {
+    max-width: min(80%, 22rem);
+    padding: 0.55rem 0.8rem;
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.68);
+    color: white;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    text-align: center;
 }
 
 /* Responsive adjustments */

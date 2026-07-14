@@ -14,7 +14,8 @@ export const weddingRsvpForm = {
             required: 'form.error.required',
             email: 'form.error.email',
             minLength: 'form.error.minLength',
-            maxLength: 'form.error.maxLength'
+            maxLength: 'form.error.maxLength',
+            minWords: 'form.error.minWords'
         }
     },
     steps: [
@@ -29,7 +30,8 @@ export const weddingRsvpForm = {
                     label: 'rsvp.fullName.label',
                     placeholder: 'rsvp.fullName.placeholder',
                     required: true,
-                    initialValue: ''
+                    initialValue: '',
+                    validation: {minWords: 2}
                 },
                 {
                     id: 'attending',
@@ -37,11 +39,11 @@ export const weddingRsvpForm = {
                     label: 'rsvp.attending.label',
                     required: true,
                     initialValue: null,
-                    options: [{value: true, label: 'rsvp.attending.yes', icon: 'check'}, {
+                    options: [{value: true, label: 'rsvp.attending.yes', icon: 'heart'}, {
                         value: false,
                         label: 'rsvp.attending.no',
                         completesForm: true,
-                        icon: 'close'
+                        icon: 'heart-broken'
                     }]
                 },
             ]

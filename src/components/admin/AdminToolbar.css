@@ -5,9 +5,14 @@
 .admin-toolbar-field { @apply flex flex-col gap-1.5; }
 .admin-toolbar-label { @apply text-sm font-medium text-(--color-wedding-text); }
 .admin-toolbar-select, .admin-toolbar-input { @apply w-full h-13 rounded-xl border border-(--color-wedding-border) bg-(--color-wedding-surface) px-4 py-2.5 text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-primary); }
+
+.admin-toolbar-select { @apply pr-12; }
 .admin-toolbar-export { @apply w-full h-13 px-6 whitespace-nowrap; }
 .admin-toolbar-results { @apply text-sm text-(--color-wedding-muted); }
 .admin-toolbar-summary { @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3; }
 .admin-toolbar-page-size { @apply flex items-center gap-2 sm:ml-auto; }
 .admin-toolbar-page-size-label { @apply text-sm text-(--color-wedding-muted) whitespace-nowrap; }
-.admin-toolbar-page-size-select { @apply h-10 w-24 rounded-lg border border-(--color-wedding-border) bg-(--color-wedding-surface) px-3 text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-primary); }
+.admin-toolbar-page-size-select {
+    @apply h-10 w-28 rounded-lg border border-(--color-wedding-border) bg-(--color-wedding-surface) py-0 pl-5 pr-10 text-base leading-none text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-primary);
+    background-position: calc(100% - 1rem) 50%, calc(100% - 0.68rem) 50%;
+}
