@@ -160,7 +160,7 @@ export function FormEngine<Message extends string>({
             <form ref={formRef} onSubmit={handleSubmit} className="rsvp-form" noValidate aria-busy={isSubmitting}>
                 <div className="rsvp-step">
                     <div className="rsvp-step-header"><h2 ref={headingRef} tabIndex={-1}
-                                                      className="section-title rsvp-section-title">{t(step.title)}</h2>{step.subtitle &&
+                                                          className="section-title rsvp-section-title">{t(step.title)}</h2>{step.subtitle &&
                         <p className="section-subtitle">{t(step.subtitle)}</p>}</div>
                     {step.elements.map(renderField)}
                     {hasSubmissionError && <div ref={submissionErrorRef} className="rsvp-error-box" role="alert"

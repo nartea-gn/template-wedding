@@ -2,33 +2,34 @@
 
 /* Landing page styles */
 .landing-page {
-    @apply min-h-screen flex flex-col items-center px-6 py-20 md:py-28 text-center bg-(--color-wedding-bg) text-(--color-wedding-text);
+    @apply min-h-screen flex flex-col items-center px-6 py-16 md:py-24 text-center bg-(--color-wedding-bg) text-(--color-wedding-text) overflow-x-hidden;
 }
 
 .landing-hero {
-    @apply flex flex-col items-center gap-3 mb-16;
+    @apply flex flex-col items-center gap-4 w-full max-w-4xl mb-16 md:mb-20;
     animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
 }
 
 .landing-title {
-    @apply font-serif text-5xl md:text-7xl font-bold text-(--color-wedding-primary) leading-tight tracking-tight;
+    @apply font-serif font-bold text-(--color-wedding-primary) leading-[0.98] tracking-normal text-balance;
+    font-size: clamp(3.1rem, 13vw, 7rem);
 }
 
 .landing-title-amp {
-    @apply block md:inline opacity-30 font-normal italic mx-2;
+    @apply block md:inline opacity-30 font-normal italic mx-1 md:mx-3;
 }
 
 .landing-subtitle {
-    @apply text-lg md:text-xl italic opacity-70 mt-2;
+    @apply text-lg md:text-xl italic opacity-75 mt-2 max-w-xl leading-relaxed text-balance;
 }
 
 .landing-date {
-    @apply text-xl uppercase tracking-[0.2em] opacity-40 mt-3;
+    @apply text-sm md:text-base uppercase tracking-[0.24em] opacity-50 mt-2 leading-relaxed;
 }
 
 .landing-ornament {
-    @apply flex items-center gap-4 w-full max-w-xs mb-16;
+    @apply flex items-center gap-5 w-full max-w-sm mb-14 md:mb-20;
     animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
     animation-delay: 0.1s;
@@ -43,37 +44,37 @@
 }
 
 .landing-video {
-    @apply w-full max-w-[380px] mb-16;
+    @apply w-full max-w-[340px] md:max-w-[360px] mb-16 md:mb-20;
     animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
     animation-delay: 0.2s;
 }
 
 .landing-venue {
-    @apply w-full max-w-3xl mb-16;
+    @apply w-full max-w-4xl mb-16 md:mb-20;
     animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
     animation-delay: 0.3s;
 }
 
 .landing-venue-label {
-    @apply text-xs uppercase tracking-[0.14em] opacity-40 mb-8;
+    @apply text-xs uppercase tracking-[0.18em] opacity-50 mb-8;
 }
 
 .landing-venue-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 gap-6;
+    @apply grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6;
 }
 
 .landing-venue-card {
-    @apply p-8 flex flex-col items-center gap-3 text-center;
+    @apply p-7 md:p-8 flex flex-col items-center gap-3 text-center bg-(--color-wedding-surface)/70;
 }
 
 .landing-venue-type {
-    @apply text-[0.7rem] uppercase tracking-[0.14em] opacity-40;
+    @apply text-[0.72rem] uppercase tracking-[0.16em] opacity-50;
 }
 
 .landing-venue-name {
-    @apply font-serif text-xl italic text-(--color-wedding-primary);
+    @apply font-serif text-2xl italic text-(--color-wedding-primary) leading-tight;
 }
 
 .landing-venue-time {
@@ -81,26 +82,26 @@
 }
 
 .landing-venue-address {
-    @apply text-sm opacity-60 leading-relaxed;
+    @apply text-[0.95rem] opacity-65 leading-relaxed max-w-xs;
 }
 
 .landing-venue-map {
-    @apply mt-2;
+    @apply mt-3;
 }
 
 .landing-countdown {
-    @apply flex flex-col items-center gap-4 mb-16;
+    @apply flex flex-col items-center gap-5 w-full max-w-5xl mb-16 md:mb-20;
     animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
     animation-delay: 0.4s;
 }
 
 .landing-countdown-label {
-    @apply text-xs uppercase tracking-[0.14em] opacity-40;
+    @apply text-xs md:text-sm uppercase tracking-[0.22em] opacity-50 leading-relaxed;
 }
 
 .landing-countdown-row {
-    @apply flex items-start gap-2;
+    @apply flex flex-nowrap items-start justify-center gap-x-2;
 }
 
 .landing-countdown-item {
@@ -108,32 +109,79 @@
 }
 
 .landing-countdown-unit {
-    @apply flex flex-col items-center gap-1 min-w-[3.5rem] md:min-w-[4.5rem];
+    @apply flex flex-col items-center gap-1 min-w-[4.25rem] md:min-w-[5.5rem];
 }
 
 .landing-countdown-value {
-    @apply font-serif text-4xl md:text-5xl font-bold text-(--color-wedding-primary) leading-none;
+    @apply font-serif font-bold text-(--color-wedding-primary) leading-none;
+    font-size: clamp(3.1rem, 13vw, 5.6rem);
 }
 
 .landing-countdown-unit-label {
-    @apply text-[0.625rem] uppercase tracking-[0.12em] opacity-40;
+    @apply text-[0.68rem] md:text-xs uppercase tracking-[0.16em] opacity-50;
 }
 
 .landing-countdown-sep {
     @apply size-5 md:size-6 opacity-45 mx-1.5 md:mx-3 text-(--color-wedding-border) mt-1.5 shrink-0;
 }
 
+@media (max-width: 480px) {
+    .landing-countdown {
+        @apply gap-4;
+    }
+
+    .landing-countdown-row {
+        @apply gap-x-1;
+    }
+
+    .landing-countdown-unit {
+        min-width: 3.15rem;
+    }
+
+    .landing-countdown-value {
+        font-size: clamp(2.25rem, 12vw, 3rem);
+    }
+
+    .landing-countdown-unit-label {
+        @apply text-[0.52rem] tracking-[0.1em];
+    }
+
+    .landing-countdown-sep {
+        @apply size-4 mx-0.5 mt-1;
+    }
+}
+
+@media (max-width: 380px) {
+    .landing-countdown-unit {
+        min-width: 2.85rem;
+    }
+
+    .landing-countdown-value {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+    }
+
+    .landing-countdown-unit-label {
+        @apply text-[0.48rem] tracking-[0.08em];
+    }
+
+    .landing-countdown-sep {
+        @apply mx-0;
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+}
+
 .landing-cta {
-    @apply flex flex-col items-center gap-4;
+    @apply flex flex-col items-center gap-5 mb-4;
     animation: fadeUp 0.8s ease-out forwards;
     opacity: 0;
     animation-delay: 0.5s;
 }
 
 .landing-cta-btn {
-    @apply w-full max-w-xs;
+    @apply w-full max-w-xs md:max-w-sm;
 }
 
 .landing-hashtag {
-    @apply text-sm italic opacity-30 tracking-wide;
+    @apply text-sm italic opacity-40 tracking-wide;
 }

@@ -3,7 +3,8 @@
 ## Current strategy
 
 Sprint 6.1 replaces platform-dependent emoji with a small owned SVG set in `InterfaceIcon`. The interface set follows
-the proportions and outlined language of the open-licensed [Lucide Line Icons collection on SVG Repo](https://www.svgrepo.com/collection/lucide-line-icons/).
+the proportions and outlined language of the
+open-licensed [Lucide Line Icons collection on SVG Repo](https://www.svgrepo.com/collection/lucide-line-icons/).
 Icons are decorative by default (`aria-hidden`) and visible labels continue carrying meaning. Unknown icon IDs render
 nothing rather than breaking a configured form.
 

@@ -42,7 +42,7 @@
 }
 
 .admin-btn-refresh {
-    @apply text-xs gap-2;
+    @apply text-xs;
 }
 
 .admin-btn-refresh .admin-action-icon {
