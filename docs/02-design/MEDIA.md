@@ -22,12 +22,12 @@ Each video section may define:
 
 These are review thresholds, not automatic build failures:
 
-| Asset | Preferred budget | Review threshold |
-|---|---:|---:|
-| Poster | <= 150 KB | 250 KB |
-| Short invitation video | <= 6 MB | 8 MB |
-| Content image | <= 250 KB | 500 KB |
-| Favicon / app icon | <= 100 KB | 400 KB |
+| Asset                  | Preferred budget | Review threshold |
+|------------------------|-----------------:|-----------------:|
+| Poster                 |        <= 150 KB |           250 KB |
+| Short invitation video |          <= 6 MB |             8 MB |
+| Content image          |        <= 250 KB |           500 KB |
+| Favicon / app icon     |        <= 100 KB |           400 KB |
 
 Video should be compressed outside Core using a reproducible media workflow. The repository does not own a video
 transcoding engine. The exact Windows procedure is documented in

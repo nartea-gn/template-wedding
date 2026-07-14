@@ -36,8 +36,8 @@
       vídeo, poster, carga bajo demanda, presupuesto
       de
       medios, fuentes y baseline reproducible.
-    - **6.3 Visual refinement:** hero adaptable, ritmo narrativo, jerarquía compartida y validación responsive, teclado,
-      zoom y contraste.
+    - **6.3 Visual refinement (implementado; validación final pendiente):** hero adaptable, ritmo narrativo,
+      jerarquía compartida en Landing/RSVP y decisiones visuales candidatas para Theme Engine v2.
     - **6.4 Theme Engine v2:** evolución prioritaria del contrato visual a partir de las necesidades medidas en 6.1–6.3;
       podrá gobernar tipografía, motion, iconografía, decoración y variantes de composición sin introducir lógica de
       dominio en los componentes.

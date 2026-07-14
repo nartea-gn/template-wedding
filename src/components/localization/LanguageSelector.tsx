@@ -82,7 +82,8 @@ export function LanguageSelector() {
                                     if (!isSelected) void setLocale(item)
                                 }}
                             >
-                                <span className="language-selector-option-code">{localeCodes[item] ?? item.toUpperCase()}</span>
+                                <span
+                                    className="language-selector-option-code">{localeCodes[item] ?? item.toUpperCase()}</span>
                                 <span>{label}</span>
                             </button>
                         )

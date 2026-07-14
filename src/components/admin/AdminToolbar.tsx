@@ -11,8 +11,10 @@ type Props = {
     pageSize: number; setPageSize: (value: number) => void; exportDisabled: boolean; onExport: () => void;
 };
 
-export function AdminToolbar({controls, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
-                                 resultCount, totalResponses, pageSize, setPageSize, exportDisabled, onExport}: Props) {
+export function AdminToolbar({
+                                 controls, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
+                                 resultCount, totalResponses, pageSize, setPageSize, exportDisabled, onExport
+                             }: Props) {
     const {t} = useLocalization<WeddingMessageKey>();
     const pageSizeSelector = controls?.pagination?.pageSizeSelector;
     const pageSizeOptions = controls?.pagination?.enabled && pageSizeSelector?.enabled
@@ -21,9 +23,11 @@ export function AdminToolbar({controls, filter, setFilter, query, setQuery, sort
     return <section className="admin-toolbar" aria-label={t('admin.controls.label')}>
         <div className="admin-toolbar-fields">
             <div className="admin-toolbar-field">
-                <label htmlFor="admin-response-filter" className="label admin-toolbar-label">{t('admin.filter.label')}</label>
+                <label htmlFor="admin-response-filter"
+                       className="label admin-toolbar-label">{t('admin.filter.label')}</label>
                 <select id="admin-response-filter" value={filter}
-                        onChange={event => setFilter(event.target.value as AdminFilter)} className="input admin-toolbar-select">
+                        onChange={event => setFilter(event.target.value as AdminFilter)}
+                        className="input admin-toolbar-select">
                     <option value="all">{t('admin.filter.all')}</option>
                     <option value="confirmed">{t('admin.filter.confirmed')}</option>
                     <option value="declined">{t('admin.filter.declined')}</option>
@@ -31,15 +35,18 @@ export function AdminToolbar({controls, filter, setFilter, query, setQuery, sort
                 </select>
             </div>
             {controls?.search?.enabled && <div className="admin-toolbar-field admin-toolbar-field--search">
-                <label htmlFor="admin-response-search" className="label admin-toolbar-label">{t('admin.search.label')}</label>
+                <label htmlFor="admin-response-search"
+                       className="label admin-toolbar-label">{t('admin.search.label')}</label>
                 <input id="admin-response-search" type="search" value={query}
                        onChange={event => setQuery(event.target.value)} placeholder={t('admin.search.placeholder')}
                        className="input admin-toolbar-input"/>
             </div>}
             {controls?.sorting?.enabled && <div className="admin-toolbar-field">
-                <label htmlFor="admin-response-sort" className="label admin-toolbar-label">{t('admin.sort.label')}</label>
+                <label htmlFor="admin-response-sort"
+                       className="label admin-toolbar-label">{t('admin.sort.label')}</label>
                 <select id="admin-response-sort" value={sortOrder}
-                        onChange={event => setSortOrder(event.target.value as AdminSortOrder)} className="input admin-toolbar-select">
+                        onChange={event => setSortOrder(event.target.value as AdminSortOrder)}
+                        className="input admin-toolbar-select">
                     <option value="newest">{t('admin.sort.newest')}</option>
                     <option value="oldest">{t('admin.sort.oldest')}</option>
                     <option value="identity-asc">{t('admin.sort.identityAsc')}</option>

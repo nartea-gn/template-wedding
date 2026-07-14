@@ -19,12 +19,12 @@ function escapeCsvCell(value: string) {
 }
 
 export function buildResponsesCsv<Message extends string>({
-                                                               responses,
-                                                               columns,
-                                                               form,
-                                                               translate,
-                                                               booleanLabels,
-                                                           }: Arguments<Message>) {
+                                                              responses,
+                                                              columns,
+                                                              form,
+                                                              translate,
+                                                              booleanLabels,
+                                                          }: Arguments<Message>) {
     const fields = getFormFields(form)
     const header = columns.map(id => escapeCsvCell(fields.has(id) ? translate(fields.get(id)!.label) : id))
     const rows = responses.map(response => columns.map(id => escapeCsvCell(formatResponseValue(

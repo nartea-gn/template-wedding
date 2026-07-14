@@ -6,7 +6,7 @@
 }
 
 .rsvp-success-card {
-    @apply max-w-md p-8 md:p-10 space-y-6;
+    @apply max-w-md p-8 md:p-10 space-y-6 bg-(--color-wedding-surface)/80;
 }
 
 .rsvp-success-icon {
@@ -18,7 +18,7 @@
 }
 
 .rsvp-success-text {
-    @apply text-(--color-wedding-muted) text-sm leading-relaxed;
+    @apply text-(--color-wedding-muted) text-[0.95rem] leading-relaxed;
 }
 
 .rsvp-success-btn {
@@ -30,11 +30,11 @@
 }
 
 .rsvp-card {
-    @apply w-full max-w-xl p-6 md:p-10;
+    @apply w-full max-w-2xl p-6 md:p-10 bg-(--color-wedding-surface)/80;
 }
 
 .rsvp-progress {
-    @apply w-full bg-(--color-wedding-surface) h-1.5 rounded-full mb-10 overflow-hidden;
+    @apply w-full bg-(--color-wedding-bg) h-1.5 rounded-full mb-10 overflow-hidden;
 }
 
 .rsvp-progress-bar {
@@ -47,17 +47,17 @@
 }
 
 .rsvp-step {
-    @apply flex flex-col gap-10 md:gap-11;
+    @apply flex flex-col gap-10 md:gap-12;
     animation: fadeIn 0.6s ease-out forwards;
     opacity: 0;
 }
 
 .rsvp-step-header {
-    @apply mb-2;
+    @apply mb-3 text-center;
 }
 
 .rsvp-section-title {
-    @apply mb-2;
+    @apply mb-2 text-balance;
 }
 
 .rsvp-field {
@@ -69,7 +69,7 @@
 }
 
 .rsvp-help-text {
-    @apply text-xs leading-relaxed text-(--color-wedding-muted);
+    @apply text-sm leading-relaxed text-(--color-wedding-muted);
 }
 
 .rsvp-option-grid {
@@ -102,11 +102,11 @@
 }
 
 .rsvp-option {
-    @apply flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-colors duration-200;
+    @apply flex items-center gap-3 p-4 md:p-5 rounded-xl border-2 cursor-pointer transition-colors duration-200 bg-(--color-wedding-bg)/45;
 }
 
 .rsvp-option--selected {
-    @apply border-(--color-wedding-primary) bg-(--color-wedding-primary)/5;
+    @apply border-(--color-wedding-primary) bg-(--color-wedding-primary)/10;
 }
 
 .rsvp-option--error {
@@ -126,7 +126,13 @@
 }
 
 .rsvp-checkbox-option {
-    @apply flex items-center gap-3 p-3.5 rounded-lg border border-(--color-wedding-border) cursor-pointer transition-colors hover:bg-(--color-wedding-surface);
+    @apply flex items-center gap-3 p-3.5 md:p-4 rounded-lg border border-(--color-wedding-border) bg-(--color-wedding-bg)/35 cursor-pointer transition-colors;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .rsvp-checkbox-option:hover {
+        @apply bg-(--color-wedding-surface);
+    }
 }
 
 .rsvp-checkbox {
@@ -146,7 +152,7 @@
 }
 
 .rsvp-info-box {
-    @apply p-5 bg-(--color-wedding-surface)/60 border border-(--color-wedding-border) rounded-xl text-sm leading-relaxed text-(--color-wedding-text)/80;
+    @apply p-5 md:p-6 bg-(--color-wedding-bg)/45 border border-(--color-wedding-border) rounded-xl text-[0.95rem] leading-relaxed text-(--color-wedding-text)/85;
 }
 
 .rsvp-btn-ghost {
