@@ -125,6 +125,7 @@ export function FormEngine<Message extends string>({
 
         if (element.type === 'select') return <div key={element.id} className="rsvp-field"><label className="label"
                                                                                                   htmlFor={element.id}>{t(element.label)}</label><select {...common}
+                                                                                                                                                         className={`${common.className} rsvp-select`}
                                                                                                                                                          value={typeof value === 'string' ? value : ''}
                                                                                                                                                          onChange={event => engine.setValue(element.id, event.target.value)}>
             <option value="">{element.placeholder ? t(element.placeholder) : ''}</option>

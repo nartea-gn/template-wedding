@@ -29,7 +29,11 @@
     - **6.1 Experience foundations (completado y validado):** una sola superficie RSVP, fallback de rutas
       lazy, accesibilidad del Form Engine,
       iconografía propia mínima, motion acotado y selector de idioma no flotante en todos los breakpoints.
-    - **6.2 Media and perceived performance:** política configurable de vídeo, poster, carga bajo demanda, presupuesto
+    - **6.1.1 UX polish (implementado; validación final pendiente):** selects más legibles, selector de idioma
+      compacto por códigos, validación de nombre y apellidos, iconos de asistencia, fullscreen progresivo de vídeo,
+      alianzas como separador y ajuste tipográfico del RSVP.
+    - **6.2 Media and perceived performance (completado y validado):** política configurable de
+      vídeo, poster, carga bajo demanda, presupuesto
       de
       medios, fuentes y baseline reproducible.
     - **6.3 Visual refinement:** hero adaptable, ritmo narrativo, jerarquía compartida y validación responsive, teclado,

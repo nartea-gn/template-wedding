@@ -39,7 +39,7 @@
 }
 
 .landing-ornament-icon {
-    @apply size-3 shrink-0 opacity-60;
+    @apply size-9 md:size-10 shrink-0 opacity-90 text-(--color-wedding-primary);
 }
 
 .landing-video {
@@ -120,7 +120,7 @@
 }
 
 .landing-countdown-sep {
-    @apply font-serif text-2xl md:text-3xl opacity-30 mx-1 md:mx-2 leading-none mt-1;
+    @apply size-5 md:size-6 opacity-45 mx-1.5 md:mx-3 text-(--color-wedding-border) mt-1.5 shrink-0;
 }
 
 .landing-cta {

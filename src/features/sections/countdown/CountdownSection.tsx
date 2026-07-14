@@ -1,5 +1,6 @@
 import type {SectionComponentProps} from '../../../app/invitation'
 import {useLocalization} from '../../../app/providers/useLocalization'
+import {InterfaceIcon} from '../../../components/ui/InterfaceIcon'
 import {useCountdown} from './useCountdown'
 
 export function CountdownSection<Message extends string>({section}: Readonly<SectionComponentProps<Message, 'countdown'>>) {
@@ -24,7 +25,7 @@ export function CountdownSection<Message extends string>({section}: Readonly<Sec
                             <span className="landing-countdown-value">{item.value}</span>
                             <span className="landing-countdown-unit-label">{item.label}</span>
                         </div>
-                        {index < units.length - 1 && <span className="landing-countdown-sep">:</span>}
+                        {index < units.length - 1 && <InterfaceIcon name="rings" className="landing-countdown-sep"/>}
                     </div>
                 ))}
             </div>

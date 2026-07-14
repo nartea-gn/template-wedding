@@ -22,8 +22,13 @@ export type CountdownSection<Message extends string> = Section<'countdown', {
 
 export type VideoSection<Message extends string> = Section<'video', {
     assetId: string
+    posterAssetId?: string
+    preload?: 'none' | 'metadata' | 'auto'
+    aspectRatio?: `${number} / ${number}`
     label: Message
     playLabel: Message
+    loadingLabel: Message
+    errorLabel: Message
 }>
 
 export type VenueItemDefinition<Message extends string> = {
