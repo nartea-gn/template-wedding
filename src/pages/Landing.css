@@ -101,7 +101,7 @@
 }
 
 .landing-countdown-row {
-    @apply flex flex-wrap items-start justify-center gap-x-2 gap-y-6;
+    @apply flex flex-nowrap items-start justify-center gap-x-2;
 }
 
 .landing-countdown-item {
@@ -123,6 +123,52 @@
 
 .landing-countdown-sep {
     @apply size-5 md:size-6 opacity-45 mx-1.5 md:mx-3 text-(--color-wedding-border) mt-1.5 shrink-0;
+}
+
+@media (max-width: 480px) {
+    .landing-countdown {
+        @apply gap-4;
+    }
+
+    .landing-countdown-row {
+        @apply gap-x-1;
+    }
+
+    .landing-countdown-unit {
+        min-width: 3.15rem;
+    }
+
+    .landing-countdown-value {
+        font-size: clamp(2.25rem, 12vw, 3rem);
+    }
+
+    .landing-countdown-unit-label {
+        @apply text-[0.52rem] tracking-[0.1em];
+    }
+
+    .landing-countdown-sep {
+        @apply size-4 mx-0.5 mt-1;
+    }
+}
+
+@media (max-width: 380px) {
+    .landing-countdown-unit {
+        min-width: 2.85rem;
+    }
+
+    .landing-countdown-value {
+        font-size: clamp(2rem, 11vw, 2.55rem);
+    }
+
+    .landing-countdown-unit-label {
+        @apply text-[0.48rem] tracking-[0.08em];
+    }
+
+    .landing-countdown-sep {
+        @apply mx-0;
+        width: 0.875rem;
+        height: 0.875rem;
+    }
 }
 
 .landing-cta {
