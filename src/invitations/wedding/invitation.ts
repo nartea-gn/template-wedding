@@ -75,6 +75,13 @@ export const weddingInvitation = {
             content: {
                 label: 'venue.label',
                 mapLabel: 'venue.map',
+                mapPickerLabel: 'venue.map.choose',
+                mapPickerCloseLabel: 'venue.map.close',
+                mapProviders: [
+                    {id: 'device', label: 'venue.map.device'},
+                    {id: 'google', label: 'venue.map.google'},
+                    {id: 'apple', label: 'venue.map.apple'},
+                ],
                 items: [
                     {
                         id: 'ceremony',

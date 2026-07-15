@@ -57,6 +57,11 @@
     animation-delay: 0.3s;
 }
 
+.landing-venue:has(.landing-venue-map-trigger[aria-expanded="true"]) {
+    position: relative;
+    z-index: 10;
+}
+
 .landing-venue-label {
     @apply text-xs uppercase tracking-[0.18em] opacity-50 mb-8;
 }
@@ -85,8 +90,168 @@
     @apply text-[0.95rem] opacity-65 leading-relaxed max-w-xs;
 }
 
-.landing-venue-map {
-    @apply mt-3;
+.landing-venue-map-shell {
+    @apply relative w-full mt-4;
+}
+
+.landing-venue-map-trigger {
+    @apply w-full;
+}
+
+.landing-venue-map-trigger-icon {
+    @apply size-5 shrink-0 fill-none stroke-current stroke-[1.5];
+}
+
+.landing-map-picker-panel {
+    @apply text-left text-(--color-wedding-text);
+}
+
+.landing-map-picker-popover {
+    @apply absolute left-0 top-full z-30 w-full mt-2 p-3 bg-(--color-wedding-surface) shadow-(--shadow-card-lg);
+    animation: mapPickerPopoverIn 0.2s ease-out both;
+}
+
+.landing-map-picker-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.landing-map-picker-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgb(18 25 38 / 42%);
+    backdrop-filter: blur(2px);
+    animation: mapPickerBackdropIn 0.2s ease-out both;
+    cursor: default;
+}
+
+.landing-map-picker-sheet {
+    position: relative;
+    width: 100%;
+    max-height: min(80vh, 34rem);
+    padding: 0.75rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    border: 1px solid var(--color-wedding-border);
+    border-bottom: 0;
+    border-radius: 1.5rem 1.5rem 0 0;
+    background: var(--color-wedding-surface);
+    box-shadow: var(--shadow-card-lg);
+    animation: mapPickerSheetIn 0.24s ease-out both;
+}
+
+.landing-map-picker-handle {
+    @apply block w-10 h-1 mx-auto mb-3 rounded-full bg-(--color-wedding-text)/20;
+}
+
+.landing-map-picker-header {
+    @apply flex items-center justify-between gap-4 px-2 pb-3;
+}
+
+.landing-map-picker-title {
+    @apply font-serif text-xl font-semibold text-(--color-wedding-primary);
+}
+
+.landing-map-picker-close {
+    @apply grid size-11 shrink-0 place-items-center rounded-full border border-(--color-wedding-border) bg-transparent text-(--color-wedding-primary) cursor-pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.landing-map-picker-close svg {
+    @apply size-5 fill-none stroke-current stroke-[1.6];
+}
+
+.landing-map-picker-options {
+    @apply grid gap-1;
+}
+
+.landing-map-picker-option {
+    @apply grid min-h-14 grid-cols-[auto_1fr_auto] items-center gap-3 rounded-(--radius-button) px-3 py-2.5 text-sm font-semibold text-(--color-wedding-text) no-underline;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.landing-map-picker-mark {
+    @apply grid size-10 place-items-center rounded-full bg-(--color-wedding-primary)/10 text-(--color-wedding-primary);
+}
+
+.landing-map-provider-icon {
+    @apply size-5;
+}
+
+.landing-map-provider-icon--device {
+    @apply fill-none stroke-current stroke-[1.5];
+}
+
+.landing-map-picker-mark--google,
+.landing-map-picker-mark--apple {
+    background: #fff;
+    box-shadow: inset 0 0 0 1px rgb(17 24 39 / 8%);
+}
+
+.landing-map-provider-icon--google {
+    @apply size-6;
+    stroke: none;
+}
+
+.landing-map-provider-icon--apple {
+    width: 1.15rem;
+    height: 1.4rem;
+    stroke: none;
+}
+
+.landing-map-picker-arrow {
+    @apply size-4 fill-none stroke-current stroke-[1.5] opacity-45;
+}
+
+.landing-map-picker-option:hover,
+.landing-map-picker-close:hover {
+    @apply bg-(--color-wedding-primary) text-(--color-wedding-bg) outline-none;
+}
+
+.landing-map-picker-option:focus-visible,
+.landing-map-picker-close:focus-visible {
+    @apply bg-(--color-wedding-primary)/10 text-(--color-wedding-primary) outline-2 outline-offset-2 outline-(--color-wedding-primary);
+}
+
+.landing-map-picker-option:active {
+    transform: scale(0.985);
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    .landing-map-picker-layer {
+        padding: 1.5rem;
+    }
+
+    .landing-map-picker-sheet {
+        max-width: 34rem;
+        border-bottom: 1px solid var(--color-wedding-border);
+        border-radius: 1.5rem;
+        padding-bottom: 1rem;
+    }
+}
+
+@keyframes mapPickerPopoverIn {
+    from {
+        opacity: 0;
+        transform: translateY(-0.35rem);
+    }
+}
+
+@keyframes mapPickerBackdropIn {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes mapPickerSheetIn {
+    from {
+        opacity: 0;
+        transform: translateY(1.5rem);
+    }
 }
 
 .landing-countdown {
@@ -102,27 +267,45 @@
 
 .landing-countdown-row {
     @apply flex flex-nowrap items-start justify-center gap-x-2;
+    --countdown-unit-min-width: 4.25rem;
 }
 
 .landing-countdown-item {
-    @apply flex items-center;
+    @apply grid grid-rows-[auto_auto] items-center;
+    grid-template-columns: minmax(var(--countdown-unit-min-width), auto) auto;
 }
 
 .landing-countdown-unit {
-    @apply flex flex-col items-center gap-1 min-w-[4.25rem] md:min-w-[5.5rem];
+    display: contents;
 }
 
 .landing-countdown-value {
     @apply font-serif font-bold text-(--color-wedding-primary) leading-none;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
     font-size: clamp(3.1rem, 13vw, 5.6rem);
 }
 
 .landing-countdown-unit-label {
     @apply text-[0.68rem] md:text-xs uppercase tracking-[0.16em] opacity-50;
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: center;
+    margin-top: 0.25rem;
 }
 
 .landing-countdown-sep {
-    @apply size-5 md:size-6 opacity-45 mx-1.5 md:mx-3 text-(--color-wedding-border) mt-1.5 shrink-0;
+    @apply size-5 md:size-6 opacity-45 mx-1.5 md:mx-3 text-(--color-wedding-border) shrink-0;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+}
+
+@media (min-width: 768px) {
+    .landing-countdown-row {
+        --countdown-unit-min-width: 5.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -132,10 +315,7 @@
 
     .landing-countdown-row {
         @apply gap-x-1;
-    }
-
-    .landing-countdown-unit {
-        min-width: 3.15rem;
+        --countdown-unit-min-width: 3.15rem;
     }
 
     .landing-countdown-value {
@@ -147,13 +327,13 @@
     }
 
     .landing-countdown-sep {
-        @apply size-4 mx-0.5 mt-1;
+        @apply size-4 mx-0.5;
     }
 }
 
 @media (max-width: 380px) {
-    .landing-countdown-unit {
-        min-width: 2.85rem;
+    .landing-countdown-row {
+        --countdown-unit-min-width: 2.85rem;
     }
 
     .landing-countdown-value {

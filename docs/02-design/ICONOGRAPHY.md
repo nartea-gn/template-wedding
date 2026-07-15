@@ -22,3 +22,16 @@ nothing rather than breaking a configured form.
 
 The current primitive owns geometry and accessibility only. Sprint 6.4 may let themes vary stroke, weight or treatment,
 but icon choices must not control capabilities, content, validation or business rules.
+
+## Map provider marks
+
+The Venue map picker uses local, decorative provider marks alongside explicit text labels:
+
+- Device maps: owned neutral map-pin geometry; theme-aware and not associated with a vendor.
+- Google Maps: [Google Logo New Maps](https://www.svgrepo.com/show/381002/google-logo-new-maps.svg), listed by
+  SVG Repo as CC0.
+- Apple Maps: [Apple Logo](https://www.svgrepo.com/svg/303125/apple-logo), listed by SVG Repo as CC0.
+
+Brand marks are used only to identify their respective navigation provider. They keep their source colors, are not
+theme-controlled and do not replace the visible provider label. Their inclusion does not imply endorsement or ownership
+of the third-party trademarks.
