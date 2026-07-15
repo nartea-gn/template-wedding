@@ -38,6 +38,10 @@
       medios, fuentes y baseline reproducible.
     - **6.3 Visual refinement (implementado; validación final pendiente):** hero adaptable, ritmo narrativo,
       jerarquía compartida en Landing/RSVP y decisiones visuales candidatas para Theme Engine v2.
+    - **6.3.2 Venue map options (implementado; validación final pendiente):** cada ubicación con `mapsQuery`
+      ofrece mapa del dispositivo, Google Maps y Apple Maps sin SDKs, claves externas ni detección de apps instaladas.
+    - **6.3.3 Adaptive map picker (en implementación):** conserva un único CTA y presenta los proveedores mediante
+      popover en escritorio y bottom sheet en móvil/tablet, sin desplazar el contenido de la invitación.
     - **6.4 Theme Engine v2:** evolución prioritaria del contrato visual a partir de las necesidades medidas en 6.1–6.3;
       podrá gobernar tipografía, motion, iconografía, decoración y variantes de composición sin introducir lógica de
       dominio en los componentes.

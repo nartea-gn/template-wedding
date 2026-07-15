@@ -43,6 +43,12 @@ export type VenueItemDefinition<Message extends string> = {
 export type VenueSection<Message extends string> = Section<'venue', {
     label: Message
     mapLabel: Message
+    mapPickerLabel: Message
+    mapPickerCloseLabel: Message
+    mapProviders?: readonly {
+        id: 'device' | 'google' | 'apple'
+        label: Message
+    }[]
     items: readonly VenueItemDefinition<Message>[]
 }>
 
