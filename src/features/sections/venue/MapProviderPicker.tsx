@@ -1,11 +1,12 @@
 import {useCallback, useEffect, useId, useRef, useState} from 'react'
 import {createPortal} from 'react-dom'
-import {MapProviderIcon} from './MapProviderIcon'
 import type {MapProviderId} from './MapProviderIcon'
+import {MapProviderIcon} from './MapProviderIcon'
 
 type MapProviderOption = {
     id: MapProviderId
     label: string
+    badge?: string
     url: string
 }
 
@@ -136,7 +137,12 @@ export function MapProviderPicker({
                         <span className={`landing-map-picker-mark landing-map-picker-mark--${option.id}`}>
                             <MapProviderIcon provider={option.id}/>
                         </span>
-                        <span>{option.label}</span>
+                        <span className="landing-map-picker-option-content">
+                            <span>{option.label}</span>
+                            {option.badge && (
+                                <span className="landing-map-picker-badge">{option.badge}</span>
+                            )}
+                        </span>
                         <svg className="landing-map-picker-arrow" viewBox="0 0 20 20" aria-hidden="true">
                             <path d="M7.5 5h7.5v7.5M15 5l-9.5 9.5"/>
                         </svg>

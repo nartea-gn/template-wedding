@@ -78,7 +78,7 @@ export const weddingInvitation = {
                 mapPickerLabel: 'venue.map.choose',
                 mapPickerCloseLabel: 'venue.map.close',
                 mapProviders: [
-                    {id: 'device', label: 'venue.map.device'},
+                    {id: 'device', label: 'venue.map.device', badge: 'venue.map.recommended'},
                     {id: 'google', label: 'venue.map.google'},
                     {id: 'apple', label: 'venue.map.apple'},
                 ],

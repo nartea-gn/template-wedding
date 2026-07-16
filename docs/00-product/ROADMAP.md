@@ -40,8 +40,12 @@
       jerarquía compartida en Landing/RSVP y decisiones visuales candidatas para Theme Engine v2.
     - **6.3.2 Venue map options (implementado; validación final pendiente):** cada ubicación con `mapsQuery`
       ofrece mapa del dispositivo, Google Maps y Apple Maps sin SDKs, claves externas ni detección de apps instaladas.
-    - **6.3.3 Adaptive map picker (en implementación):** conserva un único CTA y presenta los proveedores mediante
+    - **6.3.3 Adaptive map picker (completado y validado):** conserva un único CTA y presenta los proveedores mediante
       popover en escritorio y bottom sheet en móvil/tablet, sin desplazar el contenido de la invitación.
+    - **6.3.5 Map picker compatibility (implementado; validación final en iOS pendiente):** la opción automática
+      conserva el selector nativo de Android, usa enlaces HTTPS compatibles con Apple Maps en iOS/iPadOS y aplica un
+      fallback web seguro en el resto de plataformas; el selector incorpora lenguaje orientado a la acción y una
+      recomendación visual configurable y localizada.
     - **6.4 Theme Engine v2:** evolución prioritaria del contrato visual a partir de las necesidades medidas en 6.1–6.3;
       podrá gobernar tipografía, motion, iconografía, decoración y variantes de composición sin introducir lógica de
       dominio en los componentes.
