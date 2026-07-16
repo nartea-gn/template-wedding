@@ -3,22 +3,33 @@ import {useLocalization} from '../../../app/providers/useLocalization'
 import {MapProviderPicker} from './MapProviderPicker'
 
 type MapProviderId = 'device' | 'google' | 'apple'
-type MapProvider<Message extends string> = { id: MapProviderId; label: Message }
+type MapProvider<Message extends string> = { id: MapProviderId; label: Message; badge?: Message }
+
+function isAppleMobileDevice() {
+    const isIos = /iPad|iPhone|iPod/i.test(navigator.userAgent)
+    const isIpados = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
+    return isIos || isIpados
+}
 
 function createMapUrl(provider: MapProviderId, query: string) {
     const encodedQuery = encodeURIComponent(query)
-    if (provider === 'device') return `geo:0,0?q=${encodedQuery}`
-    if (provider === 'apple') return `https://maps.apple.com/?q=${encodedQuery}`
-    return `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`
+    const appleMapsUrl = `https://maps.apple.com/?q=${encodedQuery}`
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedQuery}`
+
+    if (provider === 'apple') return appleMapsUrl
+    if (provider === 'google') return googleMapsUrl
+    if (isAppleMobileDevice()) return appleMapsUrl
+    if (/Android/i.test(navigator.userAgent)) return `geo:0,0?q=${encodedQuery}`
+    return googleMapsUrl
 }
 
 export function VenueSection<Message extends string>({section}: Readonly<SectionComponentProps<Message, 'venue'>>) {
     const {t} = useLocalization<Message>()
-    const defaultProviders = [
-        {id: 'device', label: 'venue.map.device' as Message},
+    const defaultProviders: readonly MapProvider<Message>[] = [
+        {id: 'device', label: 'venue.map.device' as Message, badge: 'venue.map.recommended' as Message},
         {id: 'google', label: 'venue.map.google' as Message},
         {id: 'apple', label: 'venue.map.apple' as Message},
-    ] satisfies readonly MapProvider<Message>[]
+    ]
     const providers = section.content.mapProviders ?? defaultProviders
 
     return (
@@ -39,6 +50,7 @@ export function VenueSection<Message extends string>({section}: Readonly<Section
                                 options={providers.map(provider => ({
                                     id: provider.id,
                                     label: t(provider.label),
+                                    badge: provider.badge ? t(provider.badge) : undefined,
                                     url: createMapUrl(provider.id, item.mapsQuery),
                                 }))}
                             />

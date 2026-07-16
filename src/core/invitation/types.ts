@@ -48,6 +48,7 @@ export type VenueSection<Message extends string> = Section<'venue', {
     mapProviders?: readonly {
         id: 'device' | 'google' | 'apple'
         label: Message
+        badge?: Message
     }[]
     items: readonly VenueItemDefinition<Message>[]
 }>
