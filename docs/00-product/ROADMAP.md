@@ -23,7 +23,8 @@ hacia experiencias visuales reconocibles.
 5. `6.6.5` — Admin: jerarquía operativa, KPIs, toolbar y tabla.
 6. `6.6.6` — Comparativa final de colecciones y adopción de la investigación tipográfica aprobada en Nartea Studio.
 
-**Criterio de salida:** auditoría aprobada, capturas comparables de los cinco temas, Royal sin regresiones, contraste AA,
+**Criterio de salida:** auditoría aprobada, capturas comparables de los cinco temas, Royal sin regresiones, contraste
+AA,
 backgrounds validados en los viewports objetivo y pruebas manuales de Landing, RSVP y Admin.
 
 **Estado de 6.6.1:** implementado y validado en navegador; pendiente de `pnpm lint`, `pnpm build` y aprobación manual de

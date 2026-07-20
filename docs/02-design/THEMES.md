@@ -48,15 +48,15 @@ registrar decisiones de implementación mediante ADR, pero no debe crear un sist
 
 La correspondencia mínima con `LD-002` es:
 
-| Nartea Studio | `ThemeDefinition` | Custom Property |
-|---|---|---|
-| `action-primary` | `colors.action` | `--color-wedding-action` |
-| `action-on-primary` | `colors.onAction` | `--color-wedding-on-action` |
-| `control-border` | `colors.controlBorder` | `--color-wedding-control-border` |
-| `success` | `colors.success` | `--color-wedding-success` |
-| `success-surface` | `colors.successSurface` | `--color-wedding-success-surface` |
-| `error` | `colors.danger` | `--color-wedding-danger` |
-| `error-surface` | `colors.dangerSurface` | `--color-wedding-danger-surface` |
+| Nartea Studio       | `ThemeDefinition`       | Custom Property                   |
+|---------------------|-------------------------|-----------------------------------|
+| `action-primary`    | `colors.action`         | `--color-wedding-action`          |
+| `action-on-primary` | `colors.onAction`       | `--color-wedding-on-action`       |
+| `control-border`    | `colors.controlBorder`  | `--color-wedding-control-border`  |
+| `success`           | `colors.success`        | `--color-wedding-success`         |
+| `success-surface`   | `colors.successSurface` | `--color-wedding-success-surface` |
+| `error`             | `colors.danger`         | `--color-wedding-danger`          |
+| `error-surface`     | `colors.dangerSurface`  | `--color-wedding-danger-surface`  |
 
 `danger` es actualmente un nombre de compatibilidad de la implementación para el estado de error. No deberá
 reutilizarse también para acciones destructivas sin separar antes ambos significados en el contrato.
