@@ -17,6 +17,10 @@ compartido con React. `toCssVariables` los expone a CSS sin obligar a los compon
 No se crean escalas completas sin consumidores. Los valores variables por identidad pertenecen al Theme, no a los tokens
 globales.
 
+Theme Engine v2 añade `composition`, `motion`, `surfaces`, `decoration` e `iconography` al contrato de identidad. Estos
+grupos no duplican las escalas globales: expresan decisiones que deben variar coordinadamente entre temas y que ya
+tienen consumidores reales.
+
 ## Nomenclatura
 
 El código TypeScript usa nombres semánticos (`background`, `cardLarge`, `durationNormal`). Las Custom Properties
@@ -33,6 +37,8 @@ solo para eliminar un literal.
 
 `tokens/theme TypeScript -> toCssVariables -> ThemeProvider -> Custom Properties -> Tailwind/CSS`
 
+`toCssVariables` es el único adaptador permitido. Los componentes consumen Custom Properties semánticas y nunca
+importan un tema concreto.
+
 Los valores de `:root` son únicamente fallback de primer paint del tema inicial; el registro TypeScript gobierna el tema
 activo.
-

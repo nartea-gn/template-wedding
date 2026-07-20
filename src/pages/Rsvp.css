@@ -6,7 +6,8 @@
 }
 
 .rsvp-success-card {
-    @apply max-w-md p-8 md:p-10 space-y-6 bg-(--color-wedding-surface)/80;
+    @apply max-w-md p-8 md:p-10 space-y-6;
+    background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-form-card-opacity), transparent);
 }
 
 .rsvp-success-icon {
@@ -15,6 +16,7 @@
 
 .rsvp-success-title {
     @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-primary);
+    font-family: var(--font-heading);
 }
 
 .rsvp-success-text {
@@ -30,7 +32,8 @@
 }
 
 .rsvp-card {
-    @apply w-full max-w-2xl p-6 md:p-10 bg-(--color-wedding-surface)/80;
+    @apply w-full max-w-2xl p-6 md:p-10;
+    background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-form-card-opacity), transparent);
 }
 
 .rsvp-progress {

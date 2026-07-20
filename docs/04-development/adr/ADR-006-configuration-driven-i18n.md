@@ -1,6 +1,6 @@
 # ADR-006: Configuration-driven internationalization
 
-- Estado: aceptado como arquitectura; implementación pendiente
+- Estado: aceptado e implementado
 - Fecha: 2026-07-11
 
 ## Contexto
@@ -24,9 +24,13 @@ catálogos secundarios se cargan bajo demanda.
 - Un idioma sigue siendo el caso más pequeño y no muestra toggle.
 - Secciones y Form Engine consumen contenido localizado sin conocer almacenamiento de catálogos.
 - Faltas de traducción pueden validarse antes del despliegue.
-- Deben localizarse también validaciones, errores, fechas y SEO.
+- Validaciones, errores, fechas y Admin usan el runtime común; SEO permanece pendiente de consumo en Sprint 7.3.
 
-## Decisión diferida
+## Implementación
 
-La elección entre una librería consolidada y un resolvedor pequeño propio se hará después de definir el contrato y medir
-necesidades de plurales, interpolación y división de bundles.
+Se adoptó un runtime propio pequeño porque los requisitos actuales son claves tipadas, fallback, persistencia, `Intl` y
+carga diferida. Español es el idioma predeterminado; inglés y búlgaro se importan al solicitarlos. El selector solo se
+renderiza con al menos dos idiomas y `selector.visible: true`.
+
+Una librería externa se reconsiderará únicamente si aparecen necesidades reales de pluralización compleja,
+interpolación avanzada o gestión remota que el contrato actual no pueda cubrir de forma mantenible.

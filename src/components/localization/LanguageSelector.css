@@ -23,6 +23,10 @@
     letter-spacing: 0.06em;
     cursor: pointer;
     backdrop-filter: blur(12px);
+    transition: background-color var(--theme-interaction-duration) ease,
+    border-color var(--theme-interaction-duration) ease,
+    color var(--theme-interaction-duration) ease,
+    box-shadow var(--theme-interaction-duration) ease;
 }
 
 .language-selector-trigger:disabled {
@@ -66,6 +70,8 @@
     font: 600 0.86rem/1.2 var(--font-body);
     text-align: left;
     cursor: pointer;
+    transition: background-color var(--theme-interaction-duration) ease,
+    color var(--theme-interaction-duration) ease;
 }
 
 .language-selector-option--selected {

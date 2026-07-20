@@ -1,3 +1,4 @@
+import {Fragment} from 'react'
 import type {SectionComponentProps} from '../../../app/invitation'
 import {useLocalization} from '../../../app/providers/useLocalization'
 import {InterfaceIcon} from '../../../components/ui/InterfaceIcon'
@@ -20,13 +21,15 @@ export function CountdownSection<Message extends string>({section}: Readonly<Sec
             <p className="landing-countdown-label">{t(section.content.label)}</p>
             <div className="landing-countdown-row">
                 {units.map((item, index) => (
-                    <div key={item.label} className="landing-countdown-item">
-                        <div className="landing-countdown-unit">
-                            <span className="landing-countdown-value">{item.value}</span>
-                            <span className="landing-countdown-unit-label">{item.label}</span>
+                    <Fragment key={item.label}>
+                        <div className="landing-countdown-item">
+                            <div className="landing-countdown-unit">
+                                <span className="landing-countdown-value">{item.value}</span>
+                                <span className="landing-countdown-unit-label">{item.label}</span>
+                            </div>
                         </div>
                         {index < units.length - 1 && <InterfaceIcon name="rings" className="landing-countdown-sep"/>}
-                    </div>
+                    </Fragment>
                 ))}
             </div>
         </section>

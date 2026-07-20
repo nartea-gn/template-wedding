@@ -28,5 +28,28 @@ export type ThemeDefinition = {
         large: string
         extraLarge: string
     }
+    composition: {
+        sectionGap: string
+        sectionGapWide: string
+        ornamentGap: string
+        ornamentGapWide: string
+        editorialMaxWidth: string
+        mediaMaxWidth: string
+    }
+    motion: {
+        revealDuration: string
+        revealDistance: string
+        interactionDuration: string
+    }
+    surfaces: {
+        contentCardOpacity: string
+        formCardOpacity: string
+    }
+    decoration: {
+        ornamentColor: string
+        ornamentOpacity: string
+    }
+    iconography: {
+        interfaceStrokeWidth: string
+    }
 }
-

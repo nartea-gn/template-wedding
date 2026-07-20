@@ -5,8 +5,8 @@
 
 ## Contexto
 
-El proyecto usa React 18, React Router 6 y TypeScript 5. Se desea trabajar con React 19, Router 7 y TypeScript 7 cuando
-el ecosistema sea compatible.
+En el momento de la decisión, el proyecto usaba React 18, React Router 6 y TypeScript 5. Se aprobó migrar a React 19,
+Router 7 y TypeScript 7 después de comprobar la compatibilidad del ecosistema.
 
 ## Decisión
 
@@ -24,7 +24,7 @@ programática todavía requiere cautela en herramientas que la integran.
 
 ## Consecuencias
 
-- Se crea un hito técnico antes de `InvitationDefinition`.
+- El hito técnico se completó antes de `InvitationDefinition`.
 - No se combinan upgrades con refactors funcionales.
 - La dependencia `typescript` expone la API compatible de TypeScript 6 y `@typescript/native` aporta el binario `tsc` 7,
   siguiendo la estrategia oficial de transición.

@@ -12,6 +12,16 @@ links the real remote project from an encrypted secret.
 React must never run migrations. Administrative credentials only exist in GitHub Secrets and are not exposed as `VITE_*`
 variables.
 
+## Estado de reproducibilidad
+
+El repositorio contiene el esquema base en `supabase/schema.sql` y migraciones incrementales en
+`supabase/migrations`. La primera migración versionada parte de una tabla ya existente; por tanto, una instalación
+vacía no puede reconstruirse todavía ejecutando únicamente el historial de migraciones.
+
+Esto es un bloqueo previo a `1.0.0`, no un motivo para inventar una migración retrospectiva. Antes de crear una
+baseline se debe comparar el esquema remoto, `supabase_migrations.schema_migrations` y los proyectos ya desplegados.
+Renombrar versiones o ejecutar `migration repair` sin esa auditoría puede desalinear producción.
+
 ## Production pipeline
 
 On a push to `main`, `.github/workflows/deploy.yml` runs in this order:
@@ -67,3 +77,12 @@ enabling CI so schema and history agree.
 - `supabase db push --dry-run` previews pending migrations.
 - `migration repair` changes history only; use it only after confirming the real schema.
 - Once this workflow is active, do not make production schema changes through Table Editor or SQL Editor.
+
+## Trabajo obligatorio antes de 1.0.0
+
+1. Exportar y comparar el esquema remoto real.
+2. Auditar el historial aplicado en cada proyecto activo.
+3. Diseñar una baseline para instalaciones vacías.
+4. Definir cómo adoptar la baseline en instalaciones existentes sin reaplicar cambios.
+5. Probar instalación limpia, actualización, fallo parcial y recuperación.
+6. Documentar backup, rollback y responsable operativo.

@@ -1,147 +1,122 @@
 # Product Backlog
 
-## Purpose
+## Propósito
 
-This document is the single inventory of product evolutions that should not be lost. It is not a release commitment.
-An item moves to the roadmap only after its value, dependencies and implementation plan are approved.
+Inventario único de evoluciones no entregadas. Un elemento solo pasa al roadmap cuando tiene valor, dependencias,
+criterios de aceptación y plan aprobado. Los hitos completados se registran en `CHANGELOG.md` y en el historial del
+roadmap, no permanecen en la cola de trabajo.
 
-## Next — approved direction
+## P0 — Bloqueos previos a 1.0.0
 
-### Sprint 5.1A: Read-only Admin operations — implemented and validated
+### Seguridad y autorización de Admin
 
-- Configurable CSV export of the currently presented Admin table.
-- Guest search using the configured identity field.
-- Sorting by submission date and guest name.
-- Configurable client-side pagination and optional page-size selector over the normalized result set.
-- Visible result count and last successful refresh time.
+- Sustituir la contraseña cliente por autenticación o una operación validada en servidor.
+- Aislar lecturas y futuras mutaciones por invitación y usuario autorizado.
+- Definir sesión, expiración, cierre y recuperación.
+- Verificar las políticas con clientes públicos y administrativos reales.
 
-Dependencies:
+Condición de activación: ADR y modelo de amenazas aprobados. No se implementarán mutaciones administrativas sobre las
+políticas anónimas actuales.
 
-- finalize the Admin capability contract;
-- preserve the Repository boundary and provider independence.
-- revisit server-side query, counting and pagination only after measured scale requires it.
+### Privacidad de respuestas RSVP
 
-### Sprint 5.1B: Protected Admin operations
+- Informar qué datos se recogen y con qué finalidad.
+- Minimizar preguntas y evitar datos sensibles innecesarios.
+- Definir retención, exportación, corrección y borrado.
+- Determinar el tratamiento adecuado de restricciones alimentarias y mensajes libres.
 
-- Optional open/close RSVP control.
-- Persistent invitation runtime state with update timestamp.
-- Localized public closed state that hides the CTA and prevents direct submission.
-- Secure mutation with authorization scoped to the invitation.
+Condición de activación: requisitos comerciales y revisión legal/operativa definidos.
 
-Blocking dependencies:
+### Baseline reproducible de Supabase
 
-- define the persistent invitation runtime-state contract;
-- approve an architecture decision for protected mutations;
-- introduce server-validated authentication or authorization;
-- replace anonymous mutation access with restrictive policies.
+- Auditar `supabase_migrations.schema_migrations` y el esquema remoto real.
+- Diseñar una baseline capaz de crear una instalación vacía.
+- Mantener una ruta segura para proyectos existentes ya migrados manualmente.
+- Documentar restauración, rollback y recuperación ante un deploy fallido.
 
-### Sprint 6: Premium experience
+Condición de activación: historial remoto verificado. No se renombrarán ni repararán migraciones a ciegas.
 
-- Refine visual hierarchy, responsive behavior and accessible interaction.
-- Keep motion subtle and compatible with reduced-motion preferences.
-- Optimize heavy media, especially the hero video, and measure the result.
-- Use Lighthouse and real-device checks without adding business capabilities.
+## P1 — Release hardening
 
-### Sprint 6.4: Theme Engine v2 — prioritized architectural evolution
+### Pruebas y CI de pull requests
 
-- Evolve the typed theme contract beyond colors, typography, shadows and radius using requirements verified in Sprint 6.
-- Support theme-owned motion, icon treatment, decoration and approved composition variants without moving business
-  rules into themes.
-- Preserve CSS-variable output and migration compatibility so existing invitations remain functional during adoption.
-- Define the contract and migration through an RFC/ADR before changing implementations.
+- Elegir framework y alcance antes de añadir dependencias.
+- Cubrir validación de Invitation Definition, Form Engine, mapper y Repository.
+- Añadir integración de persistencia y E2E de Landing, RSVP y Admin.
+- Ejecutar lint, build y pruebas en pull requests, además del deploy de `main`.
+- Fijar versiones de herramientas del workflow, incluida Supabase CLI.
 
-Dependencies:
+### Contratos incompletos
 
-- complete Sprint 6.1–6.3 and inventory the visual decisions that genuinely vary by theme;
-- distinguish brand identity from event content, capability flags and section order;
-- define backwards compatibility and migration criteria for the five current themes.
+- Implementar metadatos `seo` o retirar temporalmente el contrato.
+- Aplicar `rsvp.deadline` a CTA, ruta y envío, con timezone explícita.
+- Unificar `event.date` y el target del countdown.
+- Validar contenido largo, URLs, IDs y estados vacíos.
 
-### Sprint 7: Release hardening
+### QA de release
 
-- Validate critical invitation, localization, RSVP and Admin flows.
-- Add proportionate automated coverage after the contracts stabilize.
-- Review keyboard use, accessibility, browser compatibility and offline/error states.
-- Audit RLS, privacy, data retention, deployment and operational recovery.
-- Complete configuration guidance, release checklist and changelog for `1.0.0`.
-- Prioritize post-1.0 work from real usage and client feedback.
+- WCAG AA, teclado, foco, zoom 200 %, `aria-live` y reduced motion.
+- 320, 390, 768 y 1440 px con todos los temas.
+- Safari iOS, Chrome Android y navegadores de escritorio.
+- Invitaciones mono/multilenguaje, con/sin RSVP y con/sin Admin.
+- Lighthouse/Core Web Vitals sobre un despliegue representativo.
+- Smoke test, rollback y checklist de release.
 
-## Later — useful evolutions with a clear use case
+## P2 — Evolución con valor demostrado
 
-### Admin security
+### Dirección artística por colecciones
 
-- Replace the client-side password gate with Supabase Auth, magic links or an equivalent server-validated mechanism.
-- Restrict read and write policies by invitation and authenticated host.
-- Add session expiry, logout semantics and recovery appropriate to the chosen provider.
-- Record an audit trail before enabling destructive or business-critical operations.
+- Profundizar fotografía, ritmo, tipografía y composición por colección.
+- Mantener Royal como referencia visual aprobada.
+- Investigar y comparar tipografías antes de sustituirlas.
+- Cargar fuentes por tema solo si la medición justifica el coste.
 
-### Response experience
+### Admin y reporting
 
-- Mobile-friendly response detail view for long or numerous answers.
-- Pagination or server-side querying when real response volume makes client-side operations inadequate.
-- Scheduled closing date with explicit timezone behavior.
-- Optional notifications when a new response arrives.
+- Abrir/cerrar RSVP desde Admin mediante una mutación protegida.
+- Detalle móvil para respuestas largas.
+- Consultas, conteo y paginación de servidor cuando el volumen real lo exija.
+- XLSX, informes o gráficos solo si ayudan a una decisión concreta del cliente.
+- Edición/borrado con confirmación e historial de auditoría.
+- Cierre programado, notificaciones y exportaciones especializadas.
 
-### Export and reporting
+### Contenido de invitación aplazado
 
-- XLSX export only if clients need spreadsheets beyond interoperable CSV.
-- Summary reports or charts only after defining decisions they help hosts make.
-- Privacy-aware retention and deletion workflow before handling sensitive production data at scale.
+- Galería como sección registrada con assets, layout y captions accesibles.
+- Historia/timeline como contenido del paquete de evento.
+- Música opcional con consentimiento explícito y sin autoplay.
 
-### Guest management
+Estos módulos permanecen aplazados hasta que Theme Engine v2 esté cerrado y exista una necesidad concreta aprobada.
 
-- Editing or deleting a response with confirmation and audit history.
-- Curated guest list, invitation codes or household grouping.
-- Seating, menu totals or transport manifests as separate features, not additions to the Core Form Engine.
+### Plataforma condicional
 
-### Invitation content modules
+- Editor visual o SaaS.
+- Multi-tenant, roles y facturación.
+- SDK, CLI, plugins o monorepo.
+- Nuevos paquetes de evento.
+- Storybook y regresión visual automática.
+- Integraciones masivas de email, mensajería o CRM.
 
-- Deferred until after Theme Engine v2 and until a concrete client need is approved.
-- Gallery as an optional registered section with configurable assets, layout and accessible captions.
-- Story or timeline as an event-owned content module rendered through the existing Section Registry.
-- Music as an optional capability with explicit playback consent and no autoplay by default.
-- Additional section types only after their content contract and reuse boundary are defined; Core remains unchanged.
+Solo se activarán tras demanda repetida. No se generalizará el Core por escenarios hipotéticos.
 
-### Media workflow
+## Registro de trazabilidad
 
-- External image and video optimization guidance, budgets and validation before deployment.
-- Automated media tooling only if repeated production use justifies ownership and maintenance.
-- Self-hosted or per-invitation font packaging after performance and privacy measurements justify replacing the current
-  loading strategy.
+| Evolución               | Prioridad/destino    | Condición                                 | Preparación existente                          |
+|-------------------------|----------------------|-------------------------------------------|------------------------------------------------|
+| Auth y RLS              | Sprint 7.1 · P0      | ADR y autoridad por invitación aprobados  | Admin desacoplado; Repository aísla datos      |
+| Privacidad y retención  | Sprint 7.1 · P0      | Requisitos legales y operativos definidos | Datos normalizados y exportables               |
+| Baseline Supabase       | Sprint 7.1 · P0      | Historial remoto auditado                 | Migraciones versionadas y deploy ordenado      |
+| Pruebas/PR CI           | Sprint 7.2 · P1      | Stack de pruebas aprobado                 | Contratos y capas ya separadas                 |
+| SEO/deadline/fecha      | Sprint 7.3 · P1      | Semántica de producto aprobada            | Propiedades presentes en Invitation Definition |
+| QA multidispositivo     | Sprint 7.4 · P1      | Release candidate representativa          | Breakpoints y temas definidos                  |
+| Cierre remoto RSVP      | Posterior a 7.1 · P2 | Mutaciones protegidas                     | Capability opcional prevista                   |
+| Consultas de servidor   | P2                   | Volumen o latencia medidos                | Repository extensible con query/count/range    |
+| Galería/Historia/Música | Aplazado · P2        | Caso de cliente y contrato aprobados      | Section Registry y capabilities                |
+| Nuevos eventos          | Condicional          | Segundo dominio real                      | Core neutral respecto del negocio              |
+| Editor/SaaS/plugins     | Condicional          | Demanda repetida y modelo de producto     | Configuración declarativa serializable         |
 
-## Conditional — only after repeated demand
+## Regla de priorización
 
-### Platform
-
-- Visual invitation editor or SaaS control panel.
-- Multi-tenant organizations, roles and billing.
-- SDK, CLI, plugin marketplace or public extension API.
-- Monorepo extraction into independently versioned packages.
-- Additional event packages beyond weddings after a second real domain validates the abstractions.
-
-### Operations
-
-- Staging environments and preview deployments per invitation.
-- Product analytics and operational observability.
-- Automated visual regression testing and Storybook.
-- Bulk email, messaging or CRM integrations.
-
-## Deferred-work traceability register
-
-| Evolution                          | Destination                      | Activation condition                                                                         | Preparation preserved now                                                                                 |
-|------------------------------------|----------------------------------|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| Remote RSVP closure                | Sprint 5.1B                      | Server-validated authorization and restrictive policies approved                             | Admin control remains optional; runtime state is kept outside static invitation configuration             |
-| Admin authentication and RLS       | Sprint 7 / Admin security        | Provider, session model and invitation-scoped authorization approved                         | Auth remains separated from Dashboard; repositories isolate data access                                   |
-| Gallery, story and music           | Later invitation content modules | Theme Engine v2 is stable and a concrete client definition and content contract are approved | Section Registry and capability model accept new modules without changing Core orchestration              |
-| Additional event packages          | Conditional platform evolution   | A second real event domain validates reusable abstractions                                   | Core localization, forms, sections and themes remain domain-neutral                                       |
-| Theme Engine v2                    | Sprint 6.4 — prioritized         | Sprint 6.1–6.3 identify and document the visual dimensions that must vary                    | Current themes remain behind `ThemeDefinition` and CSS-variable output, enabling an incremental migration |
-| Media automation                   | Media workflow                   | Repeated production volume makes manual optimization unreliable                              | Sprint 6.2 defines budgets and an external process before owning tooling                                  |
-| Lighthouse target above 95         | Sprint 6.2 / Sprint 7            | Reproducible baseline and representative deployment exist                                    | Measurements are recorded before a numeric target becomes a release gate                                  |
-| Third-party icon or motion library | Conditional design evolution     | Internal primitives cannot meet an identified accessible interaction                         | Sprint 6.1 uses small owned SVG primitives and existing reduced-motion support                            |
-| XLSX, reports and charts           | Export and reporting             | Clients identify decisions CSV cannot support                                                | CSV stays provider-independent and presentation-based                                                     |
-| Server-side response queries       | Response experience              | Measured volume or latency makes client-side processing inadequate                           | Repository boundary can be extended with query, count and range contracts                                 |
-
-## Prioritization rule
-
-An evolution is promoted only when it provides measurable user or operator value, has an identified owner and respects
-the configuration-driven Core. Generalize only after the same need appears in at least two real cases; security and data
-integrity requirements are never deferred merely to accelerate delivery.
+Seguridad e integridad no se aplazan para acelerar una release. Para el resto, una evolución debe aportar valor medible,
+tener propietario y respetar el Core configurable. Solo se generaliza después de observar la misma necesidad en al
+menos dos casos reales.

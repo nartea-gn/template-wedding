@@ -28,6 +28,20 @@ export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
         '--radius-sm': theme.radius.small,
         '--radius-lg': theme.radius.large,
         '--radius-xl': theme.radius.extraLarge,
+        '--theme-section-gap': theme.composition.sectionGap,
+        '--theme-section-gap-wide': theme.composition.sectionGapWide,
+        '--theme-ornament-gap': theme.composition.ornamentGap,
+        '--theme-ornament-gap-wide': theme.composition.ornamentGapWide,
+        '--theme-editorial-max-width': theme.composition.editorialMaxWidth,
+        '--theme-media-max-width': theme.composition.mediaMaxWidth,
+        '--theme-reveal-duration': theme.motion.revealDuration,
+        '--theme-reveal-distance': theme.motion.revealDistance,
+        '--theme-interaction-duration': theme.motion.interactionDuration,
+        '--theme-content-card-opacity': theme.surfaces.contentCardOpacity,
+        '--theme-form-card-opacity': theme.surfaces.formCardOpacity,
+        '--theme-ornament-color': theme.decoration.ornamentColor,
+        '--theme-ornament-opacity': theme.decoration.ornamentOpacity,
+        '--theme-interface-icon-stroke-width': theme.iconography.interfaceStrokeWidth,
         '--spacing-18': spacing.sectionCompact,
         '--spacing-88': spacing.contentWide,
         '--spacing-128': spacing.contentMax,
@@ -35,4 +49,3 @@ export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
         '--duration-600': motion.durationSlow,
     }
 }
-

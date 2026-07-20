@@ -16,7 +16,7 @@
     --radius-wedding-xl: var(--radius-xl);
 
     --animate-fade-in: fadeIn 0.8s ease-out forwards;
-    --animate-fade-up: fadeUp 0.9s ease both;
+    --animate-fade-up: fadeUp var(--theme-reveal-duration) ease both;
     --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
     --animate-shimmer: shimmer 2s linear infinite;
 }
@@ -29,7 +29,7 @@
     --color-wedding-surface: #EEF1F7;
     --color-wedding-border: #C9A84C;
     --color-wedding-muted: #6B7280;
-    --font-heading: "Playfair Display", serif;
+    --font-heading: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-body: "Josefin Sans", sans-serif;
     --shadow-card: 0 4px 20px rgba(27, 58, 107, 0.08);
     --shadow-card-lg: 0 12px 40px rgba(27, 58, 107, 0.12);
@@ -38,6 +38,20 @@
     --radius-sm: 8px;
     --radius-lg: 16px;
     --radius-xl: 24px;
+    --theme-section-gap: 4rem;
+    --theme-section-gap-wide: 5rem;
+    --theme-ornament-gap: 3.5rem;
+    --theme-ornament-gap-wide: 5rem;
+    --theme-editorial-max-width: 56rem;
+    --theme-media-max-width: 22.5rem;
+    --theme-reveal-duration: 0.8s;
+    --theme-reveal-distance: 18px;
+    --theme-interaction-duration: 0.25s;
+    --theme-content-card-opacity: 70%;
+    --theme-form-card-opacity: 80%;
+    --theme-ornament-color: #C9A84C;
+    --theme-ornament-opacity: 0.9;
+    --theme-interface-icon-stroke-width: 1.75;
 }
 
 /* Base styles */
@@ -81,7 +95,7 @@
 @keyframes fadeUp {
     from {
         opacity: 0;
-        transform: translateY(18px);
+        transform: translateY(var(--theme-reveal-distance));
     }
     to {
         opacity: 1;
@@ -140,8 +154,12 @@
         border: 1px solid transparent;
         cursor: pointer;
         text-decoration: none;
-        transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease,
-        box-shadow 0.25s ease, filter 0.25s ease, transform 0.25s ease;
+        transition: background-color var(--theme-interaction-duration) ease,
+        border-color var(--theme-interaction-duration) ease,
+        color var(--theme-interaction-duration) ease,
+        box-shadow var(--theme-interaction-duration) ease,
+        filter var(--theme-interaction-duration) ease,
+        transform var(--theme-interaction-duration) ease;
         position: relative;
         overflow: hidden;
     }
@@ -236,7 +254,8 @@
         font-family: var(--font-body);
         font-size: 0.9375rem;
         line-height: 1.35;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        transition: border-color var(--theme-interaction-duration) ease,
+        box-shadow var(--theme-interaction-duration) ease;
     }
 
     .input:where(select) {

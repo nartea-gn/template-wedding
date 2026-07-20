@@ -19,16 +19,17 @@ type InvitationDefinition<Locale extends string, Message extends string> = {
 }
 ```
 
-Las secciones serán una unión discriminada y el array determina su orden. RSVP soportará inicialmente `text`,
-`textarea`, `select`, `radio` y `checkbox-group`, con ID, etiqueta, ayuda, obligatoriedad, opciones y validación básica.
+Las secciones son una unión discriminada y el array determina su orden. El Form Engine soporta `text`, `email`,
+`number`, `date`, `textarea`, `select`, `radio`, `checkbox-group` e información no interactiva, con ID persistente,
+etiqueta, ayuda, obligatoriedad, opciones, validación y visibilidad condicional.
 
-Los textos se expresan mediante claves de catálogo tipadas. Los catálogos y sus futuros cargadores permanecen fuera de
-la definición para mantenerla serializable. `MessageKey<typeof catalog>` evita utilizar claves inexistentes dentro de
-una invitación TypeScript.
+Los textos se expresan mediante claves de catálogo tipadas. Los catálogos y sus cargadores permanecen fuera de la
+definición para mantenerla serializable. `MessageKey<typeof catalog>` evita utilizar claves inexistentes dentro de una
+invitación TypeScript y los catálogos secundarios se cargan bajo demanda.
 
 ## Invariantes
 
-- `id` sustituye progresivamente al `slug` actual.
+- `id` identifica la invitación en configuración y persistencia; debe ser único por despliegue.
 - Fechas usan zona horaria explícita.
 - IDs de secciones y campos son únicos.
 - Admin requiere una fuente de respuestas.
@@ -39,8 +40,17 @@ una invitación TypeScript.
 - Un selector visible requiere al menos dos locales.
 - Todos los catálogos comparten las claves obligatorias.
 
-La definición podrá dividirse en archivos de contenido, tema, secciones y formularios; el motor recibe el objeto
+La definición puede dividirse en archivos de contenido, tema, secciones y formularios; el motor recibe el objeto
 agregado.
+
+## Contratos declarados pendientes de consumo completo
+
+- `seo` está tipado y configurado, pero todavía no actualiza los metadatos del documento.
+- `capabilities.rsvp.deadline` está tipado y configurado, pero todavía no bloquea CTA, ruta o envío.
+- `event.date` y `countdown.content.target` pueden divergir porque hoy son dos valores independientes.
+
+Sprint 7.3 debe implementar estas propiedades o retirarlas explícitamente. La configuración no debe aparentar un
+comportamiento que el runtime todavía no garantiza.
 
 ## Compatibilidad temporal
 

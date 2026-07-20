@@ -74,9 +74,9 @@ Se usarán `Intl.DateTimeFormat`, `Intl.NumberFormat` y APIs equivalentes. El id
 
 ## Rendimiento
 
-Los catálogos se dividirán por locale mediante imports dinámicos en Sprint 2.1. La primera invitación contiene
-únicamente `es`, por lo que no incluye catálogos secundarios. No se añadirá una librería hasta comparar su coste y
-funciones con las necesidades reales.
+Los catálogos secundarios se dividen por locale mediante imports dinámicos. La invitación actual usa español como
+catálogo inicial y carga inglés o búlgaro cuando se solicitan. No se añadirá una librería hasta que pluralización,
+interpolación o gestión remota justifiquen su coste y funciones.
 
 ## Fuera de alcance inicial
 
