@@ -15,16 +15,55 @@
 
 /* Royal Landing — watercolor paper and peripheral botany (BG-ROYAL-001). */
 [data-theme="royal"] .landing-page {
+    position: relative;
+    isolation: isolate;
     background-color: var(--color-wedding-bg);
+}
+
+[data-theme="royal"] .landing-page::before,
+[data-theme="royal"] .landing-page::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    inset-inline: 0;
+    height: 58%;
+    pointer-events: none;
     background-image: url('../assets/themes/royal/backgrounds/royal-watercolor-mobile.webp');
     background-position: center top;
-    background-repeat: repeat-y;
-    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-size: 155% auto;
+}
+
+[data-theme="royal"] .landing-page::before {
+    top: 0;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+}
+
+[data-theme="royal"] .landing-page::after {
+    bottom: 0;
+    background-position: center bottom;
+    -webkit-mask-image: linear-gradient(to top, #000 0%, #000 72%, transparent 100%);
+    mask-image: linear-gradient(to top, #000 0%, #000 72%, transparent 100%);
+}
+
+[data-theme="royal"] .landing-page > * {
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 48rem) {
+    [data-theme="royal"] .landing-page::before,
+    [data-theme="royal"] .landing-page::after {
+        background-size: 125% auto;
+    }
 }
 
 @media (min-width: 64rem) {
-    [data-theme="royal"] .landing-page {
+    [data-theme="royal"] .landing-page::before,
+    [data-theme="royal"] .landing-page::after {
         background-image: url('../assets/themes/royal/backgrounds/royal-watercolor-wide.webp');
+        background-size: 125% auto;
     }
 }
 
