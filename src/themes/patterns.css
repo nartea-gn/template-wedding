@@ -18,6 +18,9 @@
     position: relative;
     isolation: isolate;
     background-color: var(--color-wedding-bg);
+    background-image:
+        radial-gradient(circle at 50% 5rem, rgb(255 255 255 / 42%), transparent 34rem),
+        linear-gradient(180deg, rgb(224 229 238 / 12%) 0, transparent 30rem);
 }
 
 [data-theme="royal"] .landing-page::before,
@@ -25,26 +28,33 @@
     content: '';
     position: absolute;
     z-index: 0;
-    inset-inline: 0;
-    height: 58%;
     pointer-events: none;
     background-image: url('../assets/themes/royal/backgrounds/royal-watercolor-mobile.webp');
-    background-position: center top;
     background-repeat: no-repeat;
-    background-size: 155% auto;
 }
 
 [data-theme="royal"] .landing-page::before {
     top: 0;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 72%, transparent 100%);
+    inset-inline: 0;
+    height: clamp(42rem, 160vw, 68rem);
+    background-position: center top;
+    background-size: 112% auto;
+    opacity: 0.62;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
 }
 
 [data-theme="royal"] .landing-page::after {
     bottom: 0;
-    background-position: center bottom;
-    -webkit-mask-image: linear-gradient(to top, #000 0%, #000 72%, transparent 100%);
-    mask-image: linear-gradient(to top, #000 0%, #000 72%, transparent 100%);
+    right: clamp(-9rem, -16vw, -4rem);
+    width: clamp(22rem, 84vw, 38rem);
+    height: clamp(27rem, 108vw, 43rem);
+    background-position: right bottom;
+    background-size: auto 100%;
+    mix-blend-mode: multiply;
+    opacity: 0.16;
+    -webkit-mask-image: radial-gradient(ellipse at right bottom, #000 0%, #000 24%, transparent 66%);
+    mask-image: radial-gradient(ellipse at right bottom, #000 0%, #000 24%, transparent 66%);
 }
 
 [data-theme="royal"] .landing-page > * {
@@ -53,17 +63,26 @@
 }
 
 @media (min-width: 48rem) {
-    [data-theme="royal"] .landing-page::before,
+    [data-theme="royal"] .landing-page::before {
+        height: clamp(48rem, 112vw, 72rem);
+        background-size: 104% auto;
+        opacity: 0.58;
+    }
+
     [data-theme="royal"] .landing-page::after {
-        background-size: 125% auto;
+        right: clamp(-8rem, -9vw, -4rem);
+        width: clamp(30rem, 58vw, 44rem);
+        height: clamp(34rem, 64vw, 48rem);
+        opacity: 0.13;
     }
 }
 
 @media (min-width: 64rem) {
-    [data-theme="royal"] .landing-page::before,
-    [data-theme="royal"] .landing-page::after {
+    [data-theme="royal"] .landing-page::before {
+        height: clamp(40rem, 62vw, 58rem);
         background-image: url('../assets/themes/royal/backgrounds/royal-watercolor-wide.webp');
-        background-size: 125% auto;
+        background-size: 108% auto;
+        opacity: 0.56;
     }
 }
 

@@ -2,8 +2,8 @@
 
 ## Estado
 
-Propuesta para revisión en Sprint 6.6.3. Esta especificación define una dirección candidata; no implica que los assets
-finales estén producidos, integrados o aprobados.
+En implementación dentro de Sprint 6.6.3. Royal dispone de un primer prototipo responsive integrado; su aprobación
+visual es obligatoria antes de producir las otras cuatro colecciones.
 
 ## Objetivo
 
@@ -119,6 +119,24 @@ simple para priorizar datos y controles.
 | Dark | Negro mineral, profundidad sutil y destellos champagne; sin ruido visual continuo. |
 | Magnolia | Acuarela marfil/rosa, pétalos y hojas suaves; mayor presencia floral periférica. |
 | Linen | Papel cálido, ramas secas y tinta verde/gris; mínima ornamentación. |
+
+## Prototipo Royal
+
+`BG-ROYAL-001` materializa la primera dirección con dos variantes WebP bajo
+`src/assets/themes/royal/backgrounds/`. La Landing las compone mediante media queries y capas enmascaradas en
+`src/themes/patterns.css`; `ThemeDefinition`, Invitation Definition, RSVP y Admin permanecen sin cambios.
+
+La composición no replica el asset como un marco completo. Se divide en tres ritmos: una entrada acuarelada dominante
+en el Hero, una superficie de papel prácticamente neutra durante el contenido y un único cierre botánico lateral con
+menor escala visual. El cierre utiliza máscara elíptica y modo de mezcla para evitar que el límite del bitmap pueda
+percibirse sobre el papel.
+
+El prototipo debe validarse primero en 390 y 1440 px. No se generarán Boho, Dark, Magnolia ni Linen hasta confirmar:
+
+- intensidad y continuidad de la acuarela durante el scroll;
+- legibilidad del Hero, countdown, vídeo, venues y CTA;
+- ausencia de repeticiones o cortes visuales inaceptables;
+- peso y comportamiento del fallback.
 
 ## Criterios de aceptación de Sprint 6.6.3
 

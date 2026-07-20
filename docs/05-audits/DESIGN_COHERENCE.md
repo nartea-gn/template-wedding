@@ -69,6 +69,7 @@ siguientes correcciones todavía pendientes de validación visual y funcional:
 | `DC-003` | Countdown recompuesto con grid, cifras tabulares y labels de `0.625rem` a `0.75rem`. | Validado en ES, EN y BG a 320 px y Royal en todos los viewports objetivo. |
 | `DC-010` | Añadidos roles y superficies de éxito/error por tema. | Error de RSVP validado en Royal; estados reales de Admin y Dark pendientes. |
 | `DC-015` | Eliminada la dependencia de `opacity: 0` en el primer render de Landing. | Hero medido con opacidad `1` durante la animación; reduced motion pendiente de comprobación manual. |
+| `DC-017` | Integrado `BG-ROYAL-001` con papel continuo, arte dominante en Hero y cierre asimétrico atenuado. | Validado visualmente en 390 y 1440 px, incluido el recorrido completo; falta aprobación manual de producto. |
 
 “Implementado” no equivale a “cerrado”: los hallazgos permanecerán abiertos hasta completar la columna de validación.
 
