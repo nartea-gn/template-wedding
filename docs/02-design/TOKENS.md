@@ -7,7 +7,7 @@ compartido con React. `toCssVariables` los expone a CSS sin obligar a los compon
 
 ## Categorías actuales
 
-- `colors`: estados globales.
+- `colors`: estados globales de compatibilidad que no varían por colección.
 - `spacing`: tamaños adicionales que ya existían.
 - `typography`: fallbacks globales.
 - `radius`: decisiones globales de foco y forma.
@@ -20,6 +20,10 @@ globales.
 Theme Engine v2 añade `composition`, `motion`, `surfaces`, `decoration` e `iconography` al contrato de identidad. Estos
 grupos no duplican las escalas globales: expresan decisiones que deben variar coordinadamente entre temas y que ya
 tienen consumidores reales.
+
+Los colores funcionales con impacto de contraste pertenecen al tema: `action`, `onAction`, `controlBorder`, `success`,
+`successSurface`, `danger` y `dangerSurface`. `primary` conserva el color de identidad y no se utiliza automáticamente
+como fondo de una acción. Esta separación mantiene colecciones suaves sin sacrificar contraste en botones o foco.
 
 ## Nomenclatura
 

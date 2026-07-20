@@ -59,6 +59,8 @@ patrones decorativos CSS.
 ## Dependencias prohibidas
 
 - El Theme no contiene componentes React, funciones, textos ni assets de contenido.
+- CSS puede seleccionar assets decorativos fijos de colección mediante `data-theme`; no se exponen como configuración
+  de Invitation ni como callbacks del contrato.
 - El Theme no activa capabilities, reordena secciones ni conoce bodas u otros tipos de evento.
 - Los componentes no importan definiciones concretas como `royal` o `boho`.
 
@@ -88,4 +90,5 @@ patrones decorativos CSS.
 
 - Investigar y comparar tipografías por colección antes de cambiar fuentes.
 - Medir carga selectiva y self-hosting antes de ampliar el contrato tipográfico.
+- Implementar backgrounds temáticos con la frontera y criterios definidos en `docs/02-design/BACKGROUNDS.md`.
 - Mantener Galería, Historia y Música fuera del motor hasta que exista un caso de producto aprobado.

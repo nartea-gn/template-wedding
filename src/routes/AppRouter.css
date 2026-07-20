@@ -2,5 +2,6 @@
 
 /* AppRouter styles */
 .route-not-found {
-    @apply p-8 text-center text-red-500 font-mono;
+    @apply p-8 text-center font-mono;
+    color: var(--color-wedding-danger);
 }

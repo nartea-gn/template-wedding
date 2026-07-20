@@ -4,6 +4,8 @@ export type ThemeDefinition = {
         backgroundRgb: string
         primary: string
         primaryRgb: string
+        action: string
+        onAction: string
         text: string
         textRgb: string
         surface: string
@@ -12,6 +14,11 @@ export type ThemeDefinition = {
         borderRgb: string
         muted: string
         mutedRgb: string
+        controlBorder: string
+        success: string
+        successSurface: string
+        danger: string
+        dangerSurface: string
     }
     typography: {
         heading: string

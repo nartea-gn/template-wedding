@@ -31,9 +31,13 @@
 }
 
 .login-error {
-    @apply p-3 bg-red-50 border border-red-200 rounded-lg;
+    @apply p-3 border rounded-lg;
+    color: var(--color-wedding-danger);
+    border-color: var(--color-wedding-danger);
+    background: var(--color-wedding-danger-surface);
 }
 
 .login-error-text {
-    @apply text-xs text-red-600;
+    @apply text-xs;
+    color: var(--color-wedding-danger);
 }

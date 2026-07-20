@@ -7,6 +7,8 @@ export const themes = {
             backgroundRgb: '248 249 251',
             primary: '#1B3A6B',
             primaryRgb: '27 58 107',
+            action: '#1B3A6B',
+            onAction: '#FFFFFF',
             text: '#0F2347',
             textRgb: '15 35 71',
             surface: '#EEF1F7',
@@ -14,7 +16,12 @@ export const themes = {
             border: '#C9A84C',
             borderRgb: '201 168 76',
             muted: '#6B7280',
-            mutedRgb: '107 114 128'
+            mutedRgb: '107 114 128',
+            controlBorder: '#80691F',
+            success: '#176B45',
+            successSurface: '#DCEFE5',
+            danger: '#9B2C3D',
+            dangerSurface: '#F7E1E4'
         },
         typography: {
             heading: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
@@ -45,6 +52,8 @@ export const themes = {
             backgroundRgb: '245 239 230',
             primary: '#7C9A6E',
             primaryRgb: '124 154 110',
+            action: '#4F6B45',
+            onAction: '#FFFFFF',
             text: '#4A3728',
             textRgb: '74 55 40',
             surface: '#EDE4D8',
@@ -52,7 +61,12 @@ export const themes = {
             border: '#D4C5B0',
             borderRgb: '212 197 176',
             muted: '#8B7355',
-            mutedRgb: '139 115 85'
+            mutedRgb: '139 115 85',
+            controlBorder: '#77624B',
+            success: '#35603A',
+            successSurface: '#DFEADC',
+            danger: '#8B3037',
+            dangerSurface: '#F3DDDB'
         },
         typography: {heading: '"Cormorant Garamond", serif', body: '"Nunito", sans-serif'},
         shadows: {
@@ -80,6 +94,8 @@ export const themes = {
             backgroundRgb: '13 13 13',
             primary: '#C9A84C',
             primaryRgb: '201 168 76',
+            action: '#C9A84C',
+            onAction: '#0D0D0D',
             text: '#F0EAD6',
             textRgb: '240 234 214',
             surface: '#1A1A1A',
@@ -87,7 +103,12 @@ export const themes = {
             border: '#2E2E2E',
             borderRgb: '46 46 46',
             muted: '#9CA3AF',
-            mutedRgb: '156 163 175'
+            mutedRgb: '156 163 175',
+            controlBorder: '#777777',
+            success: '#7DD3A8',
+            successSurface: '#163C2B',
+            danger: '#FF9AA8',
+            dangerSurface: '#4A1F27'
         },
         typography: {heading: '"Cormorant Garamond", serif', body: '"Lato", sans-serif'},
         shadows: {
@@ -115,6 +136,8 @@ export const themes = {
             backgroundRgb: '251 246 240',
             primary: '#B76E79',
             primaryRgb: '183 110 121',
+            action: '#8F4F5D',
+            onAction: '#FFFFFF',
             text: '#3D1F28',
             textRgb: '61 31 40',
             surface: '#F2E8E4',
@@ -122,7 +145,12 @@ export const themes = {
             border: '#C9A27A',
             borderRgb: '201 162 122',
             muted: '#8B6F7D',
-            mutedRgb: '139 111 125'
+            mutedRgb: '139 111 125',
+            controlBorder: '#8C5962',
+            success: '#2F6B4F',
+            successSurface: '#E0EFE6',
+            danger: '#8F3445',
+            dangerSurface: '#F5DFE3'
         },
         typography: {heading: '"Cormorant Garamond", serif', body: '"Raleway", sans-serif'},
         shadows: {
@@ -150,6 +178,8 @@ export const themes = {
             backgroundRgb: '251 249 246',
             primary: '#4A5343',
             primaryRgb: '74 83 67',
+            action: '#4A5343',
+            onAction: '#FFFFFF',
             text: '#2C3029',
             textRgb: '44 48 41',
             surface: '#F5F3EF',
@@ -157,7 +187,12 @@ export const themes = {
             border: '#D4C5B0',
             borderRgb: '212 197 176',
             muted: '#6B7264',
-            mutedRgb: '107 114 100'
+            mutedRgb: '107 114 100',
+            controlBorder: '#74644D',
+            success: '#356243',
+            successSurface: '#E2ECE3',
+            danger: '#8B3434',
+            dangerSurface: '#F2E0DE'
         },
         typography: {heading: '"Playfair Display", serif', body: '"Montserrat", sans-serif'},
         shadows: {
