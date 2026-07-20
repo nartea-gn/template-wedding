@@ -40,7 +40,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    transition: background-color var(--theme-interaction-duration) ease,
+    border-color var(--theme-interaction-duration) ease,
+    transform var(--theme-interaction-duration) ease;
     backdrop-filter: blur(4px);
     cursor: pointer;
     pointer-events: auto;

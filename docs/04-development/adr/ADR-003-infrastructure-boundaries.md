@@ -1,11 +1,11 @@
 # ADR-003: Infrastructure boundaries
 
-- Estado: arquitectura aceptada; implementación pendiente
+- Estado: aceptado e implementado
 - Fecha: 2026-07-11
 
 ## Contexto
 
-`useRsvp.ts` y `useAdminData.ts` mezclan estado de UI, mapeo y acceso directo a Supabase.
+La implementación original mezclaba estado de UI, mapeo y acceso directo a Supabase en hooks de página.
 
 ## Decisión
 
@@ -14,6 +14,10 @@ esos contratos para Supabase.
 
 ## Consecuencias
 
-Centraliza mapeos y permite cambiar proveedor a cambio de más estructura. No modifica todavía comportamiento ni esquema.
-La contraseña cliente y las RLS actuales continúan en v1; no constituyen autenticación robusta.
+El contrato `RsvpRepository` separa las Features de Supabase. El adaptador vive en `src/infrastructure/supabase` y el
+mapeo DB ↔ dominio se centraliza en `mappers/rsvpMapper.ts`. RSVP y Admin consumen la composición de aplicación, no el
+cliente del proveedor.
 
+La separación añade estructura, pero permite probar contratos y sustituir infraestructura sin reescribir la UI. La
+contraseña cliente y las RLS actuales continúan siendo una limitación de seguridad y se resolverán mediante una decisión
+independiente en Sprint 7.1.

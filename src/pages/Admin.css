@@ -19,6 +19,7 @@
 
 .admin-title {
     @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-primary);
+    font-family: var(--font-heading);
 }
 
 .admin-subtitle {

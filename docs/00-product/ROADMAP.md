@@ -1,57 +1,116 @@
 # Roadmap
 
-1. **Sprint 0 — Foundation (completado):** visión, auditorías, arquitectura, especificación y ADRs.
-2. **Sprint 1 — Design foundations (implementado y validado):** tokens TypeScript y consolidación visual sin cambiar
-   comportamiento.
-3. **Hito 1.1 — Modern frontend baseline (completado):** React 19.2.7, React Router 7.18.1 y TypeScript 7.0.2;
-   compatibilidad de ESLint mediante TypeScript 6 side-by-side.
-4. **Sprint 2 — Invitation contract (implementado y validado):** contratos Core, catálogos tipados y primera definición
-   declarativa.
-5. **Sprint 2.1 — Localization foundation (implementado y validado):** runtime Core con español por defecto, inglés y
-   búlgaro diferidos, `Intl`, persistencia y selector opcional.
-6. **Sprint 3 — Section engine (implementado y validado):** registro tipado, renderer React en `app`, cinco secciones
-   compartidas, assets inyectados y eliminación del adaptador legacy.
-7. **Sprint 4 — Configurable RSVP (implementado; validación final pendiente):** Form Engine, contrato Repository,
-   adaptador Supabase, persistencia versionada y compatibilidad legacy.
-8. **Sprint 4.1 — Database migrations pipeline (implementado; activación en GitHub pendiente):** migraciones Supabase
-   versionadas y despliegue automático antes de GitHub Pages.
-9. **Sprint 5 — Optional Admin (implementado y validado):** ruta condicional, métricas,
-   respuestas dinámicas, recuperación ante error, responsive y accesibilidad, conservando la contraseña v1.
-10. **Sprint 5.1A — Read-only Admin operations (implementado y validado):** capacidades configurables para
-    exportar resultados a CSV, buscar, ordenar y paginar respuestas con tamaño seleccionable, mostrar el número de
-    resultados y la fecha de la
-    última actualización correcta.
-11. **Sprint 5.1B — Protected Admin operations (bloqueado por seguridad):** abrir o cerrar confirmaciones desde el
-    panel,
-    persistir el estado por invitación y aplicarlo al CTA y a la ruta pública. Requiere autenticación o validación en
-    servidor, autorización y políticas restrictivas antes de implementar escrituras.
-12. **Sprint 6 — Premium experience:** dividido en incrementos verificables sin añadir nuevas capacidades de negocio:
-    - **6.1 Experience foundations (completado y validado):** una sola superficie RSVP, fallback de rutas
-      lazy, accesibilidad del Form Engine,
-      iconografía propia mínima, motion acotado y selector de idioma no flotante en todos los breakpoints.
-    - **6.1.1 UX polish (implementado; validación final pendiente):** selects más legibles, selector de idioma
-      compacto por códigos, validación de nombre y apellidos, iconos de asistencia, fullscreen progresivo de vídeo,
-      alianzas como separador y ajuste tipográfico del RSVP.
-    - **6.2 Media and perceived performance (completado y validado):** política configurable de
-      vídeo, poster, carga bajo demanda, presupuesto
-      de
-      medios, fuentes y baseline reproducible.
-    - **6.3 Visual refinement (implementado; validación final pendiente):** hero adaptable, ritmo narrativo,
-      jerarquía compartida en Landing/RSVP y decisiones visuales candidatas para Theme Engine v2.
-    - **6.3.2 Venue map options (implementado; validación final pendiente):** cada ubicación con `mapsQuery`
-      ofrece mapa del dispositivo, Google Maps y Apple Maps sin SDKs, claves externas ni detección de apps instaladas.
-    - **6.3.3 Adaptive map picker (completado y validado):** conserva un único CTA y presenta los proveedores mediante
-      popover en escritorio y bottom sheet en móvil/tablet, sin desplazar el contenido de la invitación.
-    - **6.3.5 Map picker compatibility (implementado; validación final en iOS pendiente):** la opción automática
-      conserva el selector nativo de Android, usa enlaces HTTPS compatibles con Apple Maps en iOS/iPadOS y aplica un
-      fallback web seguro en el resto de plataformas; el selector incorpora lenguaje orientado a la acción y una
-      recomendación visual configurable y localizada.
-    - **6.4 Theme Engine v2:** evolución prioritaria del contrato visual a partir de las necesidades medidas en 6.1–6.3;
-      podrá gobernar tipografía, motion, iconografía, decoración y variantes de composición sin introducir lógica de
-      dominio en los componentes.
-13. **Sprint 7 — Release hardening:** estabilización de flujos críticos, pruebas proporcionadas, accesibilidad,
-    compatibilidad, seguridad/RLS, privacidad, operación, documentación de despliegue y preparación de `1.0.0`.
+## Estado
 
-Cada sprint termina con `pnpm lint`, `pnpm build` y revisión manual proporcional. El detalle y las dependencias de los
-evolutivos se mantienen en [`PRODUCT_BACKLOG.md`](./PRODUCT_BACKLOG.md); una entrada en ese backlog no equivale a un
-compromiso de implementación.
+El producto continúa en fase previa a `1.0.0`. La arquitectura configurable está consolidada; el trabajo inmediato es
+cerrar Theme Engine v2 y convertir seguridad, datos, calidad y QA en puertas verificables de release.
+
+Leyenda: `Completado`, `En validación`, `En curso`, `Planificado`, `Aplazado`.
+
+## Ahora
+
+### Sprint 6.4 — Theme Engine v2 · Completado
+
+**Objetivo:** ampliar la identidad visual de los cinco temas sin introducir lógica de producto en el motor visual.
+
+**Implementado:** contrato tipado, emisión de Custom Properties, consumidores compartidos, perfiles diferenciados y
+preservación de Royal.
+
+**Criterio de salida:** `pnpm lint`, `pnpm build` y validación manual de Royal, Boho, Dark, Magnolia y Linen en Landing,
+RSVP y Admin para móvil, tablet y escritorio.
+
+### Sprint 6.5 — Alineación documental y preparación de release · Completado
+
+**Objetivo:** hacer que README, roadmap, backlog, ADR, auditorías y guías describan el producto real y sus riesgos.
+
+**Criterio de salida:** documentación navegable, estados sin contradicciones, guía de configuración reproducible,
+checklist de release y siguientes sprints definidos con criterios de aceptación.
+
+## Antes de 1.0.0
+
+### Sprint 7.1 — Seguridad, privacidad y baseline de datos · Planificado · P0
+
+**Objetivo:** establecer autoridad real sobre respuestas RSVP y un esquema reproducible.
+
+**Dependencias:** decisión aprobada de autenticación/autorización y auditoría del historial remoto de Supabase.
+
+**Criterio de salida:**
+
+- lectura administrativa protegida y aislada por invitación;
+- inserción pública limitada al alcance necesario;
+- políticas RLS revisadas y verificadas;
+- baseline aplicable a una instalación vacía sin romper proyectos existentes;
+- política documentada de información, minimización, retención, exportación y borrado.
+
+### Sprint 7.2 — Quality gates automatizados · Planificado · P1
+
+**Objetivo:** detectar regresiones de contratos y flujos críticos antes del despliegue.
+
+**Dependencias:** elección explícita del stack de pruebas; no existe framework configurado actualmente.
+
+**Criterio de salida:** pruebas unitarias de validadores/mappers, integración del repositorio, E2E de Landing/RSVP/Admin
+y workflow de pull request con lint, build y pruebas.
+
+### Sprint 7.3 — Contratos completos · Planificado · P1
+
+**Objetivo:** eliminar configuración declarada pero no aplicada.
+
+**Criterio de salida:** `seo` y `deadline` implementados o retirados mediante decisión explícita; fecha de evento y
+target del countdown tienen una fuente de verdad; estados vacíos y URLs configurables están validados.
+
+### Sprint 7.4 — QA de release · Planificado · P1
+
+**Objetivo:** validar la experiencia final con contenido y dispositivos representativos.
+
+**Criterio de salida:** WCAG AA, teclado y zoom; 320/390/768/1440 px; Safari iOS, Chrome Android y escritorio;
+invitaciones mono/multilenguaje, con/sin RSVP/Admin; estados de error; Lighthouse y Core Web Vitals documentados.
+
+### Sprint 7.5 — Release candidate · Planificado · P1
+
+**Objetivo:** publicar `1.0.0` solo cuando no existan bloqueos conocidos.
+
+**Criterio de salida:** congelación funcional, checklist completo, versionado coherente, smoke test del despliegue,
+rollback documentado y changelog final.
+
+## Después de 1.0.0
+
+### Dirección artística por colecciones · Planificado · P2
+
+- Profundizar la personalidad de cada colección sin alterar Royal como referencia aprobada.
+- Investigar y comparar visualmente tipografías antes de modificar una pareja de fuentes.
+- Validar fotografía, composición, ritmo y ornamentación con referencias concretas aportadas por producto.
+- Medir carga selectiva o self-hosting de fuentes antes de añadir complejidad.
+
+### Evolución por uso real · Planificado · P2
+
+- Consultas y paginación de servidor cuando volumen o latencia lo justifiquen.
+- Operaciones protegidas de Admin, detalle móvil, XLSX, notificaciones y gestión avanzada solo con un caso real.
+- Nuevos tipos de evento después de validar un segundo dominio real.
+
+## Aplazado explícitamente
+
+- Galería.
+- Historia o timeline narrativo.
+- Música.
+
+El Section Registry y las capabilities permiten incorporarlos más adelante sin modificar la orquestación del Core, pero
+no se retomarán hasta que exista una necesidad de cliente y un contrato de contenido aprobado.
+
+## Historial consolidado
+
+| Hito              | Estado     | Resultado                                                    |
+|-------------------|------------|--------------------------------------------------------------|
+| Sprint 0          | Completado | Visión, principios, arquitectura, auditorías y ADR iniciales |
+| Sprint 1          | Completado | Design Tokens TypeScript y fundamentos visuales              |
+| Hito 1.1          | Completado | React 19, Router 7, TypeScript 7, Vite 8 y Tailwind 4        |
+| Sprint 2          | Completado | Invitation Definition y catálogos tipados                    |
+| Sprint 2.1        | Completado | Localización Core ES/EN/BG con selector opcional             |
+| Sprint 3          | Completado | Section Registry y renderer declarativo                      |
+| Sprint 4          | Completado | Form Engine, Repository y persistencia dinámica RSVP         |
+| Sprint 4.1        | Completado | Migraciones automáticas previas al deploy                    |
+| Sprint 5          | Completado | Admin opcional y dinámico                                    |
+| Sprint 5.1A       | Completado | Búsqueda, ordenación, paginación y CSV                       |
+| Sprints 6.0–6.3.5 | Completado | UX, media, responsive, mapas y compatibilidad móvil          |
+
+El inventario de evolutivos y sus condiciones se mantiene en
+[`PRODUCT_BACKLOG.md`](./PRODUCT_BACKLOG.md). Una entrada en backlog no equivale a compromiso de implementación.

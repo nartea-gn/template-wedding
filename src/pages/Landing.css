@@ -6,13 +6,16 @@
 }
 
 .landing-hero {
-    @apply flex flex-col items-center gap-4 w-full max-w-4xl mb-16 md:mb-20;
-    animation: fadeUp 0.8s ease-out forwards;
+    @apply flex flex-col items-center gap-4 w-full;
+    max-width: var(--theme-editorial-max-width);
+    margin-bottom: var(--theme-section-gap);
+    animation: fadeUp var(--theme-reveal-duration) ease-out forwards;
     opacity: 0;
 }
 
 .landing-title {
     @apply font-serif font-bold text-(--color-wedding-primary) leading-[0.98] tracking-normal text-balance;
+    font-family: var(--font-heading);
     font-size: clamp(3.1rem, 13vw, 7rem);
 }
 
@@ -29,30 +32,38 @@
 }
 
 .landing-ornament {
-    @apply flex items-center gap-5 w-full max-w-sm mb-14 md:mb-20;
-    animation: fadeUp 0.8s ease-out forwards;
+    @apply flex items-center gap-5 w-full max-w-sm;
+    margin-bottom: var(--theme-ornament-gap);
+    animation: fadeUp var(--theme-reveal-duration) ease-out forwards;
     opacity: 0;
     animation-delay: 0.1s;
 }
 
 .landing-ornament-line {
-    @apply flex-1 h-px bg-(--color-wedding-border);
+    @apply flex-1 h-px;
+    background: var(--theme-ornament-color);
 }
 
 .landing-ornament-icon {
-    @apply size-9 md:size-10 shrink-0 opacity-90 text-(--color-wedding-primary);
+    @apply size-9 md:size-10 shrink-0;
+    color: var(--theme-ornament-color);
+    opacity: var(--theme-ornament-opacity);
 }
 
 .landing-video {
-    @apply w-full max-w-[340px] md:max-w-[360px] mb-16 md:mb-20;
-    animation: fadeUp 0.8s ease-out forwards;
+    @apply w-full;
+    max-width: min(21.25rem, var(--theme-media-max-width));
+    margin-bottom: var(--theme-section-gap);
+    animation: fadeUp var(--theme-reveal-duration) ease-out forwards;
     opacity: 0;
     animation-delay: 0.2s;
 }
 
 .landing-venue {
-    @apply w-full max-w-4xl mb-16 md:mb-20;
-    animation: fadeUp 0.8s ease-out forwards;
+    @apply w-full;
+    max-width: var(--theme-editorial-max-width);
+    margin-bottom: var(--theme-section-gap);
+    animation: fadeUp var(--theme-reveal-duration) ease-out forwards;
     opacity: 0;
     animation-delay: 0.3s;
 }
@@ -71,7 +82,8 @@
 }
 
 .landing-venue-card {
-    @apply p-7 md:p-8 flex flex-col items-center gap-3 text-center bg-(--color-wedding-surface)/70;
+    @apply p-7 md:p-8 flex flex-col items-center gap-3 text-center;
+    background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-content-card-opacity), transparent);
 }
 
 .landing-venue-type {
@@ -80,6 +92,7 @@
 
 .landing-venue-name {
     @apply font-serif text-2xl italic text-(--color-wedding-primary) leading-tight;
+    font-family: var(--font-heading);
 }
 
 .landing-venue-time {
@@ -154,6 +167,7 @@
 
 .landing-map-picker-title {
     @apply font-serif text-xl font-semibold text-(--color-wedding-primary);
+    font-family: var(--font-heading);
 }
 
 .landing-map-picker-close {
@@ -268,8 +282,9 @@
 }
 
 .landing-countdown {
-    @apply flex flex-col items-center gap-5 w-full max-w-5xl mb-16 md:mb-20;
-    animation: fadeUp 0.8s ease-out forwards;
+    @apply flex flex-col items-center gap-5 w-full max-w-5xl;
+    margin-bottom: var(--theme-section-gap);
+    animation: fadeUp var(--theme-reveal-duration) ease-out forwards;
     opacity: 0;
     animation-delay: 0.4s;
 }
@@ -279,45 +294,74 @@
 }
 
 .landing-countdown-row {
-    @apply flex flex-nowrap items-start justify-center gap-x-2;
-    --countdown-unit-min-width: 4.25rem;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    align-items: start;
+    justify-content: center;
+    column-gap: 0.25rem;
+    --countdown-value-size: clamp(3.1rem, 13vw, 5.6rem);
+    --countdown-separator-size: 1.25rem;
+    --countdown-separator-gap: 0.375rem;
+    --countdown-label-space: 1.25rem;
+    padding-bottom: var(--countdown-label-space);
 }
 
 .landing-countdown-item {
-    @apply grid grid-rows-[auto_auto] items-center;
-    grid-template-columns: minmax(var(--countdown-unit-min-width), auto) auto;
+    position: relative;
 }
 
 .landing-countdown-unit {
-    display: contents;
+    display: block;
 }
 
 .landing-countdown-value {
     @apply font-serif font-bold text-(--color-wedding-primary) leading-none;
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: center;
-    font-size: clamp(3.1rem, 13vw, 5.6rem);
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--countdown-value-size);
 }
 
 .landing-countdown-unit-label {
     @apply text-[0.68rem] md:text-xs uppercase tracking-[0.16em] opacity-50;
-    grid-column: 1;
-    grid-row: 2;
-    justify-self: center;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: max-content;
     margin-top: 0.25rem;
+    transform: translateX(-50%);
 }
 
 .landing-countdown-sep {
-    @apply size-5 md:size-6 opacity-45 mx-1.5 md:mx-3 text-(--color-wedding-border) shrink-0;
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
+    width: var(--countdown-separator-size);
+    height: var(--countdown-separator-size);
+    margin-inline: var(--countdown-separator-gap);
+    margin-top: calc((var(--countdown-value-size) - var(--countdown-separator-size)) / 2 + 0.08rem);
+    color: var(--theme-ornament-color);
+    opacity: var(--theme-ornament-opacity);
+    align-self: start;
+    flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
+    .landing-hero,
+    .landing-video,
+    .landing-venue,
+    .landing-countdown {
+        margin-bottom: var(--theme-section-gap-wide);
+    }
+
+    .landing-ornament {
+        margin-bottom: var(--theme-ornament-gap-wide);
+    }
+
+    .landing-video {
+        max-width: var(--theme-media-max-width);
+    }
+
     .landing-countdown-row {
-        --countdown-unit-min-width: 5.5rem;
+        --countdown-separator-size: 1.5rem;
+        --countdown-separator-gap: 0.75rem;
     }
 }
 
@@ -327,46 +371,43 @@
     }
 
     .landing-countdown-row {
-        @apply gap-x-1;
-        --countdown-unit-min-width: 3.15rem;
+        column-gap: 0.125rem;
+        --countdown-value-size: clamp(2.25rem, 12vw, 3rem);
+        --countdown-separator-size: 1rem;
+        --countdown-separator-gap: 0.125rem;
+        --countdown-label-space: 1rem;
     }
 
     .landing-countdown-value {
-        font-size: clamp(2.25rem, 12vw, 3rem);
+        font-size: var(--countdown-value-size);
     }
 
     .landing-countdown-unit-label {
         @apply text-[0.52rem] tracking-[0.1em];
     }
 
-    .landing-countdown-sep {
-        @apply size-4 mx-0.5;
-    }
 }
 
 @media (max-width: 380px) {
     .landing-countdown-row {
-        --countdown-unit-min-width: 2.85rem;
+        --countdown-value-size: clamp(2rem, 11vw, 2.55rem);
+        --countdown-separator-size: 0.875rem;
+        --countdown-separator-gap: 0;
     }
 
     .landing-countdown-value {
-        font-size: clamp(2rem, 11vw, 2.55rem);
+        font-size: var(--countdown-value-size);
     }
 
     .landing-countdown-unit-label {
         @apply text-[0.48rem] tracking-[0.08em];
     }
 
-    .landing-countdown-sep {
-        @apply mx-0;
-        width: 0.875rem;
-        height: 0.875rem;
-    }
 }
 
 .landing-cta {
     @apply flex flex-col items-center gap-5 mb-4;
-    animation: fadeUp 0.8s ease-out forwards;
+    animation: fadeUp var(--theme-reveal-duration) ease-out forwards;
     opacity: 0;
     animation-delay: 0.5s;
 }

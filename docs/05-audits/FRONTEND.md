@@ -1,44 +1,57 @@
 # Frontend Audit
 
-## Resumen
+## Estado actual
 
-La base es pequeña y comprensible, con TypeScript, Vite, HashRouter, configuración central y temas tipados. La deuda
-principal no es el tamaño, sino la mezcla de composición, contenido e infraestructura.
+La aplicación tiene una arquitectura pequeña, tipada y proporcionada a su alcance. React 19, Router 7, TypeScript 7,
+Vite 8 y Tailwind 4 conviven con límites claros entre Core, Features, Infrastructure, Design System e Invitation.
+No se justifica una reescritura ni una extracción prematura a monorepo o plugins.
 
-## Fortalezas
+## Fortalezas verificadas
 
-- `wedding.config.ts` centraliza pareja, fecha, localizaciones, slug y tema.
-- `ThemeProvider` aplica un contrato de tokens tipado.
-- Admin ya está dividido en componentes de presentación.
-- `HashRouter` y `base` son apropiados para GitHub Pages.
-- Los mapeos snake_case/camelCase son explícitos.
+- `InvitationDefinition` gobierna evento, localización, tema, secciones y capabilities.
+- Section Registry controla orden y visibilidad sin condicionales repartidos por Landing.
+- Form Engine es declarativo, versionado, localizado y neutral respecto del evento.
+- `RsvpRepository` separa UI y dominio de Supabase.
+- El mapper DB ↔ dominio está centralizado en infraestructura.
+- RSVP y Admin son rutas lazy y opcionales.
+- Theme Engine v2 emite Custom Properties desde un contrato TypeScript completo.
+- `HashRouter` y `base: '/template-wedding/'` son apropiados para GitHub Pages.
+- Los catálogos secundarios EN/BG se cargan bajo demanda.
 
-## Hallazgos prioritarios
+## Hallazgos actuales
 
-| Prioridad | Hallazgo                           | Evidencia                                                        | Acción                                                               |
-|-----------|------------------------------------|------------------------------------------------------------------|----------------------------------------------------------------------|
-| Alta      | RSVP fijo y monolítico             | `Rsvp.tsx` supera 17 KB y contiene preguntas, pasos y validación | Diseñar Form Engine declarativo                                      |
-| Alta      | Supabase acoplado a hooks          | `useRsvp.ts`, `useAdminData.ts`                                  | Introducir repositorios y adaptador                                  |
-| Alta      | Capabilities no controlan rutas    | `AppRouter.tsx` siempre registra RSVP/Admin                      | Composición condicional                                              |
-| Alta      | Contenido parcialmente hardcodeado | `Landing.tsx`, `Rsvp.tsx`, componentes Admin                     | Mover textos a definiciones                                          |
-| Media     | Orden visual fijado en página      | `Landing.tsx`                                                    | Section registry y renderer                                          |
-| Media     | Tokens duplican fuentes de verdad  | `themes/index.ts`, `index.css`, `patterns.css`                   | Tokens TypeScript y salida CSS coherente                             |
-| Media     | Tipos ligados a RSVP de boda       | `types/rsvp.ts`                                                  | Separar definición de campos y respuestas                            |
-| Baja      | README sigue siendo el de Vite     | `README.md`                                                      | Reescribir después de estabilizar contratos                          |
-| Media     | Textos sin contrato multilenguaje  | Páginas y componentes contienen literales                        | Introducir localización en `InvitationDefinition` antes de migrarlos |
+| Prioridad | Hallazgo                                   | Evidencia                                                   | Acción                                                          |
+|-----------|--------------------------------------------|-------------------------------------------------------------|-----------------------------------------------------------------|
+| P0        | Lectura RSVP anónima global                | `supabase/schema.sql` permite `SELECT TO anon USING (true)` | Diseñar autoridad por invitación y RLS en Sprint 7.1            |
+| P0        | Admin protegido solo en UI                 | `VITE_ADMIN_PASSWORD` se compara en el navegador            | Aprobar autenticación/operación server-side antes de mutaciones |
+| P0        | Historial DB no crea una instalación vacía | La primera migración incremental presupone la tabla         | Auditar remoto y diseñar baseline segura                        |
+| P1        | No existe suite de pruebas                 | `package.json` no contiene script `test`                    | Elegir stack y cobertura en Sprint 7.2                          |
+| P1        | No hay CI de pull requests                 | Workflow solo escucha push a `main`                         | Añadir gates de PR tras aprobar la estrategia de pruebas        |
+| P1        | Configuración sin consumidor completo      | `seo`, `deadline` y fechas duplicadas                       | Implementar o retirar en Sprint 7.3                             |
+| P1        | Versión declara `1.0.0` antes del release  | `package.json` frente al roadmap                            | Resolver versionado en la release candidate                     |
+| P1        | Herramientas de CI parcialmente flotantes  | Supabase CLI usa `latest`                                   | Fijar versiones y política de actualización                     |
+| P2        | Fuentes declaradas globalmente             | Cinco parejas tipográficas disponibles en CSS               | Medir carga selectiva antes de optimizar                        |
 
-## Riesgo conocido
+## Hallazgos resueltos desde la auditoría inicial
 
-La contraseña se compara en el navegador y RLS permite lectura anónima global. Es alcance aceptado para v1, no seguridad
-robusta. Debe comunicarse así y evolucionar en un ADR posterior.
+- RSVP monolítico → Form Engine y aplicación RSVP separada.
+- Supabase acoplado a hooks → Repository Pattern y adaptador.
+- Rutas siempre activas → capabilities y lazy loading.
+- Orden visual fijo → Section Registry.
+- Contrato monolingüe → runtime Core con ES/EN/BG.
+- Tokens parciales → Theme Engine v2.
+- README de Vite → documentación real del producto.
 
-## Quick wins del siguiente sprint
+## Riesgos de evolución
 
-Crear tokens TypeScript, eliminar duplicación de tipos de tema, añadir zona horaria/locale a configuración y definir
-flags estructurados para RSVP/Admin antes de mover componentes.
+- No generalizar el motor para dominios que todavía no existen.
+- No permitir componentes o callbacks arbitrarios dentro de temas.
+- No extender Admin a CRM antes de proteger datos y operaciones.
+- No introducir una baseline retrospectiva sin comprobar el historial remoto.
+- No optimizar consultas, bundles o fuentes sin una medición reproducible.
 
-## Baseline moderno solicitado
+## Próxima revisión
 
-El proyecto parte de React 18, React Router 6 y TypeScript 5. La dirección aprobada es React 19.2 y React Router 7.
-TypeScript 7 es preferente, pero requiere validar compilador, `typescript-eslint`, Vite, editor y definiciones de tipos
-en conjunto. La migración será un hito independiente para no mezclar incompatibilidades con el Engine.
+Repetir la auditoría después de Sprint 7.3. Debe incluir dependencias, tamaño de bundles, ciclos de importación,
+cobertura,
+contratos no consumidos y consistencia de versiones.

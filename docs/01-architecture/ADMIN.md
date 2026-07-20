@@ -142,6 +142,7 @@ These items are tracked in [`PRODUCT_BACKLOG.md`](../00-product/PRODUCT_BACKLOG.
 ## Accepted v1 security limitation
 
 The password is currently compared in the browser and anonymous SELECT remains enabled by the existing RLS policy. This
-protects casual interface access, not the underlying API. The limitation is acceptable only while Admin remains
-read-only. Supabase Auth or an equivalent server-validated operation and restrictive policies are prerequisites for
-administrative mutations or sensitive production data.
+protects casual interface access, not the underlying API. It is tolerated during development of the read-only v1 flow,
+but is a P0 blocker for a public `1.0.0` handling real client data. Supabase Auth or an equivalent server-validated
+operation and restrictive policies are prerequisites for production access, administrative mutations or sensitive
+data.

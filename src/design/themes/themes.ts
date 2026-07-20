@@ -16,13 +16,28 @@ export const themes = {
             muted: '#6B7280',
             mutedRgb: '107 114 128'
         },
-        typography: {heading: '"Playfair Display", serif', body: '"Josefin Sans", sans-serif'},
+        typography: {
+            heading: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
+            body: '"Josefin Sans", sans-serif'
+        },
         shadows: {
             card: '0 4px 20px rgba(27, 58, 107, 0.08)',
             cardLarge: '0 12px 40px rgba(27, 58, 107, 0.12)',
             cardSmall: '0 2px 8px rgba(27, 58, 107, 0.05)'
         },
         radius: {card: '12px', small: '8px', large: '16px', extraLarge: '24px'},
+        composition: {
+            sectionGap: '4rem',
+            sectionGapWide: '5rem',
+            ornamentGap: '3.5rem',
+            ornamentGapWide: '5rem',
+            editorialMaxWidth: '56rem',
+            mediaMaxWidth: '22.5rem',
+        },
+        motion: {revealDuration: '0.8s', revealDistance: '18px', interactionDuration: '0.25s'},
+        surfaces: {contentCardOpacity: '70%', formCardOpacity: '80%'},
+        decoration: {ornamentColor: '#C9A84C', ornamentOpacity: '0.9'},
+        iconography: {interfaceStrokeWidth: '1.75'},
     },
     boho: {
         colors: {
@@ -46,6 +61,18 @@ export const themes = {
             cardSmall: '0 2px 8px rgba(124, 154, 110, 0.06)'
         },
         radius: {card: '16px', small: '10px', large: '20px', extraLarge: '28px'},
+        composition: {
+            sectionGap: '4.5rem',
+            sectionGapWide: '5.5rem',
+            ornamentGap: '4rem',
+            ornamentGapWide: '5.5rem',
+            editorialMaxWidth: '54rem',
+            mediaMaxWidth: '23rem',
+        },
+        motion: {revealDuration: '0.9s', revealDistance: '14px', interactionDuration: '0.3s'},
+        surfaces: {contentCardOpacity: '78%', formCardOpacity: '84%'},
+        decoration: {ornamentColor: '#B08A57', ornamentOpacity: '0.78'},
+        iconography: {interfaceStrokeWidth: '1.6'},
     },
     dark: {
         colors: {
@@ -69,6 +96,18 @@ export const themes = {
             cardSmall: '0 2px 8px rgba(0, 0, 0, 0.3)'
         },
         radius: {card: '12px', small: '8px', large: '16px', extraLarge: '24px'},
+        composition: {
+            sectionGap: '4rem',
+            sectionGapWide: '4.5rem',
+            ornamentGap: '3.5rem',
+            ornamentGapWide: '4.5rem',
+            editorialMaxWidth: '56rem',
+            mediaMaxWidth: '22.5rem',
+        },
+        motion: {revealDuration: '0.65s', revealDistance: '12px', interactionDuration: '0.2s'},
+        surfaces: {contentCardOpacity: '82%', formCardOpacity: '88%'},
+        decoration: {ornamentColor: '#D7BD78', ornamentOpacity: '0.82'},
+        iconography: {interfaceStrokeWidth: '1.6'},
     },
     magnolia: {
         colors: {
@@ -92,6 +131,18 @@ export const themes = {
             cardSmall: '0 2px 8px rgba(183, 110, 121, 0.06)'
         },
         radius: {card: '14px', small: '9px', large: '18px', extraLarge: '26px'},
+        composition: {
+            sectionGap: '4.5rem',
+            sectionGapWide: '5.5rem',
+            ornamentGap: '4rem',
+            ornamentGapWide: '5.5rem',
+            editorialMaxWidth: '54rem',
+            mediaMaxWidth: '22rem',
+        },
+        motion: {revealDuration: '0.9s', revealDistance: '16px', interactionDuration: '0.3s'},
+        surfaces: {contentCardOpacity: '75%', formCardOpacity: '84%'},
+        decoration: {ornamentColor: '#C9A27A', ornamentOpacity: '0.8'},
+        iconography: {interfaceStrokeWidth: '1.6'},
     },
     linen: {
         colors: {
@@ -115,8 +166,19 @@ export const themes = {
             cardSmall: '0 2px 8px rgba(74, 83, 67, 0.05)'
         },
         radius: {card: '12px', small: '8px', large: '16px', extraLarge: '24px'},
+        composition: {
+            sectionGap: '4.25rem',
+            sectionGapWide: '5.25rem',
+            ornamentGap: '3.75rem',
+            ornamentGapWide: '5.25rem',
+            editorialMaxWidth: '52rem',
+            mediaMaxWidth: '22.5rem',
+        },
+        motion: {revealDuration: '0.75s', revealDistance: '12px', interactionDuration: '0.22s'},
+        surfaces: {contentCardOpacity: '72%', formCardOpacity: '82%'},
+        decoration: {ornamentColor: '#B59A6A', ornamentOpacity: '0.72'},
+        iconography: {interfaceStrokeWidth: '1.5'},
     },
 } as const satisfies Record<string, ThemeDefinition>
 
 export type ThemeId = keyof typeof themes
-

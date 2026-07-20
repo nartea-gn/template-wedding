@@ -68,7 +68,8 @@ export function InterfaceIcon({name, className}: Readonly<Props>) {
     const content = paths[name]
     if (!content) return null
     return (
-        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             style={{strokeWidth: 'var(--theme-interface-icon-stroke-width)'}}
              strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
             {content}
         </svg>

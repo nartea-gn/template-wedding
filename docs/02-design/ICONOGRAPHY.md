@@ -20,8 +20,9 @@ nothing rather than breaking a configured form.
 
 ## Theme Engine v2 boundary
 
-The current primitive owns geometry and accessibility only. Sprint 6.4 may let themes vary stroke, weight or treatment,
-but icon choices must not control capabilities, content, validation or business rules.
+The current primitive owns geometry and accessibility only. Theme Engine v2 lets themes vary the shared interface
+stroke weight through a semantic Custom Property, but icon choices must not control capabilities, content, validation
+or business rules.
 
 ## Map provider marks
 

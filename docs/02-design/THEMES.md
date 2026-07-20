@@ -1,41 +1,88 @@
 # Themes
 
-## Contrato
+## Contrato v2
 
-Cada tema define cuatro grupos: `colors`, `typography`, `shadows` y `radius`. El tipo `ThemeId` se deriva de las claves
-de `themes`; no debe duplicarse mediante una unión manual.
+Cada tema es una definición TypeScript completa en `src/design/themes/themes.ts`. `ThemeId` se deriva de las claves del
+registro y nunca debe mantenerse como una unión manual.
+
+El contrato contiene nueve grupos:
+
+- `colors`: paleta semántica y sus equivalentes RGB;
+- `typography`: familias de heading y body;
+- `shadows`: elevaciones compartidas;
+- `radius`: forma de cards y controles;
+- `composition`: ritmo de secciones y anchos editoriales/media;
+- `motion`: reveal e interacción;
+- `surfaces`: opacidad de cards de contenido y formularios;
+- `decoration`: color y presencia de ornamentos;
+- `iconography`: grosor de los SVG propios de interfaz.
 
 Temas actuales: `royal`, `boho`, `dark`, `magnolia` y `linen`.
 
+Los ornamentos ceremoniales usan un acento secundario propio en cada tema. No deben reutilizar automáticamente el
+color principal: su función es acompañar títulos y cifras con un contraste sutil, siguiendo el criterio visual de
+`royal`.
+
+## Flujo
+
+```text
+ThemeDefinition
+    -> themes[themeId]
+    -> toCssVariables
+    -> ThemeProvider
+    -> Custom Properties + data-theme
+    -> CSS responsive
+```
+
+`ThemeProvider` no conoce componentes ni dominios. Aplica el conjunto completo antes del pintado del cliente y
+`data-theme` selecciona únicamente patrones decorativos CSS.
+
+## Identidad de los temas
+
+| Tema     | Ritmo                 | Motion               | Superficie        | Ornamentación      |
+|----------|-----------------------|----------------------|-------------------|--------------------|
+| Royal    | Editorial equilibrado | Elegante y contenido | Ligera            | Champagne visible  |
+| Boho     | Amplio y orgánico     | Suave                | Cálida y presente | Latón cálido       |
+| Dark     | Compacto              | Rápido               | Más sólida        | Champagne luminoso |
+| Magnolia | Amplio y romántico    | Delicado             | Suave             | Champagne rosado   |
+| Linen    | Sobrio y estrecho     | Sereno               | Muy ligera        | Latón suave        |
+
+Estas diferencias son valores coordinados, no variantes estructurales.
+
+### Compatibilidad visual de Royal
+
+`royal` es el tema de referencia y conserva deliberadamente la combinación histórica de la plantilla: serif de
+sistema (`ui-serif`, Georgia, Cambria y equivalentes) para títulos y cifras, y Josefin Sans para texto e interfaz.
+No debe sustituirse su serif por Playfair Display durante la evolución del motor. Los demás temas pueden usar sus
+propias combinaciones tipográficas, pero deben mantener una jerarquía y legibilidad equivalentes.
+
 ## Añadir un tema
 
-1. Añadir una entrada completa en `src/design/themes/themes.ts`.
-2. Cargar sus familias tipográficas en la estrategia de fuentes vigente.
-3. Añadir decoración en `patterns.css` solo si tiene una identidad propia.
-4. Ejecutar lint y build.
-5. Revisar Landing, RSVP y Admin en móvil y escritorio.
+1. Añadir una entrada completa en `src/design/themes/themes.ts` que satisfaga `ThemeDefinition`.
+2. Elegir valores semánticos; no copiar reglas CSS o nombres de componentes dentro del objeto.
+3. Cargar sus familias tipográficas mediante la estrategia documentada en `MEDIA.md`.
+4. Añadir un patrón en `src/themes/patterns.css` solo si aporta una identidad reconocible.
+5. Seleccionar temporalmente el tema desde la definición de invitación y revisar Landing, RSVP y Admin.
+6. Validar 320 px, móvil habitual, tablet y escritorio, incluyendo foco, hover/active y reduced motion.
+7. Ejecutar `pnpm lint` y `pnpm build`.
+
+Añadir un tema no requiere modificar `ThemeProvider`, `toCssVariables` ni componentes.
 
 ## Límites
 
-Un tema puede variar identidad visual; no activa features, cambia contenido ni introduce lógica. Los patrones permanecen
-en CSS porque son composición decorativa, pero sus colores de fondo consumen variables semánticas.
+Un tema puede variar identidad visual. Nunca puede:
+
+- activar features;
+- cambiar contenido o traducciones;
+- reordenar secciones;
+- contener componentes React, funciones o callbacks;
+- depender de bodas u otro dominio de evento.
+
+El responsive permanece en CSS. El tema aporta valores semánticos, no reglas de composición completas.
 
 ## Compatibilidad
 
-Las Custom Properties existentes se preservan para evitar una migración masiva. `@theme` actúa como puente hacia
-Tailwind v4 y no es un segundo registro de temas.
+Las Custom Properties v1 se mantienen durante la adopción de v2. Los fallbacks de `:root` reflejan `royal` para el
+primer documento y `prefers-reduced-motion` prevalece sobre cualquier duración configurada por un tema.
 
-## Candidatos para Theme Engine v2
-
-Sprint 6.3 confirma que el siguiente contrato de temas no deberia limitarse a color, tipografia, sombras y radios. Las
-siguientes dimensiones ya tienen consumidores reales o decisiones repetidas:
-
-- **Hero:** escala maxima de nombres, ritmo entre nombres/subtitulo/fecha y tratamiento del ampersand.
-- **Ritmo vertical:** separacion entre secciones publicas, densidad de Landing y respiracion de RSVP.
-- **Media:** ancho maximo del video, radio/elevacion y tono del boton de reproduccion.
-- **Ornamentacion:** color, tamano y presencia de separadores como alianzas u otros motivos del evento.
-- **Superficies:** opacidad relativa de cards, formularios y bloques informativos.
-- **Interaccion:** diferencia entre hover desktop y active tactil para botones y opciones.
-
-Estas dimensiones se documentan como entrada para 6.4, no como una obligacion de tokenizar todo inmediatamente. Theme
-Engine v2 debera exponer solo aquello que permita crear estilos distintos sin filtrar logica de negocio al Core.
+La decisión arquitectónica completa está en `ADR-013-theme-engine-v2.md`.
