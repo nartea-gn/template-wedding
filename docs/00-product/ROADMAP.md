@@ -9,6 +9,27 @@ Leyenda: `Completado`, `En validación`, `En curso`, `Planificado`, `Aplazado`.
 
 ## Ahora
 
+### Sprint 6.6 — Coherencia y dirección visual · En curso
+
+**Objetivo:** preservar Royal, corregir regresiones objetivas y evolucionar las colecciones desde variaciones de tokens
+hacia experiencias visuales reconocibles.
+
+**Incrementos:**
+
+1. `6.6.1` — Royal activo, contraste semántico, countdown y primer render.
+2. `6.6.2` — Escala tipográfica, controles, touch targets y selector de idioma.
+3. `6.6.3` — Landing editorial y backgrounds temáticos responsive.
+4. `6.6.4` — RSVP: ritmo, errores y superficies de lectura.
+5. `6.6.5` — Admin: jerarquía operativa, KPIs, toolbar y tabla.
+6. `6.6.6` — Comparativa final de colecciones y adopción de la investigación tipográfica aprobada en Nartea Studio.
+
+**Criterio de salida:** auditoría aprobada, capturas comparables de los cinco temas, Royal sin regresiones, contraste
+AA,
+backgrounds validados en los viewports objetivo y pruebas manuales de Landing, RSVP y Admin.
+
+**Estado de 6.6.1:** implementado y validado en navegador; pendiente de `pnpm lint`, `pnpm build` y aprobación manual de
+producto antes de cerrarlo.
+
 ### Sprint 6.4 — Theme Engine v2 · Completado
 
 **Objetivo:** ampliar la identidad visual de los cinco temas sin introducir lógica de producto en el motor visual.
@@ -74,10 +95,11 @@ rollback documentado y changelog final.
 
 ## Después de 1.0.0
 
-### Dirección artística por colecciones · Planificado · P2
+### Evolución artística adicional por colecciones · Planificado · P2
 
-- Profundizar la personalidad de cada colección sin alterar Royal como referencia aprobada.
-- Investigar y comparar visualmente tipografías antes de modificar una pareja de fuentes.
+- Ampliar la personalidad de cada colección después del baseline entregado en Sprint 6.6, sin alterar Royal.
+- Consumir las decisiones tipográficas de Nartea Studio; `template-wedding` aporta prototipos y evidencia, no una
+  investigación normativa paralela.
 - Validar fotografía, composición, ritmo y ornamentación con referencias concretas aportadas por producto.
 - Medir carga selectiva o self-hosting de fuentes antes de añadir complejidad.
 

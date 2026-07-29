@@ -14,7 +14,7 @@ export const weddingInvitation = {
         hashtag: '#BodaGalaYValentin',
     },
     theme: {
-        id: 'magnolia',
+        id: 'royal',
     },
     seo: {
         title: 'event.seoTitle',

@@ -120,6 +120,7 @@ Documentos de referencia:
 - [Form Engine](docs/01-architecture/FORMS.md)
 - [Internacionalización](docs/01-architecture/INTERNATIONALIZATION.md)
 - [Theme Engine](docs/02-design/THEMES.md)
+- [Backgrounds temáticos](docs/02-design/BACKGROUNDS.md)
 - [Admin](docs/01-architecture/ADMIN.md)
 - [Migraciones](docs/01-architecture/DATABASE_MIGRATIONS.md)
 - [Architecture Decision Records](docs/04-development/adr)

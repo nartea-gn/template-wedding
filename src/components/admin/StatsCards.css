@@ -18,11 +18,11 @@
 }
 
 .stat-icon--green {
-    @apply text-green-700;
+    color: var(--color-wedding-success);
 }
 
 .stat-icon--red {
-    @apply text-red-700;
+    color: var(--color-wedding-danger);
 }
 
 .stat-label {
@@ -34,11 +34,13 @@
 }
 
 .stat-label--green {
-    @apply text-green-600/70;
+    color: var(--color-wedding-success);
+    opacity: 0.78;
 }
 
 .stat-label--red {
-    @apply text-red-600/70;
+    color: var(--color-wedding-danger);
+    opacity: 0.78;
 }
 
 .stat-value {
@@ -51,9 +53,9 @@
 }
 
 .stat-value--green {
-    @apply text-green-700;
+    color: var(--color-wedding-success);
 }
 
 .stat-value--red {
-    @apply text-red-700;
+    color: var(--color-wedding-danger);
 }

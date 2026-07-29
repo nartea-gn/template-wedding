@@ -64,11 +64,12 @@ Condición de activación: historial remoto verificado. No se renombrarán ni re
 
 ## P2 — Evolución con valor demostrado
 
-### Dirección artística por colecciones
+### Evolución artística posterior a Sprint 6.6
 
-- Profundizar fotografía, ritmo, tipografía y composición por colección.
+- Sprint 6.6 entrega el baseline de fondos, ritmo y composición por colección.
+- Profundizar fotografía y nuevas variantes solo después de validar el baseline con clientes.
 - Mantener Royal como referencia visual aprobada.
-- Investigar y comparar tipografías antes de sustituirlas.
+- Consumir la investigación tipográfica aprobada en Nartea Studio antes de sustituir familias.
 - Cargar fuentes por tema solo si la medición justifica el coste.
 
 ### Admin y reporting
