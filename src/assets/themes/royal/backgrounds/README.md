@@ -1,27 +1,67 @@
 # BG-ROYAL-001 — Royal watercolor background
 
-## Uso
+## Estado y uso
 
-Fondo artístico responsive de la Landing para la colección Royal. Mantiene el centro editorial limpio y concentra
-la acuarela, la botánica y los acentos champagne en los bordes. RSVP y Admin no consumen estos assets.
+`BG-ROYAL-001` es el baseline visual activo. RSVP y éxito utilizan una única composición responsive. Landing prueba
+un sistema modular que combina una apertura artística con un cuerpo repetible sereno para mantener continuidad durante
+todo el scroll. Admin no consume estos assets.
 
-## Archivos
+## Archivos activos
 
-| Variante | Dimensiones de origen | Entrega | Uso |
-|---|---:|---|---|
-| `royal-watercolor-mobile.webp` | 864 × 1821 px | WebP, calidad 82 | Móvil y tablet vertical |
-| `royal-watercolor-wide.webp` | 1815 × 866 px | WebP, calidad 82 | Escritorio desde 64 rem |
+| Variante                       | Dimensiones de origen | Entrega          | Uso           |
+|--------------------------------|----------------------:|------------------|---------------|
+| `royal-watercolor-mobile.webp` |         864 × 1821 px | WebP, calidad 82 | 320–767 px    |
+| `royal-background-medium.webp` |        1448 × 1086 px | WebP, calidad 82 | 768–1279 px   |
+| `royal-watercolor-wide.webp`   |         1815 × 866 px | WebP, calidad 82 | Desde 1280 px |
 
-Los PNG originales no forman parte del bundle. Las variantes WebP pesan aproximadamente 129 KB y 109 KB.
+Los PNG originales no forman parte del bundle. La variante intermedia es una composición hermana generada
+específicamente para tablet; no es un recorte automático de los masters existentes.
+
+## Módulos de cuerpo de la prueba
+
+| Variante                  | Dimensiones | Entrega          | Uso                                      |
+|---------------------------|------------:|------------------|------------------------------------------|
+| `royal-body-narrow.webp`  | 1024 × 1536 | WebP, calidad 84 | Continuidad vertical por debajo de 768 px |
+| `royal-body-medium.webp`  | 1448 × 1086 | WebP, calidad 84 | Continuidad entre 768 y 1279 px          |
+| `royal-body-wide.webp`    |  1672 × 941 | WebP, calidad 84 | Continuidad desde 1280 px                |
+
+Los módulos mantienen un centro marfil limpio y concentran acuarela y botánica de baja intensidad en los extremos. Se
+repiten verticalmente detrás de Landing y quedan cubiertos por la apertura en el primer viewport. La unión utiliza
+únicamente un fundido breve entre dos imágenes; no añade color, textura CSS ni un overlay opaco.
+
+Las copias JPEG de seguridad viven en `references/theme-backgrounds-jpg/royal/` y no forman parte del bundle.
+
+## Candidatos descartados conservados
+
+| Candidato      | Archivos                                                                           | Motivo de descarte                                                                                 |
+|----------------|------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| `BG-ROYAL-002` | `royal-watercolor-continuous-mobile.webp`, `royal-watercolor-continuous-wide.webp` | El canvas completo se deformaba al adaptarse a alturas variables y alteraba el papel Royal.        |
+| `BG-ROYAL-003` | `royal-opening-mobile.webp`, `royal-opening-wide.webp`                             | La composición floral competía con el Hero y no mantenía continuidad en el resto de la invitación. |
+
+Estos cuatro archivos no tienen referencias desde CSS y se mantienen temporalmente solo para trazabilidad. No deben
+entrar en el bundle ni utilizarse como base de nuevas variantes sin una nueva aprobación de producto.
 
 ## Procedencia
 
 - Herramienta: generador de imágenes integrado de Codex.
-- Fecha: 2026-07-20.
+- Fecha del baseline: 2026-07-20. Variante tablet: 2026-07-28. Módulos de cuerpo: 2026-07-29.
 - Tipo: obra generada específicamente para Nartea; no contiene assets ni texto de las referencias de producto.
 - Dirección: mocks aportados por producto y principios de `docs/02-design/BACKGROUNDS.md`.
 
-## Prompt final de la variante wide
+## Prompt de los módulos de cuerpo
+
+Los tres módulos se generaron individualmente utilizando su apertura responsive como referencia de estilo. El prompt
+común pidió:
+
+- papel de algodón marfil con acuarela Royal;
+- centro editorial limpio;
+- hojas azul marino, azul niebla y gris frío limitadas a los extremos;
+- acentos champagne muy contenidos;
+- continuidad vertical;
+- ausencia de texto, marcos, sombras, objetos y bouquets dominantes;
+- composición serena y sin simetría evidente.
+
+## Prompt final de la variante wide activa
 
 ```text
 Use case: stylized-concept
@@ -40,3 +80,5 @@ Constraints: no text, no letters, no people, no frames, no UI, no logos, no wate
 - No usar `background-attachment: fixed`.
 - El color base del tema actúa como fallback si el asset no carga.
 - No rasterizar nombres, fechas, controles ni contenido dentro del background.
+- Landing presenta el arte con mayor intensidad; RSVP conserva la identidad con una intensidad inferior.
+- Admin mantiene su fondo operativo sin arte ceremonial.

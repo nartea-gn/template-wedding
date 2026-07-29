@@ -2,8 +2,8 @@
 
 ## Estado
 
-En implementación dentro de Sprint 6.6.3. Royal dispone de un primer prototipo responsive integrado; su aprobación
-visual es obligatoria antes de producir las otras cuatro colecciones.
+Implementación responsive completa en Sprint 6.6.3 y pendiente de validación final de producto. Royal continúa siendo el
+baseline visual; Boho, Dark, Magnolia y Linen ya disponen de composiciones hermanas para móvil, tablet y escritorio.
 
 ## Objetivo
 
@@ -42,14 +42,18 @@ correspondiente en Nartea Studio.
 
 ## Anatomía del fondo
 
-Un background temático puede combinar hasta tres capas visuales:
+El sistema utiliza una apertura responsive y un segundo módulo de cuerpo por colección en Landing:
 
-1. **Base:** color o degradado suave derivado del tema.
-2. **Textura:** papel, grano o acuarela de muy bajo contraste.
-3. **Arte periférico:** botánica, manchas, ramas u ornamentos anclados a bordes y esquinas.
+1. **Imagen de apertura:** composición `narrow`, `medium` o `wide` seleccionada mediante media query.
+2. **Módulo de cuerpo:** imagen serena y repetible que prolonga el mismo material y arte periférico.
+3. **Color de respaldo:** token de fondo del tema, visible si un asset no carga.
+4. **Contenido HTML:** texto, controles e imágenes de contenido independientes del fondo.
 
-El centro editorial debe permanecer limpio. El texto, los controles y las imágenes de contenido nunca se rasterizan
-dentro del fondo.
+No se añaden texturas CSS, degradados decorativos, velos de color ni modos de mezcla. Las imágenes se presentan casi
+opacas para evaluar con fidelidad el arte aprobado.
+
+`background-size: cover` conserva siempre la proporción original. Puede recortar parte de la periferia cuando cambia
+la relación de aspecto de la pantalla, pero nunca estira ni deforma la ilustración.
 
 ## Frontera arquitectónica
 
@@ -72,13 +76,14 @@ perteneciendo a la Invitation Definition.
 
 ### Landing
 
-Puede usar las tres capas y es la propietaria de la experiencia artística completa. Las decoraciones deben acompañar
-el scroll y conectar Hero, countdown, media, celebración y CTA.
+Muestra una imagen temática casi opaca durante la apertura. Un fundido limitado al final de esta composición la
+conecta con un módulo de cuerpo de la misma familia visual. El módulo continúa durante el resto de la página y evita el
+salto hacia un color plano. No se duplica la apertura como decoración de cierre.
 
 ### RSVP
 
-Puede reutilizar únicamente base y textura atenuada. El formulario necesita una zona de lectura estable y no debe
-quedar rodeado por elementos de alto contraste.
+Reutiliza el mismo asset responsive de la colección casi opaco y a pantalla completa. El formulario y el estado de
+éxito conservan una superficie estable y protegida; el encuadre no cambia entre pasos.
 
 ### Admin
 
@@ -87,7 +92,8 @@ simple para priorizar datos y controles.
 
 ## Comportamiento responsive
 
-- Definir variantes mobile y wide cuando una misma composición no pueda recortarse con seguridad.
+- Usar `narrow` por debajo de 768 px, `medium` entre 768 y 1279 px y `wide` desde 1280 px.
+- Seleccionar composiciones hermanas por breakpoint y usar `cover` para preservar su proporción sin deformarlas.
 - Mantener una columna central libre y probar textos largos en ES, EN y BG.
 - Anclar arte a bordes y esquinas; no estirar una acuarela de móvil hasta escritorio.
 - Evitar `background-attachment: fixed` en móvil por coste de repintado y comportamiento inconsistente en Safari.
@@ -96,8 +102,9 @@ simple para priorizar datos y controles.
 
 ## Rendimiento y formato
 
-- Preferir AVIF/WebP para acuarelas y texturas; SVG solo para ornamentos vectoriales apropiados.
-- Crear tamaños mobile y wide, cargar el adecuado mediante media queries y medir el resultado en el build desplegado.
+- Entregar todos los backgrounds rasterizados activos en WebP. Los JPEG intermedios se conservan únicamente como copia
+  de seguridad fuera de `src`; SVG se reserva para ornamentos vectoriales apropiados.
+- Crear tamaños `narrow`, `medium` y `wide`, cargar uno mediante media queries y medir el resultado desplegado.
 - La experiencia debe seguir siendo comprensible si el background tarda o no carga.
 - El background no puede convertirse en el elemento LCP ni bloquear la aparición del Hero.
 - El presupuesto final se fijará después de comparar calidad visual y Core Web Vitals; no se aceptarán imágenes sin
@@ -120,29 +127,62 @@ simple para priorizar datos y controles.
 | Magnolia | Acuarela marfil/rosa, pétalos y hojas suaves; mayor presencia floral periférica. |
 | Linen | Papel cálido, ramas secas y tinta verde/gris; mínima ornamentación. |
 
-## Prototipo Royal
+## Sistema activo
 
-`BG-ROYAL-001` materializa la primera dirección con dos variantes WebP bajo
-`src/assets/themes/royal/backgrounds/`. La Landing las compone mediante media queries y capas enmascaradas en
-`src/themes/patterns.css`; `ThemeDefinition`, Invitation Definition, RSVP y Admin permanecen sin cambios.
+`BG-ROYAL-001` continúa como baseline y se completa con una variante tablet. `BG-BOHO-001`, `BG-DARK-001`,
+`BG-MAGNOLIA-001` y `BG-LINEN-001` materializan las cuatro direcciones restantes. Cada familia tiene tres composiciones
+de apertura y tres módulos de cuerpo art-directed bajo `src/assets/themes/<theme-id>/backgrounds/`.
 
-La composición no replica el asset como un marco completo. Se divide en tres ritmos: una entrada acuarelada dominante
-en el Hero, una superficie de papel prácticamente neutra durante el contenido y un único cierre botánico lateral con
-menor escala visual. El cierre utiliza máscara elíptica y modo de mezcla para evitar que el límite del bitmap pueda
-percibirse sobre el papel.
+Landing, RSVP y el estado de éxito las seleccionan mediante media queries y Custom Properties en
+`src/themes/patterns.css`. `ThemeDefinition` e Invitation Definition permanecen sin rutas de assets; Admin no recibe
+arte ceremonial.
 
-El prototipo debe validarse primero en 390 y 1440 px. No se generarán Boho, Dark, Magnolia ni Linen hasta confirmar:
+RSVP y éxito presentan una única imagen por superficie y breakpoint con una opacidad de `0.93` (`0.95` en Dark), sin
+overlays ni mezcla adicional.
 
-- intensidad y continuidad de la acuarela durante el scroll;
+Las cinco colecciones incorporan el patrón modular aprobado en Landing: la apertura se funde durante su tramo final con
+un módulo de cuerpo repetible. El módulo conserva el mismo papel, paleta y arte periférico, permanece a plena opacidad y
+acompaña todo el scroll. No se repite la apertura completa ni se modifica el color de los assets.
+
+La variante `medium` se mantiene hasta 1279 px para que pantallas como 1024 × 768 reciban una composición 4:3. La
+variante panorámica `wide` comienza en 1280 px, cuando la anchura permite conservar mejor sus elementos periféricos.
+
+### Continuidad modular aprobada
+
+La primera validación de imagen única dejaba un salto perceptible entre la apertura y el color plano. Royal validó una
+separación de responsabilidades que ahora aplican las cinco colecciones:
+
+1. la apertura actúa como portada;
+2. el módulo de cuerpo proporciona papel y ornamentación lateral serena durante el resto del recorrido.
+
+La transición se resuelve superponiendo ambas imágenes únicamente en el final de la apertura. El contenido permanece
+en HTML y el fondo puede crecer independientemente del idioma o de la altura total.
+
+Royal recibió aprobación de producto el 2026-07-29. Boho, Dark, Magnolia y Linen adoptan desde esa fecha el mismo
+contrato de apertura y cuerpo, manteniendo una dirección artística propia y tres composiciones responsive.
+
+### Candidatos descartados
+
+- `BG-ROYAL-002`, canvas continuo, se descartó porque su ajuste a alturas variables deformaba la ilustración y se
+  alejaba del papel frío aprobado.
+- `BG-ROYAL-003`, apertura modular, se descartó porque la escala floral competía con los nombres y dejaba el resto del
+  recorrido visualmente vacío.
+- Sus archivos se conservan temporalmente, sin referencias desde CSS, únicamente para trazabilidad y comparación.
+
+La validación final debe comprobar:
+
+- intensidad y continuidad del arte durante el scroll;
 - legibilidad del Hero, countdown, vídeo, venues y CTA;
 - ausencia de repeticiones o cortes visuales inaceptables;
+- estabilidad del encuadre en todos los pasos de RSVP;
 - peso y comportamiento del fallback.
 
 ## Criterios de aceptación de Sprint 6.6.3
 
 - Royal conserva su identidad y actúa como baseline de fidelidad.
 - Los cinco temas tienen una dirección reconocible sin alterar contenido ni orden de secciones.
-- Landing se valida en 320, 390, 768 y 1440 px; RSVP se valida al menos en móvil y escritorio.
+- Landing se valida en 320, 390, 768, 1024 y 1440 px; RSVP se valida al menos en móvil, tablet y escritorio.
+- La imagen se percibe casi opaca y no existen capas visuales adicionales que modifiquen su color.
 - Admin no recibe arte decorativo.
 - No existe texto rasterizado, overflow horizontal ni pérdida de contraste AA.
 - Los fondos degradan correctamente si un asset falla y respetan el primer render.

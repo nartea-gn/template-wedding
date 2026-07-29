@@ -1,122 +1,200 @@
 /*
- * Background presentation per theme.
- * Body keeps a lightweight fallback for every route. Landing may add responsive
- * collection artwork without leaking asset paths into ThemeDefinition.
+ * Responsive theme artwork.
+ *
+ * This evaluation pass intentionally presents the approved images almost
+ * directly: no texture stacks, color overlays, blend modes or duplicated
+ * closing artwork. Every collection now pairs its approved opening with a
+ * calm repeatable body module built for long-form invitation content.
  */
 
-/* Royal — elegant diamond lattice with subtle gold accents */
-[data-theme="royal"] body {
-    background-color: var(--color-wedding-bg);
-    background-image: radial-gradient(circle at 25% 25%, rgba(201, 168, 76, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(27, 58, 107, 0.03) 0%, transparent 50%),
-    url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%231B3A6B' stroke-width='0.4' stroke-opacity='0.06'%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40 Z'/%3E%3Cpath d='M40 10 L70 40 L40 70 L10 40 Z'/%3E%3C/g%3E%3C/svg%3E");
-    background-size: 100% 100%, 100% 100%, 80px 80px;
+[data-theme="royal"] {
+    --theme-background-art: url('../assets/themes/royal/backgrounds/royal-watercolor-mobile.webp');
+    --theme-background-body-art: url('../assets/themes/royal/backgrounds/royal-body-narrow.webp');
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.97;
+    --theme-background-rsvp-opacity: 0.93;
 }
 
-/* Royal Landing — watercolor paper and peripheral botany (BG-ROYAL-001). */
-[data-theme="royal"] .landing-page {
+[data-theme="boho"] {
+    --theme-background-art: url('../assets/themes/boho/backgrounds/boho-background-narrow.webp');
+    --theme-background-body-art: url('../assets/themes/boho/backgrounds/boho-body-narrow.webp');
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.97;
+    --theme-background-rsvp-opacity: 0.93;
+}
+
+[data-theme="dark"] {
+    --theme-background-art: url('../assets/themes/dark/backgrounds/dark-background-narrow.webp');
+    --theme-background-body-art: url('../assets/themes/dark/backgrounds/dark-body-narrow.webp');
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.98;
+    --theme-background-rsvp-opacity: 0.95;
+}
+
+[data-theme="magnolia"] {
+    --theme-background-art: url('../assets/themes/magnolia/backgrounds/magnolia-background-narrow.webp');
+    --theme-background-body-art: url('../assets/themes/magnolia/backgrounds/magnolia-body-narrow.webp');
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.97;
+    --theme-background-rsvp-opacity: 0.93;
+}
+
+[data-theme="linen"] {
+    --theme-background-art: url('../assets/themes/linen/backgrounds/linen-background-narrow.webp');
+    --theme-background-body-art: url('../assets/themes/linen/backgrounds/linen-body-narrow.webp');
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.97;
+    --theme-background-rsvp-opacity: 0.93;
+}
+
+[data-theme] body {
+    background: var(--color-wedding-bg);
+}
+
+/*
+ * Landing: the opening remains decorative and outside the content flow, then
+ * blends into the collection's repeatable body module.
+ */
+[data-theme] .landing-page {
     position: relative;
     isolation: isolate;
     background-color: var(--color-wedding-bg);
-    background-image:
-        radial-gradient(circle at 50% 5rem, rgb(255 255 255 / 42%), transparent 34rem),
-        linear-gradient(180deg, rgb(224 229 238 / 12%) 0, transparent 30rem);
+    background-image: var(--theme-background-body-art, none);
+    background-repeat: repeat-y;
+    background-position: center top;
+    background-size: 100% auto;
 }
 
-[data-theme="royal"] .landing-page::before,
-[data-theme="royal"] .landing-page::after {
+[data-theme] .landing-page::before {
     content: '';
     position: absolute;
     z-index: 0;
-    pointer-events: none;
-    background-image: url('../assets/themes/royal/backgrounds/royal-watercolor-mobile.webp');
-    background-repeat: no-repeat;
-}
-
-[data-theme="royal"] .landing-page::before {
     top: 0;
     inset-inline: 0;
-    height: clamp(42rem, 160vw, 68rem);
-    background-position: center top;
-    background-size: 112% auto;
-    opacity: 0.62;
-    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 0%, #000 46%, transparent 100%);
+    height: clamp(44rem, 105svh, 58rem);
+    pointer-events: none;
+    background-image: var(--theme-background-art);
+    background-repeat: no-repeat;
+    background-position: var(--theme-background-position);
+    background-size: cover;
+    opacity: var(--theme-background-opening-opacity);
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%);
 }
 
-[data-theme="royal"] .landing-page::after {
-    bottom: 0;
-    right: clamp(-9rem, -16vw, -4rem);
-    width: clamp(22rem, 84vw, 38rem);
-    height: clamp(27rem, 108vw, 43rem);
-    background-position: right bottom;
-    background-size: auto 100%;
-    mix-blend-mode: multiply;
-    opacity: 0.16;
-    -webkit-mask-image: radial-gradient(ellipse at right bottom, #000 0%, #000 24%, transparent 66%);
-    mask-image: radial-gradient(ellipse at right bottom, #000 0%, #000 24%, transparent 66%);
+[data-theme] .landing-page::after {
+    content: none;
 }
 
-[data-theme="royal"] .landing-page > * {
+[data-theme] .landing-page > * {
     position: relative;
     z-index: 1;
 }
 
+/*
+ * RSVP: the same selected composition fills the page. `cover` may crop the
+ * perimeter, but it never changes the image proportions or stretches artwork.
+ */
+[data-theme] :is(.rsvp-page, .rsvp-success-page) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-wedding-bg);
+}
+
+[data-theme] :is(.rsvp-page, .rsvp-success-page)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: var(--theme-background-art);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: var(--theme-background-rsvp-opacity);
+}
+
+[data-theme] :is(.rsvp-page, .rsvp-success-page)::after {
+    content: none;
+}
+
+[data-theme] :is(.rsvp-page, .rsvp-success-page) > * {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+ * Tablet keeps the 4:3 composition through 1279 px. This avoids forcing the
+ * panoramic artwork into 1024 × 768, where a wide image would lose its edges.
+ */
 @media (min-width: 48rem) {
-    [data-theme="royal"] .landing-page::before {
-        height: clamp(48rem, 112vw, 72rem);
-        background-size: 104% auto;
-        opacity: 0.58;
+    [data-theme="royal"] {
+        --theme-background-art: url('../assets/themes/royal/backgrounds/royal-background-medium.webp');
+        --theme-background-body-art: url('../assets/themes/royal/backgrounds/royal-body-medium.webp');
     }
 
-    [data-theme="royal"] .landing-page::after {
-        right: clamp(-8rem, -9vw, -4rem);
-        width: clamp(30rem, 58vw, 44rem);
-        height: clamp(34rem, 64vw, 48rem);
-        opacity: 0.13;
+    [data-theme="boho"] {
+        --theme-background-art: url('../assets/themes/boho/backgrounds/boho-background-medium.webp');
+        --theme-background-body-art: url('../assets/themes/boho/backgrounds/boho-body-medium.webp');
+    }
+
+    [data-theme="dark"] {
+        --theme-background-art: url('../assets/themes/dark/backgrounds/dark-background-medium.webp');
+        --theme-background-body-art: url('../assets/themes/dark/backgrounds/dark-body-medium.webp');
+    }
+
+    [data-theme="magnolia"] {
+        --theme-background-art: url('../assets/themes/magnolia/backgrounds/magnolia-background-medium.webp');
+        --theme-background-body-art: url('../assets/themes/magnolia/backgrounds/magnolia-body-medium.webp');
+    }
+
+    [data-theme="linen"] {
+        --theme-background-art: url('../assets/themes/linen/backgrounds/linen-background-medium.webp');
+        --theme-background-body-art: url('../assets/themes/linen/backgrounds/linen-body-medium.webp');
+    }
+
+    [data-theme] .landing-page::before {
+        height: clamp(40rem, 78vw, 50rem);
     }
 }
 
-@media (min-width: 64rem) {
-    [data-theme="royal"] .landing-page::before {
-        height: clamp(40rem, 62vw, 58rem);
-        background-image: url('../assets/themes/royal/backgrounds/royal-watercolor-wide.webp');
-        background-size: 108% auto;
-        opacity: 0.56;
+/*
+ * Panoramic artwork starts only when the viewport is genuinely wide.
+ */
+@media (min-width: 80rem) {
+    [data-theme="royal"] {
+        --theme-background-art: url('../assets/themes/royal/backgrounds/royal-watercolor-wide.webp');
+        --theme-background-body-art: url('../assets/themes/royal/backgrounds/royal-body-wide.webp');
+    }
+
+    [data-theme="boho"] {
+        --theme-background-art: url('../assets/themes/boho/backgrounds/boho-background-wide.webp');
+        --theme-background-body-art: url('../assets/themes/boho/backgrounds/boho-body-wide.webp');
+    }
+
+    [data-theme="dark"] {
+        --theme-background-art: url('../assets/themes/dark/backgrounds/dark-background-wide.webp');
+        --theme-background-body-art: url('../assets/themes/dark/backgrounds/dark-body-wide.webp');
+    }
+
+    [data-theme="magnolia"] {
+        --theme-background-art: url('../assets/themes/magnolia/backgrounds/magnolia-background-wide.webp');
+        --theme-background-body-art: url('../assets/themes/magnolia/backgrounds/magnolia-body-wide.webp');
+    }
+
+    [data-theme="linen"] {
+        --theme-background-art: url('../assets/themes/linen/backgrounds/linen-background-wide.webp');
+        --theme-background-body-art: url('../assets/themes/linen/backgrounds/linen-body-wide.webp');
+    }
+
+    [data-theme] .landing-page::before {
+        height: clamp(44rem, 62vw, 56rem);
     }
 }
 
-/* Boho — organic flowing dots with sage warmth */
-[data-theme="boho"] body {
-    background-color: var(--color-wedding-bg);
-    background-image: radial-gradient(circle at 20% 30%, rgba(124, 154, 110, 0.06) 0%, transparent 40%),
-    radial-gradient(circle at 80% 70%, rgba(212, 197, 176, 0.08) 0%, transparent 40%),
-    radial-gradient(circle, rgba(124, 154, 110, 0.08) 1.5px, transparent 1.5px);
-    background-size: 100% 100%, 100% 100%, 24px 24px;
-}
-
-/* Dark — sophisticated grain with subtle depth */
-[data-theme="dark"] body {
-    background-color: var(--color-wedding-bg);
-    background-image: radial-gradient(circle at 50% 50%, rgba(201, 168, 76, 0.02) 0%, transparent 60%),
-    radial-gradient(circle, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-    background-size: 100% 100%, 3px 3px;
-}
-
-/* Magnolia — delicate rose petals scattered softly */
-[data-theme="magnolia"] body {
-    background-color: var(--color-wedding-bg);
-    background-image: radial-gradient(circle at 30% 20%, rgba(183, 110, 121, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 70% 80%, rgba(201, 162, 122, 0.04) 0%, transparent 50%),
-    radial-gradient(circle, rgba(183, 110, 121, 0.07) 2px, transparent 2px);
-    background-size: 100% 100%, 100% 100%, 32px 32px;
-}
-
-/* Linen — refined texture with subtle warmth */
-[data-theme="linen"] body {
-    background-color: var(--color-wedding-bg);
-    background-image: radial-gradient(circle at 25% 25%, rgba(74, 83, 67, 0.02) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(212, 197, 176, 0.03) 0%, transparent 50%),
-    radial-gradient(circle, rgba(74, 83, 67, 0.035) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 20px 20px;
+@media (prefers-reduced-transparency: reduce) {
+    [data-theme] :is(.rsvp-card, .rsvp-success-card) {
+        background: var(--color-wedding-surface);
+    }
 }

@@ -62,14 +62,14 @@ Las valoraciones específicas de cada colección permanecen provisionales hasta 
 La auditoría conserva los hallazgos originales como evidencia. A fecha de esta revisión, la rama contiene las
 siguientes correcciones todavía pendientes de validación visual y funcional:
 
-| Hallazgo | Estado de implementación | Validación pendiente |
-|---|---|---|
-| `DC-001` | Royal restaurado como tema de la invitación activa. | Validado en 320, 390, 768 y 1440 px; pendiente aprobación manual de producto. |
-| `DC-002` | Añadidos roles de acción, texto sobre acción y borde de control para los cinco temas. | Ratios calculados AA; Royal validado en Landing, RSVP y acceso Admin. Resto de temas pendiente de comparativa visual. |
-| `DC-003` | Countdown recompuesto con grid, cifras tabulares y labels de `0.625rem` a `0.75rem`. | Validado en ES, EN y BG a 320 px y Royal en todos los viewports objetivo. |
-| `DC-010` | Añadidos roles y superficies de éxito/error por tema. | Error de RSVP validado en Royal; estados reales de Admin y Dark pendientes. |
-| `DC-015` | Eliminada la dependencia de `opacity: 0` en el primer render de Landing. | Hero medido con opacidad `1` durante la animación; reduced motion pendiente de comprobación manual. |
-| `DC-017` | Integrado `BG-ROYAL-001` con papel continuo, arte dominante en Hero y cierre asimétrico atenuado. | Validado visualmente en 390 y 1440 px, incluido el recorrido completo; falta aprobación manual de producto. |
+| Hallazgo | Estado de implementación                                                                                 | Validación pendiente                                                                                                  |
+|----------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `DC-001` | Royal restaurado como tema de la invitación activa.                                                      | Validado en 320, 390, 768 y 1440 px; pendiente aprobación manual de producto.                                         |
+| `DC-002` | Añadidos roles de acción, texto sobre acción y borde de control para los cinco temas.                    | Ratios calculados AA; Royal validado en Landing, RSVP y acceso Admin. Resto de temas pendiente de comparativa visual. |
+| `DC-003` | Countdown recompuesto con grid, cifras tabulares y labels de `0.625rem` a `0.75rem`.                     | Validado en ES, EN y BG a 320 px y Royal en todos los viewports objetivo.                                             |
+| `DC-010` | Añadidos roles y superficies de éxito/error por tema.                                                    | Error de RSVP validado en Royal; estados reales de Admin y Dark pendientes.                                           |
+| `DC-015` | Eliminada la dependencia de `opacity: 0` en el primer render de Landing.                                 | Hero medido con opacidad `1` durante la animación; reduced motion pendiente de comprobación manual.                   |
+| `DC-017` | Integradas cinco familias responsive con apertura y cuerpo modular continuo en Landing.                  | Validado en 390 y 1440 px; sin overflow y con corrección específica de la costura Linen.                              |
 
 “Implementado” no equivale a “cerrado”: los hallazgos permanecerán abiertos hasta completar la columna de validación.
 
@@ -251,16 +251,20 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
   título —por ejemplo, popover alineado bajo una cabecera reservada o sheet compacto en móvil— y completar gestión de
   foco y teclado.
 
-### DC-017 — Los patrones actuales no alcanzan la dirección artística propuesta
+### DC-017 — Los patrones iniciales no alcanzaban la dirección artística propuesta
 
-- **Evidencia:** `src/themes/patterns.css` solo combina gradientes y tramas CSS de baja intensidad. Los mocks propuestos
-  usan papel/acuarela, arte botánico periférico y continuidad visual entre secciones.
+- **Evidencia inicial:** `src/themes/patterns.css` solo combinaba gradientes y tramas CSS de baja intensidad. Los mocks
+  propuestos usan papel/acuarela, arte botánico periférico y continuidad visual entre secciones.
 - **Impacto:** los temas cambian color, tipografía y matices, pero no crean una atmósfera suficientemente reconocible;
   Landing sigue percibiéndose como una plantilla centrada.
 - **Recomendación:** introducir backgrounds artísticos por colección siguiendo
   [`BACKGROUNDS.md`](../02-design/BACKGROUNDS.md). La primera versión debe reutilizar `data-theme` y CSS responsive,
   sin ampliar el Core ni insertar rutas de decoración en Invitation Definition.
 - **Propietario:** presentación visual del tema y assets de diseño; no contenido ni Section Registry.
+- **Estado actual:** implementado en la rama con tres aperturas y tres módulos de cuerpo por colección. Royal validó el
+  patrón modular y este se propagó a Boho, Dark, Magnolia y Linen. La comparativa visual se completó en móvil y
+  escritorio; Linen recibió una extensión especular para eliminar su costura tonal. RSVP y éxito mantienen una única
+  imagen estable y Dark se revalidó como caso de mayor contraste.
 
 ## Evidencia visual transversal
 

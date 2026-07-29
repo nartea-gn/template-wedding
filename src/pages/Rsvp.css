@@ -3,11 +3,16 @@
 /* Rsvp page styles */
 .rsvp-success-page {
     @apply min-h-screen bg-(--color-wedding-bg) text-(--color-wedding-text) flex flex-col items-center justify-center p-6 text-center font-sans;
+    min-height: 100svh;
 }
 
 .rsvp-success-card {
     @apply max-w-md p-8 md:p-10 space-y-6;
     background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-form-card-opacity), transparent);
+    border: 1px solid color-mix(in srgb, var(--color-wedding-border) 62%, transparent);
+    box-shadow: var(--shadow-card-lg);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .rsvp-success-icon {
@@ -29,11 +34,16 @@
 
 .rsvp-page {
     @apply min-h-screen bg-(--color-wedding-bg) text-(--color-wedding-text) flex flex-col items-center justify-center p-4 md:p-8;
+    min-height: 100svh;
 }
 
 .rsvp-card {
     @apply w-full max-w-2xl p-6 md:p-10;
     background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-form-card-opacity), transparent);
+    border: 1px solid color-mix(in srgb, var(--color-wedding-border) 62%, transparent);
+    box-shadow: var(--shadow-card-lg);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 
 .rsvp-progress {
