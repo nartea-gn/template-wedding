@@ -87,7 +87,8 @@ Condición de activación: historial remoto verificado. No se renombrarán ni re
 - Historia/timeline como contenido del paquete de evento.
 - Música opcional con consentimiento explícito y sin autoplay.
 
-Estos módulos permanecen aplazados hasta que Theme Engine v2 esté cerrado y exista una necesidad concreta aprobada.
+Theme Engine v2 ya está cerrado. Estos módulos continúan aplazados hasta que exista una necesidad concreta y un
+contrato de contenido aprobados; su habilitación técnica no constituye prioridad de producto.
 
 ### Plataforma condicional
 
@@ -115,6 +116,9 @@ Solo se activarán tras demanda repetida. No se generalizará el Core por escena
 | Galería/Historia/Música | Aplazado · P2        | Caso de cliente y contrato aprobados      | Section Registry y capabilities                |
 | Nuevos eventos          | Condicional          | Segundo dominio real                      | Core neutral respecto del negocio              |
 | Editor/SaaS/plugins     | Condicional          | Demanda repetida y modelo de producto     | Configuración declarativa serializable         |
+
+La secuencia aprobada para los elementos previos a `1.0.0` se desarrolla en
+[`SPRINT_7_PLAN.md`](./SPRINT_7_PLAN.md).
 
 ## Regla de priorización
 

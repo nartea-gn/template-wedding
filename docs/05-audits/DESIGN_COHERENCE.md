@@ -1,28 +1,28 @@
 # Auditoría de coherencia y dirección visual
 
 - **Sprint:** 6.6
-- **Estado:** auditoría estática y baseline visual responsive completados; Admin autenticado y comparativa multitema pendientes
-- **Rama:** `feature/design-coherence-audit`
-- **Baseline:** Royal debe conservar la identidad aprobada de producción
+- **Estado:** baseline visual cerrado y aprobado; QA integral transferido a Sprint 7.4
+- **Rama de implementación:** `feature/design-coherence-audit`, integrada mediante PR #17
+- **Rama de cierre:** `sprint/6.6.6-closeout`
+- **Baseline:** Royal conserva la identidad aprobada de producción
 
-## Resumen ejecutivo provisional
+## Resumen ejecutivo de cierre
 
-La arquitectura visual es coherente y el Theme Engine v2 tiene fronteras correctas, pero todavía no equivale a una
-dirección artística completa. Los cinco temas comparten prácticamente la misma composición y varios ajustes recientes
-han protegido capturas concretas reduciendo demasiado texto o acumulando valores locales.
+La arquitectura visual y las fronteras de Theme Engine v2 quedan consolidadas. Royal fue restaurado y aprobado como
+referencia; Boho, Dark, Magnolia y Linen disponen de paletas, tipografías, roles semánticos y familias de backgrounds
+propias sin introducir lógica artística en el Core.
 
-Producto aporta como referencia [Specially Love](https://specially.love/) y describe dos mocks propios con acuarela,
-botánica periférica, composición editorial continua y backgrounds diferenciados. Los mocks todavía no tienen una ruta
-estable en el repositorio y no se consideran evidencia reproducible hasta incorporarlos con procedencia y contexto.
-La referencia confirma que la carencia no es añadir más componentes, sino hacer que cada colección construya una
-atmósfera reconocible alrededor del contenido.
+El sistema modular de apertura y cuerpo elimina estiramientos y costuras visibles en páginas de altura variable. Las
+cinco colecciones se compararon en móvil y escritorio; Landing, RSVP y éxito heredan su identidad, mientras Admin
+conserva una superficie operativa sin decoración ceremonial.
 
-No se recomienda reescribir el sistema. El trabajo debe concentrarse en:
+Sprint 6.6 cierra un baseline visual, no la dirección artística definitiva ni el QA de `1.0.0`. La evolución futura
+puede profundizar fotografía, ritmo y tipografías propias, pero requiere decisiones aprobadas en Nartea Studio,
+medición de carga y evidencia con contenido real.
 
-1. corregir accesibilidad y regresiones objetivas;
-2. consolidar escala tipográfica, controles y contraste mediante contratos semánticos;
-3. redefinir Landing, RSVP y Admin por intención;
-4. profundizar después la identidad de cada colección con comparaciones visuales.
+Las validaciones de Admin autenticado, teclado, lector de pantalla, zoom al 200 %, dispositivos físicos y rendimiento
+pertenecen al QA de Sprint 7.4. Su traslado no reduce el alcance del cierre visual ni debe interpretarse como evidencia
+ya completada.
 
 ## Método y estado de evidencia
 
@@ -38,40 +38,44 @@ No se recomienda reescribir el sistema. El trabajo debe concentrarse en:
 ### Validación visual completada
 
 - Landing en 320 × 568, 390 × 844, 768 × 1024 y 1440 × 900;
-- RSVP en 390 × 844 y 1440 × 900;
+- comparativa de Landing para Royal, Boho, Dark, Magnolia y Linen en móvil y escritorio;
+- RSVP para los cinco temas en móvil y escritorio, con revalidación específica de Dark;
 - acceso de Admin en 390 × 844;
 - selector de idioma abierto en móvil;
 - selector de aplicaciones de mapas abierto en móvil;
 - comprobación de desbordamiento horizontal en móvil, tablet y escritorio;
 - medición de tamaños computados de títulos, labels, botones, selector y countdown.
+- continuidad modular de los fondos, incluida la corrección de la costura tonal de Linen;
+- validación por producto de Royal y de la composición final;
+- `pnpm lint` y `pnpm build` confirmados por producto sobre el trabajo integrado en PR #17.
 
-El servidor local funciona con las variables reales. Producto confirma que `royal` es el baseline correcto; la página
-externa mencionada anteriormente no se considera un requisito para cerrar esta auditoría.
+El servidor local funcionó con las variables reales. Producto confirmó que `royal` es el baseline correcto; las
+referencias externas no se consideran requisitos de cierre.
 
-### Pendiente o condicionado
+### Transferido a Sprint 7
 
 - estados autenticados de Admin con respuestas reales;
 - navegación manual completa con teclado, lector y zoom al 200 %;
-- comparativa visual de los cinco temas después de restaurar `royal` como baseline;
-- fotografías finales representativas, si existen.
+- validación física en Safari iOS y Chrome Android;
+- Lighthouse y Core Web Vitals;
+- matriz final sobre un único release candidate;
+- fotografías finales representativas cuando exista contenido de cliente.
 
-Las valoraciones específicas de cada colección permanecen provisionales hasta completar la comparativa multitema.
+### Estado de los hallazgos
 
-### Estado de implementación en la rama de trabajo
+La auditoría conserva los hallazgos originales como evidencia histórica. El cierre de Sprint 6.6 queda así:
 
-La auditoría conserva los hallazgos originales como evidencia. A fecha de esta revisión, la rama contiene las
-siguientes correcciones todavía pendientes de validación visual y funcional:
+| Hallazgo | Resultado | Estado |
+|---|---|---|
+| `DC-001` | Royal restaurado, validado en 320, 390, 768 y 1440 px y aprobado por producto. | Cerrado |
+| `DC-002` | Roles semánticos y contraste estático AA para los cinco temas; comparativa visual completada. | Cerrado |
+| `DC-003` | Countdown recompuesto y validado en ES, EN y BG sin overflow. | Cerrado |
+| `DC-010` | Superficies de éxito/error por tema; RSVP y Dark revalidados. Admin real pasa a Sprint 7.4. | Baseline cerrado |
+| `DC-015` | Contenido esencial visible en primer render y fallback global de reduced motion presente. | Baseline cerrado |
+| `DC-017` | Cinco familias responsive con apertura y cuerpo modular continuo, incluida corrección Linen. | Cerrado |
 
-| Hallazgo | Estado de implementación                                                                                 | Validación pendiente                                                                                                  |
-|----------|----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| `DC-001` | Royal restaurado como tema de la invitación activa.                                                      | Validado en 320, 390, 768 y 1440 px; pendiente aprobación manual de producto.                                         |
-| `DC-002` | Añadidos roles de acción, texto sobre acción y borde de control para los cinco temas.                    | Ratios calculados AA; Royal validado en Landing, RSVP y acceso Admin. Resto de temas pendiente de comparativa visual. |
-| `DC-003` | Countdown recompuesto con grid, cifras tabulares y labels de `0.625rem` a `0.75rem`.                     | Validado en ES, EN y BG a 320 px y Royal en todos los viewports objetivo.                                             |
-| `DC-010` | Añadidos roles y superficies de éxito/error por tema.                                                    | Error de RSVP validado en Royal; estados reales de Admin y Dark pendientes.                                           |
-| `DC-015` | Eliminada la dependencia de `opacity: 0` en el primer render de Landing.                                 | Hero medido con opacidad `1` durante la animación; reduced motion pendiente de comprobación manual.                   |
-| `DC-017` | Integradas cinco familias responsive con apertura y cuerpo modular continuo en Landing.                  | Validado en 390 y 1440 px; sin overflow y con corrección específica de la costura Linen.                              |
-
-“Implementado” no equivale a “cerrado”: los hallazgos permanecerán abiertos hasta completar la columna de validación.
+`Baseline cerrado` significa que la implementación de Sprint 6 cumple su objetivo; no sustituye las pruebas integrales
+del release candidate.
 
 Contraste estático de los nuevos pares declarados en `themes.ts`:
 
@@ -86,7 +90,13 @@ Contraste estático de los nuevos pares declarados en `themes.ts`:
 Los pares de texto superan 4,5:1. Los bordes de control superan el mínimo no textual de 3:1; su validación final debe
 realizarse también sobre las superficies reales donde aparezcan, no solo sobre el fondo base.
 
-## Hallazgos P0 — corregir antes de ampliar el diseño
+## Hallazgos originales
+
+Las secciones DC-001–DC-017 conservan el diagnóstico previo a la implementación. Sus rutas, cifras y recomendaciones
+describen el estado auditado en ese momento; la tabla **Estado de los hallazgos** y el scorecard de cierre son la
+autoridad sobre el resultado actual.
+
+### Prioridad original P0
 
 ### DC-001 — La invitación activa no usa Royal
 
@@ -130,7 +140,7 @@ Contraste calculado sobre los colores base:
   tabulares, columnas flexibles, abreviaturas localizadas o separación proporcional.
 - **Propietario:** Countdown layout y escala tipográfica, no cada tema.
 
-## Hallazgos P1 — coherencia del sistema
+### Prioridad original P1
 
 ### DC-004 — No existe una escala tipográfica compartida completa
 
@@ -297,17 +307,18 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
   jerarquía clara y enlaces específicos para opción automática, Google Maps y Apple Maps.
 - Debe conservarse como referencia de interacción móvil durante la revisión del selector de idioma.
 
-## Scorecard provisional por tema
+## Scorecard de cierre por tema
 
 | Tema | Identidad | Contraste base | Tipografía | Diferenciación estructural | Estado |
 |---|---|---|---|---|---|
-| Royal | Referencia clásica/editorial | Alta salvo bordes/opacidades | Serif histórica + Josefin | Moderada | Validar fidelidad visual |
-| Boho | Cálida, orgánica | Insuficiente en primary/muted/border | Cormorant + Nunito | Moderada | P0 contraste |
-| Dark | Nocturna, lujo contrastado | Alta en texto; borde débil | Cormorant + Lato | Baja/moderada | Validar controles nativos |
-| Magnolia | Romántica, suave | Primary/muted/border insuficientes | Cormorant + Raleway | Moderada | P0 contraste; activa por error probable |
-| Linen | Sobria, natural | Buena salvo bordes | Playfair + Montserrat | Baja/moderada | Mejor baseline alternativa |
+| Royal | Referencia clásica/editorial | AA en roles definidos | Serif histórica + Josefin | Fondo modular Royal | Aprobado |
+| Boho | Cálida, orgánica | AA en roles definidos | Cormorant + Nunito | Fondo botánico modular | Baseline aprobado |
+| Dark | Nocturna, lujo contrastado | AA en roles definidos | Cormorant + Lato | Fondo celestial modular | Baseline aprobado |
+| Magnolia | Romántica, suave | AA en roles definidos | Cormorant + Raleway | Fondo floral modular | Baseline aprobado |
+| Linen | Sobria, natural | AA en roles definidos | Playfair + Montserrat | Fondo botánico modular | Baseline aprobado |
 
-La puntuación artística definitiva requiere capturas y referencia externa.
+Las familias tipográficas actuales permanecen como baseline. Una sustitución por tipografías “redondas con vida” o
+fuentes propias requiere aprobación en Nartea Studio y una estrategia de carga medida.
 
 ## Propiedad técnica recomendada
 
@@ -321,20 +332,20 @@ La puntuación artística definitiva requiere capturas y referencia externa.
 | Contenido y traducciones | Paquete de invitación |
 | Estados de datos | Feature/Repository, no tema |
 
-## Fases propuestas después de la revisión visual
+## Incrementos completados
 
 1. **6.6.1 — P0:** tema activo, contraste y countdown legible.
-2. **6.6.2 — Sistema:** escala tipográfica, roles de control, color scheme y touch targets.
+2. **6.6.2 — Sistema:** escala tipográfica, roles de control y touch targets.
 3. **6.6.3 — Landing y backgrounds:** hero, narrativa, motion, fondos por colección y necesidad real de cards.
 4. **6.6.4 — RSVP:** ritmo, campos, progreso, errores y acciones.
 5. **6.6.5 — Admin:** KPIs, toolbar, tabla y densidad.
 6. **6.6.6 — Colecciones:** dirección artística y tipografía investigada por tema.
 
-## Condiciones para pasar de auditoría a implementación
+## Cierre y continuidad
 
-1. Revisar y aprobar conjuntamente las prioridades DC-001 a DC-017.
-2. Crear un plan específico para 6.6.1 sin mezclar cambios artísticos de P2.
-3. Restaurar `royal` como baseline antes de comparar colecciones.
-4. Validar manualmente los cambios con teclado, zoom y Admin autenticado cuando esa pantalla entre en alcance.
+Sprint 6.6 queda cerrado como baseline visual y técnico. Las puertas restantes se gestionan mediante
+[`SPRINT_7_PLAN.md`](../00-product/SPRINT_7_PLAN.md) y
+[`RELEASE_CHECKLIST.md`](../04-development/RELEASE_CHECKLIST.md).
 
-Hasta aprobar ese plan no se recomienda cambiar CSS ni cerrar la auditoría como implementación terminada.
+La evolución artística posterior se mantiene en backlog y no debe mezclarse con seguridad, contratos o QA de la
+release.

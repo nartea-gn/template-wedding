@@ -6,12 +6,14 @@ Supabase.
 
 ## Estado del proyecto
 
-El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización y Theme Engine v2
-están implementados. Seguridad de datos, baseline reproducible de Supabase, pruebas automáticas y QA de release siguen
-siendo puertas obligatorias antes de publicar una versión estable.
+El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2
+y el baseline visual responsive de Royal, Boho, Dark, Magnolia y Linen están implementados. Seguridad de datos,
+baseline reproducible de Supabase, pruebas automáticas y QA de release siguen siendo puertas obligatorias antes de
+publicar una versión estable.
 
 Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/PRODUCT_BACKLOG.md) y el
-[checklist de release](docs/04-development/RELEASE_CHECKLIST.md) para conocer el estado exacto.
+[plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md). El
+[checklist de release](docs/04-development/RELEASE_CHECKLIST.md) mantiene las puertas verificables para `1.0.0`.
 
 ## Stack
 
