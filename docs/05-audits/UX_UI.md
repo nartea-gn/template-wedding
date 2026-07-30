@@ -6,9 +6,9 @@ Landing, RSVP y Admin comparten tokens, iconografía, localización y comportami
 referencia visual aprobada y los cinco temas pueden variar composición, motion, superficies, ornamentos e iconos sin
 cambiar contenido o funcionalidad.
 
-La experiencia es coherente y funcional, pero la validación de release y una dirección artística más profunda son dos
-trabajos distintos: el primero es obligatorio antes de `1.0.0`; el segundo debe continuar después con referencias y
-comparaciones específicas por colección.
+Sprint 6.6 cerró el baseline visual con fondos modulares responsive para las cinco colecciones y Royal aprobado por
+producto. La validación de release y una dirección artística más profunda son trabajos distintos: el primero es
+obligatorio en Sprint 7.4 antes de `1.0.0`; el segundo debe continuar después con referencias y contenido real.
 
 ## Fortalezas verificadas
 
@@ -58,4 +58,5 @@ Galería, Historia y Música permanecen aplazadas; no deben introducirse como ex
 ## Evidencia pendiente
 
 La aceptación final requiere una matriz registrada de tema × página × viewport × navegador. Una revisión parcial no se
-presentará como validación completa.
+presentará como validación completa. La matriz, accesibilidad manual, dispositivos reales y rendimiento se definen en
+[`SPRINT_7_PLAN.md`](../00-product/SPRINT_7_PLAN.md).

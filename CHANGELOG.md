@@ -4,12 +4,17 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
-### Completado en la rama de trabajo
+### Theme Engine v2 y baseline visual — Sprints 6.4–6.6
 
 - Theme Engine v2 con contratos de composición, motion, superficies, decoración e iconografía para cinco temas.
 - Preservación explícita de la identidad tipográfica histórica de Royal.
 - Alineación de anillos y unidades del countdown en resoluciones estrechas.
+- Roles cromáticos semánticos y contraste estático AA para Royal, Boho, Dark, Magnolia y Linen.
+- Fondos artísticos modulares y responsive en Landing, RSVP y éxito, sin estiramientos ni costuras visibles.
+- Royal restaurado y aprobado como baseline; comparativa de las cinco colecciones completada en móvil y escritorio.
+- Superficies funcionales de RSVP protegidas y Admin conservado como experiencia operativa.
 - Documentación de producto, configuración, arquitectura, auditorías y release alineada con el runtime actual.
+- `pnpm lint` y `pnpm build` confirmados por producto sobre el trabajo integrado en PR #17.
 
 ### Limitaciones conocidas antes de 1.0.0
 

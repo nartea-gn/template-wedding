@@ -2,33 +2,35 @@
 
 ## Estado
 
-El producto continúa en fase previa a `1.0.0`. La arquitectura configurable está consolidada; el trabajo inmediato es
-cerrar Theme Engine v2 y convertir seguridad, datos, calidad y QA en puertas verificables de release.
+El producto continúa en fase previa a `1.0.0`. La arquitectura configurable, Theme Engine v2 y el baseline visual de
+las cinco colecciones están consolidados. El siguiente tramo convierte seguridad, datos, calidad y QA en puertas
+verificables de release.
 
 Leyenda: `Completado`, `En validación`, `En curso`, `Planificado`, `Aplazado`.
 
-## Ahora
+## Último sprint completado
 
-### Sprint 6.6 — Coherencia y dirección visual · En curso
+### Sprint 6.6 — Coherencia y dirección visual · Completado
 
 **Objetivo:** preservar Royal, corregir regresiones objetivas y evolucionar las colecciones desde variaciones de tokens
 hacia experiencias visuales reconocibles.
 
-**Incrementos:**
+**Resultado por incremento:**
 
-1. `6.6.1` — Royal activo, contraste semántico, countdown y primer render.
-2. `6.6.2` — Escala tipográfica, controles, touch targets y selector de idioma.
-3. `6.6.3` — Landing editorial y backgrounds temáticos responsive.
-4. `6.6.4` — RSVP: ritmo, errores y superficies de lectura.
-5. `6.6.5` — Admin: jerarquía operativa, KPIs, toolbar y tabla.
-6. `6.6.6` — Comparativa final de colecciones y adopción de la investigación tipográfica aprobada en Nartea Studio.
+1. `6.6.1` — Royal restaurado y aprobado; contraste semántico, countdown y primer render corregidos.
+2. `6.6.2` — Escala tipográfica, controles, touch targets, selector de idioma y roles cromáticos consolidados.
+3. `6.6.3` — Landing editorial y sistema modular de backgrounds responsive integrado.
+4. `6.6.4` — RSVP alineado con la identidad temática y con superficies funcionales legibles.
+5. `6.6.5` — Admin mantiene jerarquía operativa, KPIs, toolbar y tabla sin arte ceremonial.
+6. `6.6.6` — Comparativa móvil/escritorio de Royal, Boho, Dark, Magnolia y Linen completada; baseline tipográfico
+   existente preservado hasta que Nartea Studio apruebe una sustitución y su estrategia de carga.
 
-**Criterio de salida:** auditoría aprobada, capturas comparables de los cinco temas, Royal sin regresiones, contraste
-AA,
-backgrounds validados en los viewports objetivo y pruebas manuales de Landing, RSVP y Admin.
+**Evidencia de salida:** auditoría actualizada, Royal aprobado por producto, cinco familias de fondos comparadas en
+móvil y escritorio, contraste estático AA, ausencia de overflow en los viewports objetivo y `pnpm lint`/`pnpm build`
+confirmados por producto sobre el trabajo integrado en PR #17.
 
-**Estado de 6.6.1:** implementado y validado en navegador; pendiente de `pnpm lint`, `pnpm build` y aprobación manual de
-producto antes de cerrarlo.
+El cierre corresponde al baseline visual, no al QA final de `1.0.0`. Admin autenticado con respuestas reales, teclado,
+lector de pantalla, zoom al 200 %, dispositivos físicos y rendimiento permanecen en Sprint 7.4.
 
 ### Sprint 6.4 — Theme Engine v2 · Completado
 
@@ -47,13 +49,18 @@ RSVP y Admin para móvil, tablet y escritorio.
 **Criterio de salida:** documentación navegable, estados sin contradicciones, guía de configuración reproducible,
 checklist de release y siguientes sprints definidos con criterios de aceptación.
 
-## Antes de 1.0.0
+## Ahora — Sprint 7
 
-### Sprint 7.1 — Seguridad, privacidad y baseline de datos · Planificado · P0
+El plan maestro, la secuencia y los gates se definen en [`SPRINT_7_PLAN.md`](./SPRINT_7_PLAN.md).
+
+### Sprint 7.1 — Seguridad, privacidad y baseline de datos · Preparado · P0
 
 **Objetivo:** establecer autoridad real sobre respuestas RSVP y un esquema reproducible.
 
-**Dependencias:** decisión aprobada de autenticación/autorización y auditoría del historial remoto de Supabase.
+**Entrada:** modelo de amenazas, inventario de datos y acceso verificable al proyecto Supabase real.
+
+**Dependencias:** decisión aprobada de autenticación/autorización, requisitos de privacidad y auditoría del historial
+remoto de Supabase.
 
 **Criterio de salida:**
 
@@ -133,6 +140,7 @@ no se retomarán hasta que exista una necesidad de cliente y un contrato de cont
 | Sprint 5          | Completado | Admin opcional y dinámico                                    |
 | Sprint 5.1A       | Completado | Búsqueda, ordenación, paginación y CSV                       |
 | Sprints 6.0–6.3.5 | Completado | UX, media, responsive, mapas y compatibilidad móvil          |
+| Sprints 6.4–6.6.6 | Completado | Theme Engine v2 y baseline visual de cinco colecciones       |
 
 El inventario de evolutivos y sus condiciones se mantiene en
 [`PRODUCT_BACKLOG.md`](./PRODUCT_BACKLOG.md). Una entrada en backlog no equivale a compromiso de implementación.
