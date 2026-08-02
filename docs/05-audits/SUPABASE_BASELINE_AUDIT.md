@@ -93,10 +93,21 @@ contraseñas o claves API.
 - exportación de filas RSVP;
 - exposición de secretos, URL o referencia del proyecto en commits.
 
+## Validación local de la estrategia
+
+- instalación vacía reconstruida con `20260712` y `20260802`;
+- actualización desde el estado `20260712` ensayada con un registro ficticio preservado;
+- policies legacy retiradas incluso si su nombre presenta diferencias de codificación;
+- asesor de seguridad local sin avisos;
+- inserción anónima válida `201`;
+- lectura anónima e inserción incompleta rechazadas;
+- aislamiento A/B y usuario sin membresía comprobados mediante transacción con rollback;
+- permisos operativos de `service_role` declarados explícitamente.
+
 ## Criterio de salida
 
-El inventario remoto está completo. `G7-DATA` permanece abierto hasta que los caminos de instalación vacía,
-actualización, backup y rollback hayan sido ensayados fuera de producción.
+El inventario remoto y los dos caminos locales están completos. `G7-DATA` permanece abierto hasta revisar la PR,
+documentar backup/rollback y verificar los metadatos remotos después de aplicar la migración aprobada.
 
 ## Fuente
 

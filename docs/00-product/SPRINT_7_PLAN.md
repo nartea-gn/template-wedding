@@ -49,6 +49,9 @@ interfaz de gestión de usuarios quedan fuera de la primera solución salvo evid
 La investigación local y la auditoría remota de metadatos están completadas. No se consultaron respuestas RSVP ni se
 modificó producción. La implementación comienza cuando se apruebe el plan incremental derivado de esta evidencia.
 
+`7.1A` y `7.1B` se desplegarán juntos: cerrar `anon SELECT` sin publicar el acceso OTP dejaría Admin sin una autoridad
+válida. La PR permanecerá en borrador hasta completar ambos incrementos y su matriz de verificación.
+
 ### Objetivo
 
 Establecer autoridad real sobre respuestas RSVP, definir su tratamiento y hacer reproducible el esquema de datos.

@@ -27,3 +27,4 @@ dist-ssr
 AGENTS.md
 docs/plans
 supabase/.temp/
+supabase/.branches/
