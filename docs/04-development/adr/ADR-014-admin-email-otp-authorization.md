@@ -60,8 +60,8 @@ invitation_admins
 └── user_id -> auth.users.id
 ```
 
-La combinación será única. Una política `SELECT TO authenticated` permitirá leer una respuesta únicamente cuando
-exista una membresía cuyo `invitation_id` coincida con `rsvp_responses.wedding_slug` y cuyo `user_id` sea
+La combinación será única. Una política `SELECT TO authenticated` permitirá leer una respuesta únicamente cuando exista
+una membresía cuyo `invitation_id` coincida con `rsvp_responses.wedding_slug` y cuyo `user_id` sea
 `auth.uid()`.
 
 No habrá `SELECT` para `anon`. Conocer el slug o inspeccionar el JavaScript no concede acceso.

@@ -55,30 +55,33 @@ ALTER TABLE public.rsvp_responses VALIDATE CONSTRAINT rsvp_responses_form_versio
 ALTER TABLE public.rsvp_responses VALIDATE CONSTRAINT rsvp_responses_locale_check;
 ALTER TABLE public.rsvp_responses VALIDATE CONSTRAINT rsvp_responses_answers_check;
 
-DO $$
+DO
+$$
 DECLARE
-    existing_policy RECORD;
+existing_policy RECORD;
 BEGIN
-    FOR existing_policy IN
-        SELECT policyname
-        FROM pg_policies
-        WHERE schemaname = 'public'
-          AND tablename = 'rsvp_responses'
-          AND 'anon' = ANY (roles)
-          AND cmd IN ('SELECT', 'INSERT')
-    LOOP
+FOR existing_policy IN
+SELECT policyname
+FROM pg_policies
+WHERE schemaname = 'public'
+  AND tablename = 'rsvp_responses'
+  AND 'anon' = ANY (roles)
+  AND cmd IN ('SELECT', 'INSERT') LOOP
         EXECUTE format(
             'DROP POLICY %I ON public.rsvp_responses',
             existing_policy.policyname
         );
-    END LOOP;
+END LOOP;
 END
 $$;
 
-DROP POLICY IF EXISTS rsvp_responses_select_admin ON public.rsvp_responses;
-DROP POLICY IF EXISTS invitation_admins_select_own ON public.invitation_admins;
+DROP
+POLICY IF EXISTS rsvp_responses_select_admin ON public.rsvp_responses;
+DROP
+POLICY IF EXISTS invitation_admins_select_own ON public.invitation_admins;
 
-CREATE POLICY rsvp_responses_insert_anon
+CREATE
+POLICY rsvp_responses_insert_anon
     ON public.rsvp_responses
     FOR INSERT
     TO anon
@@ -102,56 +105,67 @@ CREATE POLICY rsvp_responses_insert_anon
         AND answers -> 'attending' = to_jsonb(attending)
     );
 
-CREATE POLICY invitation_admins_select_own
+CREATE
+POLICY invitation_admins_select_own
     ON public.invitation_admins
-    FOR SELECT
+    FOR
+SELECT
     TO authenticated
     USING (user_id = (SELECT auth.uid()));
 
-CREATE POLICY rsvp_responses_select_admin
+CREATE
+POLICY rsvp_responses_select_admin
     ON public.rsvp_responses
-    FOR SELECT
+    FOR
+SELECT
     TO authenticated
     USING (
-        EXISTS (
-            SELECT 1
-            FROM public.invitation_admins AS membership
-            WHERE membership.invitation_id = rsvp_responses.wedding_slug
-              AND membership.user_id = (SELECT auth.uid())
-        )
+    EXISTS (
+    SELECT 1
+    FROM public.invitation_admins AS membership
+    WHERE membership.invitation_id = rsvp_responses.wedding_slug
+    AND membership.user_id = (SELECT auth.uid())
+    )
     );
 
 REVOKE ALL ON TABLE public.rsvp_responses FROM anon, authenticated;
 GRANT INSERT (
-    wedding_slug,
-    full_name,
-    attending,
-    dietary_options,
-    dietary_other,
-    bus_option,
-    song_request,
-    message,
-    form_id,
-    form_version,
-    locale,
-    answers
-) ON TABLE public.rsvp_responses TO anon;
+              wedding_slug,
+              full_name,
+              attending,
+              dietary_options,
+              dietary_other,
+              bus_option,
+              song_request,
+              message,
+              form_id,
+              form_version,
+              locale,
+              answers
+    ) ON TABLE public.rsvp_responses TO anon;
 GRANT SELECT ON TABLE public.rsvp_responses TO authenticated;
 
 REVOKE ALL ON TABLE public.invitation_admins FROM anon, authenticated;
 GRANT SELECT ON TABLE public.invitation_admins TO authenticated;
-GRANT ALL ON TABLE public.invitation_admins TO service_role;
+GRANT
+ALL
+ON TABLE public.invitation_admins TO service_role;
 
 REVOKE ALL ON SEQUENCE public.rsvp_responses_id_seq FROM anon, authenticated;
 GRANT USAGE ON SEQUENCE public.rsvp_responses_id_seq TO anon;
-GRANT ALL ON SEQUENCE public.rsvp_responses_id_seq TO service_role;
+GRANT
+ALL
+ON SEQUENCE public.rsvp_responses_id_seq TO service_role;
 
-GRANT ALL ON TABLE public.rsvp_responses TO service_role;
+GRANT ALL
+ON TABLE public.rsvp_responses TO service_role;
 
-DO $$
+DO
+$$
 BEGIN
-    IF to_regprocedure('public.rls_auto_enable()') IS NOT NULL THEN
+    IF
+to_regprocedure('public.rls_auto_enable()') IS NOT NULL THEN
         EXECUTE 'REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM PUBLIC, anon, authenticated';
-    END IF;
+END IF;
 END
 $$;

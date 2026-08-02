@@ -14,15 +14,15 @@ reales del producto actual y evita añadir controles propios de un sistema empre
 
 ## Activos y límites de confianza
 
-| Activo | Sensibilidad | Autoridad esperada |
-|---|---|---|
-| Respuestas RSVP | Datos personales | Pareja asignada a la invitación |
-| Restricciones alimentarias | Potencialmente sensibles | Pareja asignada y operación autorizada |
-| Exportación CSV | Copia local de datos personales | Pareja autenticada |
-| Configuración pública | Pública por diseño | Navegador anónimo |
-| Clave anónima de Supabase | Pública por diseño | RLS limita sus capacidades |
-| Sesión administrativa | Privada | Supabase Auth y RLS |
-| Credenciales de despliegue | Secretas | GitHub Actions, nunca el bundle |
+| Activo                     | Sensibilidad                    | Autoridad esperada                     |
+|----------------------------|---------------------------------|----------------------------------------|
+| Respuestas RSVP            | Datos personales                | Pareja asignada a la invitación        |
+| Restricciones alimentarias | Potencialmente sensibles        | Pareja asignada y operación autorizada |
+| Exportación CSV            | Copia local de datos personales | Pareja autenticada                     |
+| Configuración pública      | Pública por diseño              | Navegador anónimo                      |
+| Clave anónima de Supabase  | Pública por diseño              | RLS limita sus capacidades             |
+| Sesión administrativa      | Privada                         | Supabase Auth y RLS                    |
+| Credenciales de despliegue | Secretas                        | GitHub Actions, nunca el bundle        |
 
 La frontera de seguridad no puede estar en React. El navegador controla la experiencia; Supabase Auth identifica al
 usuario y Row Level Security (RLS) autoriza cada operación.
@@ -40,20 +40,20 @@ flowchart LR
 
 ## Riesgos priorizados
 
-| ID | Amenaza actual | Impacto | Probabilidad | Prioridad | Tratamiento aprobado |
-|---|---|---:|---:|---:|---|
-| SEC-01 | Lectura anónima global de `rsvp_responses` | Crítico | Alta | P0 | Eliminar la política `anon SELECT` y autorizar por usuario e invitación. |
-| SEC-02 | `VITE_ADMIN_PASSWORD` y `sessionStorage` simulan autenticación solo en UI | Alto | Alta | P0 | Sustituir por email OTP, sesión Supabase y RLS. |
-| SEC-03 | Una pareja autenticada puede intentar leer otra invitación | Alto | Media | P0 | Tabla de membresía y política RLS con `auth.uid()`. |
-| SEC-04 | Inserciones públicas automatizadas o con contenido excesivo | Medio/alto | Media | P1 | Validación y límites en base de datos; CAPTCHA solo si aparece abuso. |
-| SEC-05 | Abuso o enumeración del formulario de OTP | Medio | Media | P1 | `shouldCreateUser: false`, respuesta neutra y límites de Supabase Auth. |
-| SEC-06 | Sesión abierta en un dispositivo compartido | Medio | Media | P1 | Cierre de sesión visible y documentación de uso; política temporal solo si se justifica. |
-| SEC-07 | CSV descargado permanece fuera del control de la aplicación | Medio | Media | P1 | Aviso operativo, minimización y borrado; mantener protección contra fórmulas. |
-| SEC-08 | Texto libre o errores terminan en logs | Medio | Baja | P1 | No registrar payloads; mensajes de error sin datos personales. |
-| SEC-09 | Esquema remoto y migraciones locales divergen | Alto | Media | P0 operativo | Crear baseline solo tras comparar el estado remoto de forma no mutante. |
-| SEC-10 | Un secreto privilegiado entra en el frontend | Crítico | Baja | P0 | Solo URL y anon key en Vite; secretos administrativos quedan en GitHub Actions. |
-| SEC-11 | Función `SECURITY DEFINER` expuesta por RPC | Alto potencial | Baja | P1 | Revisar procedencia y revocar `EXECUTE` público sin eliminar el event trigger automáticamente. |
-| SEC-12 | Grants de tabla más amplios de lo necesario | Medio/alto | Media | P1 | Revocar operaciones innecesarias y conceder solo `anon INSERT` y `authenticated SELECT`. |
+| ID     | Amenaza actual                                                            |        Impacto | Probabilidad |    Prioridad | Tratamiento aprobado                                                                           |
+|--------|---------------------------------------------------------------------------|---------------:|-------------:|-------------:|------------------------------------------------------------------------------------------------|
+| SEC-01 | Lectura anónima global de `rsvp_responses`                                |        Crítico |         Alta |           P0 | Eliminar la política `anon SELECT` y autorizar por usuario e invitación.                       |
+| SEC-02 | `VITE_ADMIN_PASSWORD` y `sessionStorage` simulan autenticación solo en UI |           Alto |         Alta |           P0 | Sustituir por email OTP, sesión Supabase y RLS.                                                |
+| SEC-03 | Una pareja autenticada puede intentar leer otra invitación                |           Alto |        Media |           P0 | Tabla de membresía y política RLS con `auth.uid()`.                                            |
+| SEC-04 | Inserciones públicas automatizadas o con contenido excesivo               |     Medio/alto |        Media |           P1 | Validación y límites en base de datos; CAPTCHA solo si aparece abuso.                          |
+| SEC-05 | Abuso o enumeración del formulario de OTP                                 |          Medio |        Media |           P1 | `shouldCreateUser: false`, respuesta neutra y límites de Supabase Auth.                        |
+| SEC-06 | Sesión abierta en un dispositivo compartido                               |          Medio |        Media |           P1 | Cierre de sesión visible y documentación de uso; política temporal solo si se justifica.       |
+| SEC-07 | CSV descargado permanece fuera del control de la aplicación               |          Medio |        Media |           P1 | Aviso operativo, minimización y borrado; mantener protección contra fórmulas.                  |
+| SEC-08 | Texto libre o errores terminan en logs                                    |          Medio |         Baja |           P1 | No registrar payloads; mensajes de error sin datos personales.                                 |
+| SEC-09 | Esquema remoto y migraciones locales divergen                             |           Alto |        Media | P0 operativo | Crear baseline solo tras comparar el estado remoto de forma no mutante.                        |
+| SEC-10 | Un secreto privilegiado entra en el frontend                              |        Crítico |         Baja |           P0 | Solo URL y anon key en Vite; secretos administrativos quedan en GitHub Actions.                |
+| SEC-11 | Función `SECURITY DEFINER` expuesta por RPC                               | Alto potencial |         Baja |           P1 | Revisar procedencia y revocar `EXECUTE` público sin eliminar el event trigger automáticamente. |
+| SEC-12 | Grants de tabla más amplios de lo necesario                               |     Medio/alto |        Media |           P1 | Revocar operaciones innecesarias y conceder solo `anon INSERT` y `authenticated SELECT`.       |
 
 ## Controles que no necesitamos en la primera versión
 

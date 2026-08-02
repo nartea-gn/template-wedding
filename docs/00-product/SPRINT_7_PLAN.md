@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; investigación 7.1 completada e implementación pendiente
+- **Estado:** en curso; 7.1A-7.1C implementados y validados en local, pendientes de validación de producto y despliegue
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -38,16 +38,18 @@ La documentación preparatoria puede avanzar en paralelo. La implementación y e
 
 Sprint 7.1 se ejecutará en incrementos pequeños y verificables:
 
-1. **7.1A — Identidad y autorización:** OTP por email, sesión Supabase y membresía por invitación.
-2. **7.1B — Privacidad de lectura:** retirar `anon SELECT` y verificar RLS con usuarios asignados y no asignados.
-3. **7.1C — Baseline de datos:** comparar remoto y local sin mutaciones, y preparar instalación y actualización.
+1. **7.1A — Seguridad y baseline de datos:** retirar `anon SELECT`, incorporar membresías y preparar instalación y
+   actualización.
+2. **7.1B — Identidad y sesión Admin:** OTP por email, sesión Supabase y cierre de sesión.
+3. **7.1C — Provisionamiento y verificación:** operación manual controlada y matriz local de roles y acceso.
 4. **7.1D — Ciclo de vida:** cerrar información, retención, exportación, corrección y borrado.
 
 El RSVP seguirá admitiendo inserción anónima limitada. CAPTCHA, Edge Functions, MFA, OAuth, roles complejos y una
 interfaz de gestión de usuarios quedan fuera de la primera solución salvo evidencia que justifique incorporarlos.
 
-La investigación local y la auditoría remota de metadatos están completadas. No se consultaron respuestas RSVP ni se
-modificó producción. La implementación comienza cuando se apruebe el plan incremental derivado de esta evidencia.
+La investigación, la auditoría remota de metadatos y la implementación local de 7.1A-7.1C están completadas. No se
+consultaron respuestas RSVP reales ni se modificó producción. La PR permanece en borrador hasta recibir `lint` y
+`build` de producto y ejecutar los gates alojados de backup, configuración, provisionamiento y despliegue.
 
 `7.1A` y `7.1B` se desplegarán juntos: cerrar `anon SELECT` sin publicar el acceso OTP dejaría Admin sin una autoridad
 válida. La PR permanecerá en borrador hasta completar ambos incrementos y su matriz de verificación.
@@ -90,7 +92,8 @@ Establecer autoridad real sobre respuestas RSVP, definir su tratamiento y hacer 
 - las políticas se verifican con los roles reales;
 - una instalación vacía y una existente tienen procedimientos reproducibles;
 - privacidad y ciclo de vida de datos están documentados;
-- el checklist de seguridad, privacidad y base de datos queda completo o contiene una excepción P0 que bloquea el avance.
+- el checklist de seguridad, privacidad y base de datos queda completo o contiene una excepción P0 que bloquea el
+  avance.
 
 ## Sprint 7.2 — Quality gates automatizados
 
@@ -154,15 +157,15 @@ Validar el producto completo con contenido, navegadores y dispositivos represent
 
 ### Matriz mínima
 
-| Dimensión | Cobertura |
-|---|---|
-| Temas | Royal, Boho, Dark, Magnolia y Linen |
-| Páginas | Landing, RSVP, éxito y Admin |
-| Viewports | 320, 390, 768 y 1440 px |
-| Idiomas | ES, EN y BG; invitación monolingüe y multilingüe |
-| Capabilities | con/sin RSVP y con/sin Admin |
-| Navegadores | Safari iOS, Chrome Android y escritorio soportado |
-| Estados | carga, vacío, error, retry, validación, envío y datos largos |
+| Dimensión    | Cobertura                                                    |
+|--------------|--------------------------------------------------------------|
+| Temas        | Royal, Boho, Dark, Magnolia y Linen                          |
+| Páginas      | Landing, RSVP, éxito y Admin                                 |
+| Viewports    | 320, 390, 768 y 1440 px                                      |
+| Idiomas      | ES, EN y BG; invitación monolingüe y multilingüe             |
+| Capabilities | con/sin RSVP y con/sin Admin                                 |
+| Navegadores  | Safari iOS, Chrome Android y escritorio soportado            |
+| Estados      | carga, vacío, error, retry, validación, envío y datos largos |
 
 ### Accesibilidad
 
@@ -216,15 +219,15 @@ restantes tienen responsable, riesgo y fecha de resolución.
 
 ## Gates
 
-| Gate | Bloquea | Evidencia requerida |
-|---|---|---|
-| `G7-SEC` | 7.2–7.5 | ADR, modelo de amenazas, RLS y autoridad verificadas |
-| `G7-DATA` | 7.2–7.5 | baseline, historial remoto y rollback reproducibles |
-| `G7-PRIV` | 7.4–7.5 | política de datos y procedimientos operativos |
-| `G7-CI` | 7.4–7.5 | gates automáticos activos en Pull Requests |
-| `G7-CONTRACT` | 7.4–7.5 | contratos completos y documentación sincronizada |
-| `G7-QA` | 7.5 | matriz funcional, accesibilidad, dispositivos y rendimiento |
-| `G7-RC` | `1.0.0` | checklist, smoke test, rollback y aprobaciones |
+| Gate          | Bloquea | Evidencia requerida                                         |
+|---------------|---------|-------------------------------------------------------------|
+| `G7-SEC`      | 7.2–7.5 | ADR, modelo de amenazas, RLS y autoridad verificadas        |
+| `G7-DATA`     | 7.2–7.5 | baseline, historial remoto y rollback reproducibles         |
+| `G7-PRIV`     | 7.4–7.5 | política de datos y procedimientos operativos               |
+| `G7-CI`       | 7.4–7.5 | gates automáticos activos en Pull Requests                  |
+| `G7-CONTRACT` | 7.4–7.5 | contratos completos y documentación sincronizada            |
+| `G7-QA`       | 7.5     | matriz funcional, accesibilidad, dispositivos y rendimiento |
+| `G7-RC`       | `1.0.0` | checklist, smoke test, rollback y aprobaciones              |
 
 ## Fuera de alcance
 

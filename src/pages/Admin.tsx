@@ -1,5 +1,5 @@
-import {useState} from 'react';
 import {useAdminData} from '../hooks/useAdminData';
+import {useAdminSession} from '../hooks/useAdminSession';
 import {LoginForm} from '../components/admin/LoginForm';
 import {StatsCards} from '../components/admin/StatsCards';
 import {AdminToolbar} from '../components/admin/AdminToolbar';
@@ -12,14 +12,10 @@ import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding'
 import {InterfaceIcon} from '../components/ui/InterfaceIcon';
 import './Admin.css';
 
-const ADMIN_AUTH_KEY = 'admin_authed';
-
 export default function Admin() {
     const {t, locale, formatDate} = useLocalization<WeddingMessageKey>();
-    const [isAuthenticated, setIsAuthenticated] = useState(
-        () => sessionStorage.getItem(ADMIN_AUTH_KEY) === 'true'
-    );
-    const [passwordError, setPasswordError] = useState(false);
+    const auth = useAdminSession();
+    const isAuthenticated = auth.session !== null;
     const rsvp = weddingInvitation.capabilities.rsvp;
     const admin = weddingInvitation.capabilities.admin;
     const controls = admin?.controls;
@@ -33,20 +29,7 @@ export default function Admin() {
         paginationEnabled: controls?.pagination?.enabled === true,
         pageSize: controls?.pagination?.pageSize ?? 25,
     });
-    const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-    const isConfigured = correctPassword !== undefined;
-
     if (!rsvp?.enabled || !admin?.enabled) return null;
-
-    const handlePasswordSubmit = (password: string) => {
-        if (password === correctPassword) {
-            setIsAuthenticated(true);
-            setPasswordError(false);
-            sessionStorage.setItem(ADMIN_AUTH_KEY, 'true');
-        } else {
-            setPasswordError(true);
-        }
-    };
 
     const handleExport = () => {
         const csv = buildResponsesCsv({
@@ -59,10 +42,22 @@ export default function Admin() {
         downloadCsv(csv, weddingInvitation.id);
     };
 
-    if (!isAuthenticated) {
+    if (auth.phase === 'loading') {
+        return <div className="admin-auth-loading" role="status" aria-live="polite">
+            <span className="admin-auth-loading-indicator" aria-hidden="true"/>
+            <span>{t('admin.auth.restoring')}</span>
+        </div>;
+    }
+
+    if (!isAuthenticated && (auth.phase === 'email' || auth.phase === 'code')) {
         return <LoginForm title={t('admin.title')}
-                          errorMessage={passwordError ? t('admin.password.invalid') : (!isConfigured ? t('admin.password.missing') : null)}
-                          onSubmit={handlePasswordSubmit}/>;
+                          phase={auth.phase}
+                          requestedEmail={auth.email}
+                          error={auth.error}
+                          submitting={auth.submitting}
+                          onRequestCode={auth.requestCode}
+                          onVerifyCode={auth.verifyCode}
+                          onChangeEmail={auth.changeEmail}/>;
     }
 
     return <div className="admin-page">
@@ -78,14 +73,18 @@ export default function Admin() {
                                 className="btn btn--outline admin-btn-refresh">
                             <InterfaceIcon name="refresh" className="admin-action-icon"/> {t('admin.refresh')}
                         </button>
-                        <button onClick={() => {
-                            sessionStorage.removeItem(ADMIN_AUTH_KEY);
-                            setIsAuthenticated(false);
-                        }} className="btn btn--ghost admin-btn-logout">{t('admin.logout')}</button>
+                        <button onClick={() => void auth.signOut()} disabled={auth.submitting}
+                                className="btn btn--ghost admin-btn-logout">
+                            {auth.submitting ? t('admin.auth.signingOut') : t('admin.logout')}
+                        </button>
                     </div>
                     {controls?.freshness?.enabled && lastUpdatedAt && <p className="admin-freshness" role="status">
                         {t('admin.updated')} {formatDate(lastUpdatedAt, {dateStyle: 'short', timeStyle: 'medium'})}
                     </p>}
+                    {auth.error === 'session' && <p className="admin-session-error" role="alert">
+                        {t('admin.auth.sessionError')}
+                    </p>}
+                    <p className="admin-security-note">{t('admin.auth.sharedDevice')}</p>
                 </div>
             </header>
 

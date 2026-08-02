@@ -3,17 +3,47 @@
 -- idempotent prelude only affects new installations.
 CREATE TABLE IF NOT EXISTS public.rsvp_responses
 (
-    id              BIGSERIAL PRIMARY KEY,
-    wedding_slug    TEXT        NOT NULL DEFAULT 'boda-general',
-    full_name       TEXT        NOT NULL,
-    attending       BOOLEAN     NOT NULL,
-    dietary_options TEXT[]      NOT NULL DEFAULT '{}',
-    dietary_other   TEXT,
-    bus_option      TEXT,
-    song_request    TEXT,
-    message         TEXT,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+    id
+    BIGSERIAL
+    PRIMARY
+    KEY,
+    wedding_slug
+    TEXT
+    NOT
+    NULL
+    DEFAULT
+    'boda-general',
+    full_name
+    TEXT
+    NOT
+    NULL,
+    attending
+    BOOLEAN
+    NOT
+    NULL,
+    dietary_options
+    TEXT[]
+    NOT
+    NULL
+    DEFAULT
+    '{}',
+    dietary_other
+    TEXT,
+    bus_option
+    TEXT,
+    song_request
+    TEXT,
+    message
+    TEXT,
+    created_at
+    TIMESTAMPTZ
+    NOT
+    NULL
+    DEFAULT
+    now
+(
+)
+    );
 
 -- Additive evolution for the configuration-driven RSVP Form Engine.
 -- Legacy columns remain available during the compatibility period.

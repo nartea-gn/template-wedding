@@ -9,18 +9,18 @@
 
 ## Datos tratados actualmente
 
-| Dato | Obligatorio | Finalidad de producto | Destino | Observación |
-|---|---:|---|---|---|
-| Nombre completo | Sí | Identificar la respuesta | Supabase y CSV | Dato personal directo. |
-| Asistencia | Sí | Planificación del evento | Supabase y CSV | Se conserva también en `answers`. |
-| Restricciones alimentarias | No | Menú y seguridad del invitado | Supabase y CSV | Tratar de forma conservadora por su posible sensibilidad. |
-| Detalle alimentario libre | No | Resolver necesidades no previstas | Supabase | Puede revelar más información de la necesaria. |
-| Opción de autobús | No | Logística de transporte | Supabase y CSV | Necesidad temporal ligada al evento. |
-| Canción solicitada | No | Personalización musical | Supabase y CSV | Texto libre. |
-| Mensaje | No | Comunicación personal con la pareja | Supabase y CSV | Texto libre y potencialmente imprevisible. |
-| Invitación, formulario y versión | Sí, técnicos | Separación y trazabilidad | Supabase | No deben conceder autoridad por sí solos. |
-| Idioma | Sí, técnico | Interpretación de la respuesta | Supabase | Minimizar su uso fuera del formulario. |
-| Fecha de creación | Automático | Orden y operación | Supabase | Necesaria para gestión y retención. |
+| Dato                             |  Obligatorio | Finalidad de producto               | Destino        | Observación                                               |
+|----------------------------------|-------------:|-------------------------------------|----------------|-----------------------------------------------------------|
+| Nombre completo                  |           Sí | Identificar la respuesta            | Supabase y CSV | Dato personal directo.                                    |
+| Asistencia                       |           Sí | Planificación del evento            | Supabase y CSV | Se conserva también en `answers`.                         |
+| Restricciones alimentarias       |           No | Menú y seguridad del invitado       | Supabase y CSV | Tratar de forma conservadora por su posible sensibilidad. |
+| Detalle alimentario libre        |           No | Resolver necesidades no previstas   | Supabase       | Puede revelar más información de la necesaria.            |
+| Opción de autobús                |           No | Logística de transporte             | Supabase y CSV | Necesidad temporal ligada al evento.                      |
+| Canción solicitada               |           No | Personalización musical             | Supabase y CSV | Texto libre.                                              |
+| Mensaje                          |           No | Comunicación personal con la pareja | Supabase y CSV | Texto libre y potencialmente imprevisible.                |
+| Invitación, formulario y versión | Sí, técnicos | Separación y trazabilidad           | Supabase       | No deben conceder autoridad por sí solos.                 |
+| Idioma                           |  Sí, técnico | Interpretación de la respuesta      | Supabase       | Minimizar su uso fuera del formulario.                    |
+| Fecha de creación                |   Automático | Orden y operación                   | Supabase       | Necesaria para gestión y retención.                       |
 
 No se solicitan actualmente email, teléfono, dirección postal, documento de identidad ni datos de pago a los invitados.
 
@@ -32,12 +32,12 @@ una migración y una decisión de compatibilidad explícitas.
 
 ## Acceso aprobado
 
-| Actor | Inserción | Lectura | Exportación | Administración |
-|---|---:|---:|---:|---:|
-| Invitado anónimo | Sí, limitada | No | No | No |
-| Usuario autenticado sin membresía | No | No | No | No |
-| Pareja asignada | No por defecto | Solo su invitación | Solo su invitación | Consulta y cierre de sesión |
-| Operación técnica autorizada | Según procedimiento | Según necesidad | Excepcional | Provisionar o revocar acceso |
+| Actor                             |           Inserción |            Lectura |        Exportación |               Administración |
+|-----------------------------------|--------------------:|-------------------:|-------------------:|-----------------------------:|
+| Invitado anónimo                  |        Sí, limitada |                 No |                 No |                           No |
+| Usuario autenticado sin membresía |                  No |                 No |                 No |                           No |
+| Pareja asignada                   |      No por defecto | Solo su invitación | Solo su invitación |  Consulta y cierre de sesión |
+| Operación técnica autorizada      | Según procedimiento |    Según necesidad |        Excepcional | Provisionar o revocar acceso |
 
 ## Principios aplicables
 

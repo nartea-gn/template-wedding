@@ -2,9 +2,9 @@
 
 ## Estado y uso
 
-`BG-ROYAL-001` es el baseline visual activo. RSVP y éxito utilizan una única composición responsive. Landing prueba
-un sistema modular que combina una apertura artística con un cuerpo repetible sereno para mantener continuidad durante
-todo el scroll. Admin no consume estos assets.
+`BG-ROYAL-001` es el baseline visual activo. RSVP y éxito utilizan una única composición responsive. Landing prueba un
+sistema modular que combina una apertura artística con un cuerpo repetible sereno para mantener continuidad durante todo
+el scroll. Admin no consume estos assets.
 
 ## Archivos activos
 
@@ -19,11 +19,11 @@ específicamente para tablet; no es un recorte automático de los masters existe
 
 ## Módulos de cuerpo de la prueba
 
-| Variante                  | Dimensiones | Entrega          | Uso                                      |
-|---------------------------|------------:|------------------|------------------------------------------|
-| `royal-body-narrow.webp`  | 1024 × 1536 | WebP, calidad 84 | Continuidad vertical por debajo de 768 px |
-| `royal-body-medium.webp`  | 1448 × 1086 | WebP, calidad 84 | Continuidad entre 768 y 1279 px          |
-| `royal-body-wide.webp`    |  1672 × 941 | WebP, calidad 84 | Continuidad desde 1280 px                |
+| Variante                 | Dimensiones | Entrega          | Uso                                       |
+|--------------------------|------------:|------------------|-------------------------------------------|
+| `royal-body-narrow.webp` | 1024 × 1536 | WebP, calidad 84 | Continuidad vertical por debajo de 768 px |
+| `royal-body-medium.webp` | 1448 × 1086 | WebP, calidad 84 | Continuidad entre 768 y 1279 px           |
+| `royal-body-wide.webp`   |  1672 × 941 | WebP, calidad 84 | Continuidad desde 1280 px                 |
 
 Los módulos mantienen un centro marfil limpio y concentran acuarela y botánica de baja intensidad en los extremos. Se
 repiten verticalmente detrás de Landing y quedan cubiertos por la apertura en el primer viewport. La unión utiliza

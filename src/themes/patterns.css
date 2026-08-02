@@ -95,14 +95,14 @@
  * RSVP: the same selected composition fills the page. `cover` may crop the
  * perimeter, but it never changes the image proportions or stretches artwork.
  */
-[data-theme] :is(.rsvp-page, .rsvp-success-page) {
+[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page) {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     background: var(--color-wedding-bg);
 }
 
-[data-theme] :is(.rsvp-page, .rsvp-success-page)::before {
+[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page)::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -115,11 +115,11 @@
     opacity: var(--theme-background-rsvp-opacity);
 }
 
-[data-theme] :is(.rsvp-page, .rsvp-success-page)::after {
+[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page)::after {
     content: none;
 }
 
-[data-theme] :is(.rsvp-page, .rsvp-success-page) > * {
+[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page) > * {
     position: relative;
     z-index: 1;
 }

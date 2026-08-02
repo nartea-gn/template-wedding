@@ -2,13 +2,13 @@
 
 ## Estado
 
-Aceptado como política de producto. Los límites SQL exactos quedan condicionados al inventario remoto y a pruebas en
-un entorno aislado.
+Aceptado como política de producto. Los límites SQL exactos quedan condicionados al inventario remoto y a pruebas en un
+entorno aislado.
 
 ## Contexto
 
-El RSVP debe poder enviarse sin crear una cuenta. Esa comodidad no exige que las respuestas sean públicas ni que la
-base acepte cualquier forma o tamaño de contenido.
+El RSVP debe poder enviarse sin crear una cuenta. Esa comodidad no exige que las respuestas sean públicas ni que la base
+acepte cualquier forma o tamaño de contenido.
 
 ## Decisión
 

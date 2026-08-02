@@ -25,6 +25,7 @@ La PR permanece en borrador hasta que:
 2. No descargar ni adjuntar respuestas RSVP a la PR o a los logs.
 3. Confirmar que el email OTP está configurado y que los emails autorizados se provisionan con
    `shouldCreateUser: false` en el cliente.
+   Seguir [Operación del acceso Admin](../04-development/ADMIN_ACCESS_OPERATIONS.md) para la plantilla y membresías.
 4. Registrar las membresías necesarias en `invitation_admins` mediante una operación privilegiada.
 5. Conservar el commit exacto que contiene migración y frontend.
 
@@ -74,8 +75,8 @@ migración correctiva. No usar `migration repair` sin reconciliar primero esquem
 
 ### Pérdida o corrupción de datos
 
-Detener escrituras y seguir el procedimiento de restauración del proveedor desde el backup confirmado. Esta situación
-no se resuelve revirtiendo políticas.
+Detener escrituras y seguir el procedimiento de restauración del proveedor desde el backup confirmado. Esta situación no
+se resuelve revirtiendo políticas.
 
 ## Acciones prohibidas
 

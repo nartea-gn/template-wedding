@@ -6,10 +6,10 @@ Supabase.
 
 ## Estado del proyecto
 
-El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2
-y el baseline visual responsive de Royal, Boho, Dark, Magnolia y Linen están implementados. Seguridad de datos,
-baseline reproducible de Supabase, pruebas automáticas y QA de release siguen siendo puertas obligatorias antes de
-publicar una versión estable.
+El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2 y
+el baseline visual responsive de Royal, Boho, Dark, Magnolia y Linen están implementados. Seguridad de datos, baseline
+reproducible de Supabase, pruebas automáticas y QA de release siguen siendo puertas obligatorias antes de publicar una
+versión estable.
 
 Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/PRODUCT_BACKLOG.md) y el
 [plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md). El
@@ -46,11 +46,10 @@ Completa `.env` sin subirlo a Git:
 ```dotenv
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_ADMIN_PASSWORD=choose-a-local-password
 ```
 
-Las variables con prefijo `VITE_` forman parte del bundle público. `VITE_ADMIN_PASSWORD` solo proporciona una barrera
-de interfaz temporal; no es autenticación segura ni protege directamente la API de Supabase.
+Las variables con prefijo `VITE_` forman parte del bundle público. No incluyas claves `service_role`, contraseñas de
+base de datos ni otros secretos privilegiados. Admin usa OTP por email y la autorización se aplica mediante RLS.
 
 ### Desarrollo
 
@@ -124,6 +123,7 @@ Documentos de referencia:
 - [Theme Engine](docs/02-design/THEMES.md)
 - [Backgrounds temáticos](docs/02-design/BACKGROUNDS.md)
 - [Admin](docs/01-architecture/ADMIN.md)
+- [Operación del acceso Admin](docs/04-development/ADMIN_ACCESS_OPERATIONS.md)
 - [Migraciones](docs/01-architecture/DATABASE_MIGRATIONS.md)
 - [Architecture Decision Records](docs/04-development/adr)
 - [Plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md)
@@ -134,11 +134,11 @@ Documentos de referencia:
 ## Despliegue
 
 Un push a `main` ejecuta `.github/workflows/deploy.yml`: instala dependencias, valida lint/build, aplica migraciones
-pendientes y despliega el artefacto en GitHub Pages. Los secretos de Supabase y Admin se configuran en GitHub Actions.
+pendientes y despliega el artefacto en GitHub Pages. Los secretos operativos de Supabase se configuran en GitHub Actions
+y nunca llegan al bundle.
 
-El pipeline actual no sustituye una revisión de seguridad. El esquema v1 permite inserción y lectura anónimas y la
-contraseña Admin se valida en el navegador. No debe considerarse apto para datos personales sensibles hasta completar
-el Sprint 7.1 y el checklist de release.
+El pipeline no sustituye la revisión de seguridad. La release de Sprint 7.1 debe publicar conjuntamente la migración RLS
+y el frontend OTP, provisionar los usuarios autorizados y completar el checklist de release.
 
 ## Historial
 

@@ -115,11 +115,11 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 
 ## Aprobación de release
 
-| Rol | Nombre | Fecha | Commit | Resultado |
-|---|---|---|---|---|
-| Producto | — | — | — | Pendiente |
-| Ingeniería | — | — | — | Pendiente |
-| QA/validación manual | — | — | — | Pendiente |
+| Rol                  | Nombre | Fecha | Commit | Resultado |
+|----------------------|--------|-------|--------|-----------|
+| Producto             | —      | —     | —      | Pendiente |
+| Ingeniería           | —      | —     | —      | Pendiente |
+| QA/validación manual | —      | —     | —      | Pendiente |
 
 `1.0.0` no se publica mientras seguridad, privacidad o reproducibilidad de base de datos mantengan un punto obligatorio
 sin completar.

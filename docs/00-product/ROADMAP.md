@@ -2,8 +2,8 @@
 
 ## Estado
 
-El producto continúa en fase previa a `1.0.0`. La arquitectura configurable, Theme Engine v2 y el baseline visual de
-las cinco colecciones están consolidados. El siguiente tramo convierte seguridad, datos, calidad y QA en puertas
+El producto continúa en fase previa a `1.0.0`. La arquitectura configurable, Theme Engine v2 y el baseline visual de las
+cinco colecciones están consolidados. El siguiente tramo convierte seguridad, datos, calidad y QA en puertas
 verificables de release.
 
 Leyenda: `Completado`, `En validación`, `En curso`, `Planificado`, `Aplazado`.

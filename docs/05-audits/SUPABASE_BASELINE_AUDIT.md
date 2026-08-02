@@ -17,15 +17,15 @@
 La única migración versionada, `20260712_add_dynamic_rsvp_answers.sql`, añade cuatro columnas y un índice a una tabla
 que da por existente. Por tanto, un proyecto Supabase vacío no puede reconstruirse únicamente con las migraciones.
 
-| Elemento | `schema.sql` | Migraciones | Estado |
-|---|---:|---:|---|
-| Creación de `rsvp_responses` | Sí | No | No reproducible desde cero |
-| Columnas legacy | Sí | No | Sin baseline versionada |
-| Columnas dinámicas | Sí | Sí | Aditivas |
-| Índice `(wedding_slug, form_id)` | No | Sí | Solo migración |
-| RLS habilitado | Sí | No | No reproducible desde cero |
-| Políticas actuales | Sí | No | No versionadas |
-| Membresía administrativa | No | No | Pendiente de diseño/implementación |
+| Elemento                         | `schema.sql` | Migraciones | Estado                             |
+|----------------------------------|-------------:|------------:|------------------------------------|
+| Creación de `rsvp_responses`     |           Sí |          No | No reproducible desde cero         |
+| Columnas legacy                  |           Sí |          No | Sin baseline versionada            |
+| Columnas dinámicas               |           Sí |          Sí | Aditivas                           |
+| Índice `(wedding_slug, form_id)` |           No |          Sí | Solo migración                     |
+| RLS habilitado                   |           Sí |          No | No reproducible desde cero         |
+| Políticas actuales               |           Sí |          No | No versionadas                     |
+| Membresía administrativa         |           No |          No | Pendiente de diseño/implementación |
 
 ## Evidencia del despliegue
 
@@ -59,8 +59,8 @@ El asesor oficial de Supabase informó además:
 - `rls_policy_always_true` sobre la inserción anónima;
 - `public.rls_auto_enable()` como función `SECURITY DEFINER` ejecutable por `anon` y `authenticated`.
 
-La función pertenece a un event trigger activo llamado `ensure_rls`, que habilita RLS automáticamente al crear tablas
-en `public`. Su implementación fija `search_path=pg_catalog` y no pertenece a una extensión. No debe eliminarse sin
+La función pertenece a un event trigger activo llamado `ensure_rls`, que habilita RLS automáticamente al crear tablas en
+`public`. Su implementación fija `search_path=pg_catalog` y no pertenece a una extensión. No debe eliminarse sin
 comprender su procedencia, pero sus permisos `EXECUTE` públicos deben revisarse y revocarse si no son necesarios.
 
 No se consultaron filas de `rsvp_responses`, emails, mensajes ni otros datos personales. Tampoco se imprimieron tokens,

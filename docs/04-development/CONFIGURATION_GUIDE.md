@@ -11,8 +11,9 @@ Copy-Item .env.example .env
 pnpm dev
 ```
 
-Completa `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `VITE_ADMIN_PASSWORD`. No incluyas service-role keys ni otros
-secretos privilegiados en variables `VITE_*`: Vite las incorpora al bundle público.
+Completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`. No incluyas service-role keys ni otros secretos privilegiados
+en variables `VITE_*`: Vite las incorpora al bundle público. Admin usa usuarios provisionados en Supabase Auth y OTP por
+email; consulta el runbook de seguridad antes de desplegar.
 
 ## 2. Definir una identidad única
 
@@ -22,8 +23,8 @@ Edita `src/invitations/wedding/invitation.ts`:
 id: 'identificador-unico-del-evento'
 ```
 
-El ID identifica las respuestas persistidas y debe permanecer estable durante la vida de la invitación. Cambiarlo en
-una invitación desplegada separa el frontend de sus respuestas anteriores.
+El ID identifica las respuestas persistidas y debe permanecer estable durante la vida de la invitación. Cambiarlo en una
+invitación desplegada separa el frontend de sus respuestas anteriores.
 
 Configura también `event.type`, `event.date`, `event.timezone` y las claves localizadas de título/SEO. Hasta Sprint 7.3,
 `seo` no actualiza los metadatos y `event.date` no sustituye automáticamente el target del countdown.
@@ -184,15 +185,16 @@ capabilities: {
 - Admin requiere RSVP y se carga bajo demanda.
 - `controls` activa CSV, búsqueda, ordenación, paginación, conteo y freshness.
 - `deadline` todavía no cierra el flujo automáticamente; está pendiente de Sprint 7.3.
-- La contraseña cliente actual no sustituye autenticación ni RLS restrictiva.
+- Admin restaura una sesión Supabase, solicita OTP por email y delega la autorización de lectura en RLS.
+- Los emails autorizados y su relación con cada invitación se provisionan fuera del navegador.
 
 ## 10. Preparar Supabase
 
 Las respuestas se aíslan funcionalmente mediante `weddingInvitation.id`, que se mapea a `wedding_slug`. El mapper es el
 único lugar autorizado para convertir DB ↔ dominio.
 
-Las migraciones incrementales se aplican desde CI. El repositorio todavía no dispone de baseline completa para una base
-vacía: antes de crear un proyecto nuevo, sigue `DATABASE_MIGRATIONS.md` y resuelve el plan de Sprint 7.1.
+Las migraciones incrementales se aplican desde CI y reconstruyen una base vacía. Antes de desplegar seguridad y OTP,
+sigue `DATABASE_MIGRATIONS.md` y `RSVP_SECURITY_MIGRATION_RUNBOOK.md`.
 
 ## 11. Validación manual
 

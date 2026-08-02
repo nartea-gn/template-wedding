@@ -23,8 +23,8 @@ tabla legacy antes de incorporar las columnas dinámicas. Producción la omite p
 instalación vacía la ejecuta y puede reconstruirse desde cero.
 
 La migración `20260802` aplica seguridad y autorización tanto sobre el proyecto existente como sobre una instalación
-nueva. Esta modificación excepcional de una migración histórica está limitada al bootstrap que producción creó antes
-de adoptar migraciones y no cambia el resultado de la versión ya aplicada.
+nueva. Esta modificación excepcional de una migración histórica está limitada al bootstrap que producción creó antes de
+adoptar migraciones y no cambia el resultado de la versión ya aplicada.
 
 ## Production pipeline
 
@@ -51,10 +51,8 @@ Configure these repository secrets in **Settings → Secrets and variables → A
 | `SUPABASE_DB_PASSWORD`  | Database password used by `db push`               |
 | `SUPABASE_URL`          | Public project URL injected into Vite             |
 | `SUPABASE_ANON_KEY`     | Public anonymous key injected into Vite           |
-| `ADMIN_PASSWORD`        | Current v1 browser-side Admin password            |
 
-Only the last three frontend values are mapped to `VITE_*`. Never expose the access token or database password through
-Vite.
+Only the two frontend values are mapped to `VITE_*`. Never expose the access token or database password through Vite.
 
 ## Creating a change
 
@@ -71,8 +69,8 @@ de `20260712`, necesario para que el historial inicial pueda ejecutarse sobre un
 ## Existing remote project
 
 This repository adopted migrations after the initial table already existed. The first tracked migration now bootstraps
-that table with `CREATE TABLE IF NOT EXISTS` and then uses `ADD COLUMN IF NOT EXISTS`. Do not apply it manually or repair
-the history: the existing project already records `20260712`, while new projects execute it normally.
+that table with `CREATE TABLE IF NOT EXISTS` and then uses `ADD COLUMN IF NOT EXISTS`. Do not apply it manually or
+repair the history: the existing project already records `20260712`, while new projects execute it normally.
 
 ## Verificación de Sprint 7.1
 
