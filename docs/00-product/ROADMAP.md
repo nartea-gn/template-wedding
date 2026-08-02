@@ -53,7 +53,7 @@ checklist de release y siguientes sprints definidos con criterios de aceptación
 
 El plan maestro, la secuencia y los gates se definen en [`SPRINT_7_PLAN.md`](./SPRINT_7_PLAN.md).
 
-### Sprint 7.1 — Seguridad, privacidad y baseline de datos · Preparado · P0
+### Sprint 7.1 — Seguridad, privacidad y baseline de datos · En curso · P0
 
 **Objetivo:** establecer autoridad real sobre respuestas RSVP y un esquema reproducible.
 
@@ -61,6 +61,10 @@ El plan maestro, la secuencia y los gates se definen en [`SPRINT_7_PLAN.md`](./S
 
 **Dependencias:** decisión aprobada de autenticación/autorización, requisitos de privacidad y auditoría del historial
 remoto de Supabase.
+
+**Dirección aprobada:** OTP por email, sesión persistente, membresía de usuarios por invitación, lectura protegida por
+RLS e inserción RSVP anónima limitada. La auditoría remota de solo lectura permanece como gate antes de crear o aplicar
+migraciones.
 
 **Criterio de salida:**
 

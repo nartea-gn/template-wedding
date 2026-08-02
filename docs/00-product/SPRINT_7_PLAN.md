@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** preparado; ejecución no iniciada
+- **Estado:** en curso; Sprint 7.1 en fase de investigación y decisión
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -33,6 +33,18 @@ flowchart LR
 La documentación preparatoria puede avanzar en paralelo. La implementación y el cierre respetarán el orden de gates.
 
 ## Sprint 7.1 — Seguridad, privacidad y baseline de datos
+
+### Dirección aprobada
+
+Sprint 7.1 se ejecutará en incrementos pequeños y verificables:
+
+1. **7.1A — Identidad y autorización:** OTP por email, sesión Supabase y membresía por invitación.
+2. **7.1B — Privacidad de lectura:** retirar `anon SELECT` y verificar RLS con usuarios asignados y no asignados.
+3. **7.1C — Baseline de datos:** comparar remoto y local sin mutaciones, y preparar instalación y actualización.
+4. **7.1D — Ciclo de vida:** cerrar información, retención, exportación, corrección y borrado.
+
+El RSVP seguirá admitiendo inserción anónima limitada. CAPTCHA, Edge Functions, MFA, OAuth, roles complejos y una
+interfaz de gestión de usuarios quedan fuera de la primera solución salvo evidencia que justifique incorporarlos.
 
 ### Objetivo
 
@@ -226,6 +238,6 @@ El primer trabajo de Sprint 7.1 deberá ser exclusivamente de investigación y d
 1. inspeccionar el estado real de Supabase sin mutarlo;
 2. producir el modelo de amenazas;
 3. inventariar datos y flujos;
-4. comparar alternativas de autenticación/autorización;
-5. presentar ADR y plan de migración para aprobación;
-6. implementar solo después de esa aprobación.
+4. documentar la solución OTP y autorización por invitación aprobada;
+5. completar la comparación remota y el plan de migración sin mutar producción;
+6. implementar solo después de revisar la evidencia de investigación.

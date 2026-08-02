@@ -126,6 +126,10 @@ Documentos de referencia:
 - [Admin](docs/01-architecture/ADMIN.md)
 - [Migraciones](docs/01-architecture/DATABASE_MIGRATIONS.md)
 - [Architecture Decision Records](docs/04-development/adr)
+- [Plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md)
+- [Modelo de amenazas](docs/05-audits/SECURITY_THREAT_MODEL.md)
+- [Inventario de datos y privacidad](docs/05-audits/DATA_PRIVACY_INVENTORY.md)
+- [Auditoría de baseline de Supabase](docs/05-audits/SUPABASE_BASELINE_AUDIT.md)
 
 ## Despliegue
 
