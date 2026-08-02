@@ -4,7 +4,7 @@
 
 - **Fecha:** 2026-08-02
 - **Fase:** Sprint 7.1
-- **Resultado:** inventario local completo; comparación directa remota pendiente
+- **Resultado:** inventario local y comparación remota de solo lectura completados
 - **Restricción:** no se ha mutado el proyecto Supabase
 
 ## Evidencia local
@@ -35,19 +35,36 @@ correctamente e indicó que la base remota estaba actualizada respecto de las mi
 Esto **no demuestra** equivalencia completa entre remoto y `schema.sql`: solo indica que Supabase CLI no encontró
 migraciones locales pendientes en ese historial.
 
-## Estado remoto que falta comprobar
+## Evidencia remota verificada
 
-Antes de escribir la baseline definitiva se necesita una inspección de solo lectura de:
+La inspección por Management API confirmó:
 
-- historial de migraciones remoto;
-- tablas, columnas, defaults, constraints e índices;
-- RLS habilitado o forzado;
-- políticas, roles y grants;
-- funciones, triggers y extensiones relacionadas;
-- volumen aproximado y existencia de instalaciones previas, sin exportar datos personales.
+- PostgreSQL 17.6 y proyecto activo;
+- una única migración remota: `20260712_add_dynamic_rsvp_answers`;
+- las catorce columnas coinciden con la combinación de `schema.sql` y la migración aditiva;
+- solo existe la restricción de clave primaria; no hay límites de longitud, forma o valores;
+- existen el índice primario y `rsvp_responses_form_id_idx`;
+- RLS está habilitado pero no forzado;
+- `anon INSERT WITH CHECK (true)` y `anon SELECT USING (true)` están activos;
+- `invitation_admins` todavía no existe;
+- Supabase Auth no contiene usuarios;
+- no hay triggers de fila sobre `rsvp_responses`.
 
-La máquina local no dispone actualmente de Supabase CLI enlazada ni de una sesión local segura. Los secretos existen
-como secretos nominales del entorno GitHub Pages y no deben imprimirse ni copiarse a documentación.
+Los grants de tabla para `anon` y `authenticated` incluyen todas las operaciones estándar. RLS impide operaciones sin
+política, pero Sprint 7.1 deberá reducir también los grants al mínimo explícito para evitar depender de permisos
+implícitos innecesarios.
+
+El asesor oficial de Supabase informó además:
+
+- `rls_policy_always_true` sobre la inserción anónima;
+- `public.rls_auto_enable()` como función `SECURITY DEFINER` ejecutable por `anon` y `authenticated`.
+
+La función pertenece a un event trigger activo llamado `ensure_rls`, que habilita RLS automáticamente al crear tablas
+en `public`. Su implementación fija `search_path=pg_catalog` y no pertenece a una extensión. No debe eliminarse sin
+comprender su procedencia, pero sus permisos `EXECUTE` públicos deben revisarse y revocarse si no son necesarios.
+
+No se consultaron filas de `rsvp_responses`, emails, mensajes ni otros datos personales. Tampoco se imprimieron tokens,
+contraseñas o claves API.
 
 ## Riesgos
 
@@ -58,14 +75,13 @@ como secretos nominales del entorno GitHub Pages y no deben imprimirse ni copiar
 
 ## Estrategia aprobada
 
-1. Obtener acceso local temporal y seguro al proyecto, sin registrar secretos.
-2. Ejecutar inventario remoto de solo lectura.
-3. Comparar remoto, `schema.sql` y migraciones.
-4. Definir una baseline para instalaciones vacías.
-5. Definir una migración incremental para instalaciones existentes.
-6. Ensayar ambos caminos en un proyecto aislado.
-7. Documentar backup, rollback y reparación del historial.
-8. Solo entonces aplicar cambios al proyecto real.
+1. Conservar esta evidencia remota sin registrar referencias o secretos en Git.
+2. Definir una baseline para instalaciones vacías.
+3. Definir una migración incremental para la instalación existente.
+4. Incluir reducción de grants, políticas por rol y revisión de `rls_auto_enable`.
+5. Ensayar ambos caminos en un proyecto aislado.
+6. Documentar backup, rollback y reparación del historial.
+7. Solo entonces aplicar cambios al proyecto real.
 
 ## Acciones prohibidas durante la auditoría
 
@@ -79,7 +95,7 @@ como secretos nominales del entorno GitHub Pages y no deben imprimirse ni copiar
 
 ## Criterio de salida
 
-`G7-DATA` permanece abierto hasta que el estado remoto esté inventariado y los caminos de instalación vacía,
+El inventario remoto está completo. `G7-DATA` permanece abierto hasta que los caminos de instalación vacía,
 actualización, backup y rollback hayan sido ensayados fuera de producción.
 
 ## Fuente

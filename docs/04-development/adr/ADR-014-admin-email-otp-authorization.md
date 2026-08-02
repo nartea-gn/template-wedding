@@ -2,7 +2,8 @@
 
 ## Estado
 
-Aceptado para implementación incremental. La implementación queda condicionada a la auditoría remota de Sprint 7.1.
+Aceptado para implementación incremental. La auditoría remota de Sprint 7.1 confirma que todavía no existen usuarios,
+membresías ni políticas autenticadas, por lo que la transición puede introducirse sin migrar identidades previas.
 
 ## Contexto
 

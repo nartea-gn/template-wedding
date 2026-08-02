@@ -5,7 +5,7 @@
 - **Fecha:** 2026-08-02
 - **Alcance:** Landing, RSVP, Admin, Supabase y despliegue en GitHub Pages
 - **Fase:** Sprint 7.1, investigación aprobada
-- **Última revisión:** análisis estático del repositorio; auditoría remota pendiente
+- **Última revisión:** análisis estático y auditoría remota de metadatos completados
 
 ## Objetivo
 
@@ -52,6 +52,8 @@ flowchart LR
 | SEC-08 | Texto libre o errores terminan en logs | Medio | Baja | P1 | No registrar payloads; mensajes de error sin datos personales. |
 | SEC-09 | Esquema remoto y migraciones locales divergen | Alto | Media | P0 operativo | Crear baseline solo tras comparar el estado remoto de forma no mutante. |
 | SEC-10 | Un secreto privilegiado entra en el frontend | Crítico | Baja | P0 | Solo URL y anon key en Vite; secretos administrativos quedan en GitHub Actions. |
+| SEC-11 | Función `SECURITY DEFINER` expuesta por RPC | Alto potencial | Baja | P1 | Revisar procedencia y revocar `EXECUTE` público sin eliminar el event trigger automáticamente. |
+| SEC-12 | Grants de tabla más amplios de lo necesario | Medio/alto | Media | P1 | Revocar operaciones innecesarias y conceder solo `anon INSERT` y `authenticated SELECT`. |
 
 ## Controles que no necesitamos en la primera versión
 
@@ -78,7 +80,7 @@ Estos controles podrán evaluarse si el riesgo o la operación cambian. No forma
 ## Criterio de salida
 
 `G7-SEC` solo podrá cerrarse cuando estos casos tengan pruebas reproducibles con clientes anónimo, autenticado con
-membresía y autenticado sin membresía. El análisis estático por sí solo no cierra el gate.
+membresía y autenticado sin membresía. El inventario remoto confirma el riesgo, pero no sustituye esas pruebas.
 
 ## Fuentes
 

@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; Sprint 7.1 en fase de investigación y decisión
+- **Estado:** en curso; investigación 7.1 completada e implementación pendiente
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -45,6 +45,9 @@ Sprint 7.1 se ejecutará en incrementos pequeños y verificables:
 
 El RSVP seguirá admitiendo inserción anónima limitada. CAPTCHA, Edge Functions, MFA, OAuth, roles complejos y una
 interfaz de gestión de usuarios quedan fuera de la primera solución salvo evidencia que justifique incorporarlos.
+
+La investigación local y la auditoría remota de metadatos están completadas. No se consultaron respuestas RSVP ni se
+modificó producción. La implementación comienza cuando se apruebe el plan incremental derivado de esta evidencia.
 
 ### Objetivo
 
