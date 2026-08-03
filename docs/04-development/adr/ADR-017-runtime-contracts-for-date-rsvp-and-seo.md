@@ -2,8 +2,8 @@
 
 ## Estado
 
-Propuesto para Sprint 7.3. Se aceptará cuando los consumidores, validadores, pruebas y documentación utilicen la misma
-semántica y los quality gates pasen en Pull Request.
+Aceptado en Sprint 7.3. Los consumidores, validadores, pruebas y documentación comparten la misma semántica y los
+quality gates de aplicación y base de datos pasan en la Pull Request `#21`.
 
 ## Contexto
 

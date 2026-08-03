@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1C y 7.2 integrados en `main`, 7.1D y despliegue alojado pendientes, 7.3 en validación de PR
+- **Estado:** en curso; 7.1A-7.1C, 7.2 y 7.3 completados, 7.1D y despliegue alojado pendientes
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -138,10 +138,10 @@ Detectar regresiones en contratos y flujos críticos antes de integrar cambios.
 
 ### Estado actual
 
-La auditoría y `ADR-017` fijan una fecha única para hero/countdown, instantes con offset, deadline exclusivo, SEO
-localizado y validación estructural. La implementación está completa en `sprint/7.3-contracts`: el cierre se refleja sin
-recargar la página y lint, 39 pruebas unitarias, build, 6 recorridos E2E y 15 aserciones pgTAP están verdes. Falta la
-validación alojada de la Pull Request antes de aceptar el ADR e integrar el sprint.
+`ADR-017` queda aceptado con una fecha única para hero/countdown, instantes con offset, deadline exclusivo, SEO
+localizado y validación estructural. El cierre se refleja sin recargar la página; lint, 39 pruebas unitarias, build, 6
+recorridos E2E y 15 aserciones pgTAP están verdes localmente, y los dos quality gates alojados pasan en la Pull Request
+`#21`.
 
 ### Objetivo
 
