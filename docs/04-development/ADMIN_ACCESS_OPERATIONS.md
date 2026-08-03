@@ -123,7 +123,7 @@ ya no puede leer respuestas. Las sesiones existentes dejan de autorizar filas en
 
 ## Verificación mínima por release
 
-- un email no provisionado no crea usuario;
+- un email no provisionado no crea usuario y recibe la misma pantalla neutral de comprobación que uno autorizado;
 - una pareja asignada entra con OTP y conserva la sesión tras recargar;
 - una persona sin membresía ve cero respuestas;
 - dos parejas no pueden cruzar invitaciones;

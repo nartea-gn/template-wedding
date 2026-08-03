@@ -94,6 +94,7 @@ export const esMessages = {
     'admin.auth.changeEmail': 'Usar otro correo',
     'admin.auth.codeInvalid': 'El código no es válido o ha caducado. Revísalo o solicita uno nuevo.',
     'admin.auth.requestError': 'No hemos podido enviar el código. Comprueba la conexión e inténtalo de nuevo.',
+    'admin.auth.verificationError': 'No hemos podido comprobar el código. Revisa la conexión e inténtalo de nuevo.',
     'admin.auth.sessionError': 'No hemos podido recuperar la sesión. Actualiza la página e inténtalo de nuevo.',
     'admin.auth.restoring': 'Recuperando sesión segura…',
     'admin.auth.signingOut': 'Cerrando…',

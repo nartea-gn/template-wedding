@@ -1,9 +1,13 @@
 import {useCallback, useEffect, useState} from 'react'
-import type {Session} from '@supabase/supabase-js'
+import type {AuthError, Session} from '@supabase/supabase-js'
 import {supabase} from '../lib/supabaseClient'
 
 export type AdminAuthPhase = 'loading' | 'email' | 'code' | 'authenticated'
-export type AdminAuthError = 'request' | 'verification' | 'session' | null
+export type AdminAuthError = 'request' | 'verification' | 'verificationRequest' | 'session' | null
+
+function isUnprovisionedIdentity(error: AuthError) {
+    return error.status === 422 && error.code === 'otp_disabled'
+}
 
 export function useAdminSession() {
     const [session, setSession] = useState<Session | null>(null)
@@ -15,17 +19,29 @@ export function useAdminSession() {
     useEffect(() => {
         let active = true
 
-        void supabase.auth.getSession().then(({data, error: sessionError}) => {
-            if (!active) return
-            setSession(data.session)
-            setError(sessionError ? 'session' : null)
-            setPhase(data.session ? 'authenticated' : 'email')
-        })
+        void supabase.auth.getSession()
+            .then(({data, error: sessionError}) => {
+                if (!active) return
+                setSession(data.session)
+                setError(sessionError ? 'session' : null)
+                setPhase(data.session ? 'authenticated' : 'email')
+            })
+            .catch(sessionError => {
+                if (!active) return
+                console.error('Unable to restore the admin session.', sessionError)
+                setSession(null)
+                setError('session')
+                setPhase('email')
+            })
 
         const {data: {subscription}} = supabase.auth.onAuthStateChange((_event, nextSession) => {
             if (!active) return
             setSession(nextSession)
-            setPhase(nextSession ? 'authenticated' : 'email')
+            setPhase(currentPhase => {
+                if (nextSession) return 'authenticated'
+                if (currentPhase === 'loading' || currentPhase === 'authenticated') return 'email'
+                return currentPhase
+            })
         })
 
         return () => {
@@ -46,6 +62,12 @@ export function useAdminSession() {
             })
 
             if (requestError) {
+                if (isUnprovisionedIdentity(requestError)) {
+                    setEmail(normalizedEmail)
+                    setPhase('code')
+                    return true
+                }
+
                 console.error('Unable to request admin OTP.', requestError)
                 setError('request')
                 return false
@@ -67,19 +89,26 @@ export function useAdminSession() {
         setSubmitting(true)
         setError(null)
 
-        const {error: verificationError} = await supabase.auth.verifyOtp({
-            email,
-            token,
-            type: 'email',
-        })
+        try {
+            const {error: verificationError} = await supabase.auth.verifyOtp({
+                email,
+                token,
+                type: 'email',
+            })
 
-        setSubmitting(false)
-        if (verificationError) {
-            setError('verification')
+            if (verificationError) {
+                setError('verification')
+                return false
+            }
+
+            return true
+        } catch (verificationError) {
+            console.error('Unable to verify the admin OTP.', verificationError)
+            setError('verificationRequest')
             return false
+        } finally {
+            setSubmitting(false)
         }
-
-        return true
     }, [email])
 
     const changeEmail = useCallback(() => {
@@ -90,9 +119,16 @@ export function useAdminSession() {
     const signOut = useCallback(async () => {
         setSubmitting(true)
         setError(null)
-        const {error: signOutError} = await supabase.auth.signOut()
-        setSubmitting(false)
-        if (signOutError) setError('session')
+
+        try {
+            const {error: signOutError} = await supabase.auth.signOut()
+            if (signOutError) setError('session')
+        } catch (signOutError) {
+            console.error('Unable to close the admin session.', signOutError)
+            setError('session')
+        } finally {
+            setSubmitting(false)
+        }
     }, [])
 
     return {

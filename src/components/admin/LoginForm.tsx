@@ -67,9 +67,11 @@ export function LoginForm({
         ? t('admin.auth.requestError')
         : error === 'verification'
             ? t('admin.auth.codeInvalid')
-            : error === 'session'
-                ? t('admin.auth.sessionError')
-                : null;
+            : error === 'verificationRequest'
+                ? t('admin.auth.verificationError')
+                : error === 'session'
+                    ? t('admin.auth.sessionError')
+                    : null;
 
     return (
         <div className="login-page">

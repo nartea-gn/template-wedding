@@ -94,6 +94,7 @@ export const enMessages = {
     'admin.auth.changeEmail': 'Use another email',
     'admin.auth.codeInvalid': 'The code is invalid or has expired. Check it or request a new one.',
     'admin.auth.requestError': 'We could not send the code. Check your connection and try again.',
+    'admin.auth.verificationError': 'We could not verify the code. Check your connection and try again.',
     'admin.auth.sessionError': 'We could not restore the session. Refresh the page and try again.',
     'admin.auth.restoring': 'Restoring secure session…',
     'admin.auth.signingOut': 'Signing out…',
