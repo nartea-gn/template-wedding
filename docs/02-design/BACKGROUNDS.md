@@ -163,6 +163,11 @@ HTML y el fondo puede crecer independientemente del idioma o de la altura total.
 Royal recibió aprobación de producto el 2026-07-29. Boho, Dark, Magnolia y Linen adoptan desde esa fecha el mismo
 contrato de apertura y cuerpo, manteniendo una dirección artística propia y tres composiciones responsive.
 
+La apertura móvil de Royal recibió una revisión cromática aprobada el 2026-08-03 bajo el nombre `Royal Soft A`. La
+composición sigue perteneciendo a `BG-ROYAL-001`, pero sus azules laterales son más claros y menos saturados para
+proteger la legibilidad del countdown en pantallas estrechas. La solución vive en el asset; no introduce superficies,
+overlays ni reglas de contraste específicas en los componentes.
+
 ### Candidatos descartados
 
 - `BG-ROYAL-002`, canvas continuo, se descartó porque su ajuste a alturas variables deformaba la ilustración y se

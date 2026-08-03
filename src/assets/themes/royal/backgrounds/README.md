@@ -17,6 +17,16 @@ el scroll. Admin no consume estos assets.
 Los PNG originales no forman parte del bundle. La variante intermedia es una composición hermana generada
 específicamente para tablet; no es un recorte automático de los masters existentes.
 
+### Revisión móvil Royal Soft A
+
+Producto aprobó `Royal Soft A` como apertura móvil oficial el 2026-08-03. La revisión conserva la composición, el
+papel marfil, la botánica y los acentos champagne de `BG-ROYAL-001`, pero transforma las masas azul marino laterales en
+azul pizarra empolvado y azul niebla. El ajuste protege la lectura del countdown en pantallas estrechas desde el propio
+arte, sin tarjetas, halos, overlays ni excepciones de layout.
+
+El master aprobado mantiene las dimensiones oficiales de `864 × 1821 px`. Su WebP de producción usa calidad 82 y la
+copia JPEG de seguridad conserva calidad 92.
+
 ## Módulos de cuerpo de la prueba
 
 | Variante                 | Dimensiones | Entrega          | Uso                                       |
@@ -44,7 +54,8 @@ entrar en el bundle ni utilizarse como base de nuevas variantes sin una nueva ap
 ## Procedencia
 
 - Herramienta: generador de imágenes integrado de Codex.
-- Fecha del baseline: 2026-07-20. Variante tablet: 2026-07-28. Módulos de cuerpo: 2026-07-29.
+- Fecha del baseline: 2026-07-20. Variante tablet: 2026-07-28. Módulos de cuerpo: 2026-07-29. Revisión móvil
+  `Royal Soft A`: 2026-08-03.
 - Tipo: obra generada específicamente para Nartea; no contiene assets ni texto de las referencias de producto.
 - Dirección: mocks aportados por producto y principios de `docs/02-design/BACKGROUNDS.md`.
 
