@@ -5,6 +5,7 @@ import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding'
 import Landing from '../pages/Landing.tsx';
 import {RouteLoading} from '../components/RouteLoading';
 import {resolveRouteCapabilities} from './routeCapabilities';
+import {useRsvpAvailability} from '../features/rsvp/hooks/useRsvpAvailability';
 import './AppRouter.css';
 
 const Rsvp = lazy(() => import('../pages/Rsvp.tsx'));
@@ -12,7 +13,8 @@ const Admin = lazy(() => import('../pages/Admin.tsx'));
 
 export default function AppRouter() {
     const {t} = useLocalization<WeddingMessageKey>();
-    const routes = resolveRouteCapabilities(weddingInvitation.capabilities);
+    const rsvpOpen = useRsvpAvailability(weddingInvitation.capabilities.rsvp);
+    const routes = resolveRouteCapabilities(weddingInvitation.capabilities, rsvpOpen);
     return <HashRouter><Routes>
         <Route path="/" element={<Landing/>}/>
         {routes.rsvp && (

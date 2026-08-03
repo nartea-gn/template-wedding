@@ -9,7 +9,7 @@ export const weddingInvitation = {
     event: {
         type: 'wedding',
         title: 'event.title',
-        date: '2027-06-12',
+        date: '2027-06-12T12:00:00+02:00',
         timezone: 'Europe/Madrid',
         hashtag: '#BodaGalaYValentin',
     },
@@ -44,7 +44,6 @@ export const weddingInvitation = {
             enabled: true,
             content: {
                 label: 'countdown.label',
-                target: '2027-06-12T12:00:00+02:00',
                 unitLabels: {
                     days: 'countdown.days',
                     hours: 'countdown.hours',
@@ -108,13 +107,14 @@ export const weddingInvitation = {
             enabled: true,
             content: {
                 label: 'rsvp.cta',
+                closedLabel: 'rsvp.closed.cta',
             },
         },
     ],
     capabilities: {
         rsvp: {
             enabled: true,
-            deadline: '2027-05-12',
+            deadline: '2027-05-12T23:59:59+02:00',
             form: weddingRsvpForm,
         },
         admin: {
