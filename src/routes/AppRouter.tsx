@@ -4,6 +4,7 @@ import {useLocalization} from '../app/providers/useLocalization';
 import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding';
 import Landing from '../pages/Landing.tsx';
 import {RouteLoading} from '../components/RouteLoading';
+import {resolveRouteCapabilities} from './routeCapabilities';
 import './AppRouter.css';
 
 const Rsvp = lazy(() => import('../pages/Rsvp.tsx'));
@@ -11,12 +12,15 @@ const Admin = lazy(() => import('../pages/Admin.tsx'));
 
 export default function AppRouter() {
     const {t} = useLocalization<WeddingMessageKey>();
-    const rsvpEnabled = weddingInvitation.capabilities.rsvp?.enabled === true;
-    const adminEnabled = rsvpEnabled && weddingInvitation.capabilities.admin?.enabled === true;
+    const routes = resolveRouteCapabilities(weddingInvitation.capabilities);
     return <HashRouter><Routes>
         <Route path="/" element={<Landing/>}/>
-        {rsvpEnabled && <Route path="/rsvp" element={<Suspense fallback={<RouteLoading/>}><Rsvp/></Suspense>}/>}
-        {adminEnabled && <Route path="/admin" element={<Suspense fallback={<RouteLoading/>}><Admin/></Suspense>}/>}
+        {routes.rsvp && (
+            <Route path="/rsvp" element={<Suspense fallback={<RouteLoading/>}><Rsvp/></Suspense>}/>
+        )}
+        {routes.admin && (
+            <Route path="/admin" element={<Suspense fallback={<RouteLoading/>}><Admin/></Suspense>}/>
+        )}
         <Route path="*" element={<div className="route-not-found">{t('route.notFound')}</div>}/>
     </Routes></HashRouter>;
 }
