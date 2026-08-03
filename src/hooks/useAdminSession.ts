@@ -3,7 +3,7 @@ import type {Session} from '@supabase/supabase-js'
 import {supabase} from '../lib/supabaseClient'
 
 export type AdminAuthPhase = 'loading' | 'email' | 'code' | 'authenticated'
-export type AdminAuthError = 'verification' | 'session' | null
+export type AdminAuthError = 'request' | 'verification' | 'session' | null
 
 export function useAdminSession() {
     const [session, setSession] = useState<Session | null>(null)
@@ -39,15 +39,28 @@ export function useAdminSession() {
         setSubmitting(true)
         setError(null)
 
-        await supabase.auth.signInWithOtp({
-            email: normalizedEmail,
-            options: {shouldCreateUser: false},
-        })
+        try {
+            const {error: requestError} = await supabase.auth.signInWithOtp({
+                email: normalizedEmail,
+                options: {shouldCreateUser: false},
+            })
 
-        setSubmitting(false)
-        setEmail(normalizedEmail)
-        setPhase('code')
-        return true
+            if (requestError) {
+                console.error('Unable to request admin OTP.', requestError)
+                setError('request')
+                return false
+            }
+
+            setEmail(normalizedEmail)
+            setPhase('code')
+            return true
+        } catch (requestError) {
+            console.error('Unable to request admin OTP.', requestError)
+            setError('request')
+            return false
+        } finally {
+            setSubmitting(false)
+        }
     }, [])
 
     const verifyCode = useCallback(async (token: string) => {

@@ -95,6 +95,7 @@ export const bgMessages = {
     'admin.auth.resendIn': 'Можете да изпратите отново след',
     'admin.auth.changeEmail': 'Използване на друг имейл',
     'admin.auth.codeInvalid': 'Кодът е невалиден или е изтекъл. Проверете го или поискайте нов.',
+    'admin.auth.requestError': 'Кодът не можа да бъде изпратен. Проверете връзката и опитайте отново.',
     'admin.auth.sessionError': 'Сесията не можа да бъде възстановена. Обновете страницата и опитайте отново.',
     'admin.auth.restoring': 'Възстановяване на защитена сесия…',
     'admin.auth.signingOut': 'Излизане…',

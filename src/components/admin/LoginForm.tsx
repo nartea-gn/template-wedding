@@ -63,11 +63,13 @@ export function LoginForm({
         onChangeEmail();
     };
 
-    const errorMessage = error === 'verification'
-        ? t('admin.auth.codeInvalid')
-        : error === 'session'
-            ? t('admin.auth.sessionError')
-            : null;
+    const errorMessage = error === 'request'
+        ? t('admin.auth.requestError')
+        : error === 'verification'
+            ? t('admin.auth.codeInvalid')
+            : error === 'session'
+                ? t('admin.auth.sessionError')
+                : null;
 
     return (
         <div className="login-page">
