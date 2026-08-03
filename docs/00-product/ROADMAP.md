@@ -74,11 +74,14 @@ migraciones.
 - baseline aplicable a una instalación vacía sin romper proyectos existentes;
 - política documentada de información, minimización, retención, exportación y borrado.
 
-### Sprint 7.2 — Quality gates automatizados · Planificado · P1
+### Sprint 7.2 — Quality gates automatizados · En validación · P1
 
 **Objetivo:** detectar regresiones de contratos y flujos críticos antes del despliegue.
 
-**Dependencias:** elección explícita del stack de pruebas; no existe framework configurado actualmente.
+**Evidencia:** stack aceptado en `ADR-016`; gates de aplicación y base de datos superados en la Pull Request `#20`.
+
+**Dirección:** Vitest y React Testing Library para contratos e integración, Playwright Chromium como gate rápido y pgTAP
+sobre Supabase local para grants y RLS. La matriz completa de navegadores permanece en Sprint 7.4.
 
 **Criterio de salida:** pruebas unitarias de validadores/mappers, integración del repositorio, E2E de Landing/RSVP/Admin
 y workflow de pull request con lint, build y pruebas.

@@ -19,10 +19,10 @@ específicamente para tablet; no es un recorte automático de los masters existe
 
 ### Revisión móvil Royal Soft A
 
-Producto aprobó `Royal Soft A` como apertura móvil oficial el 2026-08-03. La revisión conserva la composición, el
-papel marfil, la botánica y los acentos champagne de `BG-ROYAL-001`, pero transforma las masas azul marino laterales en
-azul pizarra empolvado y azul niebla. El ajuste protege la lectura del countdown en pantallas estrechas desde el propio
-arte, sin tarjetas, halos, overlays ni excepciones de layout.
+Producto aprobó `Royal Soft A` como apertura móvil oficial el 2026-08-03. La revisión conserva la composición, el papel
+marfil, la botánica y los acentos champagne de `BG-ROYAL-001`, pero transforma las masas azul marino laterales en azul
+pizarra empolvado y azul niebla. El ajuste protege la lectura del countdown en pantallas estrechas desde el propio arte,
+sin tarjetas, halos, overlays ni excepciones de layout.
 
 El master aprobado mantiene las dimensiones oficiales de `864 × 1821 px`. Su WebP de producción usa calidad 82 y la
 copia JPEG de seguridad conserva calidad 92.

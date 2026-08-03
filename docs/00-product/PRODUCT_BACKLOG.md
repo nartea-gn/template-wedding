@@ -21,11 +21,11 @@ Condición de activación: requisitos comerciales y revisión legal/operativa de
 
 ### Pruebas y CI de pull requests
 
-- Elegir framework y alcance antes de añadir dependencias.
-- Cubrir validación de Invitation Definition, Form Engine, mapper y Repository.
-- Añadir integración de persistencia y E2E de Landing, RSVP y Admin.
-- Ejecutar lint, build y pruebas en pull requests, además del deploy de `main`.
-- Fijar versiones de herramientas del workflow, incluida Supabase CLI.
+- Stack y alcance aceptados en `ADR-016`.
+- Baseline de Invitation Definition, localización, Form Engine, mapper, Repository y estados Admin completada.
+- E2E Chromium de Landing, RSVP y acceso protegido de Admin completado.
+- pgTAP de grants, RLS y aislamiento entre invitaciones completado.
+- Gates alojados superados en la Pull Request `#20`; retirar este bloque tras integrar el sprint en `main`.
 
 ### Contratos incompletos
 

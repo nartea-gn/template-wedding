@@ -58,10 +58,11 @@ ni recursos remotos.
 
 ### Despliegue en Supabase alojado
 
-El workflow de despliegue aplica migraciones SQL, pero no publica la configuración Auth ni las plantillas de correo. Para
-cada proyecto alojado:
+El workflow de despliegue aplica migraciones SQL, pero no publica la configuración Auth ni las plantillas de correo.
+Para cada proyecto alojado:
 
-1. copia el asunto y el contenido de `supabase/templates/magic_link.html` en **Authentication → Email Templates → Magic Link**;
+1. copia el asunto y el contenido de `supabase/templates/magic_link.html` en **Authentication → Email Templates → Magic
+   Link**;
 2. configura un OTP de seis dígitos y `300` segundos de caducidad;
 3. comprueba que el proveedor de email permanece habilitado;
 4. solicita un código con una identidad ficticia provisionada;
@@ -82,10 +83,10 @@ El remitente productivo personalizado queda aplazado hasta disponer de un domini
 - mantener usuario y contraseña SMTP fuera de Git;
 - y completar una prueba real en Gmail, Outlook y Apple Mail.
 
-Hasta cerrar esta deuda, Mailpit seguirá mostrando localmente el nombre `NarteaGN` mediante `[local_smtp]`, pero el proyecto no se considerará
-preparado para entregar emails de autenticación a clientes reales. Los proyectos Free creados desde el 3 de junio de
-2026 necesitan además SMTP propio para utilizar plantillas Auth personalizadas; la situación concreta del proyecto
-alojado deberá verificarse antes del despliegue.
+Hasta cerrar esta deuda, Mailpit seguirá mostrando localmente el nombre `NarteaGN` mediante `[local_smtp]`, pero el
+proyecto no se considerará preparado para entregar emails de autenticación a clientes reales. Los proyectos Free creados
+desde el 3 de junio de 2026 necesitan además SMTP propio para utilizar plantillas Auth personalizadas; la situación
+concreta del proyecto alojado deberá verificarse antes del despliegue.
 
 ## Alta de una pareja
 
