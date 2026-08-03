@@ -2,16 +2,17 @@
  * Responsive theme artwork.
  *
  * This evaluation pass intentionally presents the approved images almost
- * directly: no texture stacks, color overlays, blend modes or duplicated
- * closing artwork. Every collection now pairs its approved opening with a
- * calm repeatable body module built for long-form invitation content.
+ * directly: no texture stacks, blend modes or duplicated closing artwork.
+ * Every collection pairs its approved opening with a calm repeatable body
+ * module, softened only by a light veil of the theme's own background color.
  */
 
 [data-theme="royal"] {
     --theme-background-art: url('../assets/themes/royal/backgrounds/royal-watercolor-mobile.webp');
     --theme-background-body-art: url('../assets/themes/royal/backgrounds/royal-body-narrow.webp');
     --theme-background-position: center top;
-    --theme-background-opening-opacity: 0.97;
+    --theme-background-opening-opacity: 0.92;
+    --theme-background-body-veil: 7%;
     --theme-background-rsvp-opacity: 0.93;
 }
 
@@ -19,7 +20,8 @@
     --theme-background-art: url('../assets/themes/boho/backgrounds/boho-background-narrow.webp');
     --theme-background-body-art: url('../assets/themes/boho/backgrounds/boho-body-narrow.webp');
     --theme-background-position: center top;
-    --theme-background-opening-opacity: 0.97;
+    --theme-background-opening-opacity: 0.92;
+    --theme-background-body-veil: 7%;
     --theme-background-rsvp-opacity: 0.93;
 }
 
@@ -27,7 +29,8 @@
     --theme-background-art: url('../assets/themes/dark/backgrounds/dark-background-narrow.webp');
     --theme-background-body-art: url('../assets/themes/dark/backgrounds/dark-body-narrow.webp');
     --theme-background-position: center top;
-    --theme-background-opening-opacity: 0.98;
+    --theme-background-opening-opacity: 0.94;
+    --theme-background-body-veil: 5%;
     --theme-background-rsvp-opacity: 0.95;
 }
 
@@ -35,7 +38,8 @@
     --theme-background-art: url('../assets/themes/magnolia/backgrounds/magnolia-background-narrow.webp');
     --theme-background-body-art: url('../assets/themes/magnolia/backgrounds/magnolia-body-narrow.webp');
     --theme-background-position: center top;
-    --theme-background-opening-opacity: 0.97;
+    --theme-background-opening-opacity: 0.92;
+    --theme-background-body-veil: 7%;
     --theme-background-rsvp-opacity: 0.93;
 }
 
@@ -43,7 +47,8 @@
     --theme-background-art: url('../assets/themes/linen/backgrounds/linen-background-narrow.webp');
     --theme-background-body-art: url('../assets/themes/linen/backgrounds/linen-body-narrow.webp');
     --theme-background-position: center top;
-    --theme-background-opening-opacity: 0.97;
+    --theme-background-opening-opacity: 0.92;
+    --theme-background-body-veil: 7%;
     --theme-background-rsvp-opacity: 0.93;
 }
 
@@ -59,7 +64,12 @@
     position: relative;
     isolation: isolate;
     background-color: var(--color-wedding-bg);
-    background-image: var(--theme-background-body-art, none);
+    background-image:
+        linear-gradient(
+            color-mix(in srgb, var(--color-wedding-bg) var(--theme-background-body-veil), transparent),
+            color-mix(in srgb, var(--color-wedding-bg) var(--theme-background-body-veil), transparent)
+        ),
+        var(--theme-background-body-art, none);
     background-repeat: repeat-y;
     background-position: center top;
     background-size: 100% auto;

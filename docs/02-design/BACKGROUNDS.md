@@ -49,8 +49,9 @@ El sistema utiliza una apertura responsive y un segundo módulo de cuerpo por co
 3. **Color de respaldo:** token de fondo del tema, visible si un asset no carga.
 4. **Contenido HTML:** texto, controles e imágenes de contenido independientes del fondo.
 
-No se añaden texturas CSS, degradados decorativos, velos de color ni modos de mezcla. Las imágenes se presentan casi
-opacas para evaluar con fidelidad el arte aprobado.
+No se añaden texturas CSS, degradados decorativos ni modos de mezcla. En Landing, las imágenes se suavizan únicamente
+con un velo muy ligero del propio color de fondo del tema para dar más aire al contenido sin alterar la paleta ni la
+dirección artística aprobada.
 
 `background-size: cover` conserva siempre la proporción original. Puede recortar parte de la periferia cuando cambia la
 relación de aspecto de la pantalla, pero nunca estira ni deforma la ilustración.
@@ -141,8 +142,9 @@ RSVP y éxito presentan una única imagen por superficie y breakpoint con una op
 overlays ni mezcla adicional.
 
 Las cinco colecciones incorporan el patrón modular aprobado en Landing: la apertura se funde durante su tramo final con
-un módulo de cuerpo repetible. El módulo conserva el mismo papel, paleta y arte periférico, permanece a plena opacidad y
-acompaña todo el scroll. No se repite la apertura completa ni se modifica el color de los assets.
+un módulo de cuerpo repetible. El módulo conserva el mismo papel, paleta y arte periférico, y se integra con un velo del
+7 % del color base del tema (5 % en Dark) para acompañar el scroll con menor intensidad. No se repite la apertura
+completa ni se modifica el color de los assets originales.
 
 La variante `medium` se mantiene hasta 1279 px para que pantallas como 1024 × 768 reciban una composición 4:3. La
 variante panorámica `wide` comienza en 1280 px, cuando la anchura permite conservar mejor sus elementos periféricos.
