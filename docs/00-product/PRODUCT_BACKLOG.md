@@ -8,16 +8,6 @@ roadmap, no permanecen en la cola de trabajo.
 
 ## P0 — Bloqueos previos a 1.0.0
 
-### Seguridad y autorización de Admin
-
-- Sustituir la contraseña cliente por autenticación o una operación validada en servidor.
-- Aislar lecturas y futuras mutaciones por invitación y usuario autorizado.
-- Definir sesión, expiración, cierre y recuperación.
-- Verificar las políticas con clientes públicos y administrativos reales.
-
-Condición de activación: ADR y modelo de amenazas aprobados. No se implementarán mutaciones administrativas sobre las
-políticas anónimas actuales.
-
 ### Privacidad de respuestas RSVP
 
 - Informar qué datos se recogen y con qué finalidad.
@@ -26,15 +16,6 @@ políticas anónimas actuales.
 - Determinar el tratamiento adecuado de restricciones alimentarias y mensajes libres.
 
 Condición de activación: requisitos comerciales y revisión legal/operativa definidos.
-
-### Baseline reproducible de Supabase
-
-- Auditar `supabase_migrations.schema_migrations` y el esquema remoto real.
-- Diseñar una baseline capaz de crear una instalación vacía.
-- Mantener una ruta segura para proyectos existentes ya migrados manualmente.
-- Documentar restauración, rollback y recuperación ante un deploy fallido.
-
-Condición de activación: historial remoto verificado. No se renombrarán ni repararán migraciones a ciegas.
 
 ## P1 — Release hardening
 
@@ -87,8 +68,8 @@ Condición de activación: historial remoto verificado. No se renombrarán ni re
 - Historia/timeline como contenido del paquete de evento.
 - Música opcional con consentimiento explícito y sin autoplay.
 
-Theme Engine v2 ya está cerrado. Estos módulos continúan aplazados hasta que exista una necesidad concreta y un
-contrato de contenido aprobados; su habilitación técnica no constituye prioridad de producto.
+Theme Engine v2 ya está cerrado. Estos módulos continúan aplazados hasta que exista una necesidad concreta y un contrato
+de contenido aprobados; su habilitación técnica no constituye prioridad de producto.
 
 ### Plataforma condicional
 
@@ -123,5 +104,5 @@ La secuencia aprobada para los elementos previos a `1.0.0` se desarrolla en
 ## Regla de priorización
 
 Seguridad e integridad no se aplazan para acelerar una release. Para el resto, una evolución debe aportar valor medible,
-tener propietario y respetar el Core configurable. Solo se generaliza después de observar la misma necesidad en al
-menos dos casos reales.
+tener propietario y respetar el Core configurable. Solo se generaliza después de observar la misma necesidad en al menos
+dos casos reales.

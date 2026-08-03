@@ -4,6 +4,16 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### Seguridad de RSVP y acceso Admin — Sprint 7.1
+
+- Lectura RSVP aislada mediante RLS por usuario e invitación; `anon` conserva exclusivamente la inserción pública
+  necesaria.
+- Baseline reproducible y migración incremental verificadas en instalaciones locales limpias y existentes.
+- Acceso Admin sustituido por email OTP de seis dígitos, sesión Supabase y cierre de sesión real.
+- Provisionamiento y revocación manual documentados, sin secretos privilegiados ni contraseñas dentro del bundle.
+- Flujo Admin validado en escritorio y móvil, incluida restauración, logout y respuesta neutra para correos
+  desconocidos.
+
 ### Theme Engine v2 y baseline visual — Sprints 6.4–6.6
 
 - Theme Engine v2 con contratos de composición, motion, superficies, decoración e iconografía para cinco temas.
@@ -18,9 +28,6 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ### Limitaciones conocidas antes de 1.0.0
 
-- El Admin utiliza una contraseña comparada en el navegador.
-- Supabase permite actualmente lectura e inserción anónimas sobre respuestas RSVP.
-- No existe todavía una migración baseline reproducible para una instalación vacía.
 - No hay suite de pruebas ni validación automática en pull requests.
 - `seo` y `deadline` forman parte del contrato, pero todavía no tienen consumidores completos.
 

@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** preparado; ejecución no iniciada
+- **Estado:** en curso; 7.1A-7.1C implementados y validados en local, pendientes de validación de producto y despliegue
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -33,6 +33,26 @@ flowchart LR
 La documentación preparatoria puede avanzar en paralelo. La implementación y el cierre respetarán el orden de gates.
 
 ## Sprint 7.1 — Seguridad, privacidad y baseline de datos
+
+### Dirección aprobada
+
+Sprint 7.1 se ejecutará en incrementos pequeños y verificables:
+
+1. **7.1A — Seguridad y baseline de datos:** retirar `anon SELECT`, incorporar membresías y preparar instalación y
+   actualización.
+2. **7.1B — Identidad y sesión Admin:** OTP por email, sesión Supabase y cierre de sesión.
+3. **7.1C — Provisionamiento y verificación:** operación manual controlada y matriz local de roles y acceso.
+4. **7.1D — Ciclo de vida:** cerrar información, retención, exportación, corrección y borrado.
+
+El RSVP seguirá admitiendo inserción anónima limitada. CAPTCHA, Edge Functions, MFA, OAuth, roles complejos y una
+interfaz de gestión de usuarios quedan fuera de la primera solución salvo evidencia que justifique incorporarlos.
+
+La investigación, la auditoría remota de metadatos y la implementación local de 7.1A-7.1C están completadas. No se
+consultaron respuestas RSVP reales ni se modificó producción. La PR permanece en borrador hasta recibir `lint` y
+`build` de producto y ejecutar los gates alojados de backup, configuración, provisionamiento y despliegue.
+
+`7.1A` y `7.1B` se desplegarán juntos: cerrar `anon SELECT` sin publicar el acceso OTP dejaría Admin sin una autoridad
+válida. La PR permanecerá en borrador hasta completar ambos incrementos y su matriz de verificación.
 
 ### Objetivo
 
@@ -72,7 +92,8 @@ Establecer autoridad real sobre respuestas RSVP, definir su tratamiento y hacer 
 - las políticas se verifican con los roles reales;
 - una instalación vacía y una existente tienen procedimientos reproducibles;
 - privacidad y ciclo de vida de datos están documentados;
-- el checklist de seguridad, privacidad y base de datos queda completo o contiene una excepción P0 que bloquea el avance.
+- el checklist de seguridad, privacidad y base de datos queda completo o contiene una excepción P0 que bloquea el
+  avance.
 
 ## Sprint 7.2 — Quality gates automatizados
 
@@ -136,15 +157,15 @@ Validar el producto completo con contenido, navegadores y dispositivos represent
 
 ### Matriz mínima
 
-| Dimensión | Cobertura |
-|---|---|
-| Temas | Royal, Boho, Dark, Magnolia y Linen |
-| Páginas | Landing, RSVP, éxito y Admin |
-| Viewports | 320, 390, 768 y 1440 px |
-| Idiomas | ES, EN y BG; invitación monolingüe y multilingüe |
-| Capabilities | con/sin RSVP y con/sin Admin |
-| Navegadores | Safari iOS, Chrome Android y escritorio soportado |
-| Estados | carga, vacío, error, retry, validación, envío y datos largos |
+| Dimensión    | Cobertura                                                    |
+|--------------|--------------------------------------------------------------|
+| Temas        | Royal, Boho, Dark, Magnolia y Linen                          |
+| Páginas      | Landing, RSVP, éxito y Admin                                 |
+| Viewports    | 320, 390, 768 y 1440 px                                      |
+| Idiomas      | ES, EN y BG; invitación monolingüe y multilingüe             |
+| Capabilities | con/sin RSVP y con/sin Admin                                 |
+| Navegadores  | Safari iOS, Chrome Android y escritorio soportado            |
+| Estados      | carga, vacío, error, retry, validación, envío y datos largos |
 
 ### Accesibilidad
 
@@ -198,15 +219,15 @@ restantes tienen responsable, riesgo y fecha de resolución.
 
 ## Gates
 
-| Gate | Bloquea | Evidencia requerida |
-|---|---|---|
-| `G7-SEC` | 7.2–7.5 | ADR, modelo de amenazas, RLS y autoridad verificadas |
-| `G7-DATA` | 7.2–7.5 | baseline, historial remoto y rollback reproducibles |
-| `G7-PRIV` | 7.4–7.5 | política de datos y procedimientos operativos |
-| `G7-CI` | 7.4–7.5 | gates automáticos activos en Pull Requests |
-| `G7-CONTRACT` | 7.4–7.5 | contratos completos y documentación sincronizada |
-| `G7-QA` | 7.5 | matriz funcional, accesibilidad, dispositivos y rendimiento |
-| `G7-RC` | `1.0.0` | checklist, smoke test, rollback y aprobaciones |
+| Gate          | Bloquea | Evidencia requerida                                         |
+|---------------|---------|-------------------------------------------------------------|
+| `G7-SEC`      | 7.2–7.5 | ADR, modelo de amenazas, RLS y autoridad verificadas        |
+| `G7-DATA`     | 7.2–7.5 | baseline, historial remoto y rollback reproducibles         |
+| `G7-PRIV`     | 7.4–7.5 | política de datos y procedimientos operativos               |
+| `G7-CI`       | 7.4–7.5 | gates automáticos activos en Pull Requests                  |
+| `G7-CONTRACT` | 7.4–7.5 | contratos completos y documentación sincronizada            |
+| `G7-QA`       | 7.5     | matriz funcional, accesibilidad, dispositivos y rendimiento |
+| `G7-RC`       | `1.0.0` | checklist, smoke test, rollback y aprobaciones              |
 
 ## Fuera de alcance
 
@@ -226,6 +247,6 @@ El primer trabajo de Sprint 7.1 deberá ser exclusivamente de investigación y d
 1. inspeccionar el estado real de Supabase sin mutarlo;
 2. producir el modelo de amenazas;
 3. inventariar datos y flujos;
-4. comparar alternativas de autenticación/autorización;
-5. presentar ADR y plan de migración para aprobación;
-6. implementar solo después de esa aprobación.
+4. documentar la solución OTP y autorización por invitación aprobada;
+5. completar la comparación remota y el plan de migración sin mutar producción;
+6. implementar solo después de revisar la evidencia de investigación.

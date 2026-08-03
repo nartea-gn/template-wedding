@@ -41,7 +41,7 @@ cuidado, personalidad y confianza; nunca debe sentirse como una plantilla genér
 - Secciones ordenables y capacidades opcionales.
 - Sistema de temas basado en tokens.
 - RSVP configurable con persistencia en Supabase.
-- Admin básico opcional con la contraseña cliente actual.
+- Admin básico opcional con acceso por email OTP, sesión Supabase y autorización por invitación.
 - Despliegue estático compatible con GitHub Pages.
 - Una o varias experiencias lingüísticas definidas por invitación.
 - Selector de idioma opcional cuando exista más de un idioma.
@@ -49,7 +49,7 @@ cuidado, personalidad y confianza; nunca debe sentirse como una plantilla genér
 ## No objetivos de v1
 
 - Editor visual o SaaS multiusuario.
-- Autenticación robusta del Admin.
+- Gestión autoservicio de usuarios, roles complejos o autenticación multifactor.
 - SDK, CLI o marketplace de plugins.
 - Monorepo con paquetes independientes.
 - Generalización anticipada para todos los eventos posibles.

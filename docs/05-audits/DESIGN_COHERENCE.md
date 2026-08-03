@@ -17,8 +17,8 @@ cinco colecciones se compararon en móvil y escritorio; Landing, RSVP y éxito h
 conserva una superficie operativa sin decoración ceremonial.
 
 Sprint 6.6 cierra un baseline visual, no la dirección artística definitiva ni el QA de `1.0.0`. La evolución futura
-puede profundizar fotografía, ritmo y tipografías propias, pero requiere decisiones aprobadas en Nartea Studio,
-medición de carga y evidencia con contenido real.
+puede profundizar fotografía, ritmo y tipografías propias, pero requiere decisiones aprobadas en Nartea Studio, medición
+de carga y evidencia con contenido real.
 
 Las validaciones de Admin autenticado, teclado, lector de pantalla, zoom al 200 %, dispositivos físicos y rendimiento
 pertenecen al QA de Sprint 7.4. Su traslado no reduce el alcance del cierre visual ni debe interpretarse como evidencia
@@ -65,27 +65,27 @@ referencias externas no se consideran requisitos de cierre.
 
 La auditoría conserva los hallazgos originales como evidencia histórica. El cierre de Sprint 6.6 queda así:
 
-| Hallazgo | Resultado | Estado |
-|---|---|---|
-| `DC-001` | Royal restaurado, validado en 320, 390, 768 y 1440 px y aprobado por producto. | Cerrado |
-| `DC-002` | Roles semánticos y contraste estático AA para los cinco temas; comparativa visual completada. | Cerrado |
-| `DC-003` | Countdown recompuesto y validado en ES, EN y BG sin overflow. | Cerrado |
-| `DC-010` | Superficies de éxito/error por tema; RSVP y Dark revalidados. Admin real pasa a Sprint 7.4. | Baseline cerrado |
-| `DC-015` | Contenido esencial visible en primer render y fallback global de reduced motion presente. | Baseline cerrado |
-| `DC-017` | Cinco familias responsive con apertura y cuerpo modular continuo, incluida corrección Linen. | Cerrado |
+| Hallazgo | Resultado                                                                                     | Estado           |
+|----------|-----------------------------------------------------------------------------------------------|------------------|
+| `DC-001` | Royal restaurado, validado en 320, 390, 768 y 1440 px y aprobado por producto.                | Cerrado          |
+| `DC-002` | Roles semánticos y contraste estático AA para los cinco temas; comparativa visual completada. | Cerrado          |
+| `DC-003` | Countdown recompuesto y validado en ES, EN y BG sin overflow.                                 | Cerrado          |
+| `DC-010` | Superficies de éxito/error por tema; RSVP y Dark revalidados. Admin real pasa a Sprint 7.4.   | Baseline cerrado |
+| `DC-015` | Contenido esencial visible en primer render y fallback global de reduced motion presente.     | Baseline cerrado |
+| `DC-017` | Cinco familias responsive con apertura y cuerpo modular continuo, incluida corrección Linen.  | Cerrado          |
 
 `Baseline cerrado` significa que la implementación de Sprint 6 cumple su objetivo; no sustituye las pruebas integrales
 del release candidate.
 
 Contraste estático de los nuevos pares declarados en `themes.ts`:
 
-| Tema | Acción/texto | Borde/control sobre fondo | Éxito/superficie | Error/superficie |
-|---|---:|---:|---:|---:|
-| Royal | 11,27:1 | 5,04:1 | 5,43:1 | 5,97:1 |
-| Boho | 5,96:1 | 5,06:1 | 5,87:1 | 6,28:1 |
-| Dark | 8,50:1 | 4,34:1 | 6,85:1 | 6,88:1 |
-| Magnolia | 6,10:1 | 5,25:1 | 5,29:1 | 6,03:1 |
-| Linen | 8,05:1 | 5,44:1 | 5,82:1 | 6,25:1 |
+| Tema     | Acción/texto | Borde/control sobre fondo | Éxito/superficie | Error/superficie |
+|----------|-------------:|--------------------------:|-----------------:|-----------------:|
+| Royal    |      11,27:1 |                    5,04:1 |           5,43:1 |           5,97:1 |
+| Boho     |       5,96:1 |                    5,06:1 |           5,87:1 |           6,28:1 |
+| Dark     |       8,50:1 |                    4,34:1 |           6,85:1 |           6,88:1 |
+| Magnolia |       6,10:1 |                    5,25:1 |           5,29:1 |           6,03:1 |
+| Linen    |       8,05:1 |                    5,44:1 |           5,82:1 |           6,25:1 |
 
 Los pares de texto superan 4,5:1. Los bordes de control superan el mínimo no textual de 3:1; su validación final debe
 realizarse también sobre las superficies reales donde aparezcan, no solo sobre el fondo base.
@@ -111,18 +111,18 @@ autoridad sobre el resultado actual.
 
 Contraste calculado sobre los colores base:
 
-| Tema | Texto/fondo | Primary/fondo | Muted/fondo | Border/fondo |
-|---|---:|---:|---:|---:|
-| Royal | 14,75 | 10,69 | 4,59 | 2,17 |
-| Boho | 9,83 | **2,74** | **3,92** | **1,48** |
-| Dark | 16,15 | 8,50 | 7,66 | **1,43** |
-| Magnolia | 13,71 | **3,54** | **4,19** | **2,19** |
-| Linen | 12,79 | 7,66 | 4,74 | **1,61** |
+| Tema     | Texto/fondo | Primary/fondo | Muted/fondo | Border/fondo |
+|----------|------------:|--------------:|------------:|-------------:|
+| Royal    |       14,75 |         10,69 |        4,59 |         2,17 |
+| Boho     |        9,83 |      **2,74** |    **3,92** |     **1,48** |
+| Dark     |       16,15 |          8,50 |        7,66 |     **1,43** |
+| Magnolia |       13,71 |      **3,54** |    **4,19** |     **2,19** |
+| Linen    |       12,79 |          7,66 |        4,74 |     **1,61** |
 
 - **Evidencia:** `src/design/themes/themes.ts`; `.btn--primary` utiliza `primary` sobre `background` y `.input` usa
   `border` sobre `background` en `src/index.css:207-217` y `247-277`.
-- **Impacto:** Boho falla incluso el umbral de texto grande en la acción primaria; Magnolia no alcanza texto normal;
-  los bordes no aseguran contraste de componente. Las numerosas opacidades del 40–75 % reducen aún más la legibilidad.
+- **Impacto:** Boho falla incluso el umbral de texto grande en la acción primaria; Magnolia no alcanza texto normal; los
+  bordes no aseguran contraste de componente. Las numerosas opacidades del 40–75 % reducen aún más la legibilidad.
 - **Causa:** el contrato solo define colores de marca, no roles `onPrimary`, `controlBorder`, `success`, `danger` o
   estados interactivos.
 - **Recomendación:** diseñar roles semánticos mínimos y validar combinaciones generadas; no oscurecer colores aislados
@@ -211,8 +211,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 
 ### DC-011 — El botón global añade una firma visual demasiado dominante
 
-- **Evidencia:** todos los `.btn` comparten cápsula completa, brillo que cruza, elevación en hover y escala/traslación en
-  active (`src/index.css:139-205`).
+- **Evidencia:** todos los `.btn` comparten cápsula completa, brillo que cruza, elevación en hover y escala/traslación
+  en active (`src/index.css:139-205`).
 - **Impacto:** acciones de Landing y utilidades de Admin comparten un gesto ornamental; en Admin compite con la densidad
   operativa y puede sentirse genérico.
 - **Recomendación:** conservar una base accesible y diferenciar CTA ceremonial de botones operativos mediante roles
@@ -239,8 +239,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
   frágil ante recomposición.
 - El foco global impone `border-radius: 4px` a cualquier elemento.
 - Patrones decorativos contienen colores RGB históricos en lugar de derivarse completamente del contrato.
-- Google/Apple necesitan fondo blanco por marca; esta excepción debe quedar documentada y no convertirse en un token
-  de tema.
+- Google/Apple necesitan fondo blanco por marca; esta excepción debe quedar documentada y no convertirse en un token de
+  tema.
 
 ### DC-015 — La entrada inicial puede mostrar un primer viewport casi vacío
 
@@ -268,8 +268,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 - **Impacto:** los temas cambian color, tipografía y matices, pero no crean una atmósfera suficientemente reconocible;
   Landing sigue percibiéndose como una plantilla centrada.
 - **Recomendación:** introducir backgrounds artísticos por colección siguiendo
-  [`BACKGROUNDS.md`](../02-design/BACKGROUNDS.md). La primera versión debe reutilizar `data-theme` y CSS responsive,
-  sin ampliar el Core ni insertar rutas de decoración en Invitation Definition.
+  [`BACKGROUNDS.md`](../02-design/BACKGROUNDS.md). La primera versión debe reutilizar `data-theme` y CSS responsive, sin
+  ampliar el Core ni insertar rutas de decoración en Invitation Definition.
 - **Propietario:** presentación visual del tema y assets de diseño; no contenido ni Section Registry.
 - **Estado actual:** implementado en la rama con tres aperturas y tres módulos de cuerpo por colección. Royal validó el
   patrón modular y este se propagó a Boho, Dark, Magnolia y Linen. La comparativa visual se completó en móvil y
@@ -283,8 +283,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 - No presenta desbordamiento horizontal en 320, 390, 768 ni 1440 px.
 - En 1440 px los nombres dominan correctamente, pero la primera fotografía/vídeo queda por debajo del viewport y hay
   mucho espacio sin contenido visual protagonista.
-- En 320 y 390 px la composición conserva una sola línea de countdown, a costa de labels computados entre 7,68 y
-  8,32 px.
+- En 320 y 390 px la composición conserva una sola línea de countdown, a costa de labels computados entre 7,68 y 8,32
+  px.
 - **Revalidación 6.6.1:** los labels pasan a 10 px en 320, 10,14 px en 390 y 12 px desde tablet; no existe overflow en
   ES, EN o BG y los separadores quedan centrados a 1–2 px respecto de las cifras.
 - En 768 y 1440 px el countdown utiliza un ancho máximo estable de 672 px y conserva la jerarquía histórica de Royal.
@@ -292,8 +292,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 ### RSVP
 
 - La tarjeta y los campos mantienen ritmo estable en móvil y escritorio, sin solapamientos ni overflow.
-- Los controles alcanzan aproximadamente 48 px, pero labels y acciones permanecen en torno a 13 px; la mejora debe
-  venir de la escala tipográfica compartida, no de excepciones locales.
+- Los controles alcanzan aproximadamente 48 px, pero labels y acciones permanecen en torno a 13 px; la mejora debe venir
+  de la escala tipográfica compartida, no de excepciones locales.
 
 ### Admin
 
@@ -309,28 +309,28 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 
 ## Scorecard de cierre por tema
 
-| Tema | Identidad | Contraste base | Tipografía | Diferenciación estructural | Estado |
-|---|---|---|---|---|---|
-| Royal | Referencia clásica/editorial | AA en roles definidos | Serif histórica + Josefin | Fondo modular Royal | Aprobado |
-| Boho | Cálida, orgánica | AA en roles definidos | Cormorant + Nunito | Fondo botánico modular | Baseline aprobado |
-| Dark | Nocturna, lujo contrastado | AA en roles definidos | Cormorant + Lato | Fondo celestial modular | Baseline aprobado |
-| Magnolia | Romántica, suave | AA en roles definidos | Cormorant + Raleway | Fondo floral modular | Baseline aprobado |
-| Linen | Sobria, natural | AA en roles definidos | Playfair + Montserrat | Fondo botánico modular | Baseline aprobado |
+| Tema     | Identidad                    | Contraste base        | Tipografía                | Diferenciación estructural | Estado            |
+|----------|------------------------------|-----------------------|---------------------------|----------------------------|-------------------|
+| Royal    | Referencia clásica/editorial | AA en roles definidos | Serif histórica + Josefin | Fondo modular Royal        | Aprobado          |
+| Boho     | Cálida, orgánica             | AA en roles definidos | Cormorant + Nunito        | Fondo botánico modular     | Baseline aprobado |
+| Dark     | Nocturna, lujo contrastado   | AA en roles definidos | Cormorant + Lato          | Fondo celestial modular    | Baseline aprobado |
+| Magnolia | Romántica, suave             | AA en roles definidos | Cormorant + Raleway       | Fondo floral modular       | Baseline aprobado |
+| Linen    | Sobria, natural              | AA en roles definidos | Playfair + Montserrat     | Fondo botánico modular     | Baseline aprobado |
 
 Las familias tipográficas actuales permanecen como baseline. Una sustitución por tipografías “redondas con vida” o
 fuentes propias requiere aprobación en Nartea Studio y una estrategia de carga medida.
 
 ## Propiedad técnica recomendada
 
-| Decisión | Propietario |
-|---|---|
-| Escala tipográfica, altura mínima, foco | Design System global |
-| Colores y roles semánticos | Theme Definition |
-| Layout responsive interno | CSS del componente |
-| Orden y disponibilidad | Invitation Definition |
-| Composición narrativa de Landing | Página + Section Registry |
-| Contenido y traducciones | Paquete de invitación |
-| Estados de datos | Feature/Repository, no tema |
+| Decisión                                | Propietario                 |
+|-----------------------------------------|-----------------------------|
+| Escala tipográfica, altura mínima, foco | Design System global        |
+| Colores y roles semánticos              | Theme Definition            |
+| Layout responsive interno               | CSS del componente          |
+| Orden y disponibilidad                  | Invitation Definition       |
+| Composición narrativa de Landing        | Página + Section Registry   |
+| Contenido y traducciones                | Paquete de invitación       |
+| Estados de datos                        | Feature/Repository, no tema |
 
 ## Incrementos completados
 
@@ -347,5 +347,4 @@ Sprint 6.6 queda cerrado como baseline visual y técnico. Las puertas restantes 
 [`SPRINT_7_PLAN.md`](../00-product/SPRINT_7_PLAN.md) y
 [`RELEASE_CHECKLIST.md`](../04-development/RELEASE_CHECKLIST.md).
 
-La evolución artística posterior se mantiene en backlog y no debe mezclarse con seguridad, contratos o QA de la
-release.
+La evolución artística posterior se mantiene en backlog y no debe mezclarse con seguridad, contratos o QA de la release.

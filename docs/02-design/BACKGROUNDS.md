@@ -7,8 +7,8 @@ baseline visual; Boho, Dark, Magnolia y Linen ya disponen de composiciones herma
 
 ## Objetivo
 
-Cada colección debe sentirse como una pieza editorial continua, no como los mismos bloques sobre un color distinto.
-Los fondos pueden aportar acuarela, papel, hojas, flores, brillo o textura siempre que el contenido conserve prioridad,
+Cada colección debe sentirse como una pieza editorial continua, no como los mismos bloques sobre un color distinto. Los
+fondos pueden aportar acuarela, papel, hojas, flores, brillo o textura siempre que el contenido conserve prioridad,
 contraste y rendimiento.
 
 Referencias de producto:
@@ -49,11 +49,12 @@ El sistema utiliza una apertura responsive y un segundo módulo de cuerpo por co
 3. **Color de respaldo:** token de fondo del tema, visible si un asset no carga.
 4. **Contenido HTML:** texto, controles e imágenes de contenido independientes del fondo.
 
-No se añaden texturas CSS, degradados decorativos, velos de color ni modos de mezcla. Las imágenes se presentan casi
-opacas para evaluar con fidelidad el arte aprobado.
+No se añaden texturas CSS, degradados decorativos ni modos de mezcla. En Landing, las imágenes se suavizan únicamente
+con un velo muy ligero del propio color de fondo del tema para dar más aire al contenido sin alterar la paleta ni la
+dirección artística aprobada.
 
-`background-size: cover` conserva siempre la proporción original. Puede recortar parte de la periferia cuando cambia
-la relación de aspecto de la pantalla, pero nunca estira ni deforma la ilustración.
+`background-size: cover` conserva siempre la proporción original. Puede recortar parte de la periferia cuando cambia la
+relación de aspecto de la pantalla, pero nunca estira ni deforma la ilustración.
 
 ## Frontera arquitectónica
 
@@ -66,8 +67,8 @@ La primera versión no amplía `ThemeDefinition`.
 - La Invitation Definition solo selecciona el `theme.id`; no conoce rutas de assets decorativos.
 
 Esto conserva el Theme Engine tipado sin introducir callbacks, componentes o un catálogo remoto de fondos. Si en el
-futuro un mismo tema necesita varias familias de background configurables, se diseñará un contrato nuevo a partir de
-ese segundo caso real.
+futuro un mismo tema necesita varias familias de background configurables, se diseñará un contrato nuevo a partir de ese
+segundo caso real.
 
 Los assets decorativos de colección no son contenido de la invitación. Fotografías, vídeos, nombres y textos siguen
 perteneciendo a la Invitation Definition.
@@ -76,14 +77,14 @@ perteneciendo a la Invitation Definition.
 
 ### Landing
 
-Muestra una imagen temática casi opaca durante la apertura. Un fundido limitado al final de esta composición la
-conecta con un módulo de cuerpo de la misma familia visual. El módulo continúa durante el resto de la página y evita el
-salto hacia un color plano. No se duplica la apertura como decoración de cierre.
+Muestra una imagen temática casi opaca durante la apertura. Un fundido limitado al final de esta composición la conecta
+con un módulo de cuerpo de la misma familia visual. El módulo continúa durante el resto de la página y evita el salto
+hacia un color plano. No se duplica la apertura como decoración de cierre.
 
 ### RSVP
 
-Reutiliza el mismo asset responsive de la colección casi opaco y a pantalla completa. El formulario y el estado de
-éxito conservan una superficie estable y protegida; el encuadre no cambia entre pasos.
+Reutiliza el mismo asset responsive de la colección casi opaco y a pantalla completa. El formulario y el estado de éxito
+conservan una superficie estable y protegida; el encuadre no cambia entre pasos.
 
 ### Admin
 
@@ -119,13 +120,13 @@ simple para priorizar datos y controles.
 
 ## Dirección inicial por colección
 
-| Tema | Dirección de background |
-|---|---|
-| Royal | Papel frío, azul tinta y detalles champagne; arte contenido y editorial. |
-| Boho | Botánica oliva, tierra y fibras naturales; composición orgánica y asimétrica. |
-| Dark | Negro mineral, profundidad sutil y destellos champagne; sin ruido visual continuo. |
-| Magnolia | Acuarela marfil/rosa, pétalos y hojas suaves; mayor presencia floral periférica. |
-| Linen | Papel cálido, ramas secas y tinta verde/gris; mínima ornamentación. |
+| Tema     | Dirección de background                                                            |
+|----------|------------------------------------------------------------------------------------|
+| Royal    | Papel frío, azul tinta y detalles champagne; arte contenido y editorial.           |
+| Boho     | Botánica oliva, tierra y fibras naturales; composición orgánica y asimétrica.      |
+| Dark     | Negro mineral, profundidad sutil y destellos champagne; sin ruido visual continuo. |
+| Magnolia | Acuarela marfil/rosa, pétalos y hojas suaves; mayor presencia floral periférica.   |
+| Linen    | Papel cálido, ramas secas y tinta verde/gris; mínima ornamentación.                |
 
 ## Sistema activo
 
@@ -141,8 +142,9 @@ RSVP y éxito presentan una única imagen por superficie y breakpoint con una op
 overlays ni mezcla adicional.
 
 Las cinco colecciones incorporan el patrón modular aprobado en Landing: la apertura se funde durante su tramo final con
-un módulo de cuerpo repetible. El módulo conserva el mismo papel, paleta y arte periférico, permanece a plena opacidad y
-acompaña todo el scroll. No se repite la apertura completa ni se modifica el color de los assets.
+un módulo de cuerpo repetible. El módulo conserva el mismo papel, paleta y arte periférico, y se integra con un velo del
+7 % del color base del tema (5 % en Dark) para acompañar el scroll con menor intensidad. No se repite la apertura
+completa ni se modifica el color de los assets originales.
 
 La variante `medium` se mantiene hasta 1279 px para que pantallas como 1024 × 768 reciban una composición 4:3. La
 variante panorámica `wide` comienza en 1280 px, cuando la anchura permite conservar mejor sus elementos periféricos.
@@ -155,11 +157,16 @@ separación de responsabilidades que ahora aplican las cinco colecciones:
 1. la apertura actúa como portada;
 2. el módulo de cuerpo proporciona papel y ornamentación lateral serena durante el resto del recorrido.
 
-La transición se resuelve superponiendo ambas imágenes únicamente en el final de la apertura. El contenido permanece
-en HTML y el fondo puede crecer independientemente del idioma o de la altura total.
+La transición se resuelve superponiendo ambas imágenes únicamente en el final de la apertura. El contenido permanece en
+HTML y el fondo puede crecer independientemente del idioma o de la altura total.
 
 Royal recibió aprobación de producto el 2026-07-29. Boho, Dark, Magnolia y Linen adoptan desde esa fecha el mismo
 contrato de apertura y cuerpo, manteniendo una dirección artística propia y tres composiciones responsive.
+
+La apertura móvil de Royal recibió una revisión cromática aprobada el 2026-08-03 bajo el nombre `Royal Soft A`. La
+composición sigue perteneciendo a `BG-ROYAL-001`, pero sus azules laterales son más claros y menos saturados para
+proteger la legibilidad del countdown en pantallas estrechas. La solución vive en el asset; no introduce superficies,
+overlays ni reglas de contraste específicas en los componentes.
 
 ### Candidatos descartados
 

@@ -19,8 +19,8 @@ El contrato contiene nueve grupos:
 
 Temas actuales: `royal`, `boho`, `dark`, `magnolia` y `linen`.
 
-Los ornamentos ceremoniales usan un acento secundario propio en cada tema. No deben reutilizar automáticamente el
-color principal: su función es acompañar títulos y cifras con un contraste sutil, siguiendo el criterio visual de
+Los ornamentos ceremoniales usan un acento secundario propio en cada tema. No deben reutilizar automáticamente el color
+principal: su función es acompañar títulos y cifras con un contraste sutil, siguiendo el criterio visual de
 `royal`.
 
 ## Flujo
@@ -58,8 +58,8 @@ La correspondencia mínima con `LD-002` es:
 | `error`             | `colors.danger`         | `--color-wedding-danger`          |
 | `error-surface`     | `colors.dangerSurface`  | `--color-wedding-danger-surface`  |
 
-`danger` es actualmente un nombre de compatibilidad de la implementación para el estado de error. No deberá
-reutilizarse también para acciones destructivas sin separar antes ambos significados en el contrato.
+`danger` es actualmente un nombre de compatibilidad de la implementación para el estado de error. No deberá reutilizarse
+también para acciones destructivas sin separar antes ambos significados en el contrato.
 
 Los backgrounds artísticos siguen esta misma frontera: `data-theme` selecciona assets decorativos fijos de colección
 desde CSS, mientras el responsive y el recorte permanecen fuera del contrato TypeScript. La especificación está en
@@ -79,10 +79,10 @@ Estas diferencias son valores coordinados, no variantes estructurales.
 
 ### Compatibilidad visual de Royal
 
-`royal` es el tema de referencia y conserva deliberadamente la combinación histórica de la plantilla: serif de
-sistema (`ui-serif`, Georgia, Cambria y equivalentes) para títulos y cifras, y Josefin Sans para texto e interfaz.
-No debe sustituirse su serif por Playfair Display durante la evolución del motor. Los demás temas pueden usar sus
-propias combinaciones tipográficas, pero deben mantener una jerarquía y legibilidad equivalentes.
+`royal` es el tema de referencia y conserva deliberadamente la combinación histórica de la plantilla: serif de sistema
+(`ui-serif`, Georgia, Cambria y equivalentes) para títulos y cifras, y Josefin Sans para texto e interfaz. No debe
+sustituirse su serif por Playfair Display durante la evolución del motor. Los demás temas pueden usar sus propias
+combinaciones tipográficas, pero deben mantener una jerarquía y legibilidad equivalentes.
 
 ## Añadir un tema
 
@@ -107,9 +107,9 @@ Un tema puede variar identidad visual. Nunca puede:
 - contener componentes React, funciones, callbacks o assets de contenido;
 - depender de bodas u otro dominio de evento.
 
-El responsive permanece en CSS. El tema aporta valores semánticos, no reglas de composición completas.
-Los assets decorativos fijos de una colección son presentación seleccionada por `data-theme`; no se consideran
-contenido y no se configuran desde la invitación.
+El responsive permanece en CSS. El tema aporta valores semánticos, no reglas de composición completas. Los assets
+decorativos fijos de una colección son presentación seleccionada por `data-theme`; no se consideran contenido y no se
+configuran desde la invitación.
 
 ## Compatibilidad
 

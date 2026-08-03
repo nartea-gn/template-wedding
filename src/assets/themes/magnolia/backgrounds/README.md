@@ -8,8 +8,8 @@ mediante un módulo de cuerpo ligero con la ornamentación desplazada hacia los 
 
 ## Archivos activos
 
-| Variante                         |    Dimensiones | Entrega          | Uso           |
-|----------------------------------|---------------:|------------------|---------------|
+| Variante                          |    Dimensiones | Entrega          | Uso           |
+|-----------------------------------|---------------:|------------------|---------------|
 | `magnolia-background-narrow.webp` |  864 × 1821 px | WebP, calidad 82 | 320–767 px    |
 | `magnolia-background-medium.webp` | 1448 × 1086 px | WebP, calidad 82 | 768–1279 px   |
 | `magnolia-background-wide.webp`   | 1536 × 1024 px | WebP, calidad 82 | Desde 1280 px |
@@ -20,7 +20,7 @@ mediante un módulo de cuerpo ligero con la ornamentación desplazada hacia los 
 |-----------------------------|---------------:|------------------|---------------|
 | `magnolia-body-narrow.webp` | 1024 × 1536 px | WebP, calidad 88 | 320–767 px    |
 | `magnolia-body-medium.webp` | 1448 × 1086 px | WebP, calidad 88 | 768–1279 px   |
-| `magnolia-body-wide.webp`   | 1672 × 941 px  | WebP, calidad 88 | Desde 1280 px |
+| `magnolia-body-wide.webp`   |  1672 × 941 px | WebP, calidad 88 | Desde 1280 px |
 
 Los módulos se generaron el 2026-07-29 con papel marfil rosado, pétalos translúcidos y eucalipto pálido. Conservan una
 zona central amplia y una transición vertical sin bandas. Las copias JPEG viven en

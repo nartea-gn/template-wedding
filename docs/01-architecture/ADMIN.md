@@ -2,8 +2,8 @@
 
 ## Current scope — Sprint 5
 
-Admin is an optional invitation capability backed by RSVP. It displays metrics, filters and columns declared by field
-ID in `InvitationDefinition`; it does not own a second form schema.
+Admin is an optional invitation capability backed by RSVP. It displays metrics, filters and columns declared by field ID
+in `InvitationDefinition`; it does not own a second form schema.
 
 The route exists only when both RSVP and Admin are enabled. `Admin` is loaded lazily, so invitations without that
 capability do not download its page or Supabase composition module.
@@ -15,7 +15,7 @@ Current capabilities are read-only:
 - normalized current and legacy responses;
 - loading, empty, error and retry states;
 - responsive table with keyboard-accessible horizontal scrolling;
-- client-side password gate accepted for v1.
+- OTP por email con sesión Supabase y autorización RLS por invitación.
 
 ## Current data flow
 
@@ -104,10 +104,10 @@ When status is `closed`:
 - the Admin displays the current state and last update;
 - reopening restores the public flow without a deployment.
 
-Public clients may read the status, but changing it is an administrative mutation. Sprint 5.1B must not enable
-anonymous `UPDATE` policies or trust `VITE_ADMIN_PASSWORD`, because values bundled with Vite are public. The mutation
-requires a server-validated operation, such as secure Admin authentication plus RLS or a protected server/Edge Function.
-The exact mechanism requires its own architecture decision before implementation.
+Public clients may read the status, but changing it is an administrative mutation. Sprint 5.1B must not enable anonymous
+`UPDATE` policies or trust `VITE_ADMIN_PASSWORD`, because values bundled with Vite are public. The mutation requires a
+server-validated operation, such as secure Admin authentication plus RLS or a protected server/Edge Function. The exact
+mechanism requires its own architecture decision before implementation.
 
 ## Explicitly deferred Admin evolutions
 
@@ -139,10 +139,11 @@ These items are tracked in [`PRODUCT_BACKLOG.md`](../00-product/PRODUCT_BACKLOG.
 - Wrong option label: stored values must match stable `FormOption.value` values.
 - Route absent: verify RSVP and Admin capabilities are both enabled.
 
-## Accepted v1 security limitation
+## Acceso administrativo de v1
 
-The password is currently compared in the browser and anonymous SELECT remains enabled by the existing RLS policy. This
-protects casual interface access, not the underlying API. It is tolerated during development of the read-only v1 flow,
-but is a P0 blocker for a public `1.0.0` handling real client data. Supabase Auth or an equivalent server-validated
-operation and restrictive policies are prerequisites for production access, administrative mutations or sensitive
-data.
+Admin solicita un OTP de seis dígitos por email con `shouldCreateUser: false`, restaura la sesión Supabase al recargar y
+cierra la sesión mediante `signOut`. La interfaz no decide qué respuestas puede leer: RLS exige una membresía en
+`invitation_admins` para el usuario autenticado y la invitación solicitada.
+
+La primera release requiere provisionar usuarios y membresías antes del despliegue. No se admite lectura anónima,
+contraseña incorporada al bundle ni claves privilegiadas en el navegador.

@@ -21,4 +21,5 @@ concretos.
 - Los assets se resuelven en la composición de cada invitación mediante IDs serializables.
 
 El registro se ensambla fuera del Core. RSVP aporta formulario y persistencia mediante contratos; Admin puede consumir
-sus respuestas. En v1 conserva la contraseña cliente actual.
+sus respuestas tras una sesión Supabase autorizada por membresía de invitación. El Core no conoce autenticación ni
+infraestructura.

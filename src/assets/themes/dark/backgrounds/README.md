@@ -8,8 +8,8 @@ repetible sin duplicar la luna.
 
 ## Archivos activos
 
-| Variante                     |    Dimensiones | Entrega          | Uso           |
-|------------------------------|---------------:|------------------|---------------|
+| Variante                      |    Dimensiones | Entrega          | Uso           |
+|-------------------------------|---------------:|------------------|---------------|
 | `dark-background-narrow.webp` | 1024 × 1536 px | WebP, calidad 82 | 320–767 px    |
 | `dark-background-medium.webp` | 1448 × 1086 px | WebP, calidad 82 | 768–1279 px   |
 | `dark-background-wide.webp`   | 1536 × 1024 px | WebP, calidad 82 | Desde 1280 px |
@@ -20,10 +20,10 @@ repetible sin duplicar la luna.
 |-------------------------|---------------:|------------------|---------------|
 | `dark-body-narrow.webp` | 1024 × 1536 px | WebP, calidad 88 | 320–767 px    |
 | `dark-body-medium.webp` | 1448 × 1086 px | WebP, calidad 88 | 768–1279 px   |
-| `dark-body-wide.webp`   | 1672 × 941 px  | WebP, calidad 88 | Desde 1280 px |
+| `dark-body-wide.webp`   |  1672 × 941 px | WebP, calidad 88 | Desde 1280 px |
 
-Los módulos se generaron el 2026-07-29 con papel azul noche, nubes índigo y constelaciones champagne muy contenidas
-en los márgenes. El centro permanece oscuro y uniforme. Las copias JPEG viven en
+Los módulos se generaron el 2026-07-29 con papel azul noche, nubes índigo y constelaciones champagne muy contenidas en
+los márgenes. El centro permanece oscuro y uniforme. Las copias JPEG viven en
 `references/theme-backgrounds-jpg/dark/`.
 
 ## Procedencia y prompt maestro

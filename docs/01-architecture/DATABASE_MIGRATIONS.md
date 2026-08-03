@@ -14,13 +14,17 @@ variables.
 
 ## Estado de reproducibilidad
 
-El repositorio contiene el esquema base en `supabase/schema.sql` y migraciones incrementales en
-`supabase/migrations`. La primera migración versionada parte de una tabla ya existente; por tanto, una instalación
-vacía no puede reconstruirse todavía ejecutando únicamente el historial de migraciones.
+Las migraciones de `supabase/migrations` son la fuente ejecutable de verdad. `supabase/schema.sql` es un snapshot de
+estructura y privilegios generado desde una base local validada; no contiene datos RSVP.
 
-Esto es un bloqueo previo a `1.0.0`, no un motivo para inventar una migración retrospectiva. Antes de crear una
-baseline se debe comparar el esquema remoto, `supabase_migrations.schema_migrations` y los proyectos ya desplegados.
-Renombrar versiones o ejecutar `migration repair` sin esa auditoría puede desalinear producción.
+La auditoría de Sprint 7.1 confirmó un único proyecto remoto y una única migración aplicada. Para preservar ese
+historial sin `migration repair`, la migración `20260712` mantiene su versión y añade un bootstrap idempotente de la
+tabla legacy antes de incorporar las columnas dinámicas. Producción la omite porque ya consta como aplicada; una
+instalación vacía la ejecuta y puede reconstruirse desde cero.
+
+La migración `20260802` aplica seguridad y autorización tanto sobre el proyecto existente como sobre una instalación
+nueva. Esta modificación excepcional de una migración histórica está limitada al bootstrap que producción creó antes de
+adoptar migraciones y no cambia el resultado de la versión ya aplicada.
 
 ## Production pipeline
 
@@ -47,10 +51,8 @@ Configure these repository secrets in **Settings → Secrets and variables → A
 | `SUPABASE_DB_PASSWORD`  | Database password used by `db push`               |
 | `SUPABASE_URL`          | Public project URL injected into Vite             |
 | `SUPABASE_ANON_KEY`     | Public anonymous key injected into Vite           |
-| `ADMIN_PASSWORD`        | Current v1 browser-side Admin password            |
 
-Only the last three frontend values are mapped to `VITE_*`. Never expose the access token or database password through
-Vite.
+Only the two frontend values are mapped to `VITE_*`. Never expose the access token or database password through Vite.
 
 ## Creating a change
 
@@ -61,14 +63,29 @@ supabase/migrations/<timestamp>_<description>.sql
 ```
 
 Prefer additive, backwards-compatible migrations. Review and commit the file with the application change. Do not edit a
-migration after production has applied it; create a new one.
+migration after production has applied it; create a new one. La única excepción registrada es el bootstrap idempotente
+de `20260712`, necesario para que el historial inicial pueda ejecutarse sobre una base vacía sin reparar producción.
 
 ## Existing remote project
 
-This repository adopted migrations after the initial table already existed. The first tracked migration therefore uses
-`ADD COLUMN IF NOT EXISTS` and is safe against that baseline. Do not also apply it manually before the first automated
-deployment. If it was already applied manually, run `supabase migration repair --status applied <version>` once before
-enabling CI so schema and history agree.
+This repository adopted migrations after the initial table already existed. The first tracked migration now bootstraps
+that table with `CREATE TABLE IF NOT EXISTS` and then uses `ADD COLUMN IF NOT EXISTS`. Do not apply it manually or
+repair the history: the existing project already records `20260712`, while new projects execute it normally.
+
+## Verificación de Sprint 7.1
+
+La estrategia se probó en Supabase local de dos formas:
+
+1. instalación limpia ejecutando `20260712` y `20260802` desde una base vacía;
+2. actualización desde `20260712` con un registro ficticio y las políticas legacy activas.
+
+La actualización conservó el registro. El asesor de seguridad local terminó sin avisos y la matriz funcional confirmó:
+
+- `anon` puede insertar un payload válido;
+- `anon` no puede leer ni enviar un payload incompleto;
+- una pareja solo ve la invitación asignada;
+- un usuario autenticado sin membresía no ve respuestas;
+- `service_role` conserva los permisos operativos explícitos.
 
 ## Troubleshooting
 
@@ -80,9 +97,10 @@ enabling CI so schema and history agree.
 
 ## Trabajo obligatorio antes de 1.0.0
 
-1. Exportar y comparar el esquema remoto real.
-2. Auditar el historial aplicado en cada proyecto activo.
-3. Diseñar una baseline para instalaciones vacías.
-4. Definir cómo adoptar la baseline en instalaciones existentes sin reaplicar cambios.
-5. Probar instalación limpia, actualización, fallo parcial y recuperación.
-6. Documentar backup, rollback y responsable operativo.
+El despliegue y la recuperación se rigen por el
+[runbook de migración de seguridad RSVP](./RSVP_SECURITY_MIGRATION_RUNBOOK.md).
+
+1. Aplicar la migración de seguridad solo después de revisar la PR y confirmar un backup operativo.
+2. Verificar en remoto policies, grants y migración aplicada sin consultar filas RSVP.
+3. Completar autenticación OTP y provisionamiento antes de considerar Admin utilizable.
+4. Confirmar el responsable operativo antes del despliegue.

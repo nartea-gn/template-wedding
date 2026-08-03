@@ -33,11 +33,11 @@ function useDesktopViewport() {
 }
 
 export function MapProviderPicker({
-    triggerLabel,
-    pickerLabel,
-    closeLabel,
-    options,
-}: Readonly<MapProviderPickerProps>) {
+                                      triggerLabel,
+                                      pickerLabel,
+                                      closeLabel,
+                                      options,
+                                  }: Readonly<MapProviderPickerProps>) {
     const [isOpen, setIsOpen] = useState(false)
     const isDesktop = useDesktopViewport()
     const pickerId = useId()

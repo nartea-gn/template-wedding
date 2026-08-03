@@ -3,8 +3,8 @@
 ## Estado actual
 
 La aplicación tiene una arquitectura pequeña, tipada y proporcionada a su alcance. React 19, Router 7, TypeScript 7,
-Vite 8 y Tailwind 4 conviven con límites claros entre Core, Features, Infrastructure, Design System e Invitation.
-No se justifica una reescritura ni una extracción prematura a monorepo o plugins.
+Vite 8 y Tailwind 4 conviven con límites claros entre Core, Features, Infrastructure, Design System e Invitation. No se
+justifica una reescritura ni una extracción prematura a monorepo o plugins.
 
 ## Fortalezas verificadas
 
@@ -53,5 +53,4 @@ No se justifica una reescritura ni una extracción prematura a monorepo o plugin
 ## Próxima revisión
 
 Repetir la auditoría después de Sprint 7.3. Debe incluir dependencias, tamaño de bundles, ciclos de importación,
-cobertura,
-contratos no consumidos y consistencia de versiones.
+cobertura, contratos no consumidos y consistencia de versiones.

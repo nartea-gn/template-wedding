@@ -8,8 +8,8 @@ de lino, mineral y botánica contenida.
 
 ## Archivos activos
 
-| Variante                      |    Dimensiones | Entrega          | Uso           |
-|-------------------------------|---------------:|------------------|---------------|
+| Variante                       |    Dimensiones | Entrega          | Uso           |
+|--------------------------------|---------------:|------------------|---------------|
 | `linen-background-narrow.webp` | 1024 × 1536 px | WebP, calidad 82 | 320–767 px    |
 | `linen-background-medium.webp` | 1448 × 1086 px | WebP, calidad 82 | 768–1279 px   |
 | `linen-background-wide.webp`   | 1536 × 1024 px | WebP, calidad 82 | Desde 1280 px |

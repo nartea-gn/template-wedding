@@ -46,8 +46,8 @@ Adoptamos la tercera alternativa.
 - `decoration`: color y presencia de ornamentos;
 - `iconography`: peso visual de los SVG propios.
 
-`toCssVariables` es la única frontera que traduce el contrato TypeScript a CSS. Las variables v1 se preservan durante
-la migración. `ThemeProvider` aplica el conjunto completo antes del pintado en el cliente y conserva `data-theme` para
+`toCssVariables` es la única frontera que traduce el contrato TypeScript a CSS. Las variables v1 se preservan durante la
+migración. `ThemeProvider` aplica el conjunto completo antes del pintado en el cliente y conserva `data-theme` para
 patrones decorativos CSS.
 
 ## Dependencias permitidas
@@ -59,8 +59,8 @@ patrones decorativos CSS.
 ## Dependencias prohibidas
 
 - El Theme no contiene componentes React, funciones, textos ni assets de contenido.
-- CSS puede seleccionar assets decorativos fijos de colección mediante `data-theme`; no se exponen como configuración
-  de Invitation ni como callbacks del contrato.
+- CSS puede seleccionar assets decorativos fijos de colección mediante `data-theme`; no se exponen como configuración de
+  Invitation ni como callbacks del contrato.
 - El Theme no activa capabilities, reordena secciones ni conoce bodas u otros tipos de evento.
 - Los componentes no importan definiciones concretas como `royal` o `boho`.
 
@@ -83,7 +83,8 @@ patrones decorativos CSS.
 - Landing, RSVP, Admin y componentes compartidos consumen las dimensiones semánticas adoptadas.
 - Royal declara explícitamente el stack serif histórico que antes dependía de un fallback implícito.
 - Boho, Dark, Magnolia y Linen definen valores completos sin heredar de Royal ni copiar su identidad.
-- Los anillos del countdown consumen el color de ornamento y se posicionan independientemente del ancho de las etiquetas.
+- Los anillos del countdown consumen el color de ornamento y se posicionan independientemente del ancho de las
+  etiquetas.
 - Las variables v1 permanecen disponibles durante la migración.
 
 ## Trabajo futuro

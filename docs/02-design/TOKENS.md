@@ -41,8 +41,8 @@ solo para eliminar un literal.
 
 `tokens/theme TypeScript -> toCssVariables -> ThemeProvider -> Custom Properties -> Tailwind/CSS`
 
-`toCssVariables` es el único adaptador permitido. Los componentes consumen Custom Properties semánticas y nunca
-importan un tema concreto.
+`toCssVariables` es el único adaptador permitido. Los componentes consumen Custom Properties semánticas y nunca importan
+un tema concreto.
 
 Los valores de `:root` son únicamente fallback de primer paint del tema inicial; el registro TypeScript gobierna el tema
 activo.

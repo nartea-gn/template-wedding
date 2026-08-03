@@ -32,5 +32,5 @@ Se adoptó un runtime propio pequeño porque los requisitos actuales son claves 
 carga diferida. Español es el idioma predeterminado; inglés y búlgaro se importan al solicitarlos. El selector solo se
 renderiza con al menos dos idiomas y `selector.visible: true`.
 
-Una librería externa se reconsiderará únicamente si aparecen necesidades reales de pluralización compleja,
-interpolación avanzada o gestión remota que el contrato actual no pueda cubrir de forma mantenible.
+Una librería externa se reconsiderará únicamente si aparecen necesidades reales de pluralización compleja, interpolación
+avanzada o gestión remota que el contrato actual no pueda cubrir de forma mantenible.
