@@ -1,15 +1,30 @@
 import {expect, test} from '@playwright/test'
 
+test.beforeEach(async ({page}) => {
+    await page.clock.setFixedTime(new Date('2026-08-03T12:00:00+02:00'))
+})
+
 test('Landing presenta la invitación y permite llegar al RSVP', async ({page}) => {
     await page.goto('./#/')
 
     await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
     await expect(page.getByText('Falta para el gran día')).toBeVisible()
 
-    await page.getByRole('button', {name: 'Confirmar asistencia'}).click()
+    await page.getByRole('link', {name: 'Confirmar asistencia'}).click()
 
     await expect(page).toHaveURL(/#\/rsvp$/)
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
+})
+
+test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
+    await page.clock.setFixedTime(new Date('2027-05-13T00:00:00+02:00'))
+    await page.goto('./')
+
+    await expect(page.getByRole('button', {name: 'Confirmación cerrada'})).toBeDisabled()
+    await page.goto('./#/rsvp')
+    await expect(page.getByText('Ruta no encontrada')).toBeVisible()
+    await page.goto('./#/admin')
+    await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
 })
 
 test('RSVP permite declinar y confirma el guardado', async ({page}) => {

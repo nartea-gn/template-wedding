@@ -32,4 +32,29 @@ describe('form validation', () => {
         expect(isConditionMet(condition, {attending: true})).toBe(true)
         expect(isConditionMet(condition, {attending: false})).toBe(false)
     })
+
+    it('rejects invalid field limits in a form definition', () => {
+        const firstStep = weddingRsvpForm.steps[0]
+        const firstElement = firstStep.elements[0]
+        const definition = {
+            ...weddingRsvpForm,
+            steps: [{
+                ...firstStep,
+                elements: [{...firstElement, validation: {minLength: 20, maxLength: 10}}],
+            }],
+        }
+
+        expect(validateFormDefinition(definition)).toContain(
+            'Element fullName minLength cannot exceed maxLength',
+        )
+    })
+
+    it('rejects responses that exceed their configured length', () => {
+        const errors = validateElements(weddingRsvpForm.steps[0].elements, {
+            fullName: 'A '.repeat(61).trim(),
+            attending: true,
+        })
+
+        expect(errors.fullName).toBe('maxLength')
+    })
 })
