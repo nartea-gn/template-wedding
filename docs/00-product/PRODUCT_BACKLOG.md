@@ -19,20 +19,10 @@ Condición de activación: requisitos comerciales y revisión legal/operativa de
 
 ## P1 — Release hardening
 
-### Pruebas y CI de pull requests
+### Mantenimiento de GitHub Actions
 
-- Stack y alcance aceptados en `ADR-016`.
-- Baseline de Invitation Definition, localización, Form Engine, mapper, Repository y estados Admin completada.
-- E2E Chromium de Landing, RSVP y acceso protegido de Admin completado.
-- pgTAP de grants, RLS y aislamiento entre invitaciones completado.
-- Gates alojados superados en la Pull Request `#20`; retirar este bloque tras integrar el sprint en `main`.
-
-### Contratos incompletos
-
-- Implementar metadatos `seo` o retirar temporalmente el contrato.
-- Aplicar `rsvp.deadline` a CTA, ruta y envío, con timezone explícita.
-- Unificar `event.date` y el target del countdown.
-- Validar contenido largo, URLs, IDs y estados vacíos.
+- Actualizar las actions que todavía declaran runtime Node 20 cuando sus proveedores publiquen una versión estable
+  compatible con Node 24; la ejecución actual es correcta pero GitHub muestra una advertencia de deprecación.
 
 ### QA de release
 
@@ -89,8 +79,6 @@ Solo se activarán tras demanda repetida. No se generalizará el Core por escena
 | Auth y RLS              | Sprint 7.1 · P0      | ADR y autoridad por invitación aprobados  | Admin desacoplado; Repository aísla datos      |
 | Privacidad y retención  | Sprint 7.1 · P0      | Requisitos legales y operativos definidos | Datos normalizados y exportables               |
 | Baseline Supabase       | Sprint 7.1 · P0      | Historial remoto auditado                 | Migraciones versionadas y deploy ordenado      |
-| Pruebas/PR CI           | Sprint 7.2 · P1      | Stack de pruebas aprobado                 | Contratos y capas ya separadas                 |
-| SEO/deadline/fecha      | Sprint 7.3 · P1      | Semántica de producto aprobada            | Propiedades presentes en Invitation Definition |
 | QA multidispositivo     | Sprint 7.4 · P1      | Release candidate representativa          | Breakpoints y temas definidos                  |
 | Cierre remoto RSVP      | Posterior a 7.1 · P2 | Mutaciones protegidas                     | Capability opcional prevista                   |
 | Consultas de servidor   | P2                   | Volumen o latencia medidos                | Repository extensible con query/count/range    |

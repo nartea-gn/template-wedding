@@ -74,7 +74,7 @@ migraciones.
 - baseline aplicable a una instalación vacía sin romper proyectos existentes;
 - política documentada de información, minimización, retención, exportación y borrado.
 
-### Sprint 7.2 — Quality gates automatizados · En validación · P1
+### Sprint 7.2 — Quality gates automatizados · Completado · P1
 
 **Objetivo:** detectar regresiones de contratos y flujos críticos antes del despliegue.
 
@@ -86,12 +86,15 @@ sobre Supabase local para grants y RLS. La matriz completa de navegadores perman
 **Criterio de salida:** pruebas unitarias de validadores/mappers, integración del repositorio, E2E de Landing/RSVP/Admin
 y workflow de pull request con lint, build y pruebas.
 
-### Sprint 7.3 — Contratos completos · Planificado · P1
+### Sprint 7.3 — Contratos completos · En validación · P1
 
 **Objetivo:** eliminar configuración declarada pero no aplicada.
 
 **Criterio de salida:** `seo` y `deadline` implementados o retirados mediante decisión explícita; fecha de evento y
 target del countdown tienen una fuente de verdad; estados vacíos y URLs configurables están validados.
+
+**Evidencia local:** contratos aplicados en `sprint/7.3-contracts`; lint, 39 pruebas unitarias, build, 6 recorridos E2E y
+15 aserciones pgTAP superados. Pendiente únicamente la validación alojada de la Pull Request.
 
 ### Sprint 7.4 — QA de release · Planificado · P1
 

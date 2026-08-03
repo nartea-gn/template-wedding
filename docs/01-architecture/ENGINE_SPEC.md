@@ -14,7 +14,7 @@ concretos.
 - El orden visual coincide con `sections`.
 - `enabled: false` elimina renderizado y efectos.
 - Tipos desconocidos producen diagnóstico en desarrollo.
-- Una sección recibe solo su configuración.
+- Una sección recibe su configuración y los contratos de evento/capabilities de solo lectura que necesita para renderizar.
 - La configuración no admite funciones, componentes ni consultas.
 - Una capability desactivada no aporta rutas, CTA ni red.
 - Las secciones deshabilitadas no se montan y, por tanto, no crean hooks, intervalos o efectos.

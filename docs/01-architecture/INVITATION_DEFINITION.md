@@ -30,7 +30,9 @@ invitación TypeScript y los catálogos secundarios se cargan bajo demanda.
 ## Invariantes
 
 - `id` identifica la invitación en configuración y persistencia; debe ser único por despliegue.
-- Fechas usan zona horaria explícita.
+- `event.date` y `rsvp.deadline` son instantes ISO 8601 con `Z` u offset explícito.
+- `event.timezone` es una zona IANA y gobierna la presentación localizada.
+- El deadline RSVP es exclusivo y anterior al evento.
 - IDs de secciones y campos son únicos.
 - Admin requiere una fuente de respuestas.
 - CTA RSVP requiere RSVP activo.
@@ -43,14 +45,15 @@ invitación TypeScript y los catálogos secundarios se cargan bajo demanda.
 La definición puede dividirse en archivos de contenido, tema, secciones y formularios; el motor recibe el objeto
 agregado.
 
-## Contratos declarados pendientes de consumo completo
+## Contratos aplicados en runtime
 
-- `seo` está tipado y configurado, pero todavía no actualiza los metadatos del documento.
-- `capabilities.rsvp.deadline` está tipado y configurado, pero todavía no bloquea CTA, ruta o envío.
-- `event.date` y `countdown.content.target` pueden divergir porque hoy son dos valores independientes.
+- `seo` actualiza título y metadescripción al cambiar el locale.
+- `capabilities.rsvp.deadline` gobierna CTA, ruta y comprobación previa al envío.
+- `event.date` es la fuente única para hero y countdown; countdown no declara un target alternativo.
+- Admin puede permanecer disponible después del cierre para consultar respuestas existentes.
 
-Sprint 7.3 debe implementar estas propiedades o retirarlas explícitamente. La configuración no debe aparentar un
-comportamiento que el runtime todavía no garantiza.
+El cierre en navegador evita flujos accidentales, pero no constituye por sí solo una autoridad de escritura en servidor.
+Si producto necesita impedir envíos maliciosos fuera de plazo, deberá incorporarse una regla backend verificable.
 
 ## Compatibilidad temporal
 

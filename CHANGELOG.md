@@ -4,6 +4,15 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### Contratos runtime completos — Sprint 7.3
+
+- `event.date` unifica hero y countdown mediante un instante ISO 8601 con offset explícito.
+- `rsvp.deadline` gobierna CTA, ruta y comprobación previa al envío sin ocultar Admin.
+- CTA y rutas reflejan el cierre al alcanzar el deadline aunque la página permanezca abierta.
+- SEO localizado actualiza título, metadescripción e idioma activo.
+- Validación estructural cubre fechas, timezone, orden temporal, IDs, estados vacíos y límites de formulario.
+- Los E2E fijan el reloj para permanecer reproducibles después de la fecha de la invitación de referencia.
+
 ### Quality gates automatizados — Sprint 7.2
 
 - Vitest y React Testing Library cubren configuración, localización, Form Engine, mappers, Repository, rutas opcionales
