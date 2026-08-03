@@ -24,15 +24,15 @@ pnpm exec playwright install chromium
 
 ## Comandos
 
-| Comando | Cobertura |
-|---|---|
-| `pnpm test` | Unitarias e integración con Vitest |
-| `pnpm test:watch` | Reejecución interactiva durante desarrollo |
-| `pnpm test:coverage` | Informe V8 informativo en `coverage/` |
-| `pnpm test:e2e` | Recorridos Playwright en Chromium |
-| `pnpm test:e2e:ui` | Depuración interactiva de Playwright |
-| `pnpm test:db` | Migraciones, grants y RLS mediante pgTAP |
-| `pnpm quality` | Lint, Vitest y build |
+| Comando              | Cobertura                                  |
+|----------------------|--------------------------------------------|
+| `pnpm test`          | Unitarias e integración con Vitest         |
+| `pnpm test:watch`    | Reejecución interactiva durante desarrollo |
+| `pnpm test:coverage` | Informe V8 informativo en `coverage/`      |
+| `pnpm test:e2e`      | Recorridos Playwright en Chromium          |
+| `pnpm test:e2e:ui`   | Depuración interactiva de Playwright       |
+| `pnpm test:db`       | Migraciones, grants y RLS mediante pgTAP   |
+| `pnpm quality`       | Lint, Vitest y build                       |
 
 `pnpm test:db` requiere una instancia iniciada:
 

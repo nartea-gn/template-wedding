@@ -21,11 +21,11 @@ Condición de activación: requisitos comerciales y revisión legal/operativa de
 
 ### Pruebas y CI de pull requests
 
-- Stack y alcance registrados en `ADR-016`; implementación en curso en Sprint 7.2.
-- Baseline local de Invitation Definition, localización, Form Engine, mapper, Repository y estados Admin completada.
-- E2E Chromium de Landing, RSVP y acceso protegido de Admin completado localmente.
-- pgTAP de grants, RLS y aislamiento entre invitaciones completado localmente.
-- Workflow de Pull Request preparado y pendiente de validación alojada antes de retirar este bloque del backlog.
+- Stack y alcance aceptados en `ADR-016`.
+- Baseline de Invitation Definition, localización, Form Engine, mapper, Repository y estados Admin completada.
+- E2E Chromium de Landing, RSVP y acceso protegido de Admin completado.
+- pgTAP de grants, RLS y aislamiento entre invitaciones completado.
+- Gates alojados superados en la Pull Request `#20`; retirar este bloque tras integrar el sprint en `main`.
 
 ### Contratos incompletos
 

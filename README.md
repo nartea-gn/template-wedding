@@ -7,9 +7,9 @@ Supabase.
 ## Estado del proyecto
 
 El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2,
-el baseline visual responsive y la base local de seguridad están implementados. Sprint 7.2 está incorporando pruebas
-automáticas y quality gates de Pull Request. Privacidad operativa, despliegue alojado y QA de release siguen siendo
-puertas obligatorias antes de publicar una versión estable.
+el baseline visual responsive y la base local de seguridad están implementados. Sprint 7.2 incorpora pruebas automáticas
+y quality gates de Pull Request. Privacidad operativa, despliegue alojado y QA de release siguen siendo puertas
+obligatorias antes de publicar una versión estable.
 
 Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/PRODUCT_BACKLOG.md) y el
 [plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md). El

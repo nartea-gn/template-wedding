@@ -64,12 +64,11 @@
     position: relative;
     isolation: isolate;
     background-color: var(--color-wedding-bg);
-    background-image:
-        linear-gradient(
+    background-image: linear-gradient(
             color-mix(in srgb, var(--color-wedding-bg) var(--theme-background-body-veil), transparent),
             color-mix(in srgb, var(--color-wedding-bg) var(--theme-background-body-veil), transparent)
-        ),
-        var(--theme-background-body-art, none);
+    ),
+    var(--theme-background-body-art, none);
     background-repeat: repeat-y;
     background-position: center top;
     background-size: 100% auto;

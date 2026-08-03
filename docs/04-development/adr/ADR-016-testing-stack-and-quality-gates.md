@@ -2,8 +2,8 @@
 
 ## Estado
 
-Propuesto para Sprint 7.2. La decisión se considera aceptada cuando la primera prueba de cada capa se ejecute de forma
-reproducible en local y en una Pull Request sin depender de datos personales ni de Supabase alojado.
+Aceptado en Sprint 7.2. Las capas de aplicación y base de datos se ejecutaron de forma reproducible en local y en la
+Pull Request `#20`, sin datos personales ni dependencia de Supabase alojado.
 
 ## Contexto
 
@@ -29,8 +29,8 @@ ejecutarse en Windows durante el desarrollo y permanecer reproducible en GitHub 
 
 ### Vitest
 
-Comparte resolución, transformaciones y configuración con Vite, soporta TypeScript y ESM directamente y ofrece
-cobertura V8. Reduce configuración duplicada y permite probar el Core en entorno Node y componentes en `jsdom`.
+Comparte resolución, transformaciones y configuración con Vite, soporta TypeScript y ESM directamente y ofrece cobertura
+V8. Reduce configuración duplicada y permite probar el Core en entorno Node y componentes en `jsdom`.
 
 ### Jest
 
@@ -60,13 +60,13 @@ segunda herramienta de QA visual.
 
 Adoptar un stack por capas:
 
-| Capa | Herramienta | Responsabilidad |
-|---|---|---|
-| Unitarias | Vitest en entorno Node | Validadores, utilidades, localización, presentación y mappers puros |
-| Integración React | Vitest, `jsdom` y React Testing Library | Form Engine, providers, estados y composición accesible |
-| Contrato de adaptadores | Vitest con dobles tipados | Comportamiento del Repository sin red ni credenciales |
-| Base de datos | pgTAP mediante Supabase CLI local | Migraciones, grants, RLS y aislamiento por invitación |
-| End-to-end | Playwright Test | Landing, RSVP, Admin y ausencia de rutas por capability |
+| Capa                    | Herramienta                             | Responsabilidad                                                     |
+|-------------------------|-----------------------------------------|---------------------------------------------------------------------|
+| Unitarias               | Vitest en entorno Node                  | Validadores, utilidades, localización, presentación y mappers puros |
+| Integración React       | Vitest, `jsdom` y React Testing Library | Form Engine, providers, estados y composición accesible             |
+| Contrato de adaptadores | Vitest con dobles tipados               | Comportamiento del Repository sin red ni credenciales               |
+| Base de datos           | pgTAP mediante Supabase CLI local       | Migraciones, grants, RLS y aislamiento por invitación               |
+| End-to-end              | Playwright Test                         | Landing, RSVP, Admin y ausencia de rutas por capability             |
 
 No se conectarán las pruebas de Pull Request a Supabase alojado. Los datos serán ficticios y cada capa deberá poder
 reconstruirse desde el repositorio.
@@ -74,7 +74,8 @@ reconstruirse desde el repositorio.
 ## Estrategia de Supabase
 
 - Los mappers y consumidores del Repository se prueban con objetos y dobles tipados.
-- La implementación `SupabaseRsvpRepository` se prueba contra un cliente doble que verifique consulta, filtros y errores.
+- La implementación `SupabaseRsvpRepository` se prueba contra un cliente doble que verifique consulta, filtros y
+  errores.
 - Las políticas RLS no se simulan en JavaScript: se validan mediante pgTAP sobre Supabase local después de aplicar todas
   las migraciones.
 - Los recorridos E2E públicos interceptan la API cuando el objetivo es validar UI. La autenticación Admin alojada queda
@@ -87,7 +88,8 @@ El gate rápido de cada Pull Request ejecutará Playwright en Chromium de escrit
 completa se reservan para el gate programado o manual de Sprint 7.4, evitando triplicar el coste de cada cambio antes de
 tener una suite estabilizada.
 
-Esto no reduce el soporte esperado del producto. Separa una señal rápida de regresión de la matriz exhaustiva de release.
+Esto no reduce el soporte esperado del producto. Separa una señal rápida de regresión de la matriz exhaustiva de
+release.
 
 ## Versiones y reproducibilidad
 
@@ -120,12 +122,12 @@ valor.
 
 ## Coste operativo estimado
 
-| Gate | Objetivo inicial | Frecuencia |
-|---|---:|---|
-| Instalación, lint, unitarias y build | menos de 3 minutos | Toda Pull Request |
-| E2E Chromium | menos de 3 minutos | Toda Pull Request |
-| Migraciones y pgTAP local | menos de 5 minutos | Toda Pull Request que afecte datos; inicialmente siempre |
-| Matriz Chromium, Firefox, WebKit y móvil | hasta 10 minutos | Release o ejecución programada |
+| Gate                                     |   Objetivo inicial | Frecuencia                                               |
+|------------------------------------------|-------------------:|----------------------------------------------------------|
+| Instalación, lint, unitarias y build     | menos de 3 minutos | Toda Pull Request                                        |
+| E2E Chromium                             | menos de 3 minutos | Toda Pull Request                                        |
+| Migraciones y pgTAP local                | menos de 5 minutos | Toda Pull Request que afecte datos; inicialmente siempre |
+| Matriz Chromium, Firefox, WebKit y móvil |   hasta 10 minutos | Release o ejecución programada                           |
 
 Los tiempos son objetivos de diseño y deberán medirse en la primera ejecución alojada antes de considerarlos baseline.
 
