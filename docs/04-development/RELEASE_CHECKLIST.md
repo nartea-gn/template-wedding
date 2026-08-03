@@ -53,6 +53,7 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [ ] RSVP afirmativo y negativo persisten y aparecen en Admin.
 - [ ] Validaciones, visibilidad condicional, atrás y envío anticipado funcionan.
 - [ ] Invitación sin RSVP no expone CTA ni ruta.
+- [ ] Deadline cierra CTA, ruta y envío en el instante configurado sin ocultar Admin.
 - [ ] Invitación sin Admin no registra la ruta ni descarga su página.
 - [ ] Admin cubre carga, vacío, error/retry, filtros, búsqueda, orden, paginación y CSV.
 - [ ] Respuestas legacy y actuales se normalizan sin perder datos.
@@ -65,6 +66,7 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [ ] El selector visible cambia idioma sin perder foco ni estado del formulario.
 - [ ] Fechas, números, errores, Admin y contenido largo se revisan en cada locale.
 - [ ] `document.documentElement.lang` refleja el idioma activo.
+- [ ] Título y metadescripción reflejan el locale activo.
 
 ## 8. Accesibilidad
 

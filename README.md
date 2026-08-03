@@ -62,7 +62,7 @@ pnpm dev
 Vite selecciona un puerto disponible. Las rutas principales son:
 
 - `#/`: invitación pública;
-- `#/rsvp`: confirmación, solo si RSVP está habilitado;
+- `#/rsvp`: confirmación, solo si RSVP está habilitado y dentro de plazo;
 - `#/admin`: panel de respuestas, solo si RSVP y Admin están habilitados.
 
 ### Gates locales
@@ -84,6 +84,7 @@ ejecutan contra Supabase local con `pnpm test:db`. Consulta la [estrategia de pr
 La definición actual vive en `src/invitations/wedding/invitation.ts`. Desde allí se controla:
 
 - identificador y datos del evento;
+- fecha/hora con offset, timezone, SEO localizado y deadline RSVP;
 - tema;
 - idioma predeterminado, idiomas disponibles y selector;
 - orden y visibilidad de secciones;

@@ -16,7 +16,6 @@ export type HeroSection<Message extends string> = Section<'hero', {
 
 export type CountdownSection<Message extends string> = Section<'countdown', {
     label: Message
-    target: string
     unitLabels: { days: Message; hours: Message; minutes: Message; seconds: Message }
 }>
 
@@ -55,6 +54,7 @@ export type VenueSection<Message extends string> = Section<'venue', {
 
 export type RsvpCtaSection<Message extends string> = Section<'rsvp-cta', {
     label: Message
+    closedLabel: Message
 }>
 
 export type InvitationSection<Message extends string> =

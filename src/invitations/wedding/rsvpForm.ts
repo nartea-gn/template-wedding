@@ -31,7 +31,7 @@ export const weddingRsvpForm = {
                     placeholder: 'rsvp.fullName.placeholder',
                     required: true,
                     initialValue: '',
-                    validation: {minWords: 2}
+                    validation: {minWords: 2, maxLength: 120}
                 },
                 {
                     id: 'attending',
@@ -72,7 +72,8 @@ export const weddingRsvpForm = {
                     type: 'text',
                     label: 'rsvp.dietary.other',
                     placeholder: 'rsvp.dietary.other',
-                    initialValue: ''
+                    initialValue: '',
+                    validation: {maxLength: 300}
                 },
                 {
                     id: 'busOption',
@@ -97,7 +98,8 @@ export const weddingRsvpForm = {
                 type: 'text',
                 label: 'rsvp.song.label',
                 placeholder: 'rsvp.song.placeholder',
-                initialValue: ''
+                initialValue: '',
+                validation: {maxLength: 160}
             }]
         },
         {
@@ -110,7 +112,8 @@ export const weddingRsvpForm = {
                 type: 'textarea',
                 label: 'rsvp.message.label',
                 placeholder: 'rsvp.message.placeholder',
-                initialValue: ''
+                initialValue: '',
+                validation: {maxLength: 1000}
             }]
         },
     ],

@@ -26,8 +26,18 @@ id: 'identificador-unico-del-evento'
 El ID identifica las respuestas persistidas y debe permanecer estable durante la vida de la invitación. Cambiarlo en una
 invitación desplegada separa el frontend de sus respuestas anteriores.
 
-Configura también `event.type`, `event.date`, `event.timezone` y las claves localizadas de título/SEO. Hasta Sprint 7.3,
-`seo` no actualiza los metadatos y `event.date` no sustituye automáticamente el target del countdown.
+Configura también `event.type`, `event.date`, `event.timezone` y las claves localizadas de título/SEO. `event.date` es
+un instante ISO 8601 con offset explícito y alimenta tanto la fecha visible como el countdown:
+
+```ts
+event: {
+    date: '2027-06-12T12:00:00+02:00',
+    timezone: 'Europe/Madrid',
+}
+```
+
+Evita fechas ambiguas como `2027-06-12`. `seo.title` y `seo.description` se resuelven desde el locale activo y actualizan
+los metadatos del documento.
 
 ## 3. Elegir un tema
 
@@ -169,7 +179,7 @@ Al modificar campos:
 capabilities: {
     rsvp: {
         enabled: true,
-        deadline: '2027-05-12',
+        deadline: '2027-05-12T23:59:59+02:00',
         form: weddingRsvpForm,
     },
     admin: {
@@ -184,7 +194,9 @@ capabilities: {
 - Sin RSVP, no existen la ruta RSVP, su CTA ni Admin.
 - Admin requiere RSVP y se carga bajo demanda.
 - `controls` activa CSV, búsqueda, ordenación, paginación, conteo y freshness.
-- `deadline` todavía no cierra el flujo automáticamente; está pendiente de Sprint 7.3.
+- `deadline` es exclusivo: al alcanzarlo, el CTA comunica el cierre, desaparece la ruta RSVP y un formulario ya abierto
+  no puede iniciar un nuevo envío.
+- Admin sigue accesible después del deadline para consultar las respuestas existentes.
 - Admin restaura una sesión Supabase, solicita OTP por email y delega la autorización de lectura en RLS.
 - Los emails autorizados y su relación con cada invitación se provisionan fuera del navegador.
 

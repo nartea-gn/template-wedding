@@ -40,6 +40,12 @@ describe('FormEngine', () => {
         expect(screen.getByLabelText('rsvp.fullName.label')).toHaveAttribute('aria-invalid', 'true')
     })
 
+    it('exposes configured text limits to the native control', () => {
+        renderForm(vi.fn())
+
+        expect(screen.getByLabelText('rsvp.fullName.label')).toHaveAttribute('maxlength', '120')
+    })
+
     it('advances through the affirmative flow', async () => {
         const user = userEvent.setup()
         renderForm(vi.fn())

@@ -4,6 +4,7 @@ import type {InvitationDefinition, InvitationSection} from '../../core/invitatio
 export type SectionComponentProps<Message extends string, Type extends InvitationSection<Message>['type']> = {
     section: Extract<InvitationSection<Message>, { type: Type }>
     event: InvitationDefinition<string, Message>['event']
+    capabilities: InvitationDefinition<string, Message>['capabilities']
 }
 
 export type SectionRegistry<Message extends string> = {

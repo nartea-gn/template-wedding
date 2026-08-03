@@ -20,6 +20,11 @@ export function InvitationRenderer<Locale extends string, Message extends string
 
         // The registry is keyed by the same discriminant as the section union.
         const Component = registry[section.type] as ComponentType<SectionComponentProps<Message, InvitationSection<Message>['type']>>
-        return <Component key={section.id} section={section} event={definition.event}/>
+        return <Component
+            key={section.id}
+            section={section}
+            event={definition.event}
+            capabilities={definition.capabilities}
+        />
     })
 }

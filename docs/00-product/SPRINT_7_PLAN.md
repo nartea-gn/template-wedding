@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1C integrados en `main`, 7.1D y despliegue alojado pendientes, 7.2 validado en PR
+- **Estado:** en curso; 7.1A-7.1C, 7.2 y 7.3 completados, 7.1D y despliegue alojado pendientes
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -101,7 +101,7 @@ Establecer autoridad real sobre respuestas RSVP, definir su tratamiento y hacer 
 
 La dirección técnica está aceptada en `ADR-016`. La baseline incorpora Vitest, React Testing Library, Playwright
 Chromium y pgTAP, con datos exclusivamente ficticios. Los jobs independientes `Application quality` y
-`Database quality` pasaron en la Pull Request `#20`; el sprint queda pendiente únicamente de integración en `main`.
+`Database quality` pasaron en la Pull Request `#20` y sobre el commit integrado en `main`. Sprint 7.2 está completado.
 
 ### Objetivo
 
@@ -135,6 +135,13 @@ Detectar regresiones en contratos y flujos críticos antes de integrar cambios.
 - fallos de gates bloquean la integración.
 
 ## Sprint 7.3 — Contratos completos
+
+### Estado actual
+
+`ADR-017` queda aceptado con una fecha única para hero/countdown, instantes con offset, deadline exclusivo, SEO
+localizado y validación estructural. El cierre se refleja sin recargar la página; lint, 39 pruebas unitarias, build, 6
+recorridos E2E y 15 aserciones pgTAP están verdes localmente, y los dos quality gates alojados pasan en la Pull Request
+`#21`.
 
 ### Objetivo
 

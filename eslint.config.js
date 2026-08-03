@@ -8,6 +8,9 @@ import {defineConfig, globalIgnores} from 'eslint/config'
 export default defineConfig([
     globalIgnores([
         'dist/**',
+        'coverage/**',
+        'playwright-report/**',
+        'test-results/**',
         'supabase/.temp/**',
         'supabase/.branches/**',
     ]),

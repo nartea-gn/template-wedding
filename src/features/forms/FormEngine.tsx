@@ -136,6 +136,8 @@ export function FormEngine<Message extends string>({
         if (element.type === 'textarea') return <div key={element.id} className="rsvp-field"><label className="label"
                                                                                                     htmlFor={element.id}>{t(element.label)}</label><textarea {...common}
                                                                                                                                                              rows={4}
+                                                                                                                                                             minLength={element.validation?.minLength}
+                                                                                                                                                             maxLength={element.validation?.maxLength}
                                                                                                                                                              value={typeof value === 'string' ? value : ''}
                                                                                                                                                              placeholder={element.placeholder ? t(element.placeholder) : undefined}
                                                                                                                                                              onChange={event => engine.setValue(element.id, event.target.value)}/>{renderHelp(element)}
@@ -144,6 +146,8 @@ export function FormEngine<Message extends string>({
         return <div key={element.id} className="rsvp-field"><label className="label"
                                                                    htmlFor={element.id}>{t(element.label)}</label><input {...common}
                                                                                                                          type={element.type}
+                                                                                                                         minLength={element.validation?.minLength}
+                                                                                                                         maxLength={element.validation?.maxLength}
                                                                                                                          value={typeof value === 'string' || typeof value === 'number' ? value : ''}
                                                                                                                          placeholder={element.placeholder ? t(element.placeholder) : undefined}
                                                                                                                          onChange={event => engine.setValue(element.id, element.type === 'number' ? Number(event.target.value) : event.target.value)}/>{renderHelp(element)}
