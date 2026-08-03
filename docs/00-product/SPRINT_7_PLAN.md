@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1C implementados y validados en local, pendientes de validación de producto y despliegue
+- **Estado:** en curso; 7.1A-7.1C integrados en `main`, 7.1D y despliegue alojado pendientes, 7.2 en implementación
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -96,6 +96,12 @@ Establecer autoridad real sobre respuestas RSVP, definir su tratamiento y hacer 
   avance.
 
 ## Sprint 7.2 — Quality gates automatizados
+
+### Estado actual
+
+La dirección técnica está registrada en `ADR-016`. La baseline local incorpora Vitest, React Testing Library,
+Playwright Chromium y pgTAP, con datos exclusivamente ficticios. El workflow separa aplicación y base de datos; sus
+tiempos y estabilidad deberán confirmarse en la primera Pull Request antes de cerrar el sprint.
 
 ### Objetivo
 

@@ -6,10 +6,10 @@ Supabase.
 
 ## Estado del proyecto
 
-El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2 y
-el baseline visual responsive de Royal, Boho, Dark, Magnolia y Linen están implementados. Seguridad de datos, baseline
-reproducible de Supabase, pruebas automáticas y QA de release siguen siendo puertas obligatorias antes de publicar una
-versión estable.
+El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2,
+el baseline visual responsive y la base local de seguridad están implementados. Sprint 7.2 está incorporando pruebas
+automáticas y quality gates de Pull Request. Privacidad operativa, despliegue alojado y QA de release siguen siendo
+puertas obligatorias antes de publicar una versión estable.
 
 Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/PRODUCT_BACKLOG.md) y el
 [plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md). El
@@ -21,15 +21,17 @@ Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/
 - TypeScript 7 para compilación, con TypeScript 6 side-by-side para compatibilidad de ESLint.
 - Vite 8 y Tailwind CSS 4 con configuración CSS-first.
 - Supabase mediante un adaptador de infraestructura.
+- Vitest, React Testing Library, Playwright y pgTAP para validación por capas.
 - GitHub Pages con `HashRouter` y base `/template-wedding/`.
-- pnpm como único gestor de paquetes; `pnpm-lock.yaml` es autoritativo.
+- pnpm 10.34.5 como único gestor de paquetes; `pnpm-lock.yaml` es autoritativo.
 
 ## Puesta en marcha
 
 ### Requisitos
 
-- Node.js compatible con el pipeline del repositorio.
-- pnpm.
+- Node.js 24.
+- Corepack y pnpm 10.34.5.
+- Docker Desktop para Supabase local y las pruebas de base de datos.
 - Un proyecto Supabase preparado con el esquema y las migraciones del repositorio.
 
 ### Instalación
@@ -67,12 +69,15 @@ Vite selecciona un puerto disponible. Las rutas principales son:
 
 ```powershell
 pnpm lint
+pnpm test
 pnpm build
+pnpm test:e2e
 pnpm preview
 ```
 
-`pnpm build` ejecuta primero el compilador TypeScript y después Vite. El repositorio no tiene todavía un framework de
-pruebas configurado.
+`pnpm build` ejecuta primero el compilador TypeScript y después Vite. `pnpm test:e2e` inicia automáticamente la
+aplicación y requiere instalar Chromium una vez mediante `pnpm exec playwright install chromium`. Las pruebas RLS se
+ejecutan contra Supabase local con `pnpm test:db`. Consulta la [estrategia de pruebas](docs/04-development/TESTING.md).
 
 ## Configurar una invitación
 
@@ -125,6 +130,7 @@ Documentos de referencia:
 - [Admin](docs/01-architecture/ADMIN.md)
 - [Operación del acceso Admin](docs/04-development/ADMIN_ACCESS_OPERATIONS.md)
 - [Migraciones](docs/01-architecture/DATABASE_MIGRATIONS.md)
+- [Estrategia de pruebas](docs/04-development/TESTING.md)
 - [Architecture Decision Records](docs/04-development/adr)
 - [Plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md)
 - [Modelo de amenazas](docs/05-audits/SECURITY_THREAT_MODEL.md)

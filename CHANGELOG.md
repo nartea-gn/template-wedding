@@ -4,6 +4,15 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### Quality gates automatizados — Sprint 7.2
+
+- Vitest y React Testing Library cubren configuración, localización, Form Engine, mappers, Repository, rutas opcionales
+  y estados de Admin.
+- Playwright valida Landing, RSVP afirmativo y negativo, error recuperable y acceso protegido de Admin en Chromium.
+- pgTAP verifica estructura, privilegios, RLS y aislamiento entre invitaciones sobre Supabase local.
+- El workflow de Pull Request separa gates de aplicación y base de datos, fija las versiones de herramientas y conserva
+  el informe Playwright como artefacto de diagnóstico.
+
 ### Seguridad de RSVP y acceso Admin — Sprint 7.1
 
 - Lectura RSVP aislada mediante RLS por usuario e invitación; `anon` conserva exclusivamente la inserción pública
@@ -28,7 +37,7 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ### Limitaciones conocidas antes de 1.0.0
 
-- No hay suite de pruebas ni validación automática en pull requests.
+- La matriz exhaustiva de Firefox, WebKit, móvil y dispositivos físicos pertenece a Sprint 7.4.
 - `seo` y `deadline` forman parte del contrato, pero todavía no tienen consumidores completos.
 
 ## Hitos consolidados
