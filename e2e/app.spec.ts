@@ -62,6 +62,36 @@ test('Los selectores gestionan foco, teclado y Escape', async ({page}) => {
     await expect(mapTrigger).toBeFocused()
 })
 
+test('ES, EN y BG actualizan contenido, idioma y metadatos sin overflow', async ({page}) => {
+    await page.setViewportSize({width: 360, height: 740})
+    await page.emulateMedia({reducedMotion: 'reduce'})
+    await page.goto('./#/')
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+    await expect(page).toHaveTitle('Invitación de boda de Gala y Valentin')
+
+    await page.getByRole('button', {name: 'Idioma: Español'}).click()
+    await page.getByRole('menuitemradio', {name: /EN.*English/}).click()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page).toHaveTitle('Gala and Valentin’s wedding invitation')
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+        'content',
+        'Join us to celebrate our special day.',
+    )
+    await expect(page.getByText('Until the big day')).toBeVisible()
+
+    await page.getByRole('button', {name: 'Language: English'}).click()
+    await page.getByRole('menuitemradio', {name: /BG.*Български/}).click()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'bg')
+    await expect(page).toHaveTitle('Сватбена покана на Гала и Валентин')
+    await expect(page.getByText('До големия ден остават')).toBeVisible()
+
+    const hasOverflow = await page.evaluate(() =>
+        document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasOverflow).toBe(false)
+})
+
 test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
     await page.clock.setFixedTime(new Date('2027-05-13T00:00:00+02:00'))
     await page.goto('./')

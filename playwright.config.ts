@@ -20,22 +20,22 @@ export default defineConfig({
         },
         {
             name: 'firefox',
-            testIgnore: /responsive\.spec\.ts/,
+            testIgnore: /(responsive|themes)\.spec\.ts/,
             use: {...devices['Desktop Firefox']},
         },
         {
             name: 'webkit',
-            testIgnore: /responsive\.spec\.ts/,
+            testIgnore: /(responsive|themes)\.spec\.ts/,
             use: {...devices['Desktop Safari']},
         },
         {
             name: 'mobile-chrome',
-            testIgnore: /responsive\.spec\.ts/,
+            testIgnore: /(responsive|themes)\.spec\.ts/,
             use: {...devices['Pixel 5']},
         },
         {
             name: 'mobile-webkit',
-            testIgnore: /responsive\.spec\.ts/,
+            testIgnore: /(responsive|themes)\.spec\.ts/,
             use: {...devices['iPhone 13']},
         },
     ],
