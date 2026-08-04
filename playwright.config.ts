@@ -18,6 +18,26 @@ export default defineConfig({
             name: 'chromium',
             use: {...devices['Desktop Chrome']},
         },
+        {
+            name: 'firefox',
+            testIgnore: /responsive\.spec\.ts/,
+            use: {...devices['Desktop Firefox']},
+        },
+        {
+            name: 'webkit',
+            testIgnore: /responsive\.spec\.ts/,
+            use: {...devices['Desktop Safari']},
+        },
+        {
+            name: 'mobile-chrome',
+            testIgnore: /responsive\.spec\.ts/,
+            use: {...devices['Pixel 5']},
+        },
+        {
+            name: 'mobile-webkit',
+            testIgnore: /responsive\.spec\.ts/,
+            use: {...devices['iPhone 13']},
+        },
     ],
     webServer: {
         command: 'pnpm run dev --host 127.0.0.1 --port 4173',

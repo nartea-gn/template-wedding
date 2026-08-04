@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test --project=chromium",
+    "test:e2e:matrix": "playwright test --workers=1",
     "test:e2e:ui": "playwright test --ui",
     "test:db": "supabase test db",
     "quality": "pnpm run lint && pnpm run test && pnpm run build"
