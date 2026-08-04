@@ -168,6 +168,15 @@ Eliminar propiedades declaradas sin efecto y consolidar fuentes únicas de verda
 
 Validar el producto completo con contenido, navegadores y dispositivos representativos.
 
+### Progreso
+
+El primer incremento corrige y verifica el selector móvil de mapas como riesgo concreto de viewport. La hoja inferior
+usa viewport dinámico, respeta las áreas seguras y mantiene visibles las opciones automática, Google Maps y Apple Maps
+en 320 × 568, 360 × 740 y 390 × 844 px. El popover de escritorio se revalidó en 1440 × 900 px.
+
+Esta evidencia cubre únicamente el selector de mapas. No sustituye la matriz multidispositivo, de navegadores,
+accesibilidad y estados definida a continuación.
+
 ### Matriz mínima
 
 | Dimensión    | Cobertura                                                    |

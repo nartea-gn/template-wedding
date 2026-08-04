@@ -123,6 +123,8 @@
 .landing-map-picker-layer {
     position: fixed;
     inset: 0;
+    height: 100vh;
+    height: 100dvh;
     z-index: 100;
     display: flex;
     align-items: flex-end;
@@ -142,9 +144,14 @@
 .landing-map-picker-sheet {
     position: relative;
     width: 100%;
-    max-height: min(80vh, 34rem);
-    padding: 0.75rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    max-height: min(calc(100vh - 1rem), 34rem);
+    max-height: min(calc(100dvh - max(1rem, env(safe-area-inset-top))), 34rem);
+    padding: 0.75rem max(1rem, env(safe-area-inset-right))
+        max(2rem, calc(1rem + env(safe-area-inset-bottom)))
+        max(1rem, env(safe-area-inset-left));
     overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-bottom: max(2rem, calc(1rem + env(safe-area-inset-bottom)));
     border: 1px solid var(--color-wedding-border);
     border-bottom: 0;
     border-radius: 1.5rem 1.5rem 0 0;
@@ -258,7 +265,7 @@
         max-width: 34rem;
         border-bottom: 1px solid var(--color-wedding-border);
         border-radius: 1.5rem;
-        padding-bottom: 1rem;
+        padding-bottom: max(1rem, env(safe-area-inset-bottom));
     }
 }
 

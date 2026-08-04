@@ -305,6 +305,9 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 
 - El selector móvil es uno de los patrones más sólidos actuales: dialog correcto, foco inicial, acciones de 60–63 px,
   jerarquía clara y enlaces específicos para opción automática, Google Maps y Apple Maps.
+- **Revalidación Sprint 7.4:** las tres opciones quedan completas dentro del viewport en 320 × 568, 360 × 740 y
+  390 × 844 px; la hoja inferior usa viewport dinámico, áreas seguras y contención de overscroll. El popover de
+  escritorio conserva las tres opciones en 1440 × 900 px.
 - Debe conservarse como referencia de interacción móvil durante la revisión del selector de idioma.
 
 ## Scorecard de cierre por tema

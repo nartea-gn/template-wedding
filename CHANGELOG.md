@@ -4,6 +4,15 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### QA de release — Sprint 7.4
+
+- El selector móvil de mapas respeta el viewport dinámico y las áreas seguras del dispositivo.
+- Las opciones automática, Google Maps y Apple Maps permanecen completamente visibles en 320 × 568, 360 × 740 y
+  390 × 844 px, sin alterar el popover de escritorio.
+- Playwright cubre el encaje vertical de las tres opciones en un viewport móvil compacto.
+- La concurrencia local de Playwright queda limitada a dos workers para que el comando oficial sea estable y
+  reproducible en el entorno de desarrollo.
+
 ### Contratos runtime completos — Sprint 7.3
 
 - `event.date` unifica hero y countdown mediante un instante ISO 8601 con offset explícito.
@@ -47,7 +56,6 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 ### Limitaciones conocidas antes de 1.0.0
 
 - La matriz exhaustiva de Firefox, WebKit, móvil y dispositivos físicos pertenece a Sprint 7.4.
-- `seo` y `deadline` forman parte del contrato, pero todavía no tienen consumidores completos.
 
 ## Hitos consolidados
 

@@ -16,6 +16,27 @@ test('Landing presenta la invitación y permite llegar al RSVP', async ({page}) 
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
 })
 
+test('El selector móvil mantiene visibles las tres opciones de mapas', async ({page}) => {
+    await page.setViewportSize({width: 360, height: 740})
+    await page.goto('./#/')
+
+    const ceremony = page.locator('.landing-venue-card').filter({hasText: 'Ceremonia'})
+    await ceremony.getByRole('button', {name: 'Cómo llegar'}).click()
+
+    const dialog = page.getByRole('dialog', {name: '¿Cómo quieres llegar?'})
+    await expect(dialog.getByRole('link', {name: /Abrir automáticamente/})).toBeVisible()
+    await expect(dialog.getByRole('link', {name: 'Google Maps'})).toBeVisible()
+    await expect(dialog.getByRole('link', {name: 'Apple Maps'})).toBeVisible()
+
+    const optionsFitViewport = await dialog.locator('.landing-map-picker-option').evaluateAll(options =>
+        options.every(option => {
+            const bounds = option.getBoundingClientRect()
+            return bounds.top >= 0 && bounds.bottom <= window.innerHeight
+        }),
+    )
+    expect(optionsFitViewport).toBe(true)
+})
+
 test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
     await page.clock.setFixedTime(new Date('2027-05-13T00:00:00+02:00'))
     await page.goto('./')
