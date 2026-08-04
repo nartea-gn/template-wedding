@@ -15,7 +15,7 @@ test.beforeEach(async ({page}) => {
 
 for (const themeId of themeIds) {
     for (const viewport of viewports) {
-        test(`${themeId} mantiene Landing y RSVP en ${viewport.name}`, async ({page}) => {
+        test(`${themeId} mantiene Landing, RSVP y Admin en ${viewport.name}`, async ({page}) => {
             await page.setViewportSize({width: viewport.width, height: viewport.height})
             await page.goto('./#/')
             await applyTheme(page, themeId)
@@ -34,6 +34,16 @@ for (const themeId of themeIds) {
             await expect(page.getByLabel('Nombre y apellidos *')).toBeVisible()
             expect(await hasHorizontalOverflow(page)).toBe(false)
             expect(await page.locator('.rsvp-page').evaluate(element =>
+                getComputedStyle(element, '::before').backgroundImage,
+            )).not.toBe('none')
+
+            await page.goto('./#/admin')
+            await applyTheme(page, themeId)
+
+            await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
+            await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
+            expect(await hasHorizontalOverflow(page)).toBe(false)
+            expect(await page.locator('.login-page').evaluate(element =>
                 getComputedStyle(element, '::before').backgroundImage,
             )).not.toBe('none')
         })
