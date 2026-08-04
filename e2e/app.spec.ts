@@ -18,6 +18,7 @@ test('Landing presenta la invitación y permite llegar al RSVP', async ({page}) 
 
 test('El selector móvil mantiene visibles las tres opciones de mapas', async ({page}) => {
     await page.setViewportSize({width: 360, height: 740})
+    await page.emulateMedia({reducedMotion: 'reduce'})
     await page.goto('./#/')
 
     const ceremony = page.locator('.landing-venue-card').filter({hasText: 'Ceremonia'})
@@ -35,6 +36,30 @@ test('El selector móvil mantiene visibles las tres opciones de mapas', async ({
         }),
     )
     expect(optionsFitViewport).toBe(true)
+})
+
+test('Los selectores gestionan foco, teclado y Escape', async ({page}) => {
+    await page.setViewportSize({width: 360, height: 740})
+    await page.emulateMedia({reducedMotion: 'reduce'})
+    await page.goto('./#/')
+
+    const languageTrigger = page.getByRole('button', {name: 'Idioma: Español'})
+    await languageTrigger.click()
+    const spanishOption = page.getByRole('menuitemradio', {name: /ES.*Español/})
+    await expect(spanishOption).toBeFocused()
+
+    await page.keyboard.press('ArrowDown')
+    await expect(page.getByRole('menuitemradio', {name: /EN.*English/})).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(languageTrigger).toBeFocused()
+
+    const ceremony = page.locator('.landing-venue-card').filter({hasText: 'Ceremonia'})
+    const mapTrigger = ceremony.getByRole('button', {name: 'Cómo llegar'})
+    await mapTrigger.click()
+    await expect(page.getByRole('link', {name: /Abrir automáticamente/})).toBeFocused()
+
+    await page.keyboard.press('Escape')
+    await expect(mapTrigger).toBeFocused()
 })
 
 test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
