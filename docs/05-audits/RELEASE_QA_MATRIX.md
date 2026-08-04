@@ -5,8 +5,8 @@
 - **Sprint:** 7.4
 - **Estado:** En curso
 - **Fecha de ejecución:** 2026-08-04
-- **Commit verificado:** `d785e9c`
-- **Resultado automático:** 39/39 recorridos superados
+- **Commit verificado:** `ad046d8`
+- **Resultado automático:** 44/44 recorridos superados
 
 Esta matriz registra evidencia reproducible contra un único commit. No sustituye las validaciones manuales ni permite
 declarar compatibilidad con dispositivos físicos antes de completarlas.
@@ -31,11 +31,11 @@ confirmó el resultado.
 
 | Proyecto | Perfil | Tipo | Recorridos | Resultado |
 |---|---|---|---:|---|
-| `chromium` | Desktop Chrome | Motor de escritorio | 11 | Correcto |
-| `firefox` | Desktop Firefox | Motor de escritorio | 7 | Correcto |
-| `webkit` | Desktop Safari | Aproximación al motor Safari | 7 | Correcto |
-| `mobile-chrome` | Pixel 5 | Emulación Chrome Android | 7 | Correcto |
-| `mobile-webkit` | iPhone 13 | Emulación Safari iOS | 7 | Correcto |
+| `chromium` | Desktop Chrome | Motor de escritorio | 12 | Correcto |
+| `firefox` | Desktop Firefox | Motor de escritorio | 8 | Correcto |
+| `webkit` | Desktop Safari | Aproximación al motor Safari | 8 | Correcto |
+| `mobile-chrome` | Pixel 5 | Emulación Chrome Android | 8 | Correcto |
+| `mobile-webkit` | iPhone 13 | Emulación Safari iOS | 8 | Correcto |
 
 > **Precaución:** los perfiles móviles validan motor, viewport, tactilidad y user agent emulados. No equivalen a una
 > prueba en hardware real con barras, teclado, memoria y sistema operativo del dispositivo.
@@ -58,6 +58,7 @@ Google Maps y Apple Maps dentro del viewport.
 
 - Landing carga contenido principal y navega a RSVP.
 - El selector de mapas presenta sus tres proveedores.
+- Los selectores de idioma y mapas gestionan foco inicial, teclado, Escape y retorno al trigger.
 - El deadline cierra CTA y ruta RSVP sin ocultar Admin.
 - RSVP negativo persiste mediante API interceptada y muestra éxito.
 - RSVP afirmativo completa el recorrido multipaso.
@@ -94,13 +95,13 @@ Sobre el mismo estado funcional:
 - `pnpm test` superó 39/39 pruebas unitarias y de integración;
 - `pnpm build` generó el bundle de producción;
 - `pnpm test:e2e` superó 11/11 recorridos en Chromium;
-- `pnpm test:e2e:matrix` superó 39/39 recorridos.
+- `pnpm test:e2e:matrix` superó 44/44 recorridos.
 
 ## Pendientes para cerrar Sprint 7.4
 
 - matriz visual de los cinco temas en las páginas aplicables;
 - ES, EN y BG, incluida invitación monolingüe y contenido largo;
-- teclado, retorno de foco, zoom al 200 %, lector de pantalla y reduced motion;
+- navegación completa por teclado, zoom al 200 % y revisión asistida con lector de pantalla;
 - estados autenticados de Admin con datos vacíos, largos, error y retry;
 - Safari iOS y Chrome Android en dispositivos físicos;
 - Lighthouse, Core Web Vitals y presupuesto real de fuentes y fondos;

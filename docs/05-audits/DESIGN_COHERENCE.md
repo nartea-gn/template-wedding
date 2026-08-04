@@ -191,6 +191,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 - **Impacto:** patrón inesperado para teclado y objetivo táctil inferior al mínimo recomendado de la auditoría.
 - **Recomendación:** convertirlo en popover/listbox apropiado o completar el patrón de menú; garantizar 44 px mínimos,
   foco inicial/retorno y cierre consistente.
+- **Estado actual:** la semántica de menú ya dispone de foco inicial, flechas, Inicio/Fin, Escape y retorno al trigger.
+  La altura táctil de 44 px y la composición móvil se mantienen como revisiones separadas.
 
 ### DC-009 — El viewport móvil sigue dependiendo de `100vh`
 
@@ -260,6 +262,8 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 - **Recomendación:** conservar el trigger fijo en el flujo visual acordado, pero abrir una superficie que no cubra el
   título —por ejemplo, popover alineado bajo una cabecera reservada o sheet compacto en móvil— y completar gestión de
   foco y teclado.
+- **Estado actual:** la gestión de foco y teclado está completada; la superposición visual sobre el Hero continúa
+  abierta y requiere una decisión compositiva antes de modificar el diseño aprobado.
 
 ### DC-017 — Los patrones iniciales no alcanzaban la dirección artística propuesta
 

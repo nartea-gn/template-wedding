@@ -12,8 +12,10 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 - Playwright cubre el encaje vertical de las tres opciones en un viewport móvil compacto.
 - La concurrencia local de Playwright queda limitada a dos workers para que el comando oficial sea estable y
   reproducible en el entorno de desarrollo.
-- Una matriz manual estable ejecuta 39 recorridos sobre Chromium, Firefox, WebKit, Pixel 5 e iPhone 13 emulados; los
+- Una matriz manual estable ejecuta 44 recorridos sobre Chromium, Firefox, WebKit, Pixel 5 e iPhone 13 emulados; los
   smoke tests responsive cubren 320, 390, 768 y 1440 px.
+- El selector de idioma completa el patrón de menú con foco inicial, flechas, Inicio/Fin, Escape y retorno al trigger;
+  el selector de mapas queda cubierto por el mismo contrato de foco y cierre.
 
 ### Contratos runtime completos — Sprint 7.3
 
