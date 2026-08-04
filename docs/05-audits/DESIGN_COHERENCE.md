@@ -68,11 +68,12 @@ La auditoría conserva los hallazgos originales como evidencia histórica. El ci
 | Hallazgo | Resultado                                                                                     | Estado           |
 |----------|-----------------------------------------------------------------------------------------------|------------------|
 | `DC-001` | Royal restaurado, validado en 320, 390, 768 y 1440 px y aprobado por producto.                | Cerrado          |
-| `DC-002` | Roles semánticos y contraste estático AA para los cinco temas; comparativa visual completada. | Cerrado          |
+| `DC-002` | Roles funcionales y contraste estático AA para los cinco temas; comparativa visual completada. | Cerrado          |
 | `DC-003` | Countdown recompuesto y validado en ES, EN y BG sin overflow.                                 | Cerrado          |
 | `DC-010` | Superficies de éxito/error por tema; RSVP y Dark revalidados. Admin real pasa a Sprint 7.4.   | Baseline cerrado |
 | `DC-015` | Contenido esencial visible en primer render y fallback global de reduced motion presente.     | Baseline cerrado |
 | `DC-017` | Cinco familias responsive con apertura y cuerpo modular continuo, incluida corrección Linen.  | Cerrado          |
+| `DC-018` | `primary` no alcanza AA como texto pequeño en Boho y Magnolia; requiere una decisión de rol.   | Abierto · Sprint 7.4 |
 
 `Baseline cerrado` significa que la implementación de Sprint 6 cumple su objetivo; no sustituye las pruebas integrales
 del release candidate.
@@ -89,6 +90,18 @@ Contraste estático de los nuevos pares declarados en `themes.ts`:
 
 Los pares de texto superan 4,5:1. Los bordes de control superan el mínimo no textual de 3:1; su validación final debe
 realizarse también sobre las superficies reales donde aparezcan, no solo sobre el fondo base.
+
+### DC-018 — El color artístico `primary` no es un rol de texto accesible en todas las colecciones
+
+- **Evidencia actual:** `primary/background` mide 2,74:1 en Boho y 3,54:1 en Magnolia; `primary/surface` mide 2,49:1 y
+  3,16:1 respectivamente.
+- **Impacto:** `primary` funciona como acento artístico, pero no puede garantizar WCAG AA cuando se reutiliza en texto
+  pequeño de badges, metadatos o tablas.
+- **Límite:** los roles inequívocamente funcionales (`text`, `onAction`, `success`, `danger` y `controlBorder`) sí están
+  protegidos por pruebas automáticas. Este hallazgo no invalida los fondos ni las paletas aprobadas.
+- **Decisión pendiente:** comparar dos rutas antes de modificar diseño: oscurecer `primary` en Boho y Magnolia, o
+  conservarlo como acento y añadir un rol semántico accesible específico para texto de énfasis. La segunda opción evita
+  degradar la dirección artística, pero amplía deliberadamente el contrato del tema.
 
 ## Hallazgos originales
 

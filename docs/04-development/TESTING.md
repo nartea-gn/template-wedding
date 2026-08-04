@@ -30,7 +30,9 @@ pnpm exec playwright install chromium firefox webkit
 | `pnpm test:watch`    | Reejecución interactiva durante desarrollo |
 | `pnpm test:coverage` | Informe V8 informativo en `coverage/`      |
 | `pnpm test:e2e`        | Gate rápido Playwright en Chromium                              |
-| `pnpm test:e2e:matrix` | Matriz manual en Chromium, Firefox, WebKit y perfiles móviles   |
+| `pnpm test:e2e:matrix` | Matriz manual completa, ejecutada en dos fases secuenciales     |
+| `pnpm test:e2e:matrix:chromium` | Chromium, responsive y temas con un worker          |
+| `pnpm test:e2e:matrix:compat` | Firefox, WebKit y perfiles móviles con un worker       |
 | `pnpm test:e2e:ui`     | Depuración interactiva de Playwright                            |
 | `pnpm test:db`         | Migraciones, grants y RLS mediante pgTAP                        |
 | `pnpm quality`         | Lint, Vitest y build                                            |
@@ -139,9 +141,10 @@ No relajes la aserción. Revisa primero el rol, `request.jwt.claim.sub`, la memb
 
 ## Evolución
 
-Chromium permanece como gate rápido de cada Pull Request. `pnpm test:e2e:matrix` ejecuta manualmente Firefox, WebKit,
-Pixel 5 y iPhone 13 emulados con un worker para evitar falsos negativos por saturación. Los perfiles emulados no
-sustituyen Safari iOS y Chrome Android en dispositivos físicos.
+Chromium permanece como gate rápido de cada Pull Request. `pnpm test:e2e:matrix` encadena una primera fase Chromium y
+otra de compatibilidad con Firefox, WebKit, Pixel 5 e iPhone 13 emulados. Cada fase usa un worker para evitar falsos
+negativos por saturación y puede ejecutarse por separado durante el diagnóstico. Los perfiles emulados no sustituyen
+Safari iOS y Chrome Android en dispositivos físicos.
 
 La evidencia de Sprint 7.4 se registra en
 [Matriz de QA de release](../05-audits/RELEASE_QA_MATRIX.md). Un nuevo navegador solo entrará en cada Pull Request cuando

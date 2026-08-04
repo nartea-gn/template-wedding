@@ -107,10 +107,11 @@ invitaciones mono/multilenguaje, con/sin RSVP/Admin; estados de error; Lighthous
 **Primer incremento:** el selector adaptativo de mapas queda protegido frente a barras dinámicas y áreas seguras; las
 tres opciones se verificaron en 320 × 568, 360 × 740, 390 × 844 y escritorio. La matriz completa continúa abierta.
 
-**Segundo incremento:** 44 recorridos pasan en Chromium, Firefox, WebKit, Chrome móvil y Safari móvil emulados sobre
-`ad046d8`; Landing y RSVP no presentan overflow horizontal en 320/390/768/1440 px, y los selectores gestionan foco,
-teclado y Escape. Dispositivos físicos, accesibilidad manual completa, temas, localización y rendimiento continúan
-abiertos.
+**Segundo incremento:** 59 recorridos pasan en Chromium, Firefox, WebKit, Chrome móvil y Safari móvil emulados sobre
+`00ed191`; Landing y RSVP no presentan overflow horizontal en 320/390/768/1440 px, los selectores gestionan foco,
+teclado y Escape, y ES/EN/BG conservan idioma, SEO y countdown. Royal, Boho, Dark, Magnolia y Linen mantienen Landing,
+RSVP y acceso Admin en móvil y escritorio. Dispositivos físicos, accesibilidad manual completa, contenido largo,
+rendimiento y la decisión de contraste `DC-018` continúan abiertos.
 
 ### Sprint 7.5 — Release candidate · Planificado · P1
 
