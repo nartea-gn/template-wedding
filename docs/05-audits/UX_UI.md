@@ -55,8 +55,9 @@ Galería, Historia y Música permanecen aplazadas; no deben introducirse como ex
 5. Movimiento sutil y cancelable.
 6. Contenido largo y traducciones forman parte del diseño, no son casos excepcionales.
 
-## Evidencia pendiente
+## Evidencia de release
 
-La aceptación final requiere una matriz registrada de tema × página × viewport × navegador. Una revisión parcial no se
-presentará como validación completa. La matriz, accesibilidad manual, dispositivos reales y rendimiento se definen en
-[`SPRINT_7_PLAN.md`](../00-product/SPRINT_7_PLAN.md).
+La primera matriz automática de navegador y viewport está registrada en
+[`RELEASE_QA_MATRIX.md`](./RELEASE_QA_MATRIX.md). La aceptación final requiere todavía la matriz de
+tema × página × viewport, accesibilidad manual, dispositivos reales y rendimiento definida en
+[`SPRINT_7_PLAN.md`](../00-product/SPRINT_7_PLAN.md). La evidencia parcial no se presentará como validación completa.

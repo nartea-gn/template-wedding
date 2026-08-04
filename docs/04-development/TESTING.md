@@ -13,13 +13,13 @@ La decisión de herramientas y sus límites se registra en
 - Node 24;
 - pnpm 10.34.5 mediante Corepack;
 - Docker Desktop para Supabase local;
-- Chromium administrado por Playwright.
+- Chromium, Firefox y WebKit administrados por Playwright.
 
 Instala las dependencias y el navegador una vez:
 
 ```bash
 corepack pnpm install --frozen-lockfile
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium firefox webkit
 ```
 
 ## Comandos
@@ -29,10 +29,11 @@ pnpm exec playwright install chromium
 | `pnpm test`          | Unitarias e integración con Vitest         |
 | `pnpm test:watch`    | Reejecución interactiva durante desarrollo |
 | `pnpm test:coverage` | Informe V8 informativo en `coverage/`      |
-| `pnpm test:e2e`      | Recorridos Playwright en Chromium          |
-| `pnpm test:e2e:ui`   | Depuración interactiva de Playwright       |
-| `pnpm test:db`       | Migraciones, grants y RLS mediante pgTAP   |
-| `pnpm quality`       | Lint, Vitest y build                       |
+| `pnpm test:e2e`        | Gate rápido Playwright en Chromium                              |
+| `pnpm test:e2e:matrix` | Matriz manual en Chromium, Firefox, WebKit y perfiles móviles   |
+| `pnpm test:e2e:ui`     | Depuración interactiva de Playwright                            |
+| `pnpm test:db`         | Migraciones, grants y RLS mediante pgTAP                        |
+| `pnpm quality`         | Lint, Vitest y build                                            |
 
 `pnpm test:db` requiere una instancia iniciada:
 
@@ -112,10 +113,10 @@ RSVP se interceptan dentro de Playwright.
 Comprueba que el archivo coincide con `src/**/*.test.{ts,tsx}` y que `vitest.config.ts` mantiene `jsdom` y
 `src/test/setup.ts`.
 
-### Playwright no encuentra Chromium
+### Playwright no encuentra un navegador
 
 ```bash
-pnpm exec playwright install chromium
+pnpm exec playwright install chromium firefox webkit
 ```
 
 ### Playwright no inicia la aplicación
@@ -138,6 +139,10 @@ No relajes la aserción. Revisa primero el rol, `request.jwt.claim.sub`, la memb
 
 ## Evolución
 
-Sprint 7.2 utiliza Chromium como gate rápido. Firefox, WebKit, emulación móvil y dispositivos físicos pertenecen a la
-matriz exhaustiva de Sprint 7.4. Un nuevo navegador podrá entrar en cada PR cuando exista evidencia de que su señal
-compensa el tiempo y mantenimiento adicionales.
+Chromium permanece como gate rápido de cada Pull Request. `pnpm test:e2e:matrix` ejecuta manualmente Firefox, WebKit,
+Pixel 5 y iPhone 13 emulados con un worker para evitar falsos negativos por saturación. Los perfiles emulados no
+sustituyen Safari iOS y Chrome Android en dispositivos físicos.
+
+La evidencia de Sprint 7.4 se registra en
+[Matriz de QA de release](../05-audits/RELEASE_QA_MATRIX.md). Un nuevo navegador solo entrará en cada Pull Request cuando
+su señal compense el tiempo y mantenimiento adicionales.
