@@ -13,7 +13,9 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test --project=chromium",
-    "test:e2e:matrix": "playwright test --workers=1",
+    "test:e2e:matrix": "pnpm run test:e2e:matrix:chromium && pnpm run test:e2e:matrix:compat",
+    "test:e2e:matrix:chromium": "playwright test --project=chromium --workers=1",
+    "test:e2e:matrix:compat": "playwright test --project=firefox --project=webkit --project=mobile-chrome --project=mobile-webkit --workers=1",
     "test:e2e:ui": "playwright test --ui",
     "test:db": "supabase test db",
     "quality": "pnpm run lint && pnpm run test && pnpm run build"
