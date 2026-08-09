@@ -34,7 +34,7 @@ invitación TypeScript y los catálogos secundarios se cargan bajo demanda.
 - `event.timezone` es una zona IANA y gobierna la presentación localizada.
 - El deadline RSVP es exclusivo y anterior al evento.
 - IDs de secciones y campos son únicos.
-- Admin requiere una fuente de respuestas.
+- Admin requiere una fuente de respuestas y exactamente un método de autenticación `otp` o `password`.
 - CTA RSVP requiere RSVP activo.
 - El tema debe estar registrado.
 - `defaultLocale` pertenece a `supportedLocales`.
@@ -51,6 +51,8 @@ agregado.
 - `capabilities.rsvp.deadline` gobierna CTA, ruta y comprobación previa al envío.
 - `event.date` es la fuente única para hero y countdown; countdown no declara un target alternativo.
 - Admin puede permanecer disponible después del cierre para consultar respuestas existentes.
+- `capabilities.admin.auth.method` selecciona una única variante de acceso; la autorización continúa fuera de la
+  definición mediante membresías y RLS.
 
 El cierre en navegador evita flujos accidentales, pero no constituye por sí solo una autoridad de escritura en servidor.
 Si producto necesita impedir envíos maliciosos fuera de plazo, deberá incorporarse una regla backend verificable.

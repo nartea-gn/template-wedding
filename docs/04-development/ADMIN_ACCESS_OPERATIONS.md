@@ -7,10 +7,10 @@ globales sobre respuestas RSVP.
 
 ## Modelo
 
-- Supabase Auth identifica a la persona mediante OTP por email.
+- Supabase Auth identifica a la persona mediante OTP o email y contraseña, según `admin.auth.method`.
 - `invitation_admins` relaciona su `user_id` con una invitación.
 - RLS autoriza la lectura; conocer el email o el slug no concede acceso.
-- El cliente usa `shouldCreateUser: false` y nunca crea cuentas.
+- El navegador nunca crea cuentas ni contiene contraseñas o claves administrativas.
 
 Una llamada externa podría solicitar crear una cuenta mientras el proveedor de email está habilitado. Esa cuenta no
 recibe acceso a respuestas: sin una membresía privilegiada en `invitation_admins`, RLS devuelve cero filas. Un hook
@@ -88,7 +88,39 @@ proyecto no se considerará preparado para entregar emails de autenticación a c
 desde el 3 de junio de 2026 necesitan además SMTP propio para utilizar plantillas Auth personalizadas; la situación
 concreta del proyecto alojado deberá verificarse antes del despliegue.
 
-## Alta de una pareja
+## Alta reproducible desde configuración privada
+
+Los emails operativos se definen en `.env.admin.local`, nunca en la configuración pública de la invitación:
+
+```powershell
+Copy-Item .env.admin.example .env.admin.local
+pnpm admin:provision:local
+```
+
+Variables requeridas:
+
+- `SUPABASE_URL` y `SUPABASE_SECRET_KEY`, solo para el proceso Node;
+- `NARTEA_INVITATION_ID`, idéntico a `InvitationDefinition.id`;
+- `NARTEA_ADMIN_AUTH_METHOD`, con `otp` o `password`;
+- `NARTEA_ADMIN_EMAILS`, lista separada por comas.
+
+El comando selecciona un destino explícito, localiza usuarios sin exponer la clave al navegador y aplica
+`invitation_admins` con `ON CONFLICT`. Puede repetirse: no duplica filas y nunca elimina identidades ni membresías.
+
+Con OTP crea identidades ausentes y confirmadas. Con password exige que las identidades ya existan, porque la contraseña
+inicial debe establecerse mediante un canal privado. En la primera versión se usa Supabase Dashboard para crear o
+rotar esas contraseñas; no se almacenan en Git ni en archivos de configuración del producto.
+
+Para producción se requiere una confirmación adicional igual al ID de invitación:
+
+```powershell
+$env:NARTEA_PROVISION_CONFIRM = $env:NARTEA_INVITATION_ID
+pnpm admin:provision -- --production
+```
+
+No ejecutes el modo de producción con credenciales locales ni el modo local contra una URL remota.
+
+## Alta manual de una pareja
 
 1. Crea el usuario desde **Authentication → Users** mediante una operación administrativa.
 2. Copia su UUID; no guardes tokens ni claves de sesión.
@@ -101,7 +133,7 @@ VALUES ('identificador-de-invitacion', 'uuid-del-usuario')
 ON CONFLICT DO NOTHING;
 ```
 
-5. Solicita un OTP desde `#/admin` y comprueba que solo aparecen respuestas de esa invitación.
+5. Accede desde `#/admin` con el método configurado y comprueba que solo aparecen respuestas de esa invitación.
 6. Registra la asignación en el sistema operativo interno autorizado, nunca en Git.
 
 ## Añadir una segunda persona
@@ -125,7 +157,8 @@ ya no puede leer respuestas. Las sesiones existentes dejan de autorizar filas en
 ## Verificación mínima por release
 
 - un email no provisionado no crea usuario y recibe la misma pantalla neutral de comprobación que uno autorizado;
-- una pareja asignada entra con OTP y conserva la sesión tras recargar;
+- una pareja asignada entra con el método configurado y conserva la sesión tras recargar;
+- las variantes OTP y password no aparecen simultáneamente;
 - una persona sin membresía ve cero respuestas;
 - dos parejas no pueden cruzar invitaciones;
 - cerrar sesión retira el JWT del cliente;
@@ -135,6 +168,8 @@ ya no puede leer respuestas. Las sesiones existentes dejan de autorizar filas en
 ## Incidencias
 
 - **No llega el código:** revisar SMTP, plantilla Magic Link, rate limits y carpeta de spam.
+- **Password rechazado:** comprobar la identidad Auth y rotar la contraseña de forma privada sin modificar el frontend.
+- **Provisionamiento password detenido:** crear primero la identidad y su contraseña en Supabase Auth; repetir el comando.
 - **Llega un enlace:** la plantilla alojada todavía usa `{{ .ConfirmationURL }}` en vez de `{{ .Token }}`.
 - **Código rechazado:** comprobar los seis dígitos, caducidad y que se usa el último envío.
 - **Panel vacío:** comprobar la membresía y que `invitation_id` coincide con `wedding_slug`.

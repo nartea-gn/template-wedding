@@ -71,6 +71,7 @@ SQL viven en carpetas propias porque atraviesan varias capas.
 - no copiar payloads, capturas ni exports reales;
 - aislar los tests SQL dentro de `BEGIN` y `ROLLBACK`;
 - interceptar la API en E2E cuando se valida la interfaz y no la base de datos;
+- cubrir por separado los formularios OTP y password, incluidos errores neutros y nombres accesibles;
 - evitar snapshots extensos que oculten la intención del caso.
 
 ## Criterio de selección
@@ -149,3 +150,7 @@ Safari iOS y Chrome Android en dispositivos físicos.
 La evidencia de Sprint 7.4 se registra en
 [Matriz de QA de release](../05-audits/RELEASE_QA_MATRIX.md). Un nuevo navegador solo entrará en cada Pull Request cuando
 su señal compense el tiempo y mantenimiento adicionales.
+
+Las estrategias Admin comparten sesión y RLS. La invitación canónica mantiene OTP en los recorridos E2E; la selección
+password, `signInWithPassword`, credenciales rechazadas y composición del formulario se cubren en Vitest. Una release
+configurada con password debe añadir su comprobación visual al QA específico de esa invitación.

@@ -5,6 +5,9 @@
 Aceptado para implementación incremental. La auditoría remota de Sprint 7.1 confirma que todavía no existen usuarios,
 membresías ni políticas autenticadas, por lo que la transición puede introducirse sin migrar identidades previas.
 
+ADR-018 amplía esta decisión permitiendo seleccionar OTP o email y contraseña por invitación. No modifica la decisión
+central de autenticar con Supabase Auth y autorizar exclusivamente mediante membresías y RLS.
+
 ## Contexto
 
 `/admin` sirve para que la pareja consulte asistencia, logística y mensajes. No necesita identidad social, jerarquías

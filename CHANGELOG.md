@@ -4,6 +4,13 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### Autenticación Admin configurable
+
+- Cada invitación selecciona OTP o email y contraseña mediante `admin.auth.method`.
+- Ambos métodos autentican con Supabase y conservan la autorización por `invitation_admins` y RLS.
+- Un comando Node idempotente provisiona emails y membresías desde variables privadas para local o producción explícita.
+- La configuración pública no contiene contraseñas, emails operativos ni claves privilegiadas.
+
 ### QA de release — Sprint 7.4
 
 - El selector móvil de mapas respeta el viewport dinámico y las áreas seguras del dispositivo.

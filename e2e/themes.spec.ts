@@ -41,7 +41,9 @@ for (const themeId of themeIds) {
             await applyTheme(page, themeId)
 
             await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
-            await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
+            await expect(page.getByLabel('Correo electrónico')).toBeVisible()
+            await expect(page.getByLabel('Contraseña')).toBeVisible()
+            await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
             expect(await hasHorizontalOverflow(page)).toBe(false)
             expect(await page.locator('.login-page').evaluate(element =>
                 getComputedStyle(element, '::before').backgroundImage,

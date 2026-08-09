@@ -100,7 +100,8 @@ test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
     await page.goto('./#/rsvp')
     await expect(page.getByText('Ruta no encontrada')).toBeVisible()
     await page.goto('./#/admin')
-    await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
+    await expect(page.getByLabel('Contraseña')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
 })
 
 test('RSVP permite declinar y confirma el guardado', async ({page}) => {
@@ -160,11 +161,12 @@ test('RSVP mantiene los datos y muestra un error recuperable cuando falla la API
     await expect(page.getByLabel('Nombre y apellidos *')).toHaveValue('Invitado de Prueba')
 })
 
-test('Admin protege la lectura detrás del acceso por email', async ({page}) => {
+test('Admin protege la lectura detrás del acceso con credenciales', async ({page}) => {
     await page.goto('./#/admin')
 
     await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
     await expect(page.getByLabel('Correo electrónico')).toBeVisible()
-    await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
+    await expect(page.getByLabel('Contraseña')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
     await expect(page.getByText('El acceso está limitado a las personas autorizadas para esta invitación.')).toBeVisible()
 })

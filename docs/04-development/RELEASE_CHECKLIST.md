@@ -18,6 +18,8 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [ ] Inserciones públicas solo permiten el alcance y columnas necesarios.
 - [ ] RLS se prueba con roles anónimo, autenticado y administrativo.
 - [ ] Sesión, expiración, logout y recuperación están definidos.
+- [ ] El método `admin.auth.method` elegido está probado y la otra variante no se muestra.
+- [ ] Emails y membresías Admin se provisionan desde configuración privada sin secretos `VITE_*`.
 - [ ] Futuras mutaciones incluyen autorización y auditoría.
 
 ## 3. Privacidad y datos
