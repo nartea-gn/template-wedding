@@ -201,6 +201,7 @@ function PasswordLoginForm({title, error, submitting, onAuthenticate}: PasswordL
     const {t} = useLocalization<WeddingMessageKey>()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [passwordVisible, setPasswordVisible] = useState(false)
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -214,6 +215,9 @@ function PasswordLoginForm({title, error, submitting, onAuthenticate}: PasswordL
             : error === 'session'
                 ? t('admin.auth.sessionError')
                 : null
+    const passwordVisibilityLabel = passwordVisible
+        ? t('admin.auth.hidePassword')
+        : t('admin.auth.showPassword')
 
     return (
         <LoginFrame title={title} description={t('admin.auth.passwordDescription')}>
@@ -238,18 +242,36 @@ function PasswordLoginForm({title, error, submitting, onAuthenticate}: PasswordL
                 </div>
                 <div className="login-field">
                     <label htmlFor="admin-password" className="label login-label">{t('admin.auth.password')}</label>
-                    <input
-                        id="admin-password"
-                        name="password"
-                        type="password"
-                        value={password}
-                        onChange={event => setPassword(event.target.value)}
-                        className="input login-input"
-                        autoComplete="current-password"
-                        aria-invalid={Boolean(errorMessage)}
-                        aria-describedby={errorMessage ? 'admin-auth-error' : undefined}
-                        required
-                    />
+                    <div className="login-password-control">
+                        <input
+                            id="admin-password"
+                            name="password"
+                            type={passwordVisible ? 'text' : 'password'}
+                            value={password}
+                            onChange={event => setPassword(event.target.value)}
+                            className="input login-input login-password-input"
+                            autoComplete="current-password"
+                            autoCapitalize="none"
+                            spellCheck={false}
+                            aria-invalid={Boolean(errorMessage)}
+                            aria-describedby={errorMessage ? 'admin-auth-error' : undefined}
+                            required
+                        />
+                        <button
+                            type="button"
+                            className="login-password-toggle"
+                            onClick={() => setPasswordVisible(value => !value)}
+                            aria-label={passwordVisibilityLabel}
+                            aria-pressed={passwordVisible}
+                            aria-controls="admin-password"
+                            title={passwordVisibilityLabel}
+                        >
+                            <InterfaceIcon
+                                name={passwordVisible ? 'eye-off' : 'eye'}
+                                className="login-password-toggle-icon"
+                            />
+                        </button>
+                    </div>
                 </div>
                 {errorMessage && (
                     <div id="admin-auth-error" className="login-error" role="alert">

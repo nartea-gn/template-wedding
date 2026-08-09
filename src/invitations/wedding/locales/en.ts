@@ -87,6 +87,8 @@ export const enMessages = {
     'admin.auth.emailPlaceholder': 'couple@example.com',
     'admin.auth.emailDescription': 'Receive an access code at the email authorized for this invitation.',
     'admin.auth.password': 'Password',
+    'admin.auth.showPassword': 'Show password',
+    'admin.auth.hidePassword': 'Hide password',
     'admin.auth.passwordDescription': 'Sign in with the email and password assigned to this invitation.',
     'admin.auth.signIn': 'Open dashboard',
     'admin.auth.credentialsInvalid': 'We could not sign you in. Check your details and try again.',

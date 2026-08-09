@@ -89,6 +89,8 @@ export const bgMessages = {
     'admin.auth.emailPlaceholder': 'couple@example.com',
     'admin.auth.emailDescription': 'Получете код за достъп на имейла, разрешен за тази покана.',
     'admin.auth.password': 'Парола',
+    'admin.auth.showPassword': 'Показване на паролата',
+    'admin.auth.hidePassword': 'Скриване на паролата',
     'admin.auth.passwordDescription': 'Влезте с имейла и паролата, зададени за тази покана.',
     'admin.auth.signIn': 'Отваряне на панела',
     'admin.auth.credentialsInvalid': 'Не успяхме да влезем. Проверете данните и опитайте отново.',
