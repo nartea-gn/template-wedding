@@ -87,6 +87,8 @@ export const esMessages = {
     'admin.auth.emailPlaceholder': 'pareja@ejemplo.com',
     'admin.auth.emailDescription': 'Recibe un código de acceso en el correo autorizado para esta invitación.',
     'admin.auth.password': 'Contraseña',
+    'admin.auth.showPassword': 'Mostrar contraseña',
+    'admin.auth.hidePassword': 'Ocultar contraseña',
     'admin.auth.passwordDescription': 'Accede con el correo y la contraseña asignados a esta invitación.',
     'admin.auth.signIn': 'Entrar al panel',
     'admin.auth.credentialsInvalid': 'No hemos podido iniciar sesión. Revisa los datos e inténtalo de nuevo.',

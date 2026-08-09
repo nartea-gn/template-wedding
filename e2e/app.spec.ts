@@ -100,7 +100,7 @@ test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
     await page.goto('./#/rsvp')
     await expect(page.getByText('Ruta no encontrada')).toBeVisible()
     await page.goto('./#/admin')
-    await expect(page.getByLabel('Contraseña')).toBeVisible()
+    await expect(page.getByLabel('Contraseña', {exact: true})).toBeVisible()
     await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
 })
 
@@ -166,7 +166,7 @@ test('Admin protege la lectura detrás del acceso con credenciales', async ({pag
 
     await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
     await expect(page.getByLabel('Correo electrónico')).toBeVisible()
-    await expect(page.getByLabel('Contraseña')).toBeVisible()
+    await expect(page.getByLabel('Contraseña', {exact: true})).toBeVisible()
     await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
     await expect(page.getByText('El acceso está limitado a las personas autorizadas para esta invitación.')).toBeVisible()
 })

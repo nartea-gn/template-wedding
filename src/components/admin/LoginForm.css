@@ -2,95 +2,150 @@
 
 /* LoginForm component styles */
 .login-page {
-    @apply min-h-screen bg-(--color-wedding-bg) flex flex-col items-center justify-center p-4;
-    min-height: 100svh;
+  @apply min-h-screen bg-(--color-wedding-bg) flex flex-col items-center justify-center p-4;
+  min-height: 100svh;
 }
 
 .login-card {
-    @apply w-full max-w-md p-7 md:p-10 space-y-8;
-    background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-form-card-opacity), transparent);
-    border: 1px solid color-mix(in srgb, var(--color-wedding-border) 62%, transparent);
-    box-shadow: var(--shadow-card-lg);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
+  @apply w-full max-w-md p-7 md:p-10 space-y-8;
+  background: color-mix(
+    in srgb,
+    var(--color-wedding-surface) var(--theme-form-card-opacity),
+    transparent
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--color-wedding-border) 62%, transparent);
+  box-shadow: var(--shadow-card-lg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .login-heading {
-    @apply text-center;
+  @apply text-center;
 }
 
 .login-icon {
-    @apply size-10 mx-auto mb-3 text-(--color-wedding-primary);
+  @apply size-10 mx-auto mb-3 text-(--color-wedding-primary);
 }
 
 .login-title {
-    @apply font-serif text-2xl md:text-3xl font-light text-(--color-wedding-primary);
-    font-family: var(--font-heading);
+  @apply font-serif text-2xl md:text-3xl font-light text-(--color-wedding-primary);
+  font-family: var(--font-heading);
 }
 
 .login-description {
-    @apply mt-3 text-sm leading-relaxed text-(--color-wedding-muted);
+  @apply mt-3 text-sm leading-relaxed text-(--color-wedding-muted);
 }
 
 .login-form {
-    @apply space-y-6;
+  @apply space-y-6;
 }
 
 .login-field {
-    @apply space-y-2 text-left;
+  @apply space-y-2 text-left;
 }
 
 .login-label {
-    @apply mb-0;
+  @apply mb-0;
 }
 
 .login-input {
-    @apply text-left;
+  @apply text-left;
+}
+
+.login-password-control {
+  position: relative;
+}
+
+.login-password-input {
+  padding-inline-end: 3.5rem;
+}
+
+.login-password-toggle {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-end: 0.125rem;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  padding: 0;
+  color: var(--color-wedding-muted);
+  background: transparent;
+  border: 0;
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+  touch-action: manipulation;
+  transform: translateY(-50%);
+  transition:
+    color var(--theme-interaction-duration) ease,
+    background-color var(--theme-interaction-duration) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.login-password-toggle:hover {
+  color: var(--color-wedding-action);
+  background-color: color-mix(
+    in srgb,
+    var(--color-wedding-action) 9%,
+    transparent
+  );
+}
+
+.login-password-toggle:focus-visible {
+  color: var(--color-wedding-action);
+  outline: 2px solid var(--color-wedding-action);
+  outline-offset: -3px;
+}
+
+.login-password-toggle-icon {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .login-code-input {
-    @apply text-center text-xl tracking-[0.42em] font-semibold;
-    padding-left: calc(1rem + 0.42em);
+  @apply text-center text-xl tracking-[0.42em] font-semibold;
+  padding-left: calc(1rem + 0.42em);
 }
 
 .login-email-context {
-    @apply mb-5 text-center text-sm leading-relaxed text-(--color-wedding-muted);
+  @apply mb-5 text-center text-sm leading-relaxed text-(--color-wedding-muted);
 }
 
 .login-email-context strong {
-    @apply block mt-1 font-semibold text-(--color-wedding-text) break-all;
+  @apply block mt-1 font-semibold text-(--color-wedding-text) break-all;
 }
 
 .login-error {
-    @apply p-3 border rounded-lg;
-    color: var(--color-wedding-danger);
-    border-color: var(--color-wedding-danger);
-    background: var(--color-wedding-danger-surface);
+  @apply p-3 border rounded-lg;
+  color: var(--color-wedding-danger);
+  border-color: var(--color-wedding-danger);
+  background: var(--color-wedding-danger-surface);
 }
 
 .login-error-text {
-    @apply text-sm leading-relaxed;
-    color: var(--color-wedding-danger);
+  @apply text-sm leading-relaxed;
+  color: var(--color-wedding-danger);
 }
 
 .login-submit:disabled {
-    @apply opacity-60 cursor-wait;
+  @apply opacity-60 cursor-wait;
 }
 
 .login-secondary-actions {
-    @apply flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5;
+  @apply flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5;
 }
 
 .login-link {
-    @apply text-sm underline underline-offset-4 text-(--color-wedding-action) disabled:opacity-50 disabled:cursor-not-allowed;
+  @apply text-sm underline underline-offset-4 text-(--color-wedding-action) disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
 .login-privacy {
-    @apply text-center text-xs leading-relaxed text-(--color-wedding-muted);
+  @apply text-center text-xs leading-relaxed text-(--color-wedding-muted);
 }
 
 @media (prefers-reduced-transparency: reduce) {
-    .login-card {
-        background: var(--color-wedding-surface);
-    }
+  .login-card {
+    background: var(--color-wedding-surface);
+  }
 }
