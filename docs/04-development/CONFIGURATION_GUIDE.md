@@ -12,8 +12,8 @@ pnpm dev
 ```
 
 Completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY`. No incluyas service-role keys ni otros secretos privilegiados
-en variables `VITE_*`: Vite las incorpora al bundle público. Admin usa usuarios provisionados en Supabase Auth y OTP por
-email; consulta el runbook de seguridad antes de desplegar.
+en variables `VITE_*`: Vite las incorpora al bundle público. Admin usa usuarios provisionados en Supabase Auth y el
+método declarado por invitación; consulta el runbook de seguridad antes de desplegar.
 
 ## 2. Definir una identidad única
 
@@ -184,6 +184,7 @@ capabilities: {
     },
     admin: {
         enabled: true,
+        auth: {method: 'otp'},
         source: 'rsvp',
         columns: ['fullName', 'attending'],
         metrics: {attendanceFieldId: 'attending'},
@@ -197,8 +198,25 @@ capabilities: {
 - `deadline` es exclusivo: al alcanzarlo, el CTA comunica el cierre, desaparece la ruta RSVP y un formulario ya abierto
   no puede iniciar un nuevo envío.
 - Admin sigue accesible después del deadline para consultar las respuestas existentes.
-- Admin restaura una sesión Supabase, solicita OTP por email y delega la autorización de lectura en RLS.
+- `auth.method` admite `otp` o `password` y muestra únicamente el formulario elegido.
+- Ambos métodos restauran una sesión Supabase y delegan la autorización de lectura en RLS.
 - Los emails autorizados y su relación con cada invitación se provisionan fuera del navegador.
+
+### Provisionar los emails en Supabase local
+
+```powershell
+Copy-Item .env.admin.example .env.admin.local
+```
+
+Edita únicamente `.env.admin.local`, que Git ignora, y ejecuta:
+
+```powershell
+pnpm admin:provision:local
+```
+
+El comando crea identidades OTP ausentes y verifica sus membresías sin duplicarlas. Con `password`, crea primero cada
+usuario y su contraseña desde una operación privada de Supabase; después el mismo comando asigna las membresías. No
+guardes contraseñas ni emails reales en `InvitationDefinition` o archivos versionados.
 
 ## 10. Preparar Supabase
 

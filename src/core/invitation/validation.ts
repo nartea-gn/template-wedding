@@ -67,6 +67,11 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         errors.push('Admin requires the RSVP capability to be enabled')
     }
 
+    const adminAuthMethod = definition.capabilities.admin?.auth?.method
+    if (hasEnabledAdmin && adminAuthMethod !== 'otp' && adminAuthMethod !== 'password') {
+        errors.push('Admin requires a supported authentication method')
+    }
+
     const deadline = definition.capabilities.rsvp?.deadline
     const deadlineTimestamp = deadline ? parseInstant(deadline) : null
     if (definition.capabilities.rsvp && deadlineTimestamp === null) {

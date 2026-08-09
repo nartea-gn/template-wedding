@@ -72,12 +72,15 @@ pnpm lint
 pnpm test
 pnpm build
 pnpm test:e2e
+pnpm test:e2e:matrix
 pnpm preview
 ```
 
 `pnpm build` ejecuta primero el compilador TypeScript y después Vite. `pnpm test:e2e` inicia automáticamente la
-aplicación y requiere instalar Chromium una vez mediante `pnpm exec playwright install chromium`. Las pruebas RLS se
-ejecutan contra Supabase local con `pnpm test:db`. Consulta la [estrategia de pruebas](docs/04-development/TESTING.md).
+aplicación y usa Chromium como gate rápido. `pnpm test:e2e:matrix` añade Firefox, WebKit y perfiles móviles emulados;
+requiere instalar los motores una vez mediante `pnpm exec playwright install chromium firefox webkit`. Las pruebas RLS
+se ejecutan contra Supabase local con `pnpm test:db`. Consulta la
+[estrategia de pruebas](docs/04-development/TESTING.md).
 
 ## Configurar una invitación
 

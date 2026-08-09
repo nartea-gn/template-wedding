@@ -66,6 +66,12 @@ export type InvitationSection<Message extends string> =
 
 export type AdminSortOrder = 'newest' | 'oldest' | 'identity-asc' | 'identity-desc'
 
+export type AdminAuthMethod = 'otp' | 'password'
+
+export type AdminAuthDefinition =
+    | { method: 'otp' }
+    | { method: 'password' }
+
 export type AdminReadControls = {
     csvExport?: { enabled: boolean }
     search?: { enabled: boolean }
@@ -87,6 +93,7 @@ export type InvitationCapabilities<Message extends string> = {
     }
     admin?: {
         enabled: boolean
+        auth: AdminAuthDefinition
         source: 'rsvp'
         columns: readonly string[]
         metrics: { attendanceFieldId: string; transportFieldId?: string; ownTransportValue?: string }

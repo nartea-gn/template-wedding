@@ -15,7 +15,8 @@ Current capabilities are read-only:
 - normalized current and legacy responses;
 - loading, empty, error and retry states;
 - responsive table with keyboard-accessible horizontal scrolling;
-- OTP por email con sesión Supabase y autorización RLS por invitación.
+- autenticación Supabase configurable por invitación mediante OTP o email y contraseña;
+- autorización RLS por invitación independiente del método de autenticación.
 
 ## Current data flow
 
@@ -141,9 +142,9 @@ These items are tracked in [`PRODUCT_BACKLOG.md`](../00-product/PRODUCT_BACKLOG.
 
 ## Acceso administrativo de v1
 
-Admin solicita un OTP de seis dígitos por email con `shouldCreateUser: false`, restaura la sesión Supabase al recargar y
-cierra la sesión mediante `signOut`. La interfaz no decide qué respuestas puede leer: RLS exige una membresía en
+Admin presenta únicamente `auth.method: 'otp' | 'password'`, restaura la sesión Supabase al recargar y cierra la sesión
+mediante `signOut`. La interfaz no decide qué respuestas puede leer: RLS exige una membresía en
 `invitation_admins` para el usuario autenticado y la invitación solicitada.
 
 La primera release requiere provisionar usuarios y membresías antes del despliegue. No se admite lectura anónima,
-contraseña incorporada al bundle ni claves privilegiadas en el navegador.
+contraseña incorporada al bundle, contraseña global compartida ni claves privilegiadas en el navegador.

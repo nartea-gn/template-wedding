@@ -168,6 +168,22 @@ Eliminar propiedades declaradas sin efecto y consolidar fuentes únicas de verda
 
 Validar el producto completo con contenido, navegadores y dispositivos representativos.
 
+### Progreso
+
+El primer incremento corrige y verifica el selector móvil de mapas como riesgo concreto de viewport. La hoja inferior
+usa viewport dinámico, respeta las áreas seguras y mantiene visibles las opciones automática, Google Maps y Apple Maps
+en 320 × 568, 360 × 740 y 390 × 844 px. El popover de escritorio se revalidó en 1440 × 900 px.
+
+Esta evidencia cubre únicamente el selector de mapas. No sustituye la matriz multidispositivo, de navegadores,
+accesibilidad y estados definida a continuación.
+
+El segundo incremento incorpora una matriz manual reproducible. Sobre `00ed191`, 59 recorridos pasan en Chromium,
+Firefox, WebKit, Pixel 5 e iPhone 13 emulados. Chromium añade smoke tests de Landing y RSVP en 320, 390, 768 y 1440 px;
+los selectores de idioma y mapas validan foco inicial, navegación por teclado, Escape y retorno al trigger. ES, EN y BG
+mantienen idioma, SEO y countdown, y los cinco temas recorren Landing, RSVP y acceso Admin en móvil y escritorio.
+La evidencia y sus límites se registran en
+[`RELEASE_QA_MATRIX.md`](../05-audits/RELEASE_QA_MATRIX.md).
+
 ### Matriz mínima
 
 | Dimensión    | Cobertura                                                    |

@@ -14,10 +14,11 @@ import './Admin.css';
 
 export default function Admin() {
     const {t, locale, formatDate} = useLocalization<WeddingMessageKey>();
-    const auth = useAdminSession();
-    const isAuthenticated = auth.session !== null;
     const rsvp = weddingInvitation.capabilities.rsvp;
     const admin = weddingInvitation.capabilities.admin;
+    const authMethod = admin?.auth.method ?? 'otp';
+    const auth = useAdminSession(authMethod);
+    const isAuthenticated = auth.session !== null;
     const controls = admin?.controls;
     const {
         loading, hasError, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
@@ -49,8 +50,17 @@ export default function Admin() {
         </div>;
     }
 
-    if (!isAuthenticated && (auth.phase === 'email' || auth.phase === 'code')) {
+    if (!isAuthenticated && authMethod === 'password' && auth.phase === 'password') {
         return <LoginForm title={t('admin.title')}
+                          method="password"
+                          error={auth.error}
+                          submitting={auth.submitting}
+                          onAuthenticate={auth.authenticateWithPassword}/>;
+    }
+
+    if (!isAuthenticated && authMethod === 'otp' && (auth.phase === 'email' || auth.phase === 'code')) {
+        return <LoginForm title={t('admin.title')}
+                          method="otp"
                           phase={auth.phase}
                           requestedEmail={auth.email}
                           error={auth.error}

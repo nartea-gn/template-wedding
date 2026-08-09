@@ -16,6 +16,82 @@ test('Landing presenta la invitación y permite llegar al RSVP', async ({page}) 
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
 })
 
+test('El selector móvil mantiene visibles las tres opciones de mapas', async ({page}) => {
+    await page.setViewportSize({width: 360, height: 740})
+    await page.emulateMedia({reducedMotion: 'reduce'})
+    await page.goto('./#/')
+
+    const ceremony = page.locator('.landing-venue-card').filter({hasText: 'Ceremonia'})
+    await ceremony.getByRole('button', {name: 'Cómo llegar'}).click()
+
+    const dialog = page.getByRole('dialog', {name: '¿Cómo quieres llegar?'})
+    await expect(dialog.getByRole('link', {name: /Abrir automáticamente/})).toBeVisible()
+    await expect(dialog.getByRole('link', {name: 'Google Maps'})).toBeVisible()
+    await expect(dialog.getByRole('link', {name: 'Apple Maps'})).toBeVisible()
+
+    const optionsFitViewport = await dialog.locator('.landing-map-picker-option').evaluateAll(options =>
+        options.every(option => {
+            const bounds = option.getBoundingClientRect()
+            return bounds.top >= 0 && bounds.bottom <= window.innerHeight
+        }),
+    )
+    expect(optionsFitViewport).toBe(true)
+})
+
+test('Los selectores gestionan foco, teclado y Escape', async ({page}) => {
+    await page.setViewportSize({width: 360, height: 740})
+    await page.emulateMedia({reducedMotion: 'reduce'})
+    await page.goto('./#/')
+
+    const languageTrigger = page.getByRole('button', {name: 'Idioma: Español'})
+    await languageTrigger.click()
+    const spanishOption = page.getByRole('menuitemradio', {name: /ES.*Español/})
+    await expect(spanishOption).toBeFocused()
+
+    await page.keyboard.press('ArrowDown')
+    await expect(page.getByRole('menuitemradio', {name: /EN.*English/})).toBeFocused()
+    await page.keyboard.press('Escape')
+    await expect(languageTrigger).toBeFocused()
+
+    const ceremony = page.locator('.landing-venue-card').filter({hasText: 'Ceremonia'})
+    const mapTrigger = ceremony.getByRole('button', {name: 'Cómo llegar'})
+    await mapTrigger.click()
+    await expect(page.getByRole('link', {name: /Abrir automáticamente/})).toBeFocused()
+
+    await page.keyboard.press('Escape')
+    await expect(mapTrigger).toBeFocused()
+})
+
+test('ES, EN y BG actualizan contenido, idioma y metadatos sin overflow', async ({page}) => {
+    await page.setViewportSize({width: 360, height: 740})
+    await page.emulateMedia({reducedMotion: 'reduce'})
+    await page.goto('./#/')
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+    await expect(page).toHaveTitle('Invitación de boda de Gala y Valentin')
+
+    await page.getByRole('button', {name: 'Idioma: Español'}).click()
+    await page.getByRole('menuitemradio', {name: /EN.*English/}).click()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page).toHaveTitle('Gala and Valentin’s wedding invitation')
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+        'content',
+        'Join us to celebrate our special day.',
+    )
+    await expect(page.getByText('Until the big day')).toBeVisible()
+
+    await page.getByRole('button', {name: 'Language: English'}).click()
+    await page.getByRole('menuitemradio', {name: /BG.*Български/}).click()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'bg')
+    await expect(page).toHaveTitle('Сватбена покана на Гала и Валентин')
+    await expect(page.getByText('До големия ден остават')).toBeVisible()
+
+    const hasOverflow = await page.evaluate(() =>
+        document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+    )
+    expect(hasOverflow).toBe(false)
+})
+
 test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
     await page.clock.setFixedTime(new Date('2027-05-13T00:00:00+02:00'))
     await page.goto('./')
@@ -24,7 +100,8 @@ test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
     await page.goto('./#/rsvp')
     await expect(page.getByText('Ruta no encontrada')).toBeVisible()
     await page.goto('./#/admin')
-    await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
+    await expect(page.getByLabel('Contraseña')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
 })
 
 test('RSVP permite declinar y confirma el guardado', async ({page}) => {
@@ -84,11 +161,12 @@ test('RSVP mantiene los datos y muestra un error recuperable cuando falla la API
     await expect(page.getByLabel('Nombre y apellidos *')).toHaveValue('Invitado de Prueba')
 })
 
-test('Admin protege la lectura detrás del acceso por email', async ({page}) => {
+test('Admin protege la lectura detrás del acceso con credenciales', async ({page}) => {
     await page.goto('./#/admin')
 
     await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
     await expect(page.getByLabel('Correo electrónico')).toBeVisible()
-    await expect(page.getByRole('button', {name: 'Enviar código'})).toBeVisible()
+    await expect(page.getByLabel('Contraseña')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
     await expect(page.getByText('El acceso está limitado a las personas autorizadas para esta invitación.')).toBeVisible()
 })

@@ -4,6 +4,30 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### Autenticación Admin configurable
+
+- Cada invitación selecciona OTP o email y contraseña mediante `admin.auth.method`.
+- Ambos métodos autentican con Supabase y conservan la autorización por `invitation_admins` y RLS.
+- Un comando Node idempotente provisiona emails y membresías desde variables privadas para local o producción explícita.
+- La configuración pública no contiene contraseñas, emails operativos ni claves privilegiadas.
+
+### QA de release — Sprint 7.4
+
+- El selector móvil de mapas respeta el viewport dinámico y las áreas seguras del dispositivo.
+- Las opciones automática, Google Maps y Apple Maps permanecen completamente visibles en 320 × 568, 360 × 740 y
+  390 × 844 px, sin alterar el popover de escritorio.
+- Playwright cubre el encaje vertical de las tres opciones en un viewport móvil compacto.
+- La concurrencia local de Playwright queda limitada a dos workers para que el comando oficial sea estable y
+  reproducible en el entorno de desarrollo.
+- Una matriz manual estable ejecuta 59 recorridos en dos fases sobre Chromium, Firefox, WebKit, Pixel 5 e iPhone 13
+  emulados; los smoke tests responsive cubren 320, 390, 768 y 1440 px.
+- El selector de idioma completa el patrón de menú con foco inicial, flechas, Inicio/Fin, Escape y retorno al trigger;
+  el selector de mapas queda cubierto por el mismo contrato de foco y cierre.
+- ES, EN y BG mantienen idioma, SEO, contenido localizado y countdown; una invitación monolingüe oculta su selector.
+- Royal, Boho, Dark, Magnolia y Linen recorren Landing, RSVP y acceso Admin en móvil y escritorio sin overflow.
+- El uso de `primary` como texto pequeño en Boho y Magnolia queda registrado como decisión visual pendiente, sin alterar
+  las paletas aprobadas durante QA.
+
 ### Contratos runtime completos — Sprint 7.3
 
 - `event.date` unifica hero y countdown mediante un instante ISO 8601 con offset explícito.
@@ -47,7 +71,6 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 ### Limitaciones conocidas antes de 1.0.0
 
 - La matriz exhaustiva de Firefox, WebKit, móvil y dispositivos físicos pertenece a Sprint 7.4.
-- `seo` y `deadline` forman parte del contrato, pero todavía no tienen consumidores completos.
 
 ## Hitos consolidados
 
