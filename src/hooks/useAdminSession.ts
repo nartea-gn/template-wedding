@@ -1,15 +1,27 @@
 import {useCallback, useEffect, useState} from 'react'
 import type {AuthError, Session} from '@supabase/supabase-js'
 import {supabase} from '../lib/supabaseClient'
+import type {AdminAuthMethod} from '../core/invitation'
 
-export type AdminAuthPhase = 'loading' | 'email' | 'code' | 'authenticated'
-export type AdminAuthError = 'request' | 'verification' | 'verificationRequest' | 'session' | null
+export type AdminAuthPhase = 'loading' | 'email' | 'code' | 'password' | 'authenticated'
+export type AdminAuthError =
+    | 'request'
+    | 'verification'
+    | 'verificationRequest'
+    | 'credentials'
+    | 'authenticationRequest'
+    | 'session'
+    | null
 
 function isUnprovisionedIdentity(error: AuthError) {
     return error.status === 422 && error.code === 'otp_disabled'
 }
 
-export function useAdminSession() {
+function getUnauthenticatedPhase(method: AdminAuthMethod): Extract<AdminAuthPhase, 'email' | 'password'> {
+    return method === 'password' ? 'password' : 'email'
+}
+
+export function useAdminSession(method: AdminAuthMethod) {
     const [session, setSession] = useState<Session | null>(null)
     const [phase, setPhase] = useState<AdminAuthPhase>('loading')
     const [email, setEmail] = useState('')
@@ -24,14 +36,14 @@ export function useAdminSession() {
                 if (!active) return
                 setSession(data.session)
                 setError(sessionError ? 'session' : null)
-                setPhase(data.session ? 'authenticated' : 'email')
+                setPhase(data.session ? 'authenticated' : getUnauthenticatedPhase(method))
             })
             .catch(sessionError => {
                 if (!active) return
                 console.error('Unable to restore the admin session.', sessionError)
                 setSession(null)
                 setError('session')
-                setPhase('email')
+                setPhase(getUnauthenticatedPhase(method))
             })
 
         const {data: {subscription}} = supabase.auth.onAuthStateChange((_event, nextSession) => {
@@ -39,7 +51,9 @@ export function useAdminSession() {
             setSession(nextSession)
             setPhase(currentPhase => {
                 if (nextSession) return 'authenticated'
-                if (currentPhase === 'loading' || currentPhase === 'authenticated') return 'email'
+                if (currentPhase === 'loading' || currentPhase === 'authenticated') {
+                    return getUnauthenticatedPhase(method)
+                }
                 return currentPhase
             })
         })
@@ -48,7 +62,7 @@ export function useAdminSession() {
             active = false
             subscription.unsubscribe()
         }
-    }, [])
+    }, [method])
 
     const requestCode = useCallback(async (requestedEmail: string) => {
         const normalizedEmail = requestedEmail.trim().toLowerCase()
@@ -111,6 +125,33 @@ export function useAdminSession() {
         }
     }, [email])
 
+    const authenticateWithPassword = useCallback(async (requestedEmail: string, password: string) => {
+        const normalizedEmail = requestedEmail.trim().toLowerCase()
+        setSubmitting(true)
+        setError(null)
+
+        try {
+            const {error: authenticationError} = await supabase.auth.signInWithPassword({
+                email: normalizedEmail,
+                password,
+            })
+
+            if (authenticationError) {
+                setError('credentials')
+                return false
+            }
+
+            setEmail(normalizedEmail)
+            return true
+        } catch (authenticationError) {
+            console.error('Unable to authenticate the admin session.', authenticationError)
+            setError('authenticationRequest')
+            return false
+        } finally {
+            setSubmitting(false)
+        }
+    }, [])
+
     const changeEmail = useCallback(() => {
         setError(null)
         setPhase('email')
@@ -139,6 +180,7 @@ export function useAdminSession() {
         submitting,
         requestCode,
         verifyCode,
+        authenticateWithPassword,
         changeEmail,
         signOut,
     }

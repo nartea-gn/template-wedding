@@ -8,6 +8,7 @@ function capabilities(rsvp: boolean, admin: boolean): InvitationCapabilities<str
         rsvp: {enabled: rsvp, deadline: '2027-05-12T23:59:59+02:00', form: weddingRsvpForm},
         admin: {
             enabled: admin,
+            auth: {method: 'otp'},
             source: 'rsvp',
             columns: [],
             metrics: {attendanceFieldId: 'attending'},

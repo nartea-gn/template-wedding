@@ -20,6 +20,35 @@ describe('validateInvitationDefinition', () => {
         expect(validateInvitationDefinition(definition)).toContain('Admin requires the RSVP capability to be enabled')
     })
 
+    it.each(['otp', 'password'] as const)('accepts the %s administrative authentication method', method => {
+        const definition = {
+            ...weddingInvitation,
+            capabilities: {
+                ...weddingInvitation.capabilities,
+                admin: {...weddingInvitation.capabilities.admin, auth: {method}},
+            },
+        }
+
+        expect(validateInvitationDefinition(definition)).toEqual([])
+    })
+
+    it.each([
+        ['missing', undefined],
+        ['unsupported', {method: 'magic-link'}],
+    ])('rejects an administrative authentication method that is %s', (_case, auth) => {
+        const definition = {
+            ...weddingInvitation,
+            capabilities: {
+                ...weddingInvitation.capabilities,
+                admin: {...weddingInvitation.capabilities.admin, auth},
+            },
+        }
+
+        expect(validateInvitationDefinition(definition as unknown as typeof weddingInvitation)).toContain(
+            'Admin requires a supported authentication method',
+        )
+    })
+
     it('rejects duplicate section identifiers', () => {
         const firstSection = weddingInvitation.sections[0]
         const definition = {...weddingInvitation, sections: [firstSection, firstSection]}

@@ -1,4 +1,6 @@
 export type {
+    AdminAuthDefinition,
+    AdminAuthMethod,
     AdminReadControls,
     AdminSortOrder,
     CountdownSection,

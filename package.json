@@ -18,6 +18,8 @@
     "test:e2e:matrix:compat": "playwright test --project=firefox --project=webkit --project=mobile-chrome --project=mobile-webkit --workers=1",
     "test:e2e:ui": "playwright test --ui",
     "test:db": "supabase test db",
+    "admin:provision": "node scripts/provision-admins.mjs",
+    "admin:provision:local": "node --env-file=.env.admin.local scripts/provision-admins.mjs --local",
     "quality": "pnpm run lint && pnpm run test && pnpm run build"
   },
   "dependencies": {

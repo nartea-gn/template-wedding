@@ -119,6 +119,7 @@ export const weddingInvitation = {
         },
         admin: {
             enabled: true,
+            auth: {method: 'otp'},
             source: 'rsvp',
             columns: ['fullName', 'attending', 'dietaryOptions', 'busOption', 'songRequest', 'message'],
             metrics: {attendanceFieldId: 'attending', transportFieldId: 'busOption', ownTransportValue: 'no'},
