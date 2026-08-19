@@ -32,6 +32,10 @@ export function fromDatabaseRow(row: DatabaseRow): RsvpSubmissionRecord {
     return {
         id: Number(row.id),
         createdAt: String(row.created_at),
+        updatedAt: row.updated_at ? String(row.updated_at) : undefined,
+        deletedAt: row.deleted_at ? String(row.deleted_at) : undefined,
+        deletedBy: row.deleted_by ? String(row.deleted_by) : undefined,
+        retainedUntil: row.retained_until ? String(row.retained_until) : undefined,
         invitationId: String(row.wedding_slug),
         formId: String(row.form_id ?? 'legacy-wedding-rsvp'),
         formVersion: Number(row.form_version ?? 0),

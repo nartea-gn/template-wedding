@@ -7,4 +7,11 @@ export type RsvpSubmission = {
     locale: string;
     answers: FormAnswers
 }
-export type RsvpSubmissionRecord = RsvpSubmission & { id: number; createdAt: string }
+export type RsvpSubmissionRecord = RsvpSubmission & {
+    id: number;
+    createdAt: string;
+    updatedAt?: string;
+    deletedAt?: string;
+    deletedBy?: string;
+    retainedUntil?: string;
+}

@@ -21,9 +21,10 @@ export default function Admin() {
     const isAuthenticated = auth.session !== null;
     const controls = admin?.controls;
     const {
-        loading, hasError, errorMessage, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
+        loading, hasError, errorMessage, actionMessage, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
         totalResponses, attendingResponses, declinedResponses, transportResponses, resultCount,
         presentedResponses, paginatedResponses, currentPage, totalPages, pageSize, setPageSize, setPage, refetch,
+        updateResponse, deleteResponse, restoreResponse,
     } = useAdminData(isAuthenticated, {
         locale,
         defaultSort: controls?.sorting?.default ?? 'newest',
@@ -32,7 +33,7 @@ export default function Admin() {
     });
     if (!rsvp?.enabled || !admin?.enabled) return null;
 
-    const handleExport = () => {
+    const handleExportCsv = () => {
         const csv = buildResponsesCsv({
             responses: presentedResponses,
             columns: admin.columns,
@@ -94,6 +95,9 @@ export default function Admin() {
                     {auth.error === 'session' && <p className="admin-session-error" role="alert">
                         {t('admin.auth.sessionError')}
                     </p>}
+                    {actionMessage && <p className="admin-action-message" role="status" aria-live="polite">
+                        {t(actionMessage)}
+                    </p>}
                     <p className="admin-security-note">{t('admin.auth.sharedDevice')}</p>
                 </div>
             </header>
@@ -105,13 +109,14 @@ export default function Admin() {
                           sortOrder={sortOrder} setSortOrder={setSortOrder} resultCount={resultCount}
                           totalResponses={totalResponses} pageSize={pageSize} setPageSize={setPageSize}
                           exportDisabled={loading || resultCount === 0}
-                          onExport={handleExport}/>
+                          onExport={handleExportCsv}/>
 
             <ResponsesTable responses={paginatedResponses} loading={loading} hasError={hasError} errorMessage={errorMessage} form={rsvp.form}
-                            columns={admin.columns} onRetry={() => refetch()}/>
+                            columns={admin.columns} onRetry={() => refetch()}
+                            onUpdate={updateResponse} onDelete={deleteResponse} onRestore={restoreResponse}/>
 
             {controls?.pagination?.enabled && <PaginationControls currentPage={currentPage} totalPages={totalPages}
-                                                                  onPageChange={setPage}/>}
+                                                                   onPageChange={setPage}/>}
         </div>
     </div>;
 }

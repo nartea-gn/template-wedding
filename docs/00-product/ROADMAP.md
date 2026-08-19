@@ -53,7 +53,7 @@ checklist de release y siguientes sprints definidos con criterios de aceptación
 
 El plan maestro, la secuencia y los gates se definen en [`SPRINT_7_PLAN.md`](./SPRINT_7_PLAN.md).
 
-### Sprint 7.1 — Seguridad, privacidad y baseline de datos · En curso · P0
+### Sprint 7.1 — Seguridad, privacidad y baseline de datos · Completado · P0
 
 **Objetivo:** establecer autoridad real sobre respuestas RSVP y un esquema reproducible.
 
@@ -65,6 +65,13 @@ remoto de Supabase.
 **Dirección aprobada:** OTP por email, sesión persistente, membresía de usuarios por invitación, lectura protegida por
 RLS e inserción RSVP anónima limitada. La auditoría remota de solo lectura permanece como gate antes de crear o aplicar
 migraciones.
+
+**Resultado por incremento:**
+
+1. `7.1A` — Seguridad y baseline de datos: retiro de `anon SELECT`, membresías y baseline aplicada.
+2. `7.1B` — Identidad y sesión Admin: OTP por email, sesión Supabase y cierre de sesión.
+3. `7.1C` — Provisionamiento y verificación: operación manual controlada y matriz local de roles y acceso.
+4. `7.1D` — Ciclo de vida: retención, exportación JSON/CSV, corrección, soft delete y purga de registros expirados.
 
 **Criterio de salida:**
 
