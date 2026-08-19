@@ -14,7 +14,7 @@
 }
 
 .stat-icon--default {
-    @apply text-(--color-wedding-primary);
+    @apply text-(--color-wedding-action);
 }
 
 .stat-icon--green {
@@ -49,7 +49,7 @@
 }
 
 .stat-value--default {
-    @apply text-(--color-wedding-primary);
+    @apply text-(--color-wedding-action);
 }
 
 .stat-value--green {

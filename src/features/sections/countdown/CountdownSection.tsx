@@ -20,18 +20,20 @@ export function CountdownSection<Message extends string>({
     ]
 
     return (
-        <section className="landing-countdown">
+        <section className="landing-countdown" role="timer" aria-label={t(section.content.label)}>
             <p className="landing-countdown-label">{t(section.content.label)}</p>
-            <div className="landing-countdown-row">
+            <div className="landing-countdown-row" aria-live="polite" aria-atomic="true">
                 {units.map((item, index) => (
                     <Fragment key={item.label}>
-                        <div className="landing-countdown-item">
-                            <div className="landing-countdown-unit">
-                                <span className="landing-countdown-value">{item.value}</span>
-                                <span className="landing-countdown-unit-label">{item.label}</span>
-                            </div>
-                        </div>
-                        {index < units.length - 1 && <InterfaceIcon name="rings" className="landing-countdown-sep"/>}
+                        <span className="landing-countdown-value"
+                              style={{gridColumn: index * 2 + 1}}>{item.value}</span>
+                        <span className="landing-countdown-unit-label"
+                              style={{gridColumn: index * 2 + 1}}>{item.label}</span>
+                        {index < units.length - 1
+                            ? <span className="landing-countdown-sep" style={{gridColumn: index * 2 + 2}}>
+                                <InterfaceIcon name="rings" className="landing-countdown-sep-icon"/>
+                            </span>
+                            : null}
                     </Fragment>
                 ))}
             </div>

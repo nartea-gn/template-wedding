@@ -75,15 +75,15 @@
 }
 
 .language-selector-option--selected {
-    background: color-mix(in srgb, var(--color-wedding-primary) 10%, transparent);
-    color: var(--color-wedding-primary);
+    background: color-mix(in srgb, var(--color-wedding-action) 10%, transparent);
+    color: var(--color-wedding-action);
 }
 
 .language-selector-option-code {
     min-width: 1.75rem;
     font-size: 0.72rem;
     letter-spacing: 0.08em;
-    opacity: 0.72;
+    color: var(--color-wedding-muted);
 }
 
 .language-selector-status:empty {

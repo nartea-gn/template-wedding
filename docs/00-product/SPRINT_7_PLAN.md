@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1C, 7.2 y 7.3 completados, 7.1D y despliegue alojado pendientes
+- **Estado:** en curso; 7.1A-7.1C, 7.2, 7.3 y 7.4B completados, 7.1D, despliegue alojado y dispositivos físicos pendientes
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -182,6 +182,20 @@ Firefox, WebKit, Pixel 5 e iPhone 13 emulados. Chromium añade smoke tests de La
 los selectores de idioma y mapas validan foco inicial, navegación por teclado, Escape y retorno al trigger. ES, EN y BG
 mantienen idioma, SEO y countdown, y los cinco temas recorren Landing, RSVP y acceso Admin en móvil y escritorio.
 La evidencia y sus límites se registran en
+[`RELEASE_QA_MATRIX.md`](../05-audits/RELEASE_QA_MATRIX.md).
+
+El tercer incremento, `7.4A`, resuelve `DC-018` sin modificar las paletas artísticas: `primary` deja de actuar como rol
+de texto y `action`/`muted` protegen énfasis, metadatos, controles y foco. La suite añade contenido largo ficticio en
+ES, EN y BG, reflow equivalente a zoom al 200 % y recorrido efectivo de teclado sobre Landing, RSVP y acceso Admin.
+Royal, Boho, Dark, Magnolia y Linen se comparan en móvil, tablet y escritorio. La matriz protege además la alineación
+geométrica del countdown; Magnolia estrena tres aperturas v2 con una zona superior de lectura estable. La evidencia
+final y los límites se mantienen en [`RELEASE_QA_MATRIX.md`](../05-audits/RELEASE_QA_MATRIX.md).
+
+El cuarto incremento, `7.4B`, cierra accesibilidad y automatización de despliegue: skip-link global, focus trap en
+selector de idioma, `role="timer"` en countdown, landmarks en `InvitationRenderer`, foco inicial y errores accesibles
+en login, propagación de errores reales de Supabase en Admin, `aria-busy` en dashboard, presupuestos de bundle en
+`vite.config.ts` y smoke test automático post-despliegue en GitHub Actions. Quedan como validación manual final
+dispositivos físicos Safari iOS / Chrome Android y Lighthouse / Core Web Vitals. La evidencia se registra en
 [`RELEASE_QA_MATRIX.md`](../05-audits/RELEASE_QA_MATRIX.md).
 
 ### Matriz mínima

@@ -15,7 +15,7 @@ export default function AppRouter() {
     const {t} = useLocalization<WeddingMessageKey>();
     const rsvpOpen = useRsvpAvailability(weddingInvitation.capabilities.rsvp);
     const routes = resolveRouteCapabilities(weddingInvitation.capabilities, rsvpOpen);
-    return <HashRouter><Routes>
+    return <HashRouter><main id="main-content"><Routes>
         <Route path="/" element={<Landing/>}/>
         {routes.rsvp && (
             <Route path="/rsvp" element={<Suspense fallback={<RouteLoading/>}><Rsvp/></Suspense>}/>
@@ -24,5 +24,5 @@ export default function AppRouter() {
             <Route path="/admin" element={<Suspense fallback={<RouteLoading/>}><Admin/></Suspense>}/>
         )}
         <Route path="*" element={<div className="route-not-found">{t('route.notFound')}</div>}/>
-    </Routes></HashRouter>;
+    </Routes></main></HashRouter>;
 }

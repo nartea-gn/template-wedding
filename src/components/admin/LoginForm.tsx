@@ -1,4 +1,4 @@
-import {type FormEvent, type ReactNode, useEffect, useState} from 'react'
+import {type FormEvent, type ReactNode, useEffect, useRef, useState} from 'react'
 import './LoginForm.css'
 import {useLocalization} from '../../app/providers/useLocalization'
 import type {WeddingMessageKey} from '../../invitations/wedding'
@@ -67,6 +67,13 @@ function OtpLoginForm({
     const [email, setEmail] = useState('')
     const [code, setCode] = useState('')
     const [resendSeconds, setResendSeconds] = useState(RESEND_DELAY_SECONDS)
+    const codeRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        if (phase === 'code') {
+            codeRef.current?.focus()
+        }
+    }, [phase])
 
     useEffect(() => {
         if (phase !== 'code' || resendSeconds <= 0) return
@@ -131,6 +138,7 @@ function OtpLoginForm({
                             aria-invalid={Boolean(errorMessage)}
                             aria-describedby={errorMessage ? 'admin-auth-error' : undefined}
                             required
+                            autoFocus
                         />
                     </div>
                 ) : (
@@ -155,6 +163,7 @@ function OtpLoginForm({
                             aria-invalid={Boolean(errorMessage)}
                             aria-describedby={errorMessage ? 'admin-auth-error' : undefined}
                             required
+                            ref={codeRef}
                         />
                     </div>
                 )}
@@ -202,6 +211,11 @@ function PasswordLoginForm({title, error, submitting, onAuthenticate}: PasswordL
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [passwordVisible, setPasswordVisible] = useState(false)
+    const emailRef = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+        emailRef.current?.focus()
+    }, [])
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault()
@@ -238,6 +252,7 @@ function PasswordLoginForm({title, error, submitting, onAuthenticate}: PasswordL
                         aria-invalid={Boolean(errorMessage)}
                         aria-describedby={errorMessage ? 'admin-auth-error' : undefined}
                         required
+                        ref={emailRef}
                     />
                 </div>
                 <div className="login-field">

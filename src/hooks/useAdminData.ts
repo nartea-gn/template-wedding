@@ -20,8 +20,9 @@ type Options = {
 
 export function useAdminData(isAuthenticated: boolean, options: Options) {
     const [responses, setResponses] = useState<RsvpSubmissionRecord[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
     const [filter, setFilterState] = useState<AdminFilter>('all');
     const [query, setQueryState] = useState('');
@@ -36,11 +37,13 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         try {
             setLoading(true);
             setHasError(false);
+            setErrorMessage(null);
             setResponses(await listRsvpResponses(weddingRsvpRepository, weddingInvitation.id));
             setLastUpdatedAt(new Date());
         } catch (cause) {
             console.error('Failed to load RSVP responses', cause);
             setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
         } finally {
             setLoading(false);
         }
@@ -86,6 +89,7 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
     return {
         loading,
         hasError,
+        errorMessage,
         lastUpdatedAt,
         filter,
         setFilter,

@@ -13,7 +13,7 @@
 }
 
 .landing-title {
-    @apply font-serif font-bold text-(--color-wedding-primary) leading-[0.98] tracking-normal text-balance;
+    @apply font-serif font-bold text-(--color-wedding-action) leading-[0.98] tracking-normal text-balance;
     font-family: var(--font-heading);
     font-size: clamp(3.1rem, 10vw, 7rem);
 }
@@ -23,11 +23,11 @@
 }
 
 .landing-subtitle {
-    @apply text-lg md:text-xl italic opacity-75 mt-2 max-w-xl leading-relaxed text-balance;
+    @apply text-lg md:text-xl italic mt-2 max-w-xl leading-relaxed text-balance text-(--color-wedding-muted);
 }
 
 .landing-date {
-    @apply text-sm md:text-base uppercase tracking-[0.24em] opacity-50 mt-2 leading-relaxed;
+    @apply text-sm md:text-base uppercase tracking-[0.24em] mt-2 leading-relaxed text-(--color-wedding-muted);
 }
 
 .landing-ornament {
@@ -70,7 +70,7 @@
 }
 
 .landing-venue-label {
-    @apply text-xs uppercase tracking-[0.18em] opacity-50 mb-8;
+    @apply text-xs uppercase tracking-[0.18em] mb-8 text-(--color-wedding-muted);
 }
 
 .landing-venue-grid {
@@ -83,20 +83,20 @@
 }
 
 .landing-venue-type {
-    @apply text-[0.72rem] uppercase tracking-[0.16em] opacity-50;
+    @apply text-[0.72rem] uppercase tracking-[0.16em] text-(--color-wedding-muted);
 }
 
 .landing-venue-name {
-    @apply font-serif text-2xl italic text-(--color-wedding-primary) leading-tight;
+    @apply font-serif text-2xl italic text-(--color-wedding-action) leading-tight;
     font-family: var(--font-heading);
 }
 
 .landing-venue-time {
-    @apply text-xs uppercase tracking-[0.12em] opacity-50;
+    @apply text-xs uppercase tracking-[0.12em] text-(--color-wedding-muted);
 }
 
 .landing-venue-address {
-    @apply text-[0.95rem] opacity-65 leading-relaxed max-w-xs;
+    @apply text-[0.95rem] leading-relaxed max-w-xs text-(--color-wedding-muted);
 }
 
 .landing-venue-map-shell {
@@ -169,12 +169,12 @@
 }
 
 .landing-map-picker-title {
-    @apply font-serif text-xl font-semibold text-(--color-wedding-primary);
+    @apply font-serif text-xl font-semibold text-(--color-wedding-action);
     font-family: var(--font-heading);
 }
 
 .landing-map-picker-close {
-    @apply grid size-11 shrink-0 place-items-center rounded-full border border-(--color-wedding-border) bg-transparent text-(--color-wedding-primary) cursor-pointer;
+    @apply grid size-11 shrink-0 place-items-center rounded-full border border-(--color-wedding-border) bg-transparent text-(--color-wedding-action) cursor-pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -196,11 +196,11 @@
 }
 
 .landing-map-picker-badge {
-    @apply rounded-full border border-(--color-wedding-border) px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-(--color-wedding-primary);
+    @apply rounded-full border border-(--color-wedding-border) px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-(--color-wedding-action);
 }
 
 .landing-map-picker-mark {
-    @apply grid size-10 place-items-center rounded-full bg-(--color-wedding-primary)/10 text-(--color-wedding-primary);
+    @apply grid size-10 place-items-center rounded-full bg-(--color-wedding-action)/10 text-(--color-wedding-action);
 }
 
 .landing-map-provider-icon {
@@ -307,34 +307,28 @@
 }
 
 .landing-countdown-label {
-    @apply text-xs md:text-sm uppercase tracking-[0.22em] opacity-50 leading-relaxed;
+    @apply text-xs md:text-sm uppercase tracking-[0.22em] leading-relaxed text-(--color-wedding-muted);
 }
 
 .landing-countdown-row {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-rows: var(--countdown-value-line-height) auto;
     align-items: start;
     width: min(100%, 42rem);
     column-gap: clamp(0.05rem, 0.8vw, 0.35rem);
     --countdown-value-size: clamp(3.1rem, 13vw, 5.6rem);
+    --countdown-value-line-height: calc(var(--countdown-value-size) * 1.02);
     --countdown-separator-size: 1.25rem;
-    --countdown-label-space: 1.5rem;
-    padding-bottom: var(--countdown-label-space);
-}
-
-.landing-countdown-item {
-    position: relative;
-    min-width: 0;
-    width: 100%;
-}
-
-.landing-countdown-unit {
-    display: block;
 }
 
 .landing-countdown-value {
-    @apply font-serif font-bold text-(--color-wedding-primary) leading-none;
-    display: block;
+    @apply font-serif font-bold text-(--color-wedding-action) leading-none;
+    display: flex;
+    grid-row: 1;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
     font-family: var(--font-heading);
     font-size: var(--countdown-value-size);
     font-variant-numeric: lining-nums tabular-nums;
@@ -342,26 +336,30 @@
 }
 
 .landing-countdown-unit-label {
-    @apply uppercase opacity-60;
-    position: absolute;
-    top: 100%;
-    left: 50%;
+    @apply uppercase text-(--color-wedding-muted);
+    grid-row: 2;
+    justify-self: center;
     width: max-content;
     margin-top: 0.25rem;
-    transform: translateX(-50%);
     font-size: clamp(0.625rem, 2.6vw, 0.75rem);
+    line-height: 1.2;
     letter-spacing: clamp(0.04em, 0.7vw, 0.12em);
+    text-align: center;
     white-space: nowrap;
 }
 
 .landing-countdown-sep {
+    display: grid;
+    grid-row: 1;
+    align-self: stretch;
+    place-items: center;
+}
+
+.landing-countdown-sep-icon {
     width: var(--countdown-separator-size);
     height: var(--countdown-separator-size);
-    margin-top: calc((var(--countdown-value-size) - var(--countdown-separator-size)) / 2 + 0.08rem);
     color: var(--theme-ornament-color);
     opacity: var(--theme-ornament-opacity);
-    align-self: start;
-    justify-self: center;
 }
 
 @media (min-width: 768px) {
@@ -393,7 +391,6 @@
     .landing-countdown-row {
         --countdown-value-size: clamp(2rem, 11.2vw, 3rem);
         --countdown-separator-size: 1rem;
-        --countdown-label-space: 1.35rem;
     }
 
     .landing-countdown-value {
@@ -429,5 +426,5 @@
 }
 
 .landing-hashtag {
-    @apply text-sm italic opacity-40 tracking-wide;
+    @apply text-sm italic tracking-wide text-(--color-wedding-muted);
 }

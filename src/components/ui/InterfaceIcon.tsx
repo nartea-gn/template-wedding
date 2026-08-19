@@ -67,10 +67,10 @@ const paths: Record<string, ReactNode> = {
         <path d="m7 7 10 10M17 7 7 17"/>
     </>,
     rings: <>
-        <circle cx="9.5" cy="14" r="5.25"/>
-        <circle cx="14.5" cy="14" r="5.25"/>
-        <path d="M7.8 8.3h3.4M12.8 8.3h3.4"/>
-        <path d="m9.5 6.6 1.7 1.7M14.5 6.6l1.7 1.7"/>
+        <circle cx="9.5" cy="13" r="5.25"/>
+        <circle cx="14.5" cy="13" r="5.25"/>
+        <path d="M7.8 7.3h3.4M12.8 7.3h3.4"/>
+        <path d="m9.5 5.6 1.7 1.7M14.5 5.6l1.7 1.7"/>
     </>,
 }
 

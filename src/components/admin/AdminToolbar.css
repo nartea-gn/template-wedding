@@ -23,7 +23,7 @@
 }
 
 .admin-toolbar-select, .admin-toolbar-input {
-    @apply w-full h-13 rounded-xl border border-(--color-wedding-border) bg-(--color-wedding-surface) px-4 py-2.5 text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-primary);
+    @apply w-full h-13 rounded-xl border border-(--color-wedding-border) bg-(--color-wedding-surface) px-4 py-2.5 text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-action);
 }
 
 .admin-toolbar-select {
@@ -51,6 +51,6 @@
 }
 
 .admin-toolbar-page-size-select {
-    @apply h-10 w-28 rounded-lg border border-(--color-wedding-border) bg-(--color-wedding-surface) py-0 pl-5 pr-10 text-base leading-none text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-primary);
+    @apply h-10 w-28 rounded-lg border border-(--color-wedding-border) bg-(--color-wedding-surface) py-0 pl-5 pr-10 text-base leading-none text-(--color-wedding-text) focus:outline-none focus:ring-2 focus:ring-(--color-wedding-action);
     background-position: calc(100% - 1rem) 50%, calc(100% - 0.68rem) 50%;
 }

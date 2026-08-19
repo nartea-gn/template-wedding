@@ -8,18 +8,18 @@ import './ResponsesTable.css';
 
 type Props = {
     responses: RsvpSubmissionRecord[]; loading: boolean; hasError: boolean;
-    form: FormDefinition<WeddingMessageKey>; columns: readonly string[];
+    errorMessage: string | null; form: FormDefinition<WeddingMessageKey>; columns: readonly string[];
     onRetry: () => void
 };
 
-export function ResponsesTable({responses, loading, hasError, form, columns, onRetry}: Props) {
+export function ResponsesTable({responses, loading, hasError, errorMessage, form, columns, onRetry}: Props) {
     const {t} = useLocalization<WeddingMessageKey>();
     const fields = getFormFields(form);
     return <main className="card responses-table" aria-busy={loading}>
         {hasError ?
             <div className="responses-state responses-state--error" role="alert">
                 <InterfaceIcon name="alert-triangle" className="responses-state-icon"/>
-                <span>{t('admin.loadError')}</span>
+                <span>{errorMessage ?? t('admin.loadError')}</span>
                 <button type="button" className="btn btn--outline responses-retry" onClick={onRetry}>
                     {t('admin.retry')}
                 </button>

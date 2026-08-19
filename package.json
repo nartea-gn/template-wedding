@@ -20,13 +20,17 @@
     "test:db": "supabase test db",
     "admin:provision": "node scripts/provision-admins.mjs",
     "admin:provision:local": "node --env-file=.env.admin.local scripts/provision-admins.mjs --local",
-    "quality": "pnpm run lint && pnpm run test && pnpm run build"
+    "quality": "pnpm run lint && pnpm run test && pnpm run build",
+    "smoke:test": "node scripts/smoke-test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.2",
+    "gsap": "^3.15.0",
+    "impeccable": "^3.6.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.1",
+    "taste-skill": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

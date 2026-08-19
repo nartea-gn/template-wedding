@@ -110,8 +110,18 @@ tres opciones se verificaron en 320 × 568, 360 × 740, 390 × 844 y escritorio.
 **Segundo incremento:** 59 recorridos pasan en Chromium, Firefox, WebKit, Chrome móvil y Safari móvil emulados sobre
 `00ed191`; Landing y RSVP no presentan overflow horizontal en 320/390/768/1440 px, los selectores gestionan foco,
 teclado y Escape, y ES/EN/BG conservan idioma, SEO y countdown. Royal, Boho, Dark, Magnolia y Linen mantienen Landing,
-RSVP y acceso Admin en móvil y escritorio. Dispositivos físicos, accesibilidad manual completa, contenido largo,
-rendimiento y la decisión de contraste `DC-018` continúan abiertos.
+RSVP y acceso Admin en móvil y escritorio.
+
+**Tercer incremento — 7.4A:** `DC-018` queda resuelto conservando `primary` como acento artístico y aplicando roles de
+texto con contraste AA. Contenido largo en ES, EN y BG, reflow al 200 % y la secuencia efectiva de teclado quedan
+protegidos en Chromium. Las cinco colecciones se revalidan visualmente en Landing, RSVP y acceso Admin, en móvil y
+escritorio. El countdown usa una fila geométrica común para cifras y anillos, verificada también en tablet; Magnolia
+incorpora una apertura v2 con corredor de lectura central en sus tres proporciones responsive.
+
+**Cuarto incremento — 7.4B:** accesibilidad y automatización. Skip-link, focus trap, landmarks, `role="timer"`,
+errores accesibles y foco inicial en login cierran la cobertura de lector de pantalla. Admin propaga errores reales
+y corrige el `loading` inicial. `vite.config.ts` incorpora presupuestos de bundle y `deploy.yml` ejecuta smoke test
+automático. Quedan pendientes validación en dispositivos físicos y Lighthouse/Core Web Vitals.
 
 ### Sprint 7.5 — Release candidate · Planificado · P1
 

@@ -16,11 +16,11 @@
 }
 
 .rsvp-success-icon {
-    @apply size-12 mx-auto mb-2 text-(--color-wedding-primary);
+    @apply size-12 mx-auto mb-2 text-(--color-wedding-action);
 }
 
 .rsvp-success-title {
-    @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-primary);
+    @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-action);
     font-family: var(--font-heading);
 }
 
@@ -51,7 +51,7 @@
 }
 
 .rsvp-progress-bar {
-    @apply bg-(--color-wedding-primary) h-full rounded-full transition-[width] duration-500 ease-out;
+    @apply bg-(--color-wedding-action) h-full rounded-full transition-[width] duration-500 ease-out;
     width: var(--progress, 0%);
 }
 
@@ -174,7 +174,7 @@
 }
 
 .rsvp-btn-ghost {
-    @apply text-(--color-wedding-primary)/70;
+    @apply text-(--color-wedding-action);
 }
 
 .rsvp-btn-submit {

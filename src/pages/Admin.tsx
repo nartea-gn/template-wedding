@@ -21,7 +21,7 @@ export default function Admin() {
     const isAuthenticated = auth.session !== null;
     const controls = admin?.controls;
     const {
-        loading, hasError, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
+        loading, hasError, errorMessage, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
         totalResponses, attendingResponses, declinedResponses, transportResponses, resultCount,
         presentedResponses, paginatedResponses, currentPage, totalPages, pageSize, setPageSize, setPage, refetch,
     } = useAdminData(isAuthenticated, {
@@ -71,7 +71,7 @@ export default function Admin() {
     }
 
     return <div className="admin-page">
-        <div className="admin-container">
+        <div className="admin-container" aria-busy={loading}>
             <header className="admin-header">
                 <div className="admin-title-block">
                     <h1 className="admin-title">{t('admin.title')}</h1>
@@ -107,7 +107,7 @@ export default function Admin() {
                           exportDisabled={loading || resultCount === 0}
                           onExport={handleExport}/>
 
-            <ResponsesTable responses={paginatedResponses} loading={loading} hasError={hasError} form={rsvp.form}
+            <ResponsesTable responses={paginatedResponses} loading={loading} hasError={hasError} errorMessage={errorMessage} form={rsvp.form}
                             columns={admin.columns} onRetry={() => refetch()}/>
 
             {controls?.pagination?.enabled && <PaginationControls currentPage={currentPage} totalPages={totalPages}
