@@ -5,7 +5,7 @@
 }
 
 .route-loading-indicator {
-    @apply size-8 rounded-full border-2 border-(--color-wedding-border) border-t-(--color-wedding-primary);
+    @apply size-8 rounded-full border-2 border-(--color-wedding-border) border-t-(--color-wedding-action);
     animation: route-loading-spin 0.8s linear infinite;
 }
 

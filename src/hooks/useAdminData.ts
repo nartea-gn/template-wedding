@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {listRsvpResponses} from '../features/rsvp/application/listRsvpResponses';
+import {listRsvpResponses, updateRsvpResponse, softDeleteRsvpResponse, restoreRsvpResponse, purgeExpiredRsvpResponses} from '../features/rsvp/application/adminRsvpActions';
 import type {RsvpSubmissionRecord} from '../features/rsvp/domain/RsvpSubmission';
 import type {AdminSortOrder} from '../core/invitation';
 import {
@@ -20,8 +20,10 @@ type Options = {
 
 export function useAdminData(isAuthenticated: boolean, options: Options) {
     const [responses, setResponses] = useState<RsvpSubmissionRecord[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [actionMessage, setActionMessage] = useState<string | null>(null);
     const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
     const [filter, setFilterState] = useState<AdminFilter>('all');
     const [query, setQueryState] = useState('');
@@ -36,11 +38,13 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         try {
             setLoading(true);
             setHasError(false);
+            setErrorMessage(null);
             setResponses(await listRsvpResponses(weddingRsvpRepository, weddingInvitation.id));
             setLastUpdatedAt(new Date());
         } catch (cause) {
             console.error('Failed to load RSVP responses', cause);
             setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
         } finally {
             setLoading(false);
         }
@@ -83,9 +87,83 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         resetPage();
     };
 
+    const updateResponse = useCallback(async (id: number, changes: Partial<Pick<RsvpSubmissionRecord, 'answers' | 'full_name' | 'attending' | 'dietary_options' | 'dietary_other' | 'bus_option' | 'song_request' | 'message' | 'locale'>>) => {
+        try {
+            setLoading(true);
+            setHasError(false);
+            setErrorMessage(null);
+            const updated = await updateRsvpResponse(weddingRsvpRepository, weddingInvitation.id, id, changes)
+            setResponses(prev => prev.map(item => item.id === id ? updated : item))
+            setActionMessage('admin.actions.updated')
+            setTimeout(() => setActionMessage(null), 3000)
+        } catch (cause) {
+            console.error('Failed to update RSVP response', cause);
+            setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const deleteResponse = useCallback(async (id: number) => {
+        try {
+            setLoading(true);
+            setHasError(false);
+            setErrorMessage(null);
+            await softDeleteRsvpResponse(weddingRsvpRepository, weddingInvitation.id, id)
+            setResponses(prev => prev.map(item => item.id === id ? {...item, deletedAt: new Date().toISOString()} : item))
+            setActionMessage('admin.actions.deleted')
+            setTimeout(() => setActionMessage(null), 3000)
+        } catch (cause) {
+            console.error('Failed to delete RSVP response', cause);
+            setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const restoreResponse = useCallback(async (id: number) => {
+        try {
+            setLoading(true);
+            setHasError(false);
+            setErrorMessage(null);
+            await restoreRsvpResponse(weddingRsvpRepository, weddingInvitation.id, id)
+            setResponses(prev => prev.map(item => item.id === id ? {...item, deletedAt: undefined, deletedBy: undefined} : item))
+            setActionMessage('admin.actions.restored')
+            setTimeout(() => setActionMessage(null), 3000)
+        } catch (cause) {
+            console.error('Failed to restore RSVP response', cause);
+            setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const purgeExpired = useCallback(async () => {
+        try {
+            setLoading(true);
+            setHasError(false);
+            setErrorMessage(null);
+            await purgeExpiredRsvpResponses(weddingRsvpRepository, weddingInvitation.id)
+            setActionMessage('admin.actions.purged')
+            setTimeout(() => setActionMessage(null), 3000)
+            await fetchResponses()
+        } catch (cause) {
+            console.error('Failed to purge expired RSVP responses', cause);
+            setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+        } finally {
+            setLoading(false);
+        }
+    }, [fetchResponses]);
+
     return {
         loading,
         hasError,
+        errorMessage,
+        actionMessage,
         lastUpdatedAt,
         filter,
         setFilter,
@@ -106,6 +184,10 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         setPageSize,
         setPage,
         refetch: fetchResponses,
+        updateResponse,
+        deleteResponse,
+        restoreResponse,
+        purgeExpired,
     };
 }
 

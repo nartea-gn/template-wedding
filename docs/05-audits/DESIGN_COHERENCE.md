@@ -69,11 +69,11 @@ La auditoría conserva los hallazgos originales como evidencia histórica. El ci
 |----------|-----------------------------------------------------------------------------------------------|------------------|
 | `DC-001` | Royal restaurado, validado en 320, 390, 768 y 1440 px y aprobado por producto.                | Cerrado          |
 | `DC-002` | Roles funcionales y contraste estático AA para los cinco temas; comparativa visual completada. | Cerrado          |
-| `DC-003` | Countdown recompuesto y validado en ES, EN y BG sin overflow.                                 | Cerrado          |
+| `DC-003` | Countdown recompuesto, sin overflow y con cifras/anillos alineados en los cinco temas.         | Cerrado · Sprint 7.4A |
 | `DC-010` | Superficies de éxito/error por tema; RSVP y Dark revalidados. Admin real pasa a Sprint 7.4.   | Baseline cerrado |
 | `DC-015` | Contenido esencial visible en primer render y fallback global de reduced motion presente.     | Baseline cerrado |
 | `DC-017` | Cinco familias responsive con apertura y cuerpo modular continuo, incluida corrección Linen.  | Cerrado          |
-| `DC-018` | `primary` no alcanza AA como texto pequeño en Boho y Magnolia; requiere una decisión de rol.   | Abierto · Sprint 7.4 |
+| `DC-018` | `primary` queda reservado al arte; texto y controles usan roles accesibles verificados.        | Cerrado · Sprint 7.4A |
 
 `Baseline cerrado` significa que la implementación de Sprint 6 cumple su objetivo; no sustituye las pruebas integrales
 del release candidate.
@@ -99,9 +99,25 @@ realizarse también sobre las superficies reales donde aparezcan, no solo sobre 
   pequeño de badges, metadatos o tablas.
 - **Límite:** los roles inequívocamente funcionales (`text`, `onAction`, `success`, `danger` y `controlBorder`) sí están
   protegidos por pruebas automáticas. Este hallazgo no invalida los fondos ni las paletas aprobadas.
-- **Decisión pendiente:** comparar dos rutas antes de modificar diseño: oscurecer `primary` en Boho y Magnolia, o
-  conservarlo como acento y añadir un rol semántico accesible específico para texto de énfasis. La segunda opción evita
-  degradar la dirección artística, pero amplía deliberadamente el contrato del tema.
+- **Decisión:** conservar `primary` como acento artístico y utilizar `action` para énfasis textual cromático, progreso,
+  foco y controles. Los metadatos usan `muted` sin opacidades que reduzcan su legibilidad. No se añade un rol nuevo ni se
+  oscurecen las paletas completas porque el contrato existente cubre la necesidad.
+- **Implementación:** títulos, cifras, badges, estados seleccionados y controles migran al rol correspondiente; los
+  valores `muted` de Royal, Boho, Magnolia y Linen reciben el ajuste mínimo necesario para superar 4,5:1 tanto sobre
+  `background` como sobre `surface`.
+- **Validación:** las pruebas del tema protegen `text`, `muted` y `action` sobre ambas superficies. Landing, RSVP y
+  acceso Admin se compararon en 390 × 844 y 1440 × 900 px para Royal, Boho, Dark, Magnolia y Linen; la dirección visual
+  permanece coherente y no presenta clipping u overflow.
+
+Contraste final de los roles utilizados para texto:
+
+| Tema     | Action/fondo | Action/superficie | Muted/fondo | Muted/superficie |
+|----------|-------------:|------------------:|-------------:|-----------------:|
+| Royal    |      10,69:1 |           9,96:1 |       4,96:1 |          4,61:1 |
+| Boho     |       5,22:1 |           4,74:1 |       5,10:1 |          4,63:1 |
+| Dark     |       8,50:1 |           7,62:1 |       7,66:1 |          6,86:1 |
+| Magnolia |       5,67:1 |           5,06:1 |       5,18:1 |          4,62:1 |
+| Linen    |       7,66:1 |           7,26:1 |       4,93:1 |          4,68:1 |
 
 ## Hallazgos originales
 
@@ -303,7 +319,10 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 - En 320 y 390 px la composición conserva una sola línea de countdown, a costa de labels computados entre 7,68 y 8,32
   px.
 - **Revalidación 6.6.1:** los labels pasan a 10 px en 320, 10,14 px en 390 y 12 px desde tablet; no existe overflow en
-  ES, EN o BG y los separadores quedan centrados a 1–2 px respecto de las cifras.
+  ES, EN o BG.
+- **Revalidación 7.4A:** cifras y separadores comparten una fila física común y el dibujo de los anillos se centra
+  ópticamente en su `viewBox`. La geometría coincide con una tolerancia máxima de 0,5 px en Royal, Boho, Dark,
+  Magnolia y Linen a 390, 768 y 1440 px; la inspección focalizada amplía la cobertura a 320 y 1024 px.
 - En 768 y 1440 px el countdown utiliza un ancho máximo estable de 672 px y conserva la jerarquía histórica de Royal.
 
 ### RSVP
@@ -339,6 +358,10 @@ amplifica el ancho sin mejorar lectura en todos los idiomas.
 
 Las familias tipográficas actuales permanecen como baseline. Una sustitución por tipografías “redondas con vida” o
 fuentes propias requiere aprobación en Nartea Studio y una estrategia de carga medida.
+
+Magnolia incorpora desde 7.4A una apertura v2 en proporciones estrecha, media y panorámica. Las flores permanecen en
+los bordes y reservan un corredor central-superior del 65–70 % para nombres y contenido introductorio. La composición
+se inspeccionó a 320, 390, 768, 1024 y 1440 px; las copias JPEG v2 se conservan en `references/`.
 
 ## Propiedad técnica recomendada
 

@@ -3,6 +3,7 @@ import {themes, toCssVariables, type ThemeId} from '../src/design/themes'
 
 const viewports = [
     {name: 'móvil', width: 390, height: 844},
+    {name: 'tablet', width: 768, height: 1024},
     {name: 'escritorio', width: 1440, height: 900},
 ]
 
@@ -22,6 +23,7 @@ for (const themeId of themeIds) {
 
             await expect(page.locator('html')).toHaveAttribute('data-theme', themeId)
             await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
+            await assertCountdownAlignment(page)
             expect(await hasHorizontalOverflow(page)).toBe(false)
             expect(await page.locator('.landing-page').evaluate(element =>
                 getComputedStyle(element, '::before').backgroundImage,
@@ -66,4 +68,27 @@ async function hasHorizontalOverflow(page: Page) {
     return page.evaluate(() =>
         document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     )
+}
+
+async function assertCountdownAlignment(page: Page) {
+    await page.evaluate(async () => {
+        const value = document.querySelector<HTMLElement>('.landing-countdown-value')
+        if (!value) return
+        const style = getComputedStyle(value)
+        await document.fonts.load(`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`)
+        await document.fonts.ready
+        await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+    })
+
+    const valueCenters = await page.locator('.landing-countdown-value').evaluateAll(elements =>
+        elements.map(element => element.getBoundingClientRect().y + element.getBoundingClientRect().height / 2),
+    )
+    const separatorCenters = await page.locator('.landing-countdown-sep').evaluateAll(elements =>
+        elements.map(element => element.getBoundingClientRect().y + element.getBoundingClientRect().height / 2),
+    )
+    const valueCenter = valueCenters.reduce((total, value) => total + value, 0) / valueCenters.length
+
+    for (const separatorCenter of separatorCenters) {
+        expect(Math.abs(separatorCenter - valueCenter)).toBeLessThanOrEqual(0.5)
+    }
 }

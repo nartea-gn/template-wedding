@@ -53,7 +53,7 @@ checklist de release y siguientes sprints definidos con criterios de aceptación
 
 El plan maestro, la secuencia y los gates se definen en [`SPRINT_7_PLAN.md`](./SPRINT_7_PLAN.md).
 
-### Sprint 7.1 — Seguridad, privacidad y baseline de datos · En curso · P0
+### Sprint 7.1 — Seguridad, privacidad y baseline de datos · Completado · P0
 
 **Objetivo:** establecer autoridad real sobre respuestas RSVP y un esquema reproducible.
 
@@ -65,6 +65,13 @@ remoto de Supabase.
 **Dirección aprobada:** OTP por email, sesión persistente, membresía de usuarios por invitación, lectura protegida por
 RLS e inserción RSVP anónima limitada. La auditoría remota de solo lectura permanece como gate antes de crear o aplicar
 migraciones.
+
+**Resultado por incremento:**
+
+1. `7.1A` — Seguridad y baseline de datos: retiro de `anon SELECT`, membresías y baseline aplicada.
+2. `7.1B` — Identidad y sesión Admin: OTP por email, sesión Supabase y cierre de sesión.
+3. `7.1C` — Provisionamiento y verificación: operación manual controlada y matriz local de roles y acceso.
+4. `7.1D` — Ciclo de vida: retención, exportación JSON/CSV, corrección, soft delete y purga de registros expirados.
 
 **Criterio de salida:**
 
@@ -110,8 +117,18 @@ tres opciones se verificaron en 320 × 568, 360 × 740, 390 × 844 y escritorio.
 **Segundo incremento:** 59 recorridos pasan en Chromium, Firefox, WebKit, Chrome móvil y Safari móvil emulados sobre
 `00ed191`; Landing y RSVP no presentan overflow horizontal en 320/390/768/1440 px, los selectores gestionan foco,
 teclado y Escape, y ES/EN/BG conservan idioma, SEO y countdown. Royal, Boho, Dark, Magnolia y Linen mantienen Landing,
-RSVP y acceso Admin en móvil y escritorio. Dispositivos físicos, accesibilidad manual completa, contenido largo,
-rendimiento y la decisión de contraste `DC-018` continúan abiertos.
+RSVP y acceso Admin en móvil y escritorio.
+
+**Tercer incremento — 7.4A:** `DC-018` queda resuelto conservando `primary` como acento artístico y aplicando roles de
+texto con contraste AA. Contenido largo en ES, EN y BG, reflow al 200 % y la secuencia efectiva de teclado quedan
+protegidos en Chromium. Las cinco colecciones se revalidan visualmente en Landing, RSVP y acceso Admin, en móvil y
+escritorio. El countdown usa una fila geométrica común para cifras y anillos, verificada también en tablet; Magnolia
+incorpora una apertura v2 con corredor de lectura central en sus tres proporciones responsive.
+
+**Cuarto incremento — 7.4B:** accesibilidad y automatización. Skip-link, focus trap, landmarks, `role="timer"`,
+errores accesibles y foco inicial en login cierran la cobertura de lector de pantalla. Admin propaga errores reales
+y corrige el `loading` inicial. `vite.config.ts` incorpora presupuestos de bundle y `deploy.yml` ejecuta smoke test
+automático. Quedan pendientes validación en dispositivos físicos y Lighthouse/Core Web Vitals.
 
 ### Sprint 7.5 — Release candidate · Planificado · P1
 

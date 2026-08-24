@@ -22,7 +22,7 @@
 }
 
 .responses-spinner {
-    @apply inline-block w-6 h-6 border-2 border-(--color-wedding-primary) border-t-transparent rounded-full animate-spin mb-3;
+    @apply inline-block w-6 h-6 border-2 border-(--color-wedding-action) border-t-transparent rounded-full animate-spin mb-3;
 }
 
 .responses-scroll {
@@ -58,19 +58,19 @@
 }
 
 .responses-td-muted {
-    @apply p-4 text-xs text-(--color-wedding-text)/70;
+    @apply p-4 text-xs text-(--color-wedding-muted);
 }
 
 .responses-td-cap {
-    @apply p-4 text-xs text-(--color-wedding-text)/70 capitalize;
+    @apply p-4 text-xs text-(--color-wedding-muted) capitalize;
 }
 
 .responses-td-italic {
-    @apply p-4 text-xs italic text-(--color-wedding-text)/70;
+    @apply p-4 text-xs italic text-(--color-wedding-muted);
 }
 
 .responses-td-message {
-    @apply p-4 text-xs text-(--color-wedding-primary)/80 max-w-[200px] truncate;
+    @apply p-4 text-xs text-(--color-wedding-muted) max-w-[200px] truncate;
 }
 
 .responses-badge {

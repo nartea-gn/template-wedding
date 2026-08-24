@@ -125,5 +125,21 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 | Ingeniería           | —      | —     | —      | Pendiente |
 | QA/validación manual | —      | —     | —      | Pendiente |
 
+## Sprint 7.1D — Ciclo de vida de datos
+
+- [x] Migración `20260819_add_rsvp_lifecycle.sql` creada y versionada.
+- [x] Columnas `updated_at`, `deleted_at`, `deleted_by`, `retained_until` definidas.
+- [x] Trigger `set_updated_at` implementado.
+- [x] Policies `UPDATE` y soft `DELETE` para `authenticated` creadas.
+- [x] Función RPC `purge_expired_rsvp` definida con `SECURITY DEFINER`.
+- [x] Tests pgTAP (`rsvp_lifecycle.test.sql`) creados para UPDATE, DELETE, retención y RPC.
+- [x] `RsvpRepository` extendido con `update`, `softDelete`, `restore`, `purgeExpired`.
+- [x] `SupabaseRsvpRepository` implementa operaciones filtradas por `wedding_slug`.
+- [x] Mapper actualizado para nuevas columnas de ciclo de vida.
+- [x] UI Admin: edición inline, soft delete, restore, exportación JSON.
+- [ ] Migración aplicada en Supabase local.
+- [ ] Migración aplicada en Supabase remoto/producción.
+- [ ] Tests pgTAP ejecutados y verdes en CI.
+
 `1.0.0` no se publica mientras seguridad, privacidad o reproducibilidad de base de datos mantengan un punto obligatorio
 sin completar.

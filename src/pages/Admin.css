@@ -36,7 +36,7 @@
 }
 
 .admin-title {
-    @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-primary);
+    @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-action);
     font-family: var(--font-heading);
 }
 

@@ -64,6 +64,14 @@ export function LanguageSelector() {
         if (event.key === 'ArrowUp') nextIndex = (currentIndex - 1 + supportedLocales.length) % supportedLocales.length
         if (event.key === 'Home') nextIndex = 0
         if (event.key === 'End') nextIndex = supportedLocales.length - 1
+        if (event.key === 'Tab') {
+            event.preventDefault()
+            nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % supportedLocales.length
+        }
+        if (event.key === 'Tab' && event.shiftKey) {
+            event.preventDefault()
+            nextIndex = currentIndex <= 0 ? supportedLocales.length - 1 : currentIndex - 1
+        }
         if (nextIndex === undefined) return
 
         event.preventDefault()

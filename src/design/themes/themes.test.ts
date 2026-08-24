@@ -4,6 +4,11 @@ import {themes} from './themes'
 describe.each(Object.entries(themes))('theme %s', (_, theme) => {
     it('keeps essential text roles at WCAG AA contrast', () => {
         expect(contrast(theme.colors.text, theme.colors.background)).toBeGreaterThanOrEqual(4.5)
+        expect(contrast(theme.colors.text, theme.colors.surface)).toBeGreaterThanOrEqual(4.5)
+        expect(contrast(theme.colors.muted, theme.colors.background)).toBeGreaterThanOrEqual(4.5)
+        expect(contrast(theme.colors.muted, theme.colors.surface)).toBeGreaterThanOrEqual(4.5)
+        expect(contrast(theme.colors.action, theme.colors.background)).toBeGreaterThanOrEqual(4.5)
+        expect(contrast(theme.colors.action, theme.colors.surface)).toBeGreaterThanOrEqual(4.5)
         expect(contrast(theme.colors.onAction, theme.colors.action)).toBeGreaterThanOrEqual(4.5)
         expect(contrast(theme.colors.success, theme.colors.successSurface)).toBeGreaterThanOrEqual(4.5)
         expect(contrast(theme.colors.danger, theme.colors.dangerSurface)).toBeGreaterThanOrEqual(4.5)

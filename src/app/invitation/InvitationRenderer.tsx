@@ -12,7 +12,7 @@ export function InvitationRenderer<Locale extends string, Message extends string
                                                                                       definition,
                                                                                       registry
                                                                                   }: Readonly<Props<Locale, Message>>) {
-    return definition.sections.filter(section => section.enabled).map(section => {
+    return <main>{definition.sections.filter(section => section.enabled).map(section => {
         if (!hasSectionRenderer(registry, section.type)) {
             if (import.meta.env.DEV) console.error(`Missing section renderer: ${section.type}`)
             return null
@@ -26,5 +26,5 @@ export function InvitationRenderer<Locale extends string, Message extends string
             event={definition.event}
             capabilities={definition.capabilities}
         />
-    })
+    })}</main>
 }
