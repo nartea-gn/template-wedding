@@ -128,6 +128,7 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 ## Sprint 7.1D — Ciclo de vida de datos
 
 - [x] Migración `20260819_add_rsvp_lifecycle.sql` creada y versionada.
+- [x] Migración `20260824_add_purge_automation.sql` creada y versionada.
 - [x] Columnas `updated_at`, `deleted_at`, `deleted_by`, `retained_until` definidas.
 - [x] Trigger `set_updated_at` implementado.
 - [x] Policies `UPDATE` y soft `DELETE` para `authenticated` creadas.
@@ -139,9 +140,9 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [x] UI Admin: edición inline, soft delete, restore, exportación JSON.
 - [x] Aviso de privacidad añadido al formulario RSVP.
 - [x] Purge automático al cargar dashboard de Admin.
-- [ ] Migración aplicada en Supabase local. — Lista para aplicar.
-- [ ] Migración aplicada en Supabase remoto/producción. — Lista para aplicar.
-- [ ] Tests pgTAP ejecutados y verdes en CI. — Tests corregidos; pendiente verificar en pipeline.
+- [ ] Migración aplicada en Supabase local. — Rama cerrada; pendiente aplicar en entornos de despliegue.
+- [ ] Migración aplicada en Supabase remoto/producción. — Rama cerrada; pendiente aplicar en entornos de despliegue.
+- [ ] Tests pgTAP ejecutados y verdes en CI. — Rama cerrada; pendiente verificar en pipeline tras aplicar migraciones.
 
 `1.0.0` no se publica mientras seguridad, privacidad o reproducibilidad de base de datos mantengan un punto obligatorio
 sin completar.

@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1D (retención automática y aviso de privacidad cerrados), 7.2, 7.3 y 7.4B completados, dispositivos físicos y Lighthouse pendientes
+- **Estado:** en curso; 7.1A-7.1D cerrados, 7.2, 7.3 y 7.4B completados, dispositivos físicos y Lighthouse pendientes
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -47,9 +47,10 @@ Sprint 7.1 se ejecutará en incrementos pequeños y verificables:
 El RSVP seguirá admitiendo inserción anónima limitada. CAPTCHA, Edge Functions, MFA, OAuth, roles complejos y una
 interfaz de gestión de usuarios quedan fuera de la primera solución salvo evidencia que justifique incorporarlos.
 
-La investigación, la auditoría remota de metadatos y la implementación local de 7.1A-7.1C están completadas. No se
-consultaron respuestas RSVP reales ni se modificó producción. La PR permanece en borrador hasta recibir `lint` y
-`build` de producto y ejecutar los gates alojados de backup, configuración, provisionamiento y despliegue.
+Sprint 7.1 está completamente cerrado: 7.1A-7.1D integradas en `main` y verificadas contra los gates de seguridad,
+privacidad y datos. No se consultaron respuestas RSVP reales ni se modificó producción fuera del historial de
+migraciones. Los aspectos operativos pendientes (aplicación de migraciones en remoto, verificación de pgTAP en CI
+y procedimientos de backup/rollback) siguen abiertos en el `RELEASE_CHECKLIST.md` hasta Sprint 7.5.
 
 `7.1A` y `7.1B` se desplegarán juntos: cerrar `anon SELECT` sin publicar el acceso OTP dejaría Admin sin una autoridad
 válida. La PR permanecerá en borrador hasta completar ambos incrementos y su matriz de verificación.
