@@ -77,6 +77,7 @@ export const esMessages = {
     'rsvp.message.label': 'Tu mensaje',
     'rsvp.message.placeholder': 'Escribe aquí tu mensaje...',
     'rsvp.error.submit': 'Hubo un error al guardar tu asistencia. Inténtalo de nuevo.',
+    'rsvp.privacy.notice': 'Los datos de este formulario se usan únicamente para organizar la celebración y se eliminan cuando ya no sean necesarios.',
     'form.error.required': 'Este campo es obligatorio',
     'form.error.email': 'Introduce un correo electrónico válido',
     'form.error.minLength': 'El valor es demasiado corto',

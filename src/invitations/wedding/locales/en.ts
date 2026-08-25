@@ -1,4 +1,4 @@
-import type {WeddingMessageKey} from './es'
+import type {MessageCatalog} from '../../../core/localization'
 
 export const enMessages = {
     'event.title': 'We are getting married',
@@ -77,6 +77,7 @@ export const enMessages = {
     'rsvp.message.label': 'Your message',
     'rsvp.message.placeholder': 'Write your message here...',
     'rsvp.error.submit': 'We could not save your response. Please try again.',
+    'rsvp.privacy.notice': 'The data in this form is used only to organize the celebration and is deleted when no longer needed.',
     'form.error.required': 'This field is required',
     'form.error.email': 'Enter a valid email address',
     'form.error.minLength': 'The value is too short',
@@ -161,4 +162,4 @@ export const enMessages = {
     'language.bg': 'Български',
     'language.loading': 'Changing language…',
     'language.error': 'The language could not be loaded.',
-} as const satisfies Record<WeddingMessageKey, string>
+} as const satisfies MessageCatalog

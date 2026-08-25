@@ -1,5 +1,5 @@
-import type {WeddingMessageKey} from './es'
 import {enMessages} from './en'
+import type {MessageCatalog} from "../../../core/localization";
 
 export const bgMessages = {
     ...enMessages,
@@ -84,6 +84,7 @@ export const bgMessages = {
     'rsvp.message.label': 'Вашето послание',
     'rsvp.message.placeholder': 'Напишете посланието си тук...',
     'rsvp.error.submit': 'Не успяхме да запазим отговора ви. Моля, опитайте отново.',
+    'rsvp.privacy.notice': 'Данните от този формуляр се използват само за организиране на тържеството и се изтриват, когато вече не са необходими.',
     'admin.title': 'RSVP отговори',
     'admin.auth.email': 'Имейл адрес',
     'admin.auth.emailPlaceholder': 'couple@example.com',
@@ -163,4 +164,4 @@ export const bgMessages = {
     'language.bg': 'Български',
     'language.loading': 'Смяна на езика…',
     'language.error': 'Езикът не можа да бъде зареден.',
-} as const satisfies Record<WeddingMessageKey, string>
+} as const satisfies MessageCatalog

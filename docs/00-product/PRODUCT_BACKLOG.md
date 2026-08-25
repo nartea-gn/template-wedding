@@ -52,6 +52,12 @@ Condición de activación: requisitos comerciales y revisión legal/operativa de
 - Edición/borrado con confirmación e historial de auditoría.
 - Cierre programado, notificaciones y exportaciones especializadas.
 
+### i18n: modelo de catálogos y fallback
+
+- `es.ts` es la referencia canónica, pero `en.ts` es un catálogo completo independiente y `bg.ts` hereda de `en.ts` con spread estático.
+- Esto deja la herencia de traducciones implícita y dificulta añadir nuevos idiomas sin decidir primero la cadena de fallback.
+- Mejora futura: unificar el modelo de carga de locales con fallback explícito y eliminar la dependencia circular de mantenimiento.
+
 ### Contenido de invitación aplazado
 
 - Galería como sección registrada con assets, layout y captions accesibles.

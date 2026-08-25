@@ -2,7 +2,7 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1D, 7.2, 7.3 y 7.4B completados, despliegue alojado y dispositivos físicos pendientes
+- **Estado:** en curso; 7.1A-7.1D (retención automática y aviso de privacidad cerrados), 7.2, 7.3 y 7.4B completados, dispositivos físicos y Lighthouse pendientes
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release

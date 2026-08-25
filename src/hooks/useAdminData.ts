@@ -50,10 +50,33 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         }
     }, []);
 
+    const purgeExpired = useCallback(async () => {
+        try {
+            setLoading(true);
+            setHasError(false);
+            setErrorMessage(null);
+            await purgeExpiredRsvpResponses(weddingRsvpRepository, weddingInvitation.id)
+            setActionMessage('admin.actions.purged')
+            setTimeout(() => setActionMessage(null), 3000)
+            await fetchResponses()
+        } catch (cause) {
+            console.error('Failed to purge expired RSVP responses', cause);
+            setHasError(true);
+            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+        } finally {
+            setLoading(false);
+        }
+    }, [fetchResponses]);
+
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- authenticated data fetching is intentional
         if (isAuthenticated) void fetchResponses();
     }, [isAuthenticated, fetchResponses]);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- automatic retention purge on dashboard load
+        if (isAuthenticated) void purgeExpired();
+    }, [isAuthenticated, purgeExpired]);
 
     const presentedResponses = useMemo(() => getPresentedResponses({
         responses,
@@ -140,24 +163,6 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
             setLoading(false);
         }
     }, []);
-
-    const purgeExpired = useCallback(async () => {
-        try {
-            setLoading(true);
-            setHasError(false);
-            setErrorMessage(null);
-            await purgeExpiredRsvpResponses(weddingRsvpRepository, weddingInvitation.id)
-            setActionMessage('admin.actions.purged')
-            setTimeout(() => setActionMessage(null), 3000)
-            await fetchResponses()
-        } catch (cause) {
-            console.error('Failed to purge expired RSVP responses', cause);
-            setHasError(true);
-            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
-        } finally {
-            setLoading(false);
-        }
-    }, [fetchResponses]);
 
     return {
         loading,
