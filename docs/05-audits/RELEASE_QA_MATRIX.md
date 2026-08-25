@@ -26,6 +26,8 @@ El incremento 7.4B cierra los pendientes documentados el 2026-08-04 y 2026-08-09
 - Lighthouse, Core Web Vitals y presupuesto real de fuentes/fondos: el pipeline y los presupuestos de bundle están
   configurados (`chunkSizeWarningLimit`, `reportCompressedSize`, `manualChunks`); la medición Lighthouse se registra
   como validación manual final antes de 7.5.
+- Retención automática y aviso de privacidad: se implementaron en Sprint 7.1D para cerrar gaps de ciclo de vida y
+  cumplimiento. Quedan como verificación funcional en despliegue representativo.
 
 Hasta completar estos puntos, Sprint 7.4 permanece `En curso` y no se prepara `1.0.0`.
 

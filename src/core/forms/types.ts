@@ -58,6 +58,7 @@ export type FormDefinition<Message extends string> = {
         next: Message; back: Message; submit: Message; submitting: Message; submitError: Message
         errors: { required: Message; email: Message; minLength: Message; maxLength: Message; minWords: Message }
     }
+    privacyNotice?: Message
 }
 
 export type FormErrors = Record<string, 'required' | 'minLength' | 'maxLength' | 'minWords' | 'email'>

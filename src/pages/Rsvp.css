@@ -197,3 +197,7 @@
     @apply block text-xs mt-2 opacity-80;
     color: var(--color-wedding-danger);
 }
+
+.rsvp-privacy-notice {
+    @apply text-xs leading-relaxed text-(--color-wedding-muted);
+}

@@ -171,6 +171,7 @@ export function FormEngine<Message extends string>({
                                                 tabIndex={-1}>
                         <p className="rsvp-error-box-text">{t(definition.messages.submitError)}</p>
                     </div>}
+                    {definition.privacyNotice && <p className="rsvp-privacy-notice">{t(definition.privacyNotice)}</p>}
                     <div className={engine.isFirst ? 'rsvp-actions-end' : 'rsvp-actions-between'}>
                         {!engine.isFirst && <button type="button" onClick={engine.back}
                                                     className="btn btn--ghost rsvp-btn-ghost">{t(definition.messages.back)}</button>}
