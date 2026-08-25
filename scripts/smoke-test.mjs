@@ -4,7 +4,7 @@ if (!url) {
   process.exit(1);
 }
 
-const paths = ['/', '/rsvp', '/admin'];
+const paths = ['/', '/#/rsvp', '/#/admin'];
 for (const path of paths) {
   try {
     const response = await fetch(`${url}${path}`, {redirect: 'manual'});
