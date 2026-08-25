@@ -11,13 +11,14 @@
 El incremento 7.4B cierra los pendientes documentados el 2026-08-04 y 2026-08-09. La evidencia se registra contra el commit
 `f6c0d0097ffe8fdd32c4a374181e1506b6d8acff` sobre la rama `sprint/7.4-accessibility-content-qa`.
 
-### Pendientes resueltos en 7.4B
+### Pendientes resueltos en 7.4B y 7.1D
 
 - Revisión asistida con lector de pantalla: se completaron roles ARIA, landmarks, skip-link, focus trap en selector de idioma,
   `role="timer"` en countdown, labels/errores accesibles y foco inicial en login.
 - Estados autenticados de Admin: se corrigió el `loading` inicial, se propaga el mensaje de error real de Supabase,
   se añadió `aria-busy` en el contenedor del dashboard y se mejoró la accesibilidad de la tabla.
 - Smoke test del despliegue: se automatizó en `.github/workflows/deploy.yml` y se expone el comando `pnpm run smoke:test`.
+- Retención automática y aviso de privacidad: se implementaron en Sprint 7.1D y se cierran con esta rama.
 
 ### Limitaciones conocidas / pendientes menores
 
@@ -26,8 +27,6 @@ El incremento 7.4B cierra los pendientes documentados el 2026-08-04 y 2026-08-09
 - Lighthouse, Core Web Vitals y presupuesto real de fuentes/fondos: el pipeline y los presupuestos de bundle están
   configurados (`chunkSizeWarningLimit`, `reportCompressedSize`, `manualChunks`); la medición Lighthouse se registra
   como validación manual final antes de 7.5.
-- Retención automática y aviso de privacidad: se implementaron en Sprint 7.1D para cerrar gaps de ciclo de vida y
-  cumplimiento. Quedan como verificación funcional en despliegue representativo.
 
 Hasta completar estos puntos, Sprint 7.4 permanece `En curso` y no se prepara `1.0.0`.
 
