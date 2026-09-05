@@ -13,16 +13,58 @@
 |----------------------------------|-------------:|-------------------------------------|----------------|-----------------------------------------------------------|
 | Nombre completo                  |           Sí | Identificar la respuesta            | Supabase y CSV | Dato personal directo.                                    |
 | Asistencia                       |           Sí | Planificación del evento            | Supabase y CSV | Se conserva también en `answers`.                         |
-| Restricciones alimentarias       |           No | Menú y seguridad del invitado       | Supabase y CSV | Tratar de forma conservadora por su posible sensibilidad. |
-| Detalle alimentario libre        |           No | Resolver necesidades no previstas   | Supabase       | Puede revelar más información de la necesaria.            |
+| Consentimiento dietético         |           Sí | Base legal de los datos de salud    | Supabase       | Art. 9.2.a. Elegir es obligatorio; consentir no.          |
+| Restricciones alimentarias       |           No | Menú y seguridad del invitado       | Supabase y CSV | **Categoría especial (art. 9).** Solo con consentimiento explícito. |
+| Detalle alimentario libre        |           No | Resolver necesidades no previstas   | Supabase       | **Categoría especial (art. 9).** Texto libre: cabe cualquier diagnóstico. |
 | Opción de autobús                |           No | Logística de transporte             | Supabase y CSV | Necesidad temporal ligada al evento.                      |
 | Canción solicitada               |           No | Personalización musical             | Supabase y CSV | Texto libre.                                              |
 | Mensaje                          |           No | Comunicación personal con la pareja | Supabase y CSV | Texto libre y potencialmente imprevisible.                |
 | Invitación, formulario y versión | Sí, técnicos | Separación y trazabilidad           | Supabase       | No deben conceder autoridad por sí solos.                 |
 | Idioma                           |  Sí, técnico | Interpretación de la respuesta      | Supabase       | Minimizar su uso fuera del formulario.                    |
 | Fecha de creación                |   Automático | Orden y operación                   | Supabase       | Necesaria para gestión y retención.                       |
+| Rastro de auditoría administrativa |  Automático | Trazabilidad de cambios del panel   | Supabase       | Referencia a la respuesta y al administrador; **sin contenido del invitado**. Se borra con la respuesta. |
 
 No se solicitan actualmente email, teléfono, dirección postal, documento de identidad ni datos de pago a los invitados.
+
+## Información al invitado y retención
+
+- El formulario muestra el aviso del artículo 13 en **todos** sus pasos, compuesto con el responsable declarado en
+  `controller`: quién trata los datos, para qué, cuánto se conservan, con quién se comparten y cómo ejercer derechos.
+- Los datos dietéticos van detrás de un consentimiento explícito. «Prefiero no decirlo» es una respuesta válida que
+  deja pasar el formulario, así que el consentimiento es **libre**, y queda constancia de la negativa.
+- Revocar el consentimiento **borra** las respuestas dietéticas del envío: un campo oculto ya no viaja con el resto.
+- `form_version` se persiste con cada fila y sube cada vez que cambia el texto del consentimiento o del aviso; es lo
+  que permite saber a qué redacción consintió cada invitado.
+- La retención se calcula desde la fecha de boda (`invitations.event_date_utc + 7 días`) y la ejecuta un trabajo
+  nocturno, no el navegador de nadie. Los administradores reciben aviso por correo antes del borrado, irreversible.
+
+**Advertencia operativa:** el plazo de siete días ya está escrito dentro de un aviso del artículo 13, así que ha
+dejado de ser una promesa comercial para ser una declaración formal ante el interesado. No publicar ninguna invitación
+con invitados reales hasta que el cron de purga esté activo en el proyecto Supabase de destino.
+
+### Rastro de auditoría administrativa
+
+Decisión completa y alternativas descartadas en
+[`ADR-020`](../04-development/adr/ADR-020-admin-audit-trail.md).
+
+`admin_audit` registra qué hizo un administrador sobre una respuesta —editarla, borrarla o restaurarla— y cuándo, con
+el `auth.uid()` de la sesión que lo hizo. Lo escriben triggers, no el navegador: un registro que el cliente pueda
+omitir o falsear no es un registro.
+
+Tres decisiones que lo mantienen dentro de lo declarado al invitado:
+
+- **No guarda contenido del invitado.** Ni nombres, ni respuestas, ni valores anteriores. Solo la referencia a la fila,
+  la boda, la acción y el autor. Copiar valores aquí sería crear una segunda base de datos de categorías especiales
+  fuera de toda declaración; la clave foránea protege la referencia, no una copia.
+- **Muere con la respuesta.** La clave foránea es `ON DELETE CASCADE`, así que la purga de los siete días se lleva el
+  rastro con los datos que describe. Una fila de auditoría que sobreviviera a la purga reintroduciría una conservación
+  que el aviso del artículo 13 no menciona. El banco de pruebas local lo comprueba y falla si deja de ser cierto.
+- **Nadie puede editarlo.** La tabla tiene RLS con una única política de `SELECT` para los administradores de esa boda.
+  No existe política de `INSERT`, `UPDATE` ni `DELETE`: escriben los triggers, que corren como propietarios.
+
+Las entradas de cambio de plazo se registran contra la invitación, no contra ninguna respuesta. No contienen datos de
+invitados y por eso no las barre la purga; sí contienen el identificador del administrador, que es dato personal del
+cliente y se rige por la relación contractual, no por el aviso del artículo 13.
 
 ## Duplicación actual
 

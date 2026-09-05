@@ -4,8 +4,8 @@ import './Landing.css'
 
 export default function Landing() {
     return (
-        <main className="landing-page">
+        <div className="landing-page">
             <InvitationRenderer definition={weddingInvitation} registry={weddingSectionRegistry}/>
-        </main>
+        </div>
     )
 }

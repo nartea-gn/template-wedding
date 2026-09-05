@@ -30,7 +30,7 @@
     --color-wedding-text: #0F2347;
     --color-wedding-surface: #EEF1F7;
     --color-wedding-border: #C9A84C;
-    --color-wedding-muted: #6B7280;
+    --color-wedding-muted: #656D7A; /* matches themes.ts royal.colors.muted */
     --color-wedding-control-border: #80691F;
     --color-wedding-success: #176B45;
     --color-wedding-success-surface: #DCEFE5;
@@ -45,6 +45,9 @@
     --radius-sm: 8px;
     --radius-lg: 16px;
     --radius-xl: 24px;
+    --radius-focus: 4px;
+    --radius-pill: 999px;
+    --shadow-focus: 0 0 0 3px;
     --theme-section-gap: 4rem;
     --theme-section-gap-wide: 5rem;
     --theme-ornament-gap: 3.5rem;
@@ -78,7 +81,7 @@
     *:focus-visible {
         outline: 2px solid var(--color-wedding-action);
         outline-offset: 2px;
-        border-radius: 4px;
+        border-radius: var(--radius-focus);
     }
 
     /* Selection */
@@ -175,7 +178,7 @@
         text-transform: uppercase;
         line-height: 1.15;
         padding: 0.95rem 2.25rem;
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
         border: 1px solid transparent;
         cursor: pointer;
         text-decoration: none;
@@ -315,7 +318,7 @@
     .input:focus {
         outline: none;
         border-color: var(--color-wedding-action);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-wedding-action) 18%, transparent);
+        box-shadow: var(--shadow-focus) color-mix(in srgb, var(--color-wedding-action) 18%, transparent);
     }
 
     .input::placeholder {
@@ -401,7 +404,7 @@ video:fullscreen {
 
 ::-webkit-scrollbar-thumb {
     background: var(--color-wedding-border);
-    border-radius: 4px;
+    border-radius: var(--radius-focus);
 }
 
 ::-webkit-scrollbar-thumb:hover {

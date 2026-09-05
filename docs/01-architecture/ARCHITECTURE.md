@@ -33,8 +33,10 @@ locales are invitation data. Form labels and option labels use the same typed me
 RSVP uses a minimal `RsvpRepository`, implemented by `SupabaseRsvpRepository`. Form answers are persisted with form ID,
 version and locale while legacy columns remain compatible during migration.
 
-GitHub Pages remains the static host with `HashRouter` and `/template-wedding/`. GitHub Actions validates code, applies
-pending Supabase migrations and then deploys Pages. Database administration never runs in the browser.
+Cloudflare Pages is the static host, served from the site root, with real paths. The workflows stay in GitHub:
+Actions validates the code, applies pending Supabase migrations and then publishes the built output to Cloudflare,
+which builds nothing of its own. Splitting it that way keeps the quality gates -- migration harness, schema drift,
+end-to-end tests -- on the side that can run them. Database administration never runs in the browser.
 
 ## Evolution rule
 

@@ -1,6 +1,7 @@
 import {describe, expect, it} from 'vitest'
 import type {RsvpSubmission} from '../../../features/rsvp/domain/RsvpSubmission'
 import {fromDatabaseRow, toInsertRow} from './rsvpMapper'
+import {readWeddingLegacyAnswers} from '../../../invitations/wedding/rsvpColumns'
 
 const submission: RsvpSubmission = {
     invitationId: 'gala-y-valentin',
@@ -19,14 +20,13 @@ const submission: RsvpSubmission = {
 }
 
 describe('RSVP mapper', () => {
-    it('writes the structured payload and compatibility columns', () => {
-        expect(toInsertRow(submission)).toMatchObject({
+    it('writes the structured payload without naming any form field', () => {
+        expect(toInsertRow(submission)).toEqual({
             wedding_slug: 'gala-y-valentin',
             form_id: 'wedding-rsvp',
-            full_name: 'Gala García',
-            attending: true,
-            dietary_options: ['vegetarian'],
-            bus_option: 'ida_vuelta',
+            form_version: 1,
+            locale: 'es',
+            answers: submission.answers,
         })
     })
 
@@ -47,7 +47,18 @@ describe('RSVP mapper', () => {
         expect(record.formVersion).toBe(1)
     })
 
-    it('reconstructs legacy answers when JSONB is absent', () => {
+    it('returns empty answers for a legacy row when no invitation reader is supplied', () => {
+        const record = fromDatabaseRow({
+            id: 6,
+            created_at: '2026-08-03T10:00:00Z',
+            wedding_slug: 'legacy-wedding',
+            full_name: 'Invitada Legacy',
+        })
+
+        expect(record.answers).toEqual({})
+    })
+
+    it('reconstructs legacy answers through the invitation reader when JSONB is absent', () => {
         const record = fromDatabaseRow({
             id: 5,
             created_at: '2026-08-03T10:00:00Z',
@@ -56,7 +67,7 @@ describe('RSVP mapper', () => {
             attending: true,
             dietary_options: ['gluten'],
             bus_option: 'no',
-        })
+        }, readWeddingLegacyAnswers)
 
         expect(record.formId).toBe('legacy-wedding-rsvp')
         expect(record.formVersion).toBe(0)

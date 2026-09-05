@@ -8,7 +8,7 @@ export default function App() {
         <>
             <SeoMetadata<WeddingMessageKey> definition={weddingInvitation.seo}/>
             <a href="#main-content" className="skip-link">Saltar al contenido</a>
-            <LanguageSelector/>
+            <header className="app-header"><LanguageSelector/></header>
             <AppRouter/>
         </>
     );

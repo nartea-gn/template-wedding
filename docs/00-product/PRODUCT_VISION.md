@@ -42,7 +42,7 @@ cuidado, personalidad y confianza; nunca debe sentirse como una plantilla genér
 - Sistema de temas basado en tokens.
 - RSVP configurable con persistencia en Supabase.
 - Admin básico opcional con acceso por email OTP, sesión Supabase y autorización por invitación.
-- Despliegue estático compatible con GitHub Pages.
+- Despliegue estático con cabeceras HTTP propias, hoy en Cloudflare Pages.
 - Una o varias experiencias lingüísticas definidas por invitación.
 - Selector de idioma opcional cuando exista más de un idioma.
 

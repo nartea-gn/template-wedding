@@ -65,12 +65,11 @@ export function LanguageSelector() {
         if (event.key === 'Home') nextIndex = 0
         if (event.key === 'End') nextIndex = supportedLocales.length - 1
         if (event.key === 'Tab') {
-            event.preventDefault()
-            nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % supportedLocales.length
-        }
-        if (event.key === 'Tab' && event.shiftKey) {
-            event.preventDefault()
-            nextIndex = currentIndex <= 0 ? supportedLocales.length - 1 : currentIndex - 1
+            // Not modal, so Tab must not be trapped. The ARIA menu pattern still requires
+            // closing on exit, otherwise the menu stays open with focus already elsewhere.
+            // No preventDefault, and no focus restore: the focus carries on down the page.
+            closeMenu(false)
+            return
         }
         if (nextIndex === undefined) return
 

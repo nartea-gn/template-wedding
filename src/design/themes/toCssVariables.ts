@@ -1,4 +1,4 @@
-import {motion, spacing, statusColors} from '../tokens'
+import {focusShadows, globalRadius, motion, spacing} from '../tokens'
 import type {ThemeDefinition} from './types'
 
 export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
@@ -22,9 +22,6 @@ export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
         '--color-wedding-success-surface': theme.colors.successSurface,
         '--color-wedding-danger': theme.colors.danger,
         '--color-wedding-danger-surface': theme.colors.dangerSurface,
-        '--color-wedding-warning': statusColors.warning,
-        '--color-wedding-error': theme.colors.danger,
-        '--color-wedding-info': statusColors.info,
         '--font-heading': theme.typography.heading,
         '--font-body': theme.typography.body,
         '--shadow-card': theme.shadows.card,
@@ -34,6 +31,9 @@ export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
         '--radius-sm': theme.radius.small,
         '--radius-lg': theme.radius.large,
         '--radius-xl': theme.radius.extraLarge,
+        '--radius-focus': globalRadius.focus,
+        '--radius-pill': globalRadius.pill,
+        '--shadow-focus': focusShadows.input,
         '--theme-section-gap': theme.composition.sectionGap,
         '--theme-section-gap-wide': theme.composition.sectionGapWide,
         '--theme-ornament-gap': theme.composition.ornamentGap,

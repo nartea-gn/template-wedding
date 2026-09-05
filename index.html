@@ -5,10 +5,15 @@
     <link href="%BASE_URL%favico.png" rel="icon" type="image/png"/>
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
     <meta content="Invitación digital de NarteaGN" name="description"/>
+    <!-- A wedding invitation is not meant to be found by strangers, and the gifts section
+         publishes an IBAN and a personal phone number. The hash router already makes indexing
+         awkward, but that is a side effect; this is the guarantee. -->
+    <meta content="noindex, nofollow" name="robots"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Josefin+Sans:wght@300;400;600&family=Lato:wght@300;400;700&family=Montserrat:wght@300;400;600&family=Niconne&family=Nunito:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Raleway:wght@300;400;600&display=swap"
-          rel="stylesheet"/>
+    <!-- Injected at build time from the active theme's googleFonts. Do not hardcode families
+         here: requesting all of them puts eight render-blocking downloads on the LCP path. -->
+    <!--theme-fonts-->
     <title>Invitación digital de NarteaGN</title>
 </head>
 <body>

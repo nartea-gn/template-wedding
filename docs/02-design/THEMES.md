@@ -17,7 +17,7 @@ El contrato contiene nueve grupos:
 - `decoration`: color y presencia de ornamentos;
 - `iconography`: grosor de los SVG propios de interfaz.
 
-Temas actuales: `royal`, `boho`, `dark`, `magnolia` y `linen`.
+Temas actuales: `royal`, `boho`, `dark`, `magnolia`, `linen`, `lavender` y `terracotta`.
 
 Los ornamentos ceremoniales usan un acento secundario propio en cada tema. No deben reutilizar automáticamente el color
 principal: su función es acompañar títulos y cifras con un contraste sutil, siguiendo el criterio visual de
@@ -74,6 +74,8 @@ desde CSS, mientras el responsive y el recorte permanecen fuera del contrato Typ
 | Dark     | Compacto              | Rápido               | Más sólida        | Champagne luminoso |
 | Magnolia | Amplio y romántico    | Delicado             | Suave             | Champagne rosado   |
 | Linen    | Sobrio y estrecho     | Sereno               | Muy ligera        | Latón suave        |
+| Lavender | Amplio y orgánico     | Delicado             | Suave             | Champagne violeta  |
+| Terracotta | Sobrio y estrecho   | Sereno               | Cálida y sólida   | Latón terroso      |
 
 Estas diferencias son valores coordinados, no variantes estructurales.
 
@@ -88,9 +90,11 @@ combinaciones tipográficas, pero deben mantener una jerarquía y legibilidad eq
 
 1. Añadir una entrada completa en `src/design/themes/themes.ts` que satisfaga `ThemeDefinition`.
 2. Elegir valores semánticos; no copiar reglas CSS o nombres de componentes dentro del objeto.
-3. Cargar sus familias tipográficas mediante la estrategia documentada en `MEDIA.md`.
-4. Añadir un patrón o background en `src/themes/patterns.css` solo si aporta una identidad reconocible y cumple
-   `BACKGROUNDS.md`.
+3. Declarar sus familias de Google Fonts en `googleFonts`. El build inyecta en `index.html` solo las del tema
+   activo, así que una lista vacía significa «este tema usa únicamente fuentes de sistema», no «hereda las de otro».
+4. Añadir un bloque `[data-theme="..."]` en `src/themes/patterns.css`. El arte de fondo es opcional y sigue
+   `BACKGROUNDS.md`, pero el bloque debe existir: `themes.test.ts` falla si un tema no lo declara, para que ninguno
+   pierda su fondo en silencio al renombrarlo.
 5. Seleccionar temporalmente el tema desde la definición de invitación y revisar Landing, RSVP y Admin.
 6. Validar 320 px, móvil habitual, tablet y escritorio, incluyendo foco, hover/active y reduced motion.
 7. Ejecutar `pnpm lint` y `pnpm build`.

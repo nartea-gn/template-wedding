@@ -17,7 +17,7 @@
 |-----------|---------------------------------------------------------------|---------------------------------------------------------------------------|
 | P1        | No existe baseline reproducible de Lighthouse/Core Web Vitals | Medir el deploy representativo en Sprint 7.4                              |
 | P1        | Cambios visuales pueden alterar LCP/CLS                       | Registrar vídeo, poster, hero y fuentes en la matriz de QA                |
-| P2        | Las fuentes de los cinco temas se declaran globalmente        | Medir bytes y uso antes de carga selectiva/self-hosting                   |
+| ~~P2~~    | ~~Las fuentes de los cinco temas se declaran globalmente~~     | **Superado.** Cada tema declara sus familias y el build inyecta solo las del activo |
 | P2        | Admin procesa, ordena y pagina en memoria                     | Migrar a servidor solo con volumen o latencia demostrados                 |
 | P2        | Listas largas podrían aumentar coste de render                | Valorar `content-visibility` o virtualización únicamente con datos reales |
 
@@ -36,7 +36,7 @@
 2. Registrar móvil y escritorio por separado.
 3. Medir LCP, CLS, INP, bytes transferidos y solicitudes de fuentes/vídeo.
 4. Confirmar que el MP4 no se descarga antes de pulsar reproducir.
-5. Comparar los cinco temas para detectar carga tipográfica innecesaria.
+5. Confirmar que el HTML solo pide las familias del tema activo, y comparar entre temas el coste de las suyas.
 6. Documentar dispositivo, navegador, red, fecha y commit.
 
 No se afirma una puntuación actual porque todavía no existe una medición reproducible registrada.

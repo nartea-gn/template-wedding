@@ -1,13 +1,11 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: "production"
@@ -15,32 +13,42 @@ concurrency:
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
+      page_url: ${{ steps.deployment.outputs.deployment-url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.34.5
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Lint project
         run: pnpm run lint
+
+      - name: Verify database migrations
+        # Applies every migration to a throwaway Postgres and asserts the resulting schema and
+        # trigger behaviour, so a broken migration fails here and never reaches `db push`.
+        run: pnpm run db:verify
+
+      - name: Fail if schema.sql drifted from the migrations
+        run: git diff --exit-code -- supabase/schema.sql
+
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        # Never ran in CI before, so they drifted out of sync with the code they guard.
+        run: pnpm run test:e2e
 
       - name: Build project
         env:
@@ -62,14 +70,30 @@ jobs:
           supabase link --project-ref "$SUPABASE_PROJECT_ID"
           supabase db push --linked --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
+      - name: Sync wedding date for the purge cutoff
+        env:
+          SUPABASE_URL: https://${{ secrets.SUPABASE_PROJECT_ID }}.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # Flip this repository variable to "true" after the first successful deploy. Until
+          # then a slug already taken by another wedding fails the deploy in red (review §12.4).
+          NARTEA_WEDDING_REGISTERED: ${{ vars.NARTEA_WEDDING_REGISTERED }}
+        run: pnpm exec tsx scripts/sync-invitation.ts
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy Edge Functions
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: supabase functions deploy send-purge-warnings --project-ref "$SUPABASE_PROJECT_ID"
+
+      # Cloudflare only receives the built output. The gates above -- migrations, schema drift,
+      # end-to-end tests -- stay in GitHub because Cloudflare's own build cannot run them.
+      - name: Deploy to Cloudflare Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main
 
   smoke:
     needs: deploy
@@ -80,14 +104,12 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.34.5
 
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Smoke test deployed URL
         env:

@@ -1,7 +1,6 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import type {FormAnswers} from '../core/forms';
-import {isRsvpOpen} from '../core/invitation';
 import {FormEngine} from '../features/forms/FormEngine';
 import {useRsvpSubmission} from '../features/rsvp/hooks/useRsvpSubmission';
 import {useLocalization} from '../app/providers/useLocalization';
@@ -18,17 +17,22 @@ export default function Rsvp() {
     const {locale, t} = useLocalization<WeddingMessageKey>();
     const submission = useRsvpSubmission(weddingRsvpRepository);
     const [submittedAnswers, setSubmittedAnswers] = useState<FormAnswers>();
-    const [deadlineReached, setDeadlineReached] = useState(false);
     const available = useRsvpAvailability(rsvpCapability);
 
     if (!rsvpCapability?.enabled) return null;
-    const isOpen = !deadlineReached && available;
+    // `submission.isClosed` covers the case the interface cannot know about: the couple closed
+    // the form from their panel while this page was already open. The database is the authority.
+    const isOpen = available && !submission.isClosed;
+
+    // Article 13 requires naming the controller and their contact address. `t` takes a key and
+    // nothing else, so the two values are substituted here rather than widening that contract.
+    const privacyNotice = rsvpCapability?.form.privacyNotice
+        ? t(rsvpCapability.form.privacyNotice)
+            .replace('{controller}', t(weddingInvitation.controller.name))
+            .replace('{email}', weddingInvitation.controller.email)
+        : undefined
 
     const handleSubmit = async (answers: FormAnswers) => {
-        if (!isRsvpOpen(rsvpCapability)) {
-            setDeadlineReached(true);
-            return;
-        }
         setSubmittedAnswers(answers);
         await submission.submit({
             invitationId: weddingInvitation.id,
@@ -84,6 +88,7 @@ export default function Rsvp() {
         <div className="rsvp-page">
             <FormEngine
                 definition={rsvpCapability.form}
+                privacyNotice={privacyNotice}
                 isSubmitting={submission.isLoading}
                 hasSubmissionError={Boolean(submission.error)}
                 onSubmit={handleSubmit}

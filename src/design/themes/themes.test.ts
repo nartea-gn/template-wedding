@@ -1,5 +1,19 @@
 import {describe, expect, it} from 'vitest'
 import {themes} from './themes'
+import {readFileSync} from 'node:fs'
+import {resolve} from 'node:path'
+
+// Read as a file rather than imported: Vitest stubs CSS modules, so `?raw` comes back empty.
+const patternsCss = readFileSync(resolve(process.cwd(), 'src/themes/patterns.css'), 'utf8')
+
+describe('theme background art', () => {
+    // `patterns.css` keys its background art off loose `[data-theme="..."]` strings that the
+    // ThemeId union never sees. Renaming or adding a theme there compiles clean and silently
+    // loses its background, so the coupling is asserted here instead.
+    it.each(Object.keys(themes))('declares a block for the %s theme', id => {
+        expect(patternsCss).toContain(`[data-theme="${id}"]`)
+    })
+})
 
 describe.each(Object.entries(themes))('theme %s', (_, theme) => {
     it('keeps essential text roles at WCAG AA contrast', () => {

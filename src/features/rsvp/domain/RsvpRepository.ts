@@ -1,10 +1,12 @@
-import type {RsvpSubmission, RsvpSubmissionRecord} from './RsvpSubmission'
+import type {RsvpRecordUpdate, RsvpSubmission, RsvpSubmissionRecord} from './RsvpSubmission'
+import type {RsvpScheduleUpdate, RsvpStatus} from './RsvpStatus'
 
 export type RsvpRepository = {
     submit: (submission: RsvpSubmission) => Promise<void>
+    getStatus: (invitationId: string) => Promise<RsvpStatus>
+    updateSchedule: (invitationId: string, schedule: RsvpScheduleUpdate) => Promise<RsvpStatus>
     listByInvitation: (invitationId: string) => Promise<RsvpSubmissionRecord[]>
-    update: (invitationId: string, id: number, changes: Partial<Pick<RsvpSubmissionRecord, 'answers' | 'full_name' | 'attending' | 'dietary_options' | 'dietary_other' | 'bus_option' | 'song_request' | 'message' | 'locale'>>) => Promise<RsvpSubmissionRecord>
+    update: (invitationId: string, id: number, changes: Partial<RsvpRecordUpdate>) => Promise<RsvpSubmissionRecord>
     softDelete: (invitationId: string, id: number) => Promise<void>
     restore: (invitationId: string, id: number) => Promise<void>
-    purgeExpired: (invitationId: string) => Promise<void>
 }

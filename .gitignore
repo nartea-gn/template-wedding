@@ -13,6 +13,8 @@ dist-ssr
 coverage
 playwright-report
 test-results
+# Local state written by `wrangler pages dev`, the server the CSP suite runs against.
+.wrangler
 *.local
 .env
 

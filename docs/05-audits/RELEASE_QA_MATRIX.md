@@ -3,10 +3,14 @@
 ## Estado
 
 - **Sprint:** 7.4
-- **Estado:** Cierre en verificación
+- **Estado:** Cerrado el 2026-09-04 con pendientes arrastrados a la fase 9.4 de Sprint 9
 - **Fecha de ejecución baseline:** 2026-08-19
 - **Commit verificado:** `f6c0d0097ffe8fdd32c4a374181e1506b6d8acff`
 - **Resultado automático:** 33/33 recorridos Chromium superados; 61/61 pruebas unitarias; lint sin warnings; build exitoso
+- **Reejecución 2026-09-04, tras cerrar 7.5A:** 46/46 recorridos Chromium; 4/4 recorridos de Content-Security-Policy
+  contra el build; 137/137 pruebas unitarias; `tsc -b`, lint y build limpios; migraciones, pgTAP y verificación del
+  rastro de auditoría en verde; type-check de Edge Functions en verde. Sin commit de referencia: el trabajo es local y
+  el repositorio remoto todavía no existe
 
 El incremento 7.4B cierra los pendientes documentados el 2026-08-04 y 2026-08-09. La evidencia se registra contra el commit
 `f6c0d0097ffe8fdd32c4a374181e1506b6d8acff` sobre la rama `sprint/7.4-accessibility-content-qa`.
@@ -27,8 +31,16 @@ El incremento 7.4B cierra los pendientes documentados el 2026-08-04 y 2026-08-09
 - Lighthouse, Core Web Vitals y presupuesto real de fuentes/fondos: el pipeline y los presupuestos de bundle están
   configurados (`chunkSizeWarningLimit`, `reportCompressedSize`, `manualChunks`); la medición Lighthouse se registra
   como validación manual final antes de 7.5.
+- **Aprobación artística de `lavender` y `terracotta`**: los dos temas incorporados el 2026-08-31 no han pasado la
+  revisión visual con capturas que sí recibieron los cinco anteriores. Lo automático **sí** los cubre en igualdad de
+  condiciones —la matriz de temas y el contrato de contraste iteran el registro completo, sin nombrar ningún tema—, de
+  modo que el hueco se limita al juicio humano sobre composición, ritmo y arte de fondo. Su fondo es un degradado
+  construido con sus propios tokens, no una colección ilustrada como las cinco de Sprint 6.6, y esa decisión no está
+  aprobada por producto.
 
-Hasta completar estos puntos, Sprint 7.4 permanece `En curso` y no se prepara `1.0.0`.
+Estos puntos no bloquean ya el cierre de Sprint 7.4, que se da por cerrado el 2026-09-04 con su trabajo de código
+completo. Se arrastran a la fase 9.4 de [`SPRINT_9_PLAN.md`](../00-product/SPRINT_9_PLAN.md): hasta
+completarlos no se prepara `1.0.0`.
 
 ## Entorno reproducible
 
@@ -73,9 +85,13 @@ Chromium ejecuta además un smoke test de Landing y RSVP en:
 El selector móvil de mapas se comprueba específicamente a 360 × 740 px y mantiene visibles la opción automática,
 Google Maps y Apple Maps dentro del viewport.
 
-Chromium recorre además Royal, Boho, Dark, Magnolia y Linen en Landing, RSVP y acceso Admin a 390 × 844,
-768 × 1024 y 1440 × 900 px. Esta comprobación protege tema aplicado, fondo, alineación del countdown y ausencia de
-overflow; no sustituye la aprobación artística manual de cada colección.
+Chromium recorre además **todos los temas del registro** en Landing, RSVP y acceso Admin. La matriz se parametriza
+sobre `Object.keys(themes)`, así que un tema nuevo entra en ella sin tocar la especificación: hoy son siete, con
+`lavender` y `terracotta` incorporados el 2026-08-31. Desde el 2026-09-04 los viewports son 320 × 568, 390 × 844,
+768 × 1024 y 1440 × 900 px — los cuatro que el backlog exige «con todos los temas», y 320 faltaba.
+
+Esta comprobación protege tema aplicado, fondo, alineación del countdown y ausencia de overflow; no sustituye la
+aprobación artística manual de cada colección, que `lavender` y `terracotta` siguen sin tener.
 
 ## Incremento 7.4A — contraste, contenido y teclado
 
@@ -164,9 +180,12 @@ Sobre el mismo estado funcional:
 - `vite.config.ts` incorpora `manualChunks`, `chunkSizeWarningLimit`, `reportCompressedSize` y `sourcemap: false`;
 - `.github/workflows/deploy.yml` ejecuta smoke test automático post-despliegue.
 
-## Pendientes para cerrar Sprint 7.4
+## Pendientes arrastrados a Sprint 9.4
 
 - Safari iOS y Chrome Android en dispositivos físicos;
-- Lighthouse, Core Web Vitals y medición manual de fuentes/fondos.
+- Lighthouse, Core Web Vitals y medición manual de fuentes/fondos;
+- revisión visual y aprobación artística de `lavender` y `terracotta`.
 
-Hasta completar estos puntos, Sprint 7.4 permanece `En curso` y no se prepara `1.0.0`.
+Estos puntos no bloquean ya el cierre de Sprint 7.4, que se da por cerrado el 2026-09-04 con su trabajo de código
+completo. Se arrastran a la fase 9.4 de [`SPRINT_9_PLAN.md`](../00-product/SPRINT_9_PLAN.md): hasta
+completarlos no se prepara `1.0.0`.

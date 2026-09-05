@@ -1,11 +1,13 @@
 import {type ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react'
 import {
+    getFallbackChain,
     getLocaleStorageKey,
     isSupportedLocale,
     type LocalizationRuntimeConfig,
     type MessageCatalog
 } from '../../core/localization'
 import {LocalizationContext, type LocalizationContextValue} from './LocalizationContext'
+import {devWarn} from '../../lib/devLog'
 
 type Props<Locale extends string> = LocalizationRuntimeConfig<Locale> & { timeZone: string; children: ReactNode }
 
@@ -18,23 +20,33 @@ export function LocalizationProvider<Locale extends string>({
                                                                 children
                                                             }: Readonly<Props<Locale>>) {
     const [locale, setActiveLocale] = useState<Locale>(definition.defaultLocale)
-    const [catalog, setCatalog] = useState<MessageCatalog>(defaultCatalog)
+    const [catalogs, setCatalogs] = useState<readonly MessageCatalog[]>([defaultCatalog])
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const requestId = useRef(0)
     const storageKey = getLocaleStorageKey(invitationId)
+    // Read through a ref rather than a dependency: depending on `locale` gives `setLocale` a new
+    // identity on every switch, which re-fires the effect that restores the persisted locale.
+    const localeRef = useRef(locale)
     const hasMultipleLocales = definition.supportedLocales.length > 1
 
     const setLocale = useCallback(async (nextLocale: string) => {
-        if (!isSupportedLocale(nextLocale, definition) || nextLocale === locale) return
+        if (!isSupportedLocale(nextLocale, definition) || nextLocale === localeRef.current) return
         const currentRequest = ++requestId.current
         setIsLoading(true)
         setError(null)
         try {
-            const nextCatalog = nextLocale === definition.defaultLocale ? defaultCatalog : await loaders[nextLocale]?.()
-            if (!nextCatalog) throw new Error(`No catalog loader registered for ${nextLocale}`)
+            // The whole chain is loaded, not just the target locale: a key the target does not
+            // translate has to resolve against the locale that was declared next, and that
+            // catalog is only in the bundle if something asks for it.
+            const chain = getFallbackChain(nextLocale, definition)
+            const nextCatalogs = await Promise.all(chain.map(step => (
+                step === definition.defaultLocale ? defaultCatalog : loaders[step]?.()
+            )))
+            const missing = chain.find((_, index) => !nextCatalogs[index])
+            if (missing) throw new Error(`No catalog loader registered for ${missing}`)
             if (currentRequest !== requestId.current) return
-            setCatalog(nextCatalog)
+            setCatalogs(nextCatalogs as readonly MessageCatalog[])
             setActiveLocale(nextLocale)
             if (hasMultipleLocales) localStorage.setItem(storageKey, nextLocale)
         } catch {
@@ -42,9 +54,10 @@ export function LocalizationProvider<Locale extends string>({
         } finally {
             if (currentRequest === requestId.current) setIsLoading(false)
         }
-    }, [defaultCatalog, definition, hasMultipleLocales, loaders, locale, storageKey])
+    }, [defaultCatalog, definition, hasMultipleLocales, loaders, storageKey])
 
     useEffect(() => {
+        localeRef.current = locale
         document.documentElement.lang = locale
     }, [locale])
 
@@ -59,11 +72,13 @@ export function LocalizationProvider<Locale extends string>({
     }, [definition.defaultLocale, hasMultipleLocales, setLocale, storageKey])
 
     const t = useCallback((key: string) => {
-        const translated = catalog[key] ?? defaultCatalog[key]
-        if (translated !== undefined) return translated
-        if (import.meta.env.DEV) console.warn(`Missing translation: ${key}`)
+        for (const candidate of catalogs) {
+            const translated = candidate[key]
+            if (translated !== undefined) return translated
+        }
+        devWarn(`Missing translation: ${key}`)
         return ''
-    }, [catalog, defaultCatalog])
+    }, [catalogs])
 
     const formatDate = useCallback((value: string | Date, options?: Intl.DateTimeFormatOptions) => (
         new Intl.DateTimeFormat(locale, {timeZone, ...options}).format(new Date(value))

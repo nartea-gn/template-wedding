@@ -1,0 +1,47 @@
+# Local verification harness for the SQL migrations.
+#
+# Not a Supabase clone and not a development backend: it is a throwaway Postgres against which
+# every file in `supabase/migrations/` is applied in order, followed by assertions on the
+# resulting schema and on what the triggers and functions actually do. A syntax error, a broken
+# reference or a trigger firing in the wrong order fails here instead of on the first `db push`
+# against a real project.
+#
+#   pnpm run db:verify        # runs it and exits non-zero on failure
+#   pnpm run db:verify:down   # only needed if a run was interrupted
+#
+# It runs the same Postgres image Supabase runs, so pg_cron, pg_net, supabase_vault and pgTAP are
+# the real extensions rather than stubs. `00-shims.sql` only fills in what the platform provides
+# outside the database: the `auth` schema, `auth.uid()`, and the three API roles.
+
+services:
+  db:
+    image: supabase/postgres:17.6.1.156
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  verify:
+    image: supabase/postgres:15.8.1.060
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: postgres
+      PGHOST: db
+      PGUSER: postgres
+      PGDATABASE: postgres
+    volumes:
+      - ./00-shims.sql:/sql/00-shims.sql:ro
+      - ../migrations:/sql/migrations:ro
+      - ./99-verify.sql:/sql/99-verify.sql:ro
+      - ../tests/database:/sql/pgtap:ro
+      - ./run.sh:/sql/run.sh:ro
+      - ..:/out
+    entrypoint: ["/bin/sh", "/sql/run.sh"]

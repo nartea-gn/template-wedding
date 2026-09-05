@@ -133,7 +133,7 @@ VALUES ('identificador-de-invitacion', 'uuid-del-usuario')
 ON CONFLICT DO NOTHING;
 ```
 
-5. Accede desde `#/admin` con el método configurado y comprueba que solo aparecen respuestas de esa invitación.
+5. Accede desde `/admin` con el método configurado y comprueba que solo aparecen respuestas de esa invitación.
 6. Registra la asignación en el sistema operativo interno autorizado, nunca en Git.
 
 ## Añadir una segunda persona

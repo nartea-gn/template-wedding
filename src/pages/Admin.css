@@ -85,3 +85,7 @@
 .admin-btn-logout:disabled {
     @apply opacity-60 cursor-wait;
 }
+
+.admin-data-notice {
+    @apply text-sm opacity-80 border-l-2 border-(--color-wedding-accent) pl-3 my-4;
+}

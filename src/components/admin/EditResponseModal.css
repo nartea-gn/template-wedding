@@ -5,7 +5,7 @@
 }
 
 .modal {
-    @apply bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col;
+    @apply bg-(--color-wedding-surface) rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col;
 }
 
 .modal-header {
@@ -46,4 +46,8 @@
 
 .radio-label {
     @apply flex items-center gap-2 text-sm text-(--color-wedding-text);
+}
+
+.modal-error {
+    @apply text-sm text-(--color-wedding-danger) px-6;
 }

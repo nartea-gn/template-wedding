@@ -3,7 +3,7 @@
 ## Estado
 
 - **Fecha:** 2026-08-02
-- **Alcance:** Landing, RSVP, Admin, Supabase y despliegue en GitHub Pages
+- **Alcance:** Landing, RSVP, Admin, Supabase y despliegue en Cloudflare Pages
 - **Fase:** Sprint 7.1, investigación aprobada
 - **Última revisión:** análisis estático y auditoría remota de metadatos completados
 
@@ -52,8 +52,37 @@ flowchart LR
 | SEC-08 | Texto libre o errores terminan en logs                                    |          Medio |         Baja |           P1 | No registrar payloads; mensajes de error sin datos personales.                                 |
 | SEC-09 | Esquema remoto y migraciones locales divergen                             |           Alto |        Media | P0 operativo | Crear baseline solo tras comparar el estado remoto de forma no mutante.                        |
 | SEC-10 | Un secreto privilegiado entra en el frontend                              |        Crítico |         Baja |           P0 | Solo URL y anon key en Vite; secretos administrativos quedan en GitHub Actions.                |
-| SEC-11 | Función `SECURITY DEFINER` expuesta por RPC                               | Alto potencial |         Baja |           P1 | Revisar procedencia y revocar `EXECUTE` público sin eliminar el event trigger automáticamente. |
+| SEC-11 | Función `SECURITY DEFINER` expuesta por RPC                               |        Crítico |   Confirmada |           P0 | Revocar `EXECUTE` nombrando `anon` y `authenticated`, no solo `PUBLIC`. Ver la nota de abajo.  |
+| SEC-13 | El plazo de RSVP cierra en la interfaz pero no en la API                  |           Alto |   Confirmada |           P0 | `is_rsvp_open` dentro del `WITH CHECK` de la inserción anónima; falla cerrado.                 |
+| SEC-14 | Dos bodas comparten `wedding_slug` y, con él, administradores y datos     |        Crítico |         Baja |           P0 | Unicidad en `invitations.wedding_slug`; pipeline y script de provisión fallan en rojo.         |
 | SEC-12 | Grants de tabla más amplios de lo necesario                               |     Medio/alto |        Media |           P1 | Revocar operaciones innecesarias y conceder solo `anon INSERT` y `authenticated SELECT`.       |
+| SEC-15 | La invitación se embebe en la página de un tercero                        |     Medio/alto |         Baja |           P1 | `frame-ancestors 'none'` en la cabecera. Ver la nota de abajo: era **imposible** de mitigar con el host anterior. |
+
+### SEC-15 — una amenaza que el host anterior no permitía cerrar
+
+Envolver la invitación en un `iframe` dentro de otra página permite superponerle contenido. Importa
+más de lo que su probabilidad sugiere porque la sección de regalos publica un IBAN y un número de
+Bizum: una copia enmarcada con otro número encima es fraude difícil de distinguir a simple vista.
+
+La única defensa es `frame-ancestors`, y esa directiva **el navegador la ignora cuando llega en un
+`<meta>`**. Mientras el sitio se sirvió desde GitHub Pages, que no permite cabeceras propias, la
+amenaza no era mitigable: no estaba pendiente por descuido, era inalcanzable. Migrar a Cloudflare
+Pages en Sprint 8 la cerró, y `e2e/csp.spec.ts` comprueba en cada ejecución que la invitación se
+niega a renderizarse dentro de un frame.
+
+### SEC-11 — la mitigación documentada no bastaba
+
+Se dio por buena «revocar `EXECUTE` público». **No cierra el agujero en Supabase.** Sus privilegios por defecto
+conceden `EXECUTE` sobre cada función nueva de `public` **directamente** a `anon` y `authenticated`, y un grant directo
+sobrevive a un `REVOKE ... FROM PUBLIC`.
+
+Consecuencia real, encontrada el 31 de agosto de 2026 al ejecutar por primera vez las suites pgTAP del repositorio:
+`get_pending_purge_warnings` era ejecutable por `anon`. Es `SECURITY DEFINER` sobre `auth.users` y devuelve el correo
+de cada administrador de cada boda a punto de purgarse; con la anon key que viaja en el bundle, cualquiera podía
+cosecharlos. `purge_all_expired_rsvp`, que borra datos, estaba igual de expuesta.
+
+Regla a partir de ahora: **toda función `SECURITY DEFINER` en `public` revoca nombrando los roles**, y una aserción
+pgTAP lo fija. Comprobar que la policy o el revoke existen no prueba nada; hay que ejercitarlo por rol.
 
 ## Controles que no necesitamos en la primera versión
 

@@ -29,7 +29,11 @@ invitación TypeScript y los catálogos secundarios se cargan bajo demanda.
 
 ## Invariantes
 
-- `id` identifica la invitación en configuración y persistencia; debe ser único por despliegue.
+- `id` identifica la invitación en configuración y persistencia; debe ser único por despliegue. La unicidad la aplica
+  la base de datos (`invitations.wedding_slug`), no la convención: el pipeline falla en rojo si el slug ya existe.
+- `controller` declara al responsable del tratamiento —la pareja, no la agencia— con clave de mensaje para el nombre y
+  correo de contacto. Es obligatorio: el artículo 13 del RGPD exige poder identificarlo, así que una invitación que no
+  lo declara no compila.
 - `event.date` y `rsvp.deadline` son instantes ISO 8601 con `Z` u offset explícito.
 - `event.timezone` es una zona IANA y gobierna la presentación localizada.
 - El deadline RSVP es exclusivo y anterior al evento.
@@ -48,7 +52,11 @@ agregado.
 ## Contratos aplicados en runtime
 
 - `seo` actualiza título y metadescripción al cambiar el locale.
-- `capabilities.rsvp.deadline` gobierna CTA, ruta y comprobación previa al envío.
+- `capabilities.rsvp.deadline` es el valor de arranque, no la autoridad. Gobierna el primer render; en cuanto la base
+  de datos responde, `invitations.rsvp_deadline_utc` y `rsvp_override` mandan, y la pareja los cambia desde el panel
+  sin redesplegar. Quien decide de verdad si una confirmación entra es el `WITH CHECK` de la policy de inserción.
+- La ruta `/rsvp` se registra siempre. Cerrar no es lo mismo que no existir: un enlace guardado llega a la página que
+  explica el cierre, no al comodín de ruta no encontrada.
 - `event.date` es la fuente única para hero y countdown; countdown no declara un target alternativo.
 - Admin puede permanecer disponible después del cierre para consultar respuestas existentes.
 - `capabilities.admin.auth.method` selecciona una única variante de acceso; la autorización continúa fuera de la

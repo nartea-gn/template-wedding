@@ -3,7 +3,7 @@
 ## Estado actual
 
 Landing, RSVP y Admin comparten tokens, iconografía, localización y comportamiento responsive. Royal conserva la
-referencia visual aprobada y los cinco temas pueden variar composición, motion, superficies, ornamentos e iconos sin
+referencia visual aprobada y los temas pueden variar composición, motion, superficies, ornamentos e iconos sin
 cambiar contenido o funcionalidad.
 
 Sprint 6.6 cerró el baseline visual con fondos modulares responsive para las cinco colecciones y Royal aprobado por

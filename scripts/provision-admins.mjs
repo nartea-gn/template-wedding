@@ -36,6 +36,8 @@ if (authMethod === 'password' && emails.some(email => !usersByEmail.has(email)))
     )
 }
 
+await assertNoForeignAdmins(invitationId, emails, usersByEmail)
+
 let createdUsers = 0
 let existingUsers = 0
 let memberships = 0
@@ -85,6 +87,46 @@ function parseEmails(value) {
     }
 
     return normalized
+}
+
+/**
+ * Refuses to add administrators to an invitation that already belongs to someone else.
+ *
+ * The composite primary key of `invitation_admins` does not catch this: a second wedding that
+ * picked the same slug inserts its admins alongside the first one's, with no error, and the RLS
+ * membership check then grants both teams access to each other's guests. That failure has
+ * already happened once in this schema by another cause.
+ *
+ * Set NARTEA_PROVISION_ALLOW_EXISTING to the invitation id to add an admin to a wedding that is
+ * genuinely already provisioned.
+ */
+async function assertNoForeignAdmins(invitationId, requestedEmails, usersByEmail) {
+    const {data, error} = await supabase
+        .from('invitation_admins')
+        .select('user_id')
+        .eq('invitation_id', invitationId)
+    if (error) throw error
+
+    const requestedIds = new Set(
+        requestedEmails.map(email => usersByEmail.get(email)?.id).filter(Boolean),
+    )
+    const foreign = (data ?? []).filter(row => !requestedIds.has(row.user_id))
+    if (foreign.length === 0) return
+
+    if (process.env.NARTEA_PROVISION_ALLOW_EXISTING === invitationId) {
+        console.warn(
+            `"${invitationId}" already has ${foreign.length} administrator(s) not in this run. `
+            + 'Continuing because NARTEA_PROVISION_ALLOW_EXISTING was set.',
+        )
+        return
+    }
+
+    throw new Error(
+        `"${invitationId}" already has ${foreign.length} administrator(s) that this run did not ask for.\n`
+        + 'Either this slug belongs to another wedding -- choose a different invitation id -- or you are adding '
+        + 'an admin to a wedding that is already provisioned, in which case set '
+        + `NARTEA_PROVISION_ALLOW_EXISTING=${invitationId}.`,
+    )
 }
 
 function assertDestination(mode, value, expectedInvitationId) {

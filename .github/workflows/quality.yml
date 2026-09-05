@@ -2,9 +2,9 @@ name: Quality Gates
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -27,8 +27,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 10.34.5
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -53,6 +51,11 @@ jobs:
 
       - name: End-to-end tests
         run: pnpm run test:e2e
+
+      # Against the built application, not the dev server: the plugin that emits the
+      # Content-Security-Policy is `apply: 'build'`, so no other job ever loads a page carrying it.
+      - name: Content-Security-Policy tests
+        run: pnpm run test:e2e:csp
 
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
@@ -87,3 +90,22 @@ jobs:
       - name: Stop local Supabase
         if: ${{ always() }}
         run: supabase stop --no-backup
+
+  edge-functions:
+    name: Edge Function quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      # The bundler never sees these files: `tsc -b` excludes them and Vite does not build them,
+      # so before this step ESLint was the only tool that read the only Deno artifact in
+      # production. A type error here reached the nightly cron, not the pipeline.
+      - name: Type-check Edge Functions
+        run: find supabase/functions -name '*.ts' -exec deno check {} +

@@ -1,11 +1,12 @@
-import type {RsvpRepository} from '../../domain/RsvpRepository'
-import type {RsvpSubmissionRecord} from '../../domain/RsvpSubmission'
+import type {RsvpRepository} from '../domain/RsvpRepository'
+import type {RsvpRecordUpdate} from '../domain/RsvpSubmission'
+import type {RsvpScheduleUpdate} from '../domain/RsvpStatus'
 
 export async function listRsvpResponses(repository: RsvpRepository, invitationId: string) {
     return repository.listByInvitation(invitationId)
 }
 
-export async function updateRsvpResponse(repository: RsvpRepository, invitationId: string, id: number, changes: Partial<Pick<RsvpSubmissionRecord, 'answers' | 'full_name' | 'attending' | 'dietary_options' | 'dietary_other' | 'bus_option' | 'song_request' | 'message' | 'locale'>>) {
+export async function updateRsvpResponse(repository: RsvpRepository, invitationId: string, id: number, changes: Partial<RsvpRecordUpdate>) {
     return repository.update(invitationId, id, changes)
 }
 
@@ -17,6 +18,6 @@ export async function restoreRsvpResponse(repository: RsvpRepository, invitation
     return repository.restore(invitationId, id)
 }
 
-export async function purgeExpiredRsvpResponses(repository: RsvpRepository, invitationId: string) {
-    return repository.purgeExpired(invitationId)
+export async function updateRsvpSchedule(repository: RsvpRepository, invitationId: string, schedule: RsvpScheduleUpdate) {
+    return repository.updateSchedule(invitationId, schedule)
 }

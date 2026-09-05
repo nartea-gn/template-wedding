@@ -1,7 +1,12 @@
 import {expect, test, type Page} from '@playwright/test'
 import {themes, toCssVariables, type ThemeId} from '../src/design/themes'
 
+// 320 px included on purpose: `PRODUCT_BACKLOG.md` requires "320, 390, 768 y 1440 px con todos
+// los temas", and this matrix started at 390. The narrowest breakpoint is where the countdown
+// once squeezed its labels to 7,68 px, and it was only ever checked by hand -- and only for the
+// five themes that existed then.
 const viewports = [
+    {name: 'móvil pequeño', width: 320, height: 568},
     {name: 'móvil', width: 390, height: 844},
     {name: 'tablet', width: 768, height: 1024},
     {name: 'escritorio', width: 1440, height: 900},
@@ -18,7 +23,7 @@ for (const themeId of themeIds) {
     for (const viewport of viewports) {
         test(`${themeId} mantiene Landing, RSVP y Admin en ${viewport.name}`, async ({page}) => {
             await page.setViewportSize({width: viewport.width, height: viewport.height})
-            await page.goto('./#/')
+            await page.goto('./')
             await applyTheme(page, themeId)
 
             await expect(page.locator('html')).toHaveAttribute('data-theme', themeId)
@@ -29,7 +34,7 @@ for (const themeId of themeIds) {
                 getComputedStyle(element, '::before').backgroundImage,
             )).not.toBe('none')
 
-            await page.goto('./#/rsvp')
+            await page.goto('./rsvp')
             await applyTheme(page, themeId)
 
             await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
@@ -39,7 +44,7 @@ for (const themeId of themeIds) {
                 getComputedStyle(element, '::before').backgroundImage,
             )).not.toBe('none')
 
-            await page.goto('./#/admin')
+            await page.goto('./admin')
             await applyTheme(page, themeId)
 
             await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
@@ -70,25 +75,32 @@ async function hasHorizontalOverflow(page: Page) {
     )
 }
 
+// Digits and separators are measured inside a single evaluate on purpose. Splitting them into two
+// round-trips reads two different layouts: anything that shifts the page in between -- an image
+// above the countdown finishing its decode, which is exactly what happens when the machine is
+// loaded -- moves the separators relative to digits that were measured before the shift. That
+// reported a 12 px misalignment on a page whose screenshot was perfectly aligned.
 async function assertCountdownAlignment(page: Page) {
-    await page.evaluate(async () => {
+    const worstOffset = await page.evaluate(async () => {
         const value = document.querySelector<HTMLElement>('.landing-countdown-value')
-        if (!value) return
+        if (!value) return 0
+
         const style = getComputedStyle(value)
         await document.fonts.load(`${style.fontWeight} ${style.fontSize} ${style.fontFamily}`)
         await document.fonts.ready
         await new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())))
+
+        const centerOf = (element: Element) => {
+            const box = element.getBoundingClientRect()
+            return box.y + box.height / 2
+        }
+        const valueCenters = [...document.querySelectorAll('.landing-countdown-value')].map(centerOf)
+        const separatorCenters = [...document.querySelectorAll('.landing-countdown-sep')].map(centerOf)
+        if (!valueCenters.length || !separatorCenters.length) return 0
+
+        const valueCenter = valueCenters.reduce((total, center) => total + center, 0) / valueCenters.length
+        return Math.max(...separatorCenters.map(center => Math.abs(center - valueCenter)))
     })
 
-    const valueCenters = await page.locator('.landing-countdown-value').evaluateAll(elements =>
-        elements.map(element => element.getBoundingClientRect().y + element.getBoundingClientRect().height / 2),
-    )
-    const separatorCenters = await page.locator('.landing-countdown-sep').evaluateAll(elements =>
-        elements.map(element => element.getBoundingClientRect().y + element.getBoundingClientRect().height / 2),
-    )
-    const valueCenter = valueCenters.reduce((total, value) => total + value, 0) / valueCenters.length
-
-    for (const separatorCenter of separatorCenters) {
-        expect(Math.abs(separatorCenter - valueCenter)).toBeLessThanOrEqual(0.5)
-    }
+    expect(worstOffset).toBeLessThanOrEqual(0.5)
 }

@@ -29,6 +29,28 @@ export function useFormEngine<Message extends string>(definition: FormDefinition
         })
     }
 
+    /**
+     * Answers with every currently hidden field removed.
+     *
+     * A guest who fills in a conditional field and then revokes the condition must not send that
+     * value. It matters most for the dietary consent: the allergies of someone who changed their
+     * mind are article 9 health data with no legal basis behind them.
+     */
+    const visibleAnswers = useMemo(() => {
+        const hidden = new Set(
+            definition.steps
+                .filter(step => !isConditionMet(step.visibleWhen, answers))
+                .flatMap(step => step.elements)
+                .map(element => element.id),
+        )
+        for (const step of definition.steps) {
+            for (const element of step.elements) {
+                if (!isConditionMet(element.visibleWhen, answers)) hidden.add(element.id)
+            }
+        }
+        return Object.fromEntries(Object.entries(answers).filter(([id]) => !hidden.has(id))) as FormAnswers
+    }, [answers, definition.steps])
+
     const validateCurrent = () => {
         if (!currentStep) return false
         const nextErrors = validateElements(currentStep.elements, answers)
@@ -41,7 +63,7 @@ export function useFormEngine<Message extends string>(definition: FormDefinition
     )) ?? false
 
     return {
-        answers, errors, currentStep, currentIndex, visibleSteps,
+        answers, visibleAnswers, errors, currentStep, currentIndex, visibleSteps,
         progress: visibleSteps.length ? ((currentIndex + 1) / visibleSteps.length) * 100 : 0,
         isFirst: currentIndex === 0,
         isLast: currentIndex === visibleSteps.length - 1,

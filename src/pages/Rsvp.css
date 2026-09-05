@@ -157,10 +157,6 @@
     accent-color: var(--color-wedding-action);
 }
 
-.rsvp-input-other {
-    @apply mt-3;
-}
-
 .rsvp-select {
     @apply cursor-pointer;
 }
@@ -190,11 +186,6 @@
 
 .rsvp-error-box-text {
     @apply text-sm;
-    color: var(--color-wedding-danger);
-}
-
-.rsvp-error-box-detail {
-    @apply block text-xs mt-2 opacity-80;
     color: var(--color-wedding-danger);
 }
 

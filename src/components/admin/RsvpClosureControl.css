@@ -1,0 +1,21 @@
+@reference "tailwindcss";
+
+.admin-rsvp-closure {
+    @apply flex flex-col gap-3 p-4;
+}
+
+.admin-rsvp-closure-title {
+    @apply text-base font-semibold;
+}
+
+.admin-rsvp-closure-state {
+    @apply text-sm opacity-80;
+}
+
+.admin-rsvp-closure-modes {
+    @apply flex flex-wrap gap-4;
+}
+
+.admin-rsvp-closure-error {
+    @apply text-sm text-(--color-wedding-danger);
+}

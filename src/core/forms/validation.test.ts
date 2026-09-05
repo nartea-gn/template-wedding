@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {weddingRsvpForm} from '../../invitations/wedding/rsvpForm'
+import {weddingRsvpForm} from '../../invitations/wedding'
 import {validateElements, validateFormDefinition} from './validation'
 import {isConditionMet} from './visibility'
 
@@ -56,5 +56,34 @@ describe('form validation', () => {
         })
 
         expect(errors.fullName).toBe('maxLength')
+    })
+
+    it('rejects responses below their configured minimum length', () => {
+        const [step] = weddingRsvpForm.steps
+        const [identity] = step.elements
+        const errors = validateElements(
+            [{...identity, validation: {minLength: 20}}],
+            {fullName: 'Gala'},
+        )
+
+        expect(errors.fullName).toBe('minLength')
+    })
+
+    it('rejects a malformed email address', () => {
+        const errors = validateElements(
+            [{id: 'contact', type: 'email', label: 'contact', required: true}],
+            {contact: 'gala-at-example.com'},
+        )
+
+        expect(errors.contact).toBe('email')
+    })
+
+    it('accepts a well formed email address', () => {
+        const errors = validateElements(
+            [{id: 'contact', type: 'email', label: 'contact', required: true}],
+            {contact: 'gala@example.com'},
+        )
+
+        expect(errors.contact).toBeUndefined()
     })
 })

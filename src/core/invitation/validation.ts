@@ -29,6 +29,10 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         errors.push('Event title and SEO message keys must not be empty')
     }
 
+    if (hasBlankValue([definition.controller.name]) || !definition.controller.email.includes('@')) {
+        errors.push('The data controller requires a name message key and a contact email')
+    }
+
     const eventTimestamp = parseInstant(definition.event.date)
     if (eventTimestamp === null) {
         errors.push('Event date must be an ISO 8601 instant with an explicit offset')
@@ -92,6 +96,7 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         }
         if (section.type === 'countdown' && hasBlankValue([
             section.content.label,
+            section.content.todayLabel,
             ...Object.values(section.content.unitLabels),
         ])) {
             errors.push(`Countdown section ${section.id} requires complete message keys`)
@@ -111,6 +116,38 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         ])) {
             errors.push(`RSVP CTA section ${section.id} requires open and closed labels`)
         }
+        if (section.type === 'lodging') {
+            const itemIds = section.content.items.map(item => item.id)
+            if (section.enabled && itemIds.length === 0) errors.push(`Lodging section ${section.id} requires an item`)
+            if (itemIds.some(id => !STABLE_ID_PATTERN.test(id))) {
+                errors.push(`Lodging section ${section.id} item ids must use lowercase kebab-case`)
+            }
+            if (new Set(itemIds).size !== itemIds.length) {
+                errors.push(`Lodging section ${section.id} item ids must be unique`)
+            }
+            if (section.content.items.some(item => hasBlankValue([item.name, item.bookingUrl]))) {
+                errors.push(`Lodging section ${section.id} items require a name and a booking URL`)
+            }
+            const tieredItems = section.content.items.filter(item => item.priceTier !== undefined)
+            if (tieredItems.length > 0 && !section.content.priceTierLabels) {
+                errors.push(`Lodging section ${section.id} requires priceTierLabels when an item declares priceTier`)
+            }
+        }
+        if (section.type === 'gifts') {
+            if (!section.content.registry && !section.content.account) {
+                errors.push(`Gifts section ${section.id} requires a registry, an account, or both`)
+            }
+            if (section.content.registry && hasBlankValue([section.content.registry.url])) {
+                errors.push(`Gifts section ${section.id} registry requires a URL`)
+            }
+            if (section.content.account && hasBlankValue([section.content.account.iban])) {
+                errors.push(`Gifts section ${section.id} account requires an IBAN`)
+            }
+            if (hasBlankValue([section.content.fraudWarningKey])) {
+                errors.push(`Gifts section ${section.id} requires a fraud warning message key`)
+            }
+        }
+        // Everything below is venue-specific. This guard must stay last in the loop body.
         if (section.type !== 'venue') continue
         const itemIds = section.content.items.map(item => item.id)
         if (section.enabled && itemIds.length === 0) errors.push(`Venue section ${section.id} requires an item`)

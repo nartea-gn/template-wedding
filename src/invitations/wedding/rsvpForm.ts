@@ -2,8 +2,11 @@ import type {FormDefinition} from '../../core/forms'
 import type {WeddingMessageKey} from './locales/es'
 
 export const weddingRsvpForm = {
-    id: 'wedding-rsvp', version: 1,
+    // Bump the version whenever the privacy notice or the consent wording changes: the stored
+    // version is what proves which text a guest actually consented to.
+    id: 'wedding-rsvp', version: 2,
     submission: {identityFieldId: 'fullName', attendanceFieldId: 'attending'},
+    privacyNotice: 'rsvp.privacy.notice',
     messages: {
         next: 'rsvp.next',
         back: 'rsvp.back',
@@ -28,6 +31,7 @@ export const weddingRsvpForm = {
                     id: 'fullName',
                     type: 'text',
                     label: 'rsvp.fullName.label',
+                    help: 'rsvp.fullName.help',
                     placeholder: 'rsvp.fullName.placeholder',
                     required: true,
                     initialValue: '',
@@ -55,9 +59,22 @@ export const weddingRsvpForm = {
             visibleWhen: {fieldId: 'attending', equals: true},
             elements: [
                 {
+                    id: 'dietaryConsent',
+                    type: 'radio',
+                    label: 'rsvp.dietary.consent.label',
+                    help: 'rsvp.dietary.consent.help',
+                    required: true,
+                    initialValue: null,
+                    options: [
+                        {value: true, label: 'rsvp.dietary.consent.yes'},
+                        {value: false, label: 'rsvp.dietary.consent.no'}
+                    ]
+                },
+                {
                     id: 'dietaryOptions',
                     type: 'checkbox-group',
                     label: 'rsvp.dietary.label',
+                    visibleWhen: {fieldId: 'dietaryConsent', equals: true},
                     initialValue: [],
                     options: [{value: 'none', label: 'rsvp.dietary.none'}, {
                         value: 'gluten',
@@ -71,6 +88,7 @@ export const weddingRsvpForm = {
                     id: 'dietaryOther',
                     type: 'text',
                     label: 'rsvp.dietary.other',
+                    visibleWhen: {fieldId: 'dietaryConsent', equals: true},
                     placeholder: 'rsvp.dietary.other',
                     initialValue: '',
                     validation: {maxLength: 300}

@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from 'react'
 import type {AuthError, Session} from '@supabase/supabase-js'
 import {supabase} from '../lib/supabaseClient'
 import type {AdminAuthMethod} from '../core/invitation'
+import {devError} from '../lib/devLog'
 
 export type AdminAuthPhase = 'loading' | 'email' | 'code' | 'password' | 'authenticated'
 export type AdminAuthError =
@@ -40,7 +41,7 @@ export function useAdminSession(method: AdminAuthMethod) {
             })
             .catch(sessionError => {
                 if (!active) return
-                console.error('Unable to restore the admin session.', sessionError)
+                devError('Unable to restore the admin session.', sessionError)
                 setSession(null)
                 setError('session')
                 setPhase(getUnauthenticatedPhase(method))
@@ -82,7 +83,7 @@ export function useAdminSession(method: AdminAuthMethod) {
                     return true
                 }
 
-                console.error('Unable to request admin OTP.', requestError)
+                devError('Unable to request admin OTP.', requestError)
                 setError('request')
                 return false
             }
@@ -91,7 +92,7 @@ export function useAdminSession(method: AdminAuthMethod) {
             setPhase('code')
             return true
         } catch (requestError) {
-            console.error('Unable to request admin OTP.', requestError)
+            devError('Unable to request admin OTP.', requestError)
             setError('request')
             return false
         } finally {
@@ -117,7 +118,7 @@ export function useAdminSession(method: AdminAuthMethod) {
 
             return true
         } catch (verificationError) {
-            console.error('Unable to verify the admin OTP.', verificationError)
+            devError('Unable to verify the admin OTP.', verificationError)
             setError('verificationRequest')
             return false
         } finally {
@@ -144,7 +145,7 @@ export function useAdminSession(method: AdminAuthMethod) {
             setEmail(normalizedEmail)
             return true
         } catch (authenticationError) {
-            console.error('Unable to authenticate the admin session.', authenticationError)
+            devError('Unable to authenticate the admin session.', authenticationError)
             setError('authenticationRequest')
             return false
         } finally {
@@ -165,7 +166,7 @@ export function useAdminSession(method: AdminAuthMethod) {
             const {error: signOutError} = await supabase.auth.signOut()
             if (signOutError) setError('session')
         } catch (signOutError) {
-            console.error('Unable to close the admin session.', signOutError)
+            devError('Unable to close the admin session.', signOutError)
             setError('session')
         } finally {
             setSubmitting(false)

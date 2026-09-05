@@ -45,23 +45,29 @@ Condición de activación: requisitos comerciales y revisión legal/operativa de
 
 ### Admin y reporting
 
-- Abrir/cerrar RSVP desde Admin mediante una mutación protegida.
-- Detalle móvil para respuestas largas.
+- ~~Abrir/cerrar RSVP desde Admin mediante una mutación protegida~~ — **entregado**: deadline y conmutador en `public.invitations`, con `is_rsvp_open` cerrando también la API.
+- ~~Detalle móvil para respuestas largas~~ — **entregado en Sprint 7.5A**: la tabla se apila por debajo de 768 px y cada valor lleva su columna.
 - Consultas, conteo y paginación de servidor cuando el volumen real lo exija.
 - XLSX, informes o gráficos solo si ayudan a una decisión concreta del cliente.
-- Edición/borrado con confirmación e historial de auditoría.
-- Cierre programado, notificaciones y exportaciones especializadas.
+- ~~Edición y borrado de respuestas~~ — **entregado en Sprint 7.1D**, no pendiente.
+- ~~Confirmación previa al borrado e historial de auditoría de las mutaciones administrativas~~ — **entregado en Sprint 7.5A**: confirmación nominal antes de borrar y `admin_audit` escrito por triggers, en cascada con la respuesta para no sobrevivir a la purga.
+- Notificaciones y exportaciones especializadas.
 
 ### i18n: modelo de catálogos y fallback
 
-- `es.ts` es la referencia canónica, pero `en.ts` es un catálogo completo independiente y `bg.ts` hereda de `en.ts` con spread estático.
-- Esto deja la herencia de traducciones implícita y dificulta añadir nuevos idiomas sin decidir primero la cadena de fallback.
-- Mejora futura: unificar el modelo de carga de locales con fallback explícito y eliminar la dependencia circular de mantenimiento.
+- ~~`es.ts` es la referencia canónica, pero `en.ts` es un catálogo completo independiente y `bg.ts` hereda de `en.ts` con spread estático~~ — **ya no.** Los tres catálogos declaran sus claves; ninguno hereda de otro.
+- ~~Esto deja la herencia de traducciones implícita y dificulta añadir nuevos idiomas sin decidir primero la cadena de fallback~~ — **resuelto.** La cadena se declara en `invitation.ts` (`fallback: {bg: "en", en: "es"}`) y `catalogs.test.ts` exige paridad de claves entre los tres.
+- ~~Mejora futura: unificar el modelo de carga de locales con fallback explícito y eliminar la dependencia circular de mantenimiento~~ — **entregado en Sprint 7.5A**: cadena de fallback declarada en la invitación y spread estático eliminado.
 
 ### Contenido de invitación aplazado
 
 - Galería como sección registrada con assets, layout y captions accesibles.
-- Historia/timeline como contenido del paquete de evento.
+- Historia como contenido del paquete de evento. Entregada el 2026-08-31 como sección `story` ([
+  `ADR-019`](../04-development/adr/ADR-019-lodging-and-story-sections.md)) y **retirada del motor el 2026-09-05** ([
+  `ADR-023`](../04-development/adr/ADR-023-remove-story-section.md)): vuelve a estar aplazada, y recuperarla es revertir
+  un borrado, no declarar una entrada.
+- Timeline con hitos fechados como sección propia. Sería un contrato nuevo —fecha estructurada, secuencia y formato por
+  locale—, no prosa libre.
 - Música opcional con consentimiento explícito y sin autoplay.
 
 Theme Engine v2 ya está cerrado. Estos módulos continúan aplazados hasta que exista una necesidad concreta y un contrato
