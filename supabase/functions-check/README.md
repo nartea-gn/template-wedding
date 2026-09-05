@@ -45,7 +45,7 @@ primera vez que una herramienta de tipos leía ese archivo, así que un fallo ha
 resultado igual de válido.
 
 La imagen queda pineada en `denoland/deno:alpine-2.9.6`, como el resto del repositorio pinea sus
-herramientas (`supabase/postgres:15.8.1.060`, Supabase CLI `2.111.0`, Playwright `1.62.1`). Un
+herramientas (`supabase/postgres:17.6.1.156`, Supabase CLI `2.111.0`, Playwright `1.62.1`). Un
 `:alpine` móvil cambiaría el compilador por debajo de un resultado en verde sin avisar.
 
 ## Alcance
