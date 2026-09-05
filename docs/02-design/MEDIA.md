@@ -35,9 +35,12 @@ transcoding engine. The exact Windows procedure is documented in
 
 ## Fonts
 
-The current HTML request includes every family required by the five existing themes. Loading only the selected theme's
-families requires font metadata in the theme contract and therefore belongs to Theme Engine v2. Until then, new font
-families must not be added without removing or consolidating an existing need.
+Each theme declares the families it needs in `googleFonts`, and the build injects only those of the deployed theme into
+`index.html`. Requesting all of them cost eight render-blocking downloads on the LCP path to use one.
+
+The list is declared, not derived: the weights never appear in the CSS stack, and a stack can quote a system face
+("Times New Roman") that is not a webfont. An empty list therefore means "this theme uses system fonts only" -- never
+"inherit another theme's". A theme that leaves it empty by mistake deploys with no webfonts at all.
 
 ## Current invitation
 
@@ -45,4 +48,4 @@ families must not be added without removing or consolidating an existing need.
   `preload: 'none'` so the file is not eagerly fetched.
 - `video-poster.webp`: representative frame at 450×806 and approximately 46 KB.
 - `favico.png`: reduced from 4096×4096 / 15 MB to 512×512 / approximately 375 KB and connected through Vite's
-  `%BASE_URL%` so GitHub Pages resolves it correctly.
+  `%BASE_URL%`, which keeps the reference correct whatever base the host serves the site from.

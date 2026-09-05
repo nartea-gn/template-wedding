@@ -27,6 +27,7 @@ export const themes = {
             heading: 'ui-serif, Georgia, Cambria, "Times New Roman", Times, serif',
             body: '"Josefin Sans", sans-serif'
         },
+        googleFonts: ['Josefin+Sans:wght@300;400;600'],
         shadows: {
             card: '0 4px 20px rgba(27, 58, 107, 0.08)',
             cardLarge: '0 12px 40px rgba(27, 58, 107, 0.12)',
@@ -69,6 +70,7 @@ export const themes = {
             dangerSurface: '#F3DDDB'
         },
         typography: {heading: '"Cormorant Garamond", serif', body: '"Nunito", sans-serif'},
+        googleFonts: ['Cormorant+Garamond:ital,wght@0,400;0,600;1,400', 'Nunito:wght@300;400;600'],
         shadows: {
             card: '0 4px 20px rgba(124, 154, 110, 0.1)',
             cardLarge: '0 12px 40px rgba(124, 154, 110, 0.15)',
@@ -111,6 +113,7 @@ export const themes = {
             dangerSurface: '#4A1F27'
         },
         typography: {heading: '"Cormorant Garamond", serif', body: '"Lato", sans-serif'},
+        googleFonts: ['Cormorant+Garamond:ital,wght@0,400;0,600;1,400', 'Lato:wght@300;400;700'],
         shadows: {
             card: '0 4px 20px rgba(0, 0, 0, 0.4)',
             cardLarge: '0 12px 40px rgba(0, 0, 0, 0.5)',
@@ -153,6 +156,7 @@ export const themes = {
             dangerSurface: '#F5DFE3'
         },
         typography: {heading: '"Cormorant Garamond", serif', body: '"Raleway", sans-serif'},
+        googleFonts: ['Cormorant+Garamond:ital,wght@0,400;0,600;1,400', 'Raleway:wght@300;400;600'],
         shadows: {
             card: '0 4px 20px rgba(183, 110, 121, 0.1)',
             cardLarge: '0 12px 40px rgba(183, 110, 121, 0.15)',
@@ -195,6 +199,7 @@ export const themes = {
             dangerSurface: '#F2E0DE'
         },
         typography: {heading: '"Playfair Display", serif', body: '"Montserrat", sans-serif'},
+        googleFonts: ['Playfair+Display:ital,wght@0,400;0,600;1,400', 'Montserrat:wght@300;400;600'],
         shadows: {
             card: '0 4px 20px rgba(74, 83, 67, 0.08)',
             cardLarge: '0 12px 40px rgba(74, 83, 67, 0.12)',
@@ -213,6 +218,92 @@ export const themes = {
         surfaces: {contentCardOpacity: '72%', formCardOpacity: '82%'},
         decoration: {ornamentColor: '#B59A6A', ornamentOpacity: '0.72'},
         iconography: {interfaceStrokeWidth: '1.5'},
+    },
+    lavender: {
+        colors: {
+            background: '#F7F4FC',
+            backgroundRgb: '247 244 252',
+            primary: '#6E5FAE',
+            primaryRgb: '110 95 174',
+            action: '#4B3F8F',
+            onAction: '#FFFFFF',
+            text: '#241B3D',
+            textRgb: '36 27 61',
+            surface: '#ECE6F7',
+            surfaceRgb: '236 230 247',
+            border: '#B79B6B',
+            borderRgb: '183 155 107',
+            muted: '#5C5470',
+            mutedRgb: '92 84 112',
+            controlBorder: '#6B5C99',
+            success: '#2E6B4A',
+            successSurface: '#DFF0E4',
+            danger: '#8B3350',
+            dangerSurface: '#F6E0E7'
+        },
+        typography: {heading: '"Cormorant Garamond", serif', body: '"Nunito", sans-serif'},
+        googleFonts: ['Cormorant+Garamond:ital,wght@0,400;0,600;1,400', 'Nunito:wght@300;400;600'],
+        shadows: {
+            card: '0 4px 20px rgba(110, 95, 174, 0.10)',
+            cardLarge: '0 12px 40px rgba(110, 95, 174, 0.15)',
+            cardSmall: '0 2px 8px rgba(110, 95, 174, 0.06)'
+        },
+        radius: {card: '15px', small: '9px', large: '19px', extraLarge: '27px'},
+        composition: {
+            sectionGap: '4.5rem',
+            sectionGapWide: '5.5rem',
+            ornamentGap: '4rem',
+            ornamentGapWide: '5.5rem',
+            editorialMaxWidth: '54rem',
+            mediaMaxWidth: '22.5rem',
+        },
+        motion: {revealDuration: '0.85s', revealDistance: '16px', interactionDuration: '0.28s'},
+        surfaces: {contentCardOpacity: '76%', formCardOpacity: '85%'},
+        decoration: {ornamentColor: '#C2A672', ornamentOpacity: '0.82'},
+        iconography: {interfaceStrokeWidth: '1.6'},
+    },
+    terracotta: {
+        colors: {
+            background: '#FBF3EA',
+            backgroundRgb: '251 243 234',
+            primary: '#A8511F',
+            primaryRgb: '168 81 31',
+            action: '#973F16',
+            onAction: '#FFFFFF',
+            text: '#3D2B1F',
+            textRgb: '61 43 31',
+            surface: '#F3E3D0',
+            surfaceRgb: '243 227 208',
+            border: '#BF9165',
+            borderRgb: '191 145 101',
+            muted: '#6E4A35',
+            mutedRgb: '110 74 53',
+            controlBorder: '#8C5A34',
+            success: '#2F6B45',
+            successSurface: '#E1EFE2',
+            danger: '#8B3B2E',
+            dangerSurface: '#F5E1DB'
+        },
+        typography: {heading: '"Playfair Display", serif', body: '"Lato", sans-serif'},
+        googleFonts: ['Playfair+Display:ital,wght@0,400;0,600;1,400', 'Lato:wght@300;400;700'],
+        shadows: {
+            card: '0 4px 20px rgba(168, 81, 31, 0.10)',
+            cardLarge: '0 12px 40px rgba(168, 81, 31, 0.15)',
+            cardSmall: '0 2px 8px rgba(168, 81, 31, 0.06)'
+        },
+        radius: {card: '10px', small: '7px', large: '14px', extraLarge: '22px'},
+        composition: {
+            sectionGap: '4.25rem',
+            sectionGapWide: '5.25rem',
+            ornamentGap: '3.75rem',
+            ornamentGapWide: '5.25rem',
+            editorialMaxWidth: '52rem',
+            mediaMaxWidth: '22.5rem',
+        },
+        motion: {revealDuration: '0.75s', revealDistance: '14px', interactionDuration: '0.24s'},
+        surfaces: {contentCardOpacity: '74%', formCardOpacity: '83%'},
+        decoration: {ornamentColor: '#C99A66', ornamentOpacity: '0.78'},
+        iconography: {interfaceStrokeWidth: '1.55'},
     },
 } as const satisfies Record<string, ThemeDefinition>
 

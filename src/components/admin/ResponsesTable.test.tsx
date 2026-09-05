@@ -1,4 +1,4 @@
-import {render, screen} from '@testing-library/react'
+import {render, screen, within} from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type {ComponentProps} from 'react'
 import {describe, expect, it, vi} from 'vitest'
@@ -35,7 +35,12 @@ function renderTable(overrides: Partial<ComponentProps<typeof ResponsesTable>> =
         hasError: false,
         form: weddingRsvpForm,
         columns: ['fullName', 'attending'],
+        errorMessage: null,
+        rowError: null,
         onRetry: vi.fn(),
+        onUpdate: vi.fn(async () => true),
+        onDelete: vi.fn(),
+        onRestore: vi.fn(),
         ...overrides,
     }
 
@@ -80,5 +85,63 @@ describe('ResponsesTable', () => {
         expect(table).toHaveTextContent('rsvp.attending.label')
         expect(table).toHaveTextContent('Invitada de Prueba')
         expect(table).toHaveTextContent('common.yes')
+    })
+
+    // Below the table breakpoint each row is stacked, so a bare value loses the column that gave
+    // it meaning. The label travels inside the cell, hidden from assistive technology because the
+    // header association already conveys it.
+    it('repeats its column label inside every data cell', () => {
+        renderTable({responses: [response], columns: ['fullName', 'attending']})
+
+        const rows = screen.getAllByRole('row')
+        const headers = within(rows[0]).getAllByRole('columnheader').map(header => header.textContent)
+        const cells = within(rows[1]).getAllByRole('cell')
+
+        for (const [index, cell] of cells.slice(0, 2).entries()) {
+            const label = cell.querySelector('.responses-cell-label')
+            expect(label).toHaveTextContent(headers[index] ?? '')
+            expect(label).toHaveAttribute('aria-hidden', 'true')
+        }
+    })
+
+    // The stacked layout sets `display: block` on the table elements, and browsers drop the
+    // implicit table semantics when it does. Stating the roles keeps the grid readable to a
+    // screen reader at every width instead of only above the breakpoint.
+    it('states its table semantics explicitly', () => {
+        renderTable({responses: [response], columns: ['fullName', 'attending']})
+
+        expect(screen.getByRole('table')).toHaveAttribute('role', 'table')
+        const rows = screen.getAllByRole('row')
+        expect(rows[0]).toHaveAttribute('role', 'row')
+        expect(within(rows[0]).getAllByRole('columnheader')[0]).toHaveAttribute('role', 'columnheader')
+        expect(within(rows[1]).getAllByRole('cell')[0]).toHaveAttribute('role', 'cell')
+        expect(screen.getAllByRole('rowgroup')).toHaveLength(2)
+    })
+
+    // Deleting is irreversible once the purge runs, and with several administrators per invitation
+    // nothing tells the others who removed a row. Asking first, by name, is the cheap half.
+    it('asks before deleting and names the guest', async () => {
+        const user = userEvent.setup()
+        const {props} = renderTable({responses: [response], columns: ['fullName', 'attending']})
+
+        await user.click(screen.getByRole('button', {name: 'admin.actions.delete'}))
+
+        expect(props.onDelete).not.toHaveBeenCalled()
+        expect(screen.getByText(/Invitada de Prueba/)).toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', {name: 'admin.actions.confirmDeleteYes'}))
+
+        expect(props.onDelete).toHaveBeenCalledWith(response.id)
+    })
+
+    it('keeps the response when the deletion is dismissed', async () => {
+        const user = userEvent.setup()
+        const {props} = renderTable({responses: [response], columns: ['fullName', 'attending']})
+
+        await user.click(screen.getByRole('button', {name: 'admin.actions.delete'}))
+        await user.click(screen.getByRole('button', {name: 'admin.actions.confirmDeleteNo'}))
+
+        expect(props.onDelete).not.toHaveBeenCalled()
+        expect(screen.getByRole('button', {name: 'admin.actions.delete'})).toBeInTheDocument()
     })
 })

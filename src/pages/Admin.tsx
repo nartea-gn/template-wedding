@@ -5,18 +5,30 @@ import {StatsCards} from '../components/admin/StatsCards';
 import {AdminToolbar} from '../components/admin/AdminToolbar';
 import {PaginationControls} from '../components/admin/PaginationControls';
 import {ResponsesTable} from '../components/admin/ResponsesTable';
+import {RsvpClosureControl} from '../components/admin/RsvpClosureControl';
 import {useLocalization} from '../app/providers/useLocalization';
 import {buildResponsesCsv} from '../features/admin/export/buildResponsesCsv';
 import {downloadCsv} from '../features/admin/export/downloadCsv';
 import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding';
+import type {AdminAuthDefinition, AdminAuthMethod} from '../core/invitation/types';
 import {InterfaceIcon} from '../components/ui/InterfaceIcon';
 import './Admin.css';
+
+/**
+ * Resolves the sign-in method for the panel.
+ *
+ * The return type is annotated on purpose: it keeps both branches of the login screen
+ * reachable when an invitation pins a single literal method in its definition.
+ */
+function resolveAuthMethod(auth: AdminAuthDefinition | undefined): AdminAuthMethod {
+    return auth?.method ?? 'otp';
+}
 
 export default function Admin() {
     const {t, locale, formatDate} = useLocalization<WeddingMessageKey>();
     const rsvp = weddingInvitation.capabilities.rsvp;
     const admin = weddingInvitation.capabilities.admin;
-    const authMethod = admin?.auth.method ?? 'otp';
+    const authMethod = resolveAuthMethod(admin?.auth);
     const auth = useAdminSession(authMethod);
     const isAuthenticated = auth.session !== null;
     const controls = admin?.controls;
@@ -24,7 +36,7 @@ export default function Admin() {
         loading, hasError, errorMessage, actionMessage, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
         totalResponses, attendingResponses, declinedResponses, transportResponses, resultCount,
         presentedResponses, paginatedResponses, currentPage, totalPages, pageSize, setPageSize, setPage, refetch,
-        updateResponse, deleteResponse, restoreResponse,
+        updateResponse, deleteResponse, restoreResponse, rsvpStatus, updateSchedule, rowError,
     } = useAdminData(isAuthenticated, {
         locale,
         defaultSort: controls?.sorting?.default ?? 'newest',
@@ -102,6 +114,12 @@ export default function Admin() {
                 </div>
             </header>
 
+            <p className="admin-data-notice" role="note">{t('admin.dataNotice')}</p>
+
+            {admin.mutations?.rsvpClosure?.enabled && (
+                <RsvpClosureControl status={rsvpStatus} saving={loading} onSave={updateSchedule}/>
+            )}
+
             <StatsCards total={totalResponses} confirmados={attendingResponses} declinados={declinedResponses}
                         necesitanBus={transportResponses}/>
 
@@ -113,7 +131,8 @@ export default function Admin() {
 
             <ResponsesTable responses={paginatedResponses} loading={loading} hasError={hasError} errorMessage={errorMessage} form={rsvp.form}
                             columns={admin.columns} onRetry={() => refetch()}
-                            onUpdate={updateResponse} onDelete={deleteResponse} onRestore={restoreResponse}/>
+                            onUpdate={updateResponse} onDelete={deleteResponse} onRestore={restoreResponse}
+                            rowError={rowError}/>
 
             {controls?.pagination?.enabled && <PaginationControls currentPage={currentPage} totalPages={totalPages}
                                                                    onPageChange={setPage}/>}

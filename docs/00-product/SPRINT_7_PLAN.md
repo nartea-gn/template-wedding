@@ -2,7 +2,8 @@
 
 ## Estado
 
-- **Estado:** en curso; 7.1A-7.1D cerrados, 7.2, 7.3 y 7.4B completados, dispositivos físicos y Lighthouse pendientes
+- **Estado:** en curso; 7.1A-7.1D, 7.2, 7.3, 7.4 y 7.5A cerrados. Solo queda `7.5B`, bloqueado por revisión humana e
+  infraestructura externa; no hay trabajo de código pendiente que pueda hacerse en local
 - **Objetivo de producto:** alcanzar una release candidate verificable sin ocultar deuda de seguridad, datos o calidad
 - **Entrada:** Sprint 6.6 cerrado y baseline visual aprobado
 - **Salida:** decisión explícita sobre `1.0.0` sustentada por el checklist de release
@@ -194,10 +195,20 @@ final y los límites se mantienen en [`RELEASE_QA_MATRIX.md`](../05-audits/RELEA
 
 El cuarto incremento, `7.4B`, cierra accesibilidad y automatización de despliegue: skip-link global, focus trap en
 selector de idioma, `role="timer"` en countdown, landmarks en `InvitationRenderer`, foco inicial y errores accesibles
-en login, propagación de errores reales de Supabase en Admin, `aria-busy` en dashboard, presupuestos de bundle en
+en login, propagación de errores reales de Supabase en Admin —cierta en el hook desde 7.4B, pero no observable al guardar una edición hasta que se corrigió el cierre prematuro del modal—, `aria-busy` en dashboard, presupuestos de bundle en
 `vite.config.ts` y smoke test automático post-despliegue en GitHub Actions. Quedan como validación manual final
 dispositivos físicos Safari iOS / Chrome Android y Lighthouse / Core Web Vitals. La evidencia se registra en
 [`RELEASE_QA_MATRIX.md`](../05-audits/RELEASE_QA_MATRIX.md).
+
+El quinto incremento, `7.4C`, agota la deuda de código detectable sin desplegar nada. Ocho claves `admin.actions.*`
+existían solo en `es.ts`, de modo que el panel mostraba sus botones en español a un administrador en inglés o búlgaro;
+`locales/catalogs.test.ts` fija ahora la paridad de catálogos, que ni TypeScript ni el aviso de DEV podían ver. Tres
+dependencias de runtime sin un solo import salen del manifiesto, una arrastrando Puppeteer. El build emite una
+Content-Security-Policy con el origen real de Supabase y `pnpm smoke:test` comprueba en el despliegue que existe y
+apunta a donde debe. Los errores de consola pasan por `lib/devLog.ts` y dejan de exponer datos de invitados en
+producción. La matriz de temas añade 320 px, el breakpoint que el backlog exige «con todos los temas» y que nunca
+cubrió. `supabase/functions-check/` da a las Edge Functions su primer type-check. Este incremento se ejecutó en local
+sin Pull Request: el repositorio remoto todavía no existe, así que el principio 6 no pudo aplicarse.
 
 ### Matriz mínima
 
@@ -238,13 +249,124 @@ dispositivos físicos Safari iOS / Chrome Android y Lighthouse / Core Web Vitals
 - checklist actualizado con evidencia;
 - no se utiliza una validación parcial para afirmar compatibilidad total.
 
-## Sprint 7.5 — Release candidate
+**Cerrado el 2026-09-04 con arrastre.** El trabajo de código del sprint está completo y verificado. Los tres puntos
+restantes —dispositivos físicos, Lighthouse / Core Web Vitals y aprobación artística de `lavender` y `terracotta`— no
+son implementación, así que no pueden completarse dentro de un sprint de QA: pasan a `7.5B` conservando su condición de
+bloqueo. Se cierra el sprint, no la puerta de release.
+
+## Sprint 7.5 — Deuda de código y release candidate
 
 ### Objetivo
 
-Congelar y verificar el candidato antes de decidir la publicación de `1.0.0`.
+Agotar el código que no depende de nada externo y, después, congelar y verificar el candidato antes de decidir la
+publicación de `1.0.0`.
 
-### Alcance
+Se divide en dos tramos porque uno es ejecutable hoy y el otro no. Mezclarlos dejaría el trabajo de código parado
+detrás de una aprobación artística y una medición que exige despliegue.
+
+### 7.5A — Deuda de código no bloqueada · Completado el 2026-09-04
+
+Cuatro elementos, todos aprobados por producto el 2026-09-04 y todos implementables sin desplegar nada. **Los cuatro
+están entregados y verificados**; los criterios de cada uno se conservan abajo como registro, con la única excepción
+que no pudo cumplirse marcada en su sitio.
+
+**Evidencia de salida:** `tsc -b`, `pnpm lint`, 137 pruebas unitarias, 46 recorridos e2e en Chromium, 4 recorridos de
+Content-Security-Policy contra el build, `pnpm build` y `pnpm run db:verify` con sus tres verificaciones —esquema,
+comportamiento y rastro de auditoría— y `supabase/schema.sql` regenerado. Ejecutado en local y sin Pull Request: el
+repositorio remoto sigue sin existir.
+
+**Aparecido durante la ejecución, fuera del alcance previsto:**
+
+- La política de seguridad quedó **más estricta** de lo que estaba. El plan daba `'unsafe-inline'` en `style-src` por
+  necesario; la guardia de runtime demostró que no lo es, porque React escribe los estilos por CSSOM y `style-src` no
+  gobierna eso. El comentario que afirmaba lo contrario en `vite.config.ts` era falso y está corregido.
+- Se corrigió un falso positivo preexistente en la matriz de temas: medía la alineación del countdown en dos viajes al
+  navegador, así que cualquier desplazamiento de layout entre ambos inventaba una desalineación. Fallaba en torno a 1
+  de cada 3 ejecuciones completas.
+
+#### 1. Modelo de locales con fallback explícito
+
+**Valor:** el backlog lo condicionaba a valor demostrado. El fallo de las ocho claves `admin.actions.*` lo demuestra:
+`bg.ts` hace spread de `en.ts`, así que TypeScript cuenta como presente cualquier clave heredada y una traducción
+olvidada se sirve en inglés sin aviso.
+
+**Criterios de aceptación:**
+
+- ningún catálogo hereda de otro por spread estático; la cadena de fallback se declara, no se deduce leyendo el código;
+- añadir un locale no obliga a decidir primero de quién hereda;
+- `locales/catalogs.test.ts` sigue en verde, y su aserción de valores heredados deja de depender de una heurística.
+
+**Dependencias:** ninguna.
+
+#### 2. Guardia de runtime para la Content-Security-Policy
+
+**Valor:** `pnpm smoke:test` comprueba que la política existe y nombra Supabase. No comprueba que no rompa un recurso
+que se añada más adelante, y eso exige un navegador contra el build.
+
+**Criterios de aceptación:**
+
+- un recorrido contra el build servido falla si aparece una violación de CSP en Landing, RSVP o acceso Admin;
+- el recorrido no duplica lo que ya cubre el smoke test del despliegue.
+
+**Dependencias:** el `webServer` actual de Playwright arranca `pnpm dev` en el puerto 4173. Servir el build en paralelo
+exige resolver ese conflicto sin duplicar la configuración.
+
+#### 3. Confirmación previa al borrado e historial de auditoría
+
+**Valor:** el borrado de una respuesta es irreversible desde el panel y hoy ocurre a un clic, sin registro de quién lo
+hizo. Con varios administradores por invitación, nada permite reconstruir qué pasó.
+
+**Criterios de aceptación:**
+
+- borrar una respuesta exige confirmación explícita que nombre al invitado afectado;
+- toda mutación administrativa —edición, borrado, restauración y cambio de plazo— registra autor, instante y respuesta
+  afectada;
+- el historial no expone datos del artículo 9 más allá de lo que el panel ya muestra.
+
+**Dependencias:** una migración nueva, escribible y verificable en local con `pnpm run db:verify`; su aplicación contra
+un proyecto real pertenece a `7.5B`.
+
+**Restricción de privacidad, no negociable:** el historial es una categoría de dato personal que hoy no existe.
+`purge_all_expired_rsvp()` borra las respuestas a los siete días, y un registro de auditoría que las sobreviva
+reintroduce por la puerta de atrás lo que la purga eliminó. La migración debe purgar o anonimizar el historial en el
+mismo ciclo, y [`DATA_PRIVACY_INVENTORY.md`](../05-audits/DATA_PRIVACY_INVENTORY.md) debe recogerlo antes de que la
+tabla exista.
+
+#### 4. Detalle móvil para respuestas largas
+
+**Valor:** el panel se consulta desde el móvil el día de la boda. Una respuesta larga hoy se corta y no hay forma de
+verla completa.
+
+**Criterios de aceptación:**
+
+- en 320 y 390 px una respuesta larga puede consultarse íntegra, sin overflow horizontal ni truncado silencioso;
+- ~~la matriz responsive existente cubre el caso~~ — **no es posible.** Ver la limitación de abajo.
+
+**Dependencias:** ninguna.
+
+**Limitación de cobertura.** La tabla de respuestas vive detrás de la autenticación de Admin, y la suite e2e no puede
+autenticarse sin un Supabase desplegado: sus recorridos llegan a la pantalla de acceso y no más allá. Las pruebas
+unitarias fijan el marcado —etiqueta por celda y roles explícitos—, pero **ningún test automático mide el layout
+apilado**. Se verificó una vez en navegador real con un banco de pruebas desechable, sobre el marcado que emite el
+componente y el CSS compilado. Cerrar este hueco depende del mismo despliegue que `7.5B`.
+
+#### Criterio de salida de 7.5A
+
+Los cuatro elementos implementados y verificados por el gate completo —lint, `tsc -b`, unitarias, build, e2e,
+`db:verify` y type-check de Edge Functions—, con documentación sincronizada. `7.5A` no depende de `G7-QA` ni de ningún
+paso de infraestructura, así que puede cerrarse mientras `7.5B` sigue bloqueado.
+
+### 7.5B — Release candidate · absorbido por Sprint 9
+
+> **Movido el 2026-09-04 a [`SPRINT_9_PLAN.md`](./SPRINT_9_PLAN.md).** Todo lo que quedaba en este
+> tramo depende de las mismas puertas externas que la puesta en producción, y mantener dos planes
+> con las mismas dependencias obligaba a ejecutarlos en paralelo. El alcance se conserva abajo como
+> registro; **las casillas vivas están en Sprint 9**, donde además se corrigen dos puntos que la
+> migración a Cloudflare cambió: el smoke ya no tiene subpath y el rollback es promover un
+> despliegue anterior.
+
+
+**Alcance:**
 
 - congelación funcional;
 - versión coherente en paquete, changelog y tag;
@@ -255,11 +377,23 @@ Congelar y verificar el candidato antes de decidir la publicación de `1.0.0`.
 - changelog final y limitaciones aceptadas;
 - aprobación de producto, ingeniería y QA.
 
+**Arrastrado desde 7.4:**
+
+- Safari iOS y Chrome Android sobre hardware real;
+- Lighthouse y Core Web Vitals sobre un despliegue representativo;
+- aprobación artística de `lavender` y `terracotta`.
+
+**Arrastrado desde 7.4C:** primera ejecución real de los gates de CI, incluido el job `edge-functions`, y los siete
+pasos de activación de la purga descritos en [`PURGE_DEPLOYMENT.md`](../PURGE_DEPLOYMENT.md).
+
+**Bloqueante que precede a todo lo anterior:** ninguna invitación con invitados reales sale antes de que el cron de
+purga funcione. La conservación de siete días es una declaración del artículo 13.
+
 ### Criterio de salida
 
-`1.0.0` solo puede publicarse si el
-[`RELEASE_CHECKLIST.md`](../04-development/RELEASE_CHECKLIST.md) no contiene bloqueos P0 y todas las excepciones
-restantes tienen responsable, riesgo y fecha de resolución.
+Hasta completar los puntos arrastrados no se prepara `1.0.0`. Publicarlo exige además que el
+[`RELEASE_CHECKLIST.md`](../04-development/RELEASE_CHECKLIST.md) no contenga bloqueos P0 y que todas las excepciones
+restantes tengan responsable, riesgo y fecha de resolución.
 
 ## Gates
 
@@ -270,7 +404,7 @@ restantes tienen responsable, riesgo y fecha de resolución.
 | `G7-PRIV`     | 7.4–7.5 | política de datos y procedimientos operativos               |
 | `G7-CI`       | 7.4–7.5 | gates automáticos activos en Pull Requests                  |
 | `G7-CONTRACT` | 7.4–7.5 | contratos completos y documentación sincronizada            |
-| `G7-QA`       | 7.5     | matriz funcional, accesibilidad, dispositivos y rendimiento |
+| `G7-QA`       | 7.5B    | matriz funcional, accesibilidad, dispositivos y rendimiento |
 | `G7-RC`       | `1.0.0` | checklist, smoke test, rollback y aprobaciones              |
 
 ## Fuera de alcance

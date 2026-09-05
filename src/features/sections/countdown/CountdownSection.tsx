@@ -5,12 +5,21 @@ import {InterfaceIcon} from '../../../components/ui/InterfaceIcon'
 import {useCountdown} from './useCountdown'
 
 export function CountdownSection<Message extends string>({
-                                                              section,
-                                                              event,
-                                                          }: Readonly<SectionComponentProps<Message, 'countdown'>>) {
+                                                             section,
+                                                             event,
+                                                         }: Readonly<SectionComponentProps<Message, 'countdown'>>) {
     const {t} = useLocalization<Message>()
-    const timeLeft = useCountdown(event.date)
-    if (!timeLeft) return null
+    const timeLeft = useCountdown(event.date, event.timezone)
+    if (timeLeft.status === 'past') return null
+
+    if (timeLeft.status === 'today') {
+        // `status`, not `timer`: nothing ticks here, so the timer role no longer applies.
+        return (
+            <section className="landing-countdown" role="status">
+                <p className="landing-countdown-label">{t(section.content.todayLabel)}</p>
+            </section>
+        )
+    }
 
     const units = [
         {value: timeLeft.days, label: t(section.content.unitLabels.days)},
@@ -19,10 +28,12 @@ export function CountdownSection<Message extends string>({
         {value: String(timeLeft.seconds).padStart(2, '0'), label: t(section.content.unitLabels.seconds)},
     ]
 
+    // No aria-live here: role="timer" already carries the semantics, and announcing every second
+    // makes the page unusable with a screen reader.
     return (
         <section className="landing-countdown" role="timer" aria-label={t(section.content.label)}>
             <p className="landing-countdown-label">{t(section.content.label)}</p>
-            <div className="landing-countdown-row" aria-live="polite" aria-atomic="true">
+            <div className="landing-countdown-row">
                 {units.map((item, index) => (
                     <Fragment key={item.label}>
                         <span className="landing-countdown-value"

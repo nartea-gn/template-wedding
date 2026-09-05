@@ -1,0 +1,43 @@
+# Type-check harness for the Edge Functions.
+#
+# `supabase/functions/` is the only production code no compiler reads: it is outside
+# `tsconfig.app.json`, which includes just `src`, and outside `tsconfig.node.json`, which includes
+# just the three config files. Vite never builds it either. ESLint was the only tool that ever
+# opened it, and ESLint does not check types -- so a type error surfaced in the nightly cron that
+# warns guests before their answers are deleted, not in the pipeline.
+#
+# The functions target Deno, not Node, so `tsc` is the wrong tool even if it were pointed at them:
+# `Deno.env.get` and `Deno.serve` only exist there. This runs the real thing in a container so no
+# Deno binary has to be installed on the host, the same way `pnpm run db:verify` reaches for
+# Docker instead of demanding Postgres locally.
+#
+#   pnpm run check:functions:docker    # from the project root
+#   ./run.sh --clean                   # discards the download cache first
+#
+# First run needs network: it pulls the image and downloads both the Deno type libraries and the
+# `https://esm.sh/@supabase/supabase-js` the function imports. Afterwards the `deno-cache` volume
+# keeps them and the run is offline.
+
+services:
+  check:
+    # Pinned like every other tool here (`supabase/postgres:15.8.1.060`, Playwright `1.62.1`):
+    # a moving `:alpine` would silently change the compiler under a green result. This is Deno
+    # 2.9.6 / TypeScript 6.0.3, the version that first checked these functions clean.
+    # CI pins separately with `denoland/setup-deno@v2` and `deno-version: v2.x`.
+    image: denoland/deno:alpine-2.9.6
+    environment:
+      # Keeps the downloads in the named volume instead of the container's ephemeral layer, so
+      # only the first run touches the network.
+      DENO_DIR: /deno-cache
+    volumes:
+      # Read-only on purpose: this harness reads code, it never rewrites it.
+      - ../functions:/functions:ro
+      - ./run-in-container.sh:/run-in-container.sh:ro
+      - deno-cache:/deno-cache
+    # A writable cwd: Deno may want to drop a lockfile next to where it runs, and /functions
+    # is mounted read-only.
+    working_dir: /tmp
+    entrypoint: [ "/bin/sh", "/run-in-container.sh" ]
+
+volumes:
+  deno-cache:

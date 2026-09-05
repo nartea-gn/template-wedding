@@ -187,7 +187,7 @@
 }
 
 .landing-map-picker-option {
-    @apply grid min-h-14 grid-cols-[auto_1fr_auto] items-center gap-3 rounded-(--radius-button) px-3 py-2.5 text-sm font-semibold text-(--color-wedding-text) no-underline;
+    @apply grid min-h-14 grid-cols-[auto_1fr_auto] items-center gap-3 rounded-(--radius-sm) px-3 py-2.5 text-sm font-semibold text-(--color-wedding-text) no-underline;
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
@@ -427,4 +427,50 @@
 
 .landing-hashtag {
     @apply text-sm italic tracking-wide text-(--color-wedding-muted);
+}
+
+.landing-lodging {
+    @apply w-full;
+    max-width: var(--theme-editorial-max-width);
+    margin-bottom: var(--theme-section-gap);
+    animation: landingReveal var(--theme-reveal-duration) ease-out both;
+}
+
+.landing-lodging-label {
+    @apply text-xs uppercase tracking-[0.18em] mb-8 text-(--color-wedding-muted);
+}
+
+.landing-lodging-note {
+    @apply text-sm mb-6 max-w-xl mx-auto text-(--color-wedding-muted);
+}
+
+.landing-lodging-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6;
+}
+
+.landing-lodging-card {
+    @apply p-7 md:p-8 flex flex-col items-center gap-2 text-center;
+    background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-content-card-opacity), transparent);
+}
+
+.landing-lodging-highlight {
+    @apply text-[0.72rem] uppercase tracking-[0.16em] text-(--color-wedding-action);
+}
+
+.landing-lodging-name {
+    @apply text-2xl italic text-(--color-wedding-action) leading-tight;
+    font-family: var(--font-heading);
+}
+
+.landing-lodging-address,
+.landing-lodging-item-note {
+    @apply text-[0.95rem] leading-relaxed max-w-xs text-(--color-wedding-muted);
+}
+
+.landing-lodging-price {
+    @apply text-xs uppercase tracking-[0.12em] text-(--color-wedding-muted);
+}
+
+.landing-lodging-book {
+    @apply mt-2;
 }

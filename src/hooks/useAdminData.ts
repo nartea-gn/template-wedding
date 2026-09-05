@@ -1,6 +1,14 @@
 import {useCallback, useEffect, useMemo, useState} from 'react';
-import {listRsvpResponses, updateRsvpResponse, softDeleteRsvpResponse, restoreRsvpResponse, purgeExpiredRsvpResponses} from '../features/rsvp/application/adminRsvpActions';
-import type {RsvpSubmissionRecord} from '../features/rsvp/domain/RsvpSubmission';
+import {listRsvpResponses, updateRsvpResponse, softDeleteRsvpResponse, restoreRsvpResponse, updateRsvpSchedule} from '../features/rsvp/application/adminRsvpActions';
+import {getRsvpStatus} from '../features/rsvp/application/getRsvpStatus';
+import type {RsvpScheduleUpdate, RsvpStatus} from '../features/rsvp/domain/RsvpStatus';
+import type {RsvpRecordUpdate, RsvpSubmissionRecord} from '../features/rsvp/domain/RsvpSubmission';
+
+/** Transient confirmation shown after a panel mutation; every value is a catalog message key. */
+type AdminActionMessage =
+    | 'admin.actions.updated'
+    | 'admin.actions.deleted'
+    | 'admin.actions.restored';
 import type {AdminSortOrder} from '../core/invitation';
 import {
     type AdminFilter,
@@ -10,6 +18,7 @@ import {
 } from '../features/admin/presentation/getPresentedResponses';
 import {weddingInvitation} from '../invitations/wedding';
 import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
+import {devError, devWarn} from '../lib/devLog';
 
 type Options = {
     locale: string;
@@ -23,7 +32,11 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
     const [loading, setLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [actionMessage, setActionMessage] = useState<string | null>(null);
+    const [actionMessage, setActionMessage] = useState<AdminActionMessage | null>(null);
+    const [rsvpStatus, setRsvpStatus] = useState<RsvpStatus | null>(null);
+    // A failed delete or restore belongs to one row. Reusing `hasError` replaced the whole table
+    // with a load-failure banner, which is a wildly disproportionate answer.
+    const [rowError, setRowError] = useState<number | null>(null);
     const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
     const [filter, setFilterState] = useState<AdminFilter>('all');
     const [query, setQueryState] = useState('');
@@ -42,7 +55,7 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
             setResponses(await listRsvpResponses(weddingRsvpRepository, weddingInvitation.id));
             setLastUpdatedAt(new Date());
         } catch (cause) {
-            console.error('Failed to load RSVP responses', cause);
+            devError('Failed to load RSVP responses', cause);
             setHasError(true);
             setErrorMessage(cause instanceof Error ? cause.message : String(cause));
         } finally {
@@ -50,33 +63,31 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         }
     }, []);
 
-    const purgeExpired = useCallback(async () => {
-        try {
-            setLoading(true);
-            setHasError(false);
-            setErrorMessage(null);
-            await purgeExpiredRsvpResponses(weddingRsvpRepository, weddingInvitation.id)
-            setActionMessage('admin.actions.purged')
-            setTimeout(() => setActionMessage(null), 3000)
-            await fetchResponses()
-        } catch (cause) {
-            console.error('Failed to purge expired RSVP responses', cause);
-            setHasError(true);
-            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
-        } finally {
-            setLoading(false);
-        }
-    }, [fetchResponses]);
-
     useEffect(() => {
         // eslint-disable-next-line react-hooks/set-state-in-effect -- authenticated data fetching is intentional
         if (isAuthenticated) void fetchResponses();
     }, [isAuthenticated, fetchResponses]);
 
+    const updateSchedule = useCallback(async (schedule: RsvpScheduleUpdate): Promise<boolean> => {
+        try {
+            setLoading(true);
+            const updated = await updateRsvpSchedule(weddingRsvpRepository, weddingInvitation.id, schedule)
+            setRsvpStatus(updated)
+            return true
+        } catch (cause) {
+            devError('Failed to update the RSVP schedule', cause);
+            return false
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- automatic retention purge on dashboard load
-        if (isAuthenticated) void purgeExpired();
-    }, [isAuthenticated, purgeExpired]);
+        if (!isAuthenticated) return;
+        getRsvpStatus(weddingRsvpRepository, weddingInvitation.id)
+            .then(setRsvpStatus)
+            .catch(cause => devWarn('The RSVP schedule could not be read', cause));
+    }, [isAuthenticated]);
 
     const presentedResponses = useMemo(() => getPresentedResponses({
         responses,
@@ -110,7 +121,7 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         resetPage();
     };
 
-    const updateResponse = useCallback(async (id: number, changes: Partial<Pick<RsvpSubmissionRecord, 'answers' | 'full_name' | 'attending' | 'dietary_options' | 'dietary_other' | 'bus_option' | 'song_request' | 'message' | 'locale'>>) => {
+    const updateResponse = useCallback(async (id: number, changes: Partial<RsvpRecordUpdate>): Promise<boolean> => {
         try {
             setLoading(true);
             setHasError(false);
@@ -119,10 +130,12 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
             setResponses(prev => prev.map(item => item.id === id ? updated : item))
             setActionMessage('admin.actions.updated')
             setTimeout(() => setActionMessage(null), 3000)
+            return true
         } catch (cause) {
-            console.error('Failed to update RSVP response', cause);
+            devError('Failed to update RSVP response', cause);
             setHasError(true);
             setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+            return false
         } finally {
             setLoading(false);
         }
@@ -131,16 +144,14 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
     const deleteResponse = useCallback(async (id: number) => {
         try {
             setLoading(true);
-            setHasError(false);
-            setErrorMessage(null);
+            setRowError(null);
             await softDeleteRsvpResponse(weddingRsvpRepository, weddingInvitation.id, id)
             setResponses(prev => prev.map(item => item.id === id ? {...item, deletedAt: new Date().toISOString()} : item))
             setActionMessage('admin.actions.deleted')
             setTimeout(() => setActionMessage(null), 3000)
         } catch (cause) {
-            console.error('Failed to delete RSVP response', cause);
-            setHasError(true);
-            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+            devError('Failed to delete RSVP response', cause);
+            setRowError(id);
         } finally {
             setLoading(false);
         }
@@ -149,16 +160,14 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
     const restoreResponse = useCallback(async (id: number) => {
         try {
             setLoading(true);
-            setHasError(false);
-            setErrorMessage(null);
+            setRowError(null);
             await restoreRsvpResponse(weddingRsvpRepository, weddingInvitation.id, id)
             setResponses(prev => prev.map(item => item.id === id ? {...item, deletedAt: undefined, deletedBy: undefined} : item))
             setActionMessage('admin.actions.restored')
             setTimeout(() => setActionMessage(null), 3000)
         } catch (cause) {
-            console.error('Failed to restore RSVP response', cause);
-            setHasError(true);
-            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+            devError('Failed to restore RSVP response', cause);
+            setRowError(id);
         } finally {
             setLoading(false);
         }
@@ -192,7 +201,9 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         updateResponse,
         deleteResponse,
         restoreResponse,
-        purgeExpired,
+        rsvpStatus,
+        updateSchedule,
+        rowError,
     };
 }
 

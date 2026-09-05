@@ -15,13 +15,13 @@ test.beforeEach(async ({page}) => {
 for (const viewport of viewports) {
     test(`Landing y RSVP no desbordan a ${viewport.name} px`, async ({page}) => {
         await page.setViewportSize({width: viewport.width, height: viewport.height})
-        await page.goto('./#/')
+        await page.goto('./')
 
         await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
         await expect(page.getByText('Falta para el gran día')).toBeVisible()
         expect(await hasHorizontalOverflow(page)).toBe(false)
 
-        await page.goto('./#/rsvp')
+        await page.goto('./rsvp')
 
         await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
         await expect(page.getByLabel('Nombre y apellidos *')).toBeVisible()
@@ -33,7 +33,7 @@ for (const locale of Object.keys(longContentByLocale) as LongContentLocale[]) {
     test(`Landing y RSVP admiten contenido largo en ${locale.toUpperCase()} a 320 px`, async ({page}) => {
         await page.setViewportSize({width: 320, height: 568})
         await page.emulateMedia({reducedMotion: 'reduce'})
-        await page.goto('./#/')
+        await page.goto('./')
         await selectLocale(page, locale)
         await injectLongLandingContent(page, locale)
 
@@ -41,7 +41,7 @@ for (const locale of Object.keys(longContentByLocale) as LongContentLocale[]) {
         await expect(page.locator('.landing-cta-btn')).toContainText(longContentByLocale[locale].cta)
         expect(await hasHorizontalOverflow(page)).toBe(false)
 
-        await page.goto('./#/rsvp')
+        await page.goto('./rsvp')
         await selectLocale(page, locale)
         await injectLongRsvpContent(page, locale)
 
@@ -54,14 +54,14 @@ for (const locale of Object.keys(longContentByLocale) as LongContentLocale[]) {
 test('Landing y RSVP conservan reflow y acciones utilizables con zoom al 200 %', async ({page}) => {
     await page.setViewportSize({width: 640, height: 900})
     await page.emulateMedia({reducedMotion: 'reduce'})
-    await page.goto('./#/')
+    await page.goto('./')
     await applyTwoHundredPercentZoom(page)
 
     await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
     await expect(page.getByRole('link', {name: 'Confirmar asistencia'})).toBeVisible()
     expect(await hasHorizontalOverflow(page)).toBe(false)
 
-    await page.goto('./#/rsvp')
+    await page.goto('./rsvp')
     await applyTwoHundredPercentZoom(page)
 
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
@@ -74,7 +74,7 @@ test('Landing, RSVP y acceso Admin mantienen un orden de foco visible por teclad
     await page.setViewportSize({width: 390, height: 844})
     await page.emulateMedia({reducedMotion: 'reduce'})
 
-    for (const route of ['./#/', './#/rsvp', './#/admin']) {
+    for (const route of ['./', './rsvp', './admin']) {
         await page.goto(route)
         await page.locator('.landing-page, .rsvp-page, .login-page').waitFor({state: 'visible'})
         await assertVisibleKeyboardSequence(page)

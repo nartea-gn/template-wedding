@@ -1,0 +1,43 @@
+@reference "tailwindcss";
+
+.landing-gifts {
+    @apply w-full flex flex-col items-center;
+    max-width: var(--theme-editorial-max-width);
+    margin-bottom: var(--theme-section-gap);
+    animation: landingReveal var(--theme-reveal-duration) ease-out both;
+}
+
+.landing-gifts-label {
+    @apply text-xs uppercase tracking-[0.18em] mb-8 text-(--color-wedding-muted);
+}
+
+.landing-gifts-note {
+    @apply text-sm mb-6 max-w-xl text-center text-(--color-wedding-muted);
+}
+
+.landing-gifts-account {
+    @apply mt-6 flex flex-col items-center gap-2 w-full max-w-md;
+}
+
+.landing-gifts-holder {
+    @apply text-lg italic text-(--color-wedding-action);
+    font-family: var(--font-heading);
+}
+
+.landing-gifts-detail {
+    @apply flex flex-wrap items-center justify-center gap-2 text-sm;
+}
+
+.landing-gifts-detail-label {
+    @apply uppercase tracking-[0.12em] text-xs text-(--color-wedding-muted);
+}
+
+.landing-gifts-detail-value {
+    @apply font-mono select-all;
+}
+
+.landing-gifts-warning {
+    @apply mt-4 text-xs leading-relaxed text-center max-w-sm text-(--color-wedding-muted);
+    border-left: 2px solid var(--color-wedding-border);
+    padding-left: 0.75rem;
+}

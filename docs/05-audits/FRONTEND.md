@@ -15,7 +15,7 @@ justifica una reescritura ni una extracción prematura a monorepo o plugins.
 - El mapper DB ↔ dominio está centralizado en infraestructura.
 - RSVP y Admin son rutas lazy y opcionales.
 - Theme Engine v2 emite Custom Properties desde un contrato TypeScript completo.
-- `HashRouter` y `base: '/template-wedding/'` son apropiados para GitHub Pages.
+- Rutas reales (`/`, `/rsvp`, `/admin`) desde [`ADR-022`](../04-development/adr/ADR-022-real-paths-routing.md): `HashRouter` leía `#main-content` como ruta y rompía el enlace de salto. El fallback lo da Cloudflare Pages sin `_redirects`, y `pnpm smoke:test` lo vigila. El `base` pasó a la raíz.
 - Los catálogos secundarios EN/BG se cargan bajo demanda.
 
 ## Hallazgos actuales

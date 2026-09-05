@@ -22,7 +22,7 @@ Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/
 - Vite 8 y Tailwind CSS 4 con configuración CSS-first.
 - Supabase mediante un adaptador de infraestructura.
 - Vitest, React Testing Library, Playwright y pgTAP para validación por capas.
-- GitHub Pages con `HashRouter` y base `/template-wedding/`.
+- Cloudflare Pages como host estático, servido en la raíz, con rutas reales.
 - pnpm 10.34.5 como único gestor de paquetes; `pnpm-lock.yaml` es autoritativo.
 
 ## Puesta en marcha
@@ -51,7 +51,10 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 Las variables con prefijo `VITE_` forman parte del bundle público. No incluyas claves `service_role`, contraseñas de
-base de datos ni otros secretos privilegiados. Admin usa OTP por email y la autorización se aplica mediante RLS.
+base de datos ni otros secretos privilegiados. El panel admite dos métodos de acceso intercambiables por configuración
+(`capabilities.admin.auth.method`): código por correo (`otp`) y contraseña (`password`). La boda
+incluida en el repositorio usa hoy `password`; `otp` es el método recomendado en cuanto haya envío
+de correo propio. La autorización se aplica en ambos casos mediante RLS.
 
 ### Desarrollo
 
@@ -61,9 +64,13 @@ pnpm dev
 
 Vite selecciona un puerto disponible. Las rutas principales son:
 
-- `#/`: invitación pública;
-- `#/rsvp`: confirmación, solo si RSVP está habilitado y dentro de plazo;
-- `#/admin`: panel de respuestas, solo si RSVP y Admin están habilitados.
+- `/`: invitación pública;
+- `/rsvp`: confirmación, solo si RSVP está habilitado y dentro de plazo;
+- `/admin`: panel de respuestas, solo si RSVP y Admin están habilitados.
+
+Son rutas reales, no fragmentos. Un enlace profundo solo funciona si el host devuelve `index.html`
+para una ruta que no existe como fichero: `vite dev` y Cloudflare Pages lo hacen sin configuración,
+y publicar un `404.html` lo desactivaría.
 
 ### Gates locales
 
@@ -144,8 +151,9 @@ Documentos de referencia:
 ## Despliegue
 
 Un push a `main` ejecuta `.github/workflows/deploy.yml`: instala dependencias, valida lint/build, aplica migraciones
-pendientes y despliega el artefacto en GitHub Pages. Los secretos operativos de Supabase se configuran en GitHub Actions
-y nunca llegan al bundle.
+pendientes y publica el resultado en Cloudflare Pages. El workflow se queda en GitHub porque es quien puede levantar
+Postgres y ejecutar los recorridos; Cloudflare solo recibe la carpeta construida. Los secretos operativos de Supabase
+y de Cloudflare se configuran en GitHub Actions y nunca llegan al bundle.
 
 El pipeline no sustituye la revisión de seguridad. La release de Sprint 7.1 debe publicar conjuntamente la migración RLS
 y el frontend OTP, provisionar los usuarios autorizados y completar el checklist de release.

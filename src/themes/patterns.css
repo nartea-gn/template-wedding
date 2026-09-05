@@ -52,6 +52,48 @@
     --theme-background-rsvp-opacity: 0.93;
 }
 
+/*
+ * The two newest themes carry a gradient wash built from their own tokens rather than the
+ * illustrated collections of the other five: commissioning artwork is design work, and a theme
+ * with no opening at all would sit next to five that have one and read as unfinished. The
+ * gradients follow each palette, so the identity is theirs and not a placeholder.
+ */
+[data-theme="lavender"] {
+    --theme-background-art: radial-gradient(
+            120% 90% at 50% 0%,
+            color-mix(in srgb, var(--color-wedding-primary) 26%, transparent) 0%,
+            color-mix(in srgb, var(--color-wedding-surface) 70%, transparent) 45%,
+            transparent 100%
+    );
+    --theme-background-body-art: linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--color-wedding-surface) 45%, transparent),
+            transparent
+    );
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.92;
+    --theme-background-body-veil: 7%;
+    --theme-background-rsvp-opacity: 0.93;
+}
+
+[data-theme="terracotta"] {
+    --theme-background-art: radial-gradient(
+            125% 85% at 50% 0%,
+            color-mix(in srgb, var(--color-wedding-primary) 24%, transparent) 0%,
+            color-mix(in srgb, var(--color-wedding-surface) 72%, transparent) 48%,
+            transparent 100%
+    );
+    --theme-background-body-art: linear-gradient(
+            to bottom,
+            color-mix(in srgb, var(--color-wedding-surface) 42%, transparent),
+            transparent
+    );
+    --theme-background-position: center top;
+    --theme-background-opening-opacity: 0.92;
+    --theme-background-body-veil: 7%;
+    --theme-background-rsvp-opacity: 0.93;
+}
+
 [data-theme] body {
     background: var(--color-wedding-bg);
 }

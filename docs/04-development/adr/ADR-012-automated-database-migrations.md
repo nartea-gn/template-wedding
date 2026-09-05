@@ -3,6 +3,13 @@
 - Status: Accepted
 - Date: 2026-07-12
 
+
+> **Nota del 2026-09-04.** El host pasó a Cloudflare Pages
+> ([`ADR-021`](./ADR-021-cloudflare-pages-hosting.md)), así que el paso final del pipeline ya no
+> despliega en Pages. El razonamiento de este ADR no cambia: un cliente estático sigue sin poder
+> aplicar migraciones en runtime, y el orden —migrar antes de publicar el frontend que lo consume—
+> es el mismo. El texto original se conserva tal cual, como registro de cuándo y por qué se decidió.
+
 ## Context
 
 GitHub Pages deploys a static client and cannot safely apply database migrations at runtime. Deploying Form Engine

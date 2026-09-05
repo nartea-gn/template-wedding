@@ -3,8 +3,17 @@
 ## Estado
 
 El producto continúa en fase previa a `1.0.0`. La arquitectura configurable, Theme Engine v2 y el baseline visual de las
-cinco colecciones están consolidados. El siguiente tramo convierte seguridad, datos, calidad y QA en puertas
-verificables de release.
+cinco colecciones están consolidados, y desde el 2026-09-04 **no queda trabajo de código pendiente que pueda hacerse
+sin desbloquear algo externo**.
+
+Lo que separa al producto de `1.0.0` se reparte en tres categorías, y ninguna es implementación:
+
+1. **Revisión humana** — aprobación artística de `lavender` y `terracotta`, repaso de las cadenas búlgaras por un
+   hablante nativo, y validación en Safari iOS y Chrome Android sobre hardware real.
+2. **Infraestructura externa** — los siete pasos de activación de la purga, la primera ejecución de los gates de CI, la
+   medición Lighthouse y los recorridos e2e contra un Supabase desplegado.
+3. **Bloqueante legal** — ninguna invitación con invitados reales puede publicarse antes de que el cron de purga
+   funcione: los siete días de conservación son una declaración del artículo 13, no una promesa comercial.
 
 Leyenda: `Completado`, `En validación`, `En curso`, `Planificado`, `Aplazado`.
 
@@ -104,7 +113,7 @@ target del countdown tienen una fuente de verdad; estados vacíos y URLs configu
 aserciones pgTAP superados localmente; gates `Application quality` y `Database quality` superados en la Pull Request
 `#21`.
 
-### Sprint 7.4 — QA de release · En curso · P1
+### Sprint 7.4 — QA de release · Completado · P1
 
 **Objetivo:** validar la experiencia final con contenido y dispositivos representativos.
 
@@ -127,15 +136,91 @@ incorpora una apertura v2 con corredor de lectura central en sus tres proporcion
 
 **Cuarto incremento — 7.4B:** accesibilidad y automatización. Skip-link, focus trap, landmarks, `role="timer"`,
 errores accesibles y foco inicial en login cierran la cobertura de lector de pantalla. Admin propaga errores reales
-y corrige el `loading` inicial. `vite.config.ts` incorpora presupuestos de bundle y `deploy.yml` ejecuta smoke test
+y corrige el `loading` inicial —cierto en la infraestructura desde este incremento, pero el flujo de edición no lo
+mostraba: el modal se cerraba antes de que el error llegara a verse, corregido después—. `vite.config.ts` incorpora presupuestos de bundle y `deploy.yml` ejecuta smoke test
 automático. Quedan pendientes validación en dispositivos físicos y Lighthouse/Core Web Vitals.
 
-### Sprint 7.5 — Release candidate · Planificado · P1
+**Quinto incremento — 7.4C:** cierre de la deuda de código detectable en local. Ocho claves `admin.actions.*` existían
+solo en español y el panel las mostraba así en inglés y búlgaro; un contrato de paridad de catálogos impide la
+recaída. Tres dependencias de runtime sin uso salen del manifiesto, una de ellas arrastrando Puppeteer. El build emite
+una Content-Security-Policy con el origen real de Supabase, verificada por el smoke test del despliegue. Los errores de
+consola dejan de llegar a producción, donde exponían datos de invitados. La matriz de temas añade 320 px y las Edge
+Functions pasan un type-check en contenedor. Trabajo ejecutado en local sin Pull Request: el repositorio todavía no
+existe, así que el principio 6 no pudo aplicarse.
 
-**Objetivo:** publicar `1.0.0` solo cuando no existan bloqueos conocidos.
+**Cierre con arrastre.** El sprint se da por cerrado porque su trabajo de código está completo y verificado. Lo que
+queda no es implementación y por tanto no puede completarse dentro de un sprint de QA: dispositivos físicos,
+Lighthouse y la aprobación artística de `lavender` y `terracotta` pasan a `7.5B` con su condición de bloqueo intacta.
 
-**Criterio de salida:** congelación funcional, checklist completo, versionado coherente, smoke test del despliegue,
-rollback documentado y changelog final.
+### Sprint 7.5 — Deuda de código y release candidate · 7.5A completado · 7.5B bloqueado · P1
+
+**Objetivo:** terminar el código que no depende de nada externo y, después, publicar `1.0.0` solo cuando no existan
+bloqueos conocidos.
+
+**7.5A — Deuda de código no bloqueada · Completado el 2026-09-04.** Único tramo ejecutable sin desplegar nada.
+Unificación del modelo de carga de locales con cadena de fallback explícita —el backlog lo pedía «con valor
+demostrado» y el fallo de las ocho claves lo demuestra—; guardia de runtime para la Content-Security-Policy contra el
+build servido, que hoy solo se comprueba a mano; confirmación previa al borrado con historial de auditoría de las
+mutaciones administrativas; y detalle móvil para respuestas largas. El historial de auditoría crea datos personales
+nuevos, así que la purga a siete días lo alcanza por clave foránea en cascada, y el banco de pruebas local falla si
+deja de hacerlo.
+
+Salida verificada: 137 unitarias, 46 e2e, 4 de Content-Security-Policy y `db:verify` completo. Dos resultados fuera de
+lo previsto: la política de seguridad perdió `'unsafe-inline'` al comprobarse que no hacía falta, y se corrigió un
+falso positivo preexistente en la matriz de temas que fallaba 1 de cada 3 ejecuciones.
+
+**7.5B — Release candidate.** Congelación funcional, checklist completo, versionado coherente, smoke test del
+despliegue, rollback documentado y changelog final. Arrastra los pendientes de 7.4: dispositivos físicos, Lighthouse y
+Core Web Vitals, y la aprobación artística de los dos temas nuevos. **Hasta completar esos puntos no se prepara
+`1.0.0`.**
+
+## Sprint 8 — Migración de hosting a Cloudflare Pages · 8.1, 8.2, 8.3 y 8.5 completadas · 8.4 bloqueada · P1
+
+**Objetivo:** servir la invitación desde Cloudflare Pages, con las cabeceras HTTP que GitHub Pages
+no permite, y admitir un despliegue por boda desde el mismo repositorio.
+
+Los workflows se quedan en GitHub: Cloudflare recibe el resultado y no construye nada, de modo que
+ninguna de las puertas de calidad de `deploy.yml` —migraciones, deriva de `schema.sql`, e2e, Edge
+Function— se pierde en el camino.
+
+**Cinco fases:** publicar en `*.pages.dev`; cabeceras reales, que cierran el `frame-ancestors` que
+7.5A dejó abierto; despliegue parametrizado por invitación; dominio propio, bloqueado hasta que
+exista uno; y retirada de GitHub Pages con el barrido documental correspondiente.
+
+**Resultado el 2026-09-04:** 8.1, 8.2 y 8.5 entregadas y verificadas en local; 8.3 **reducida** al
+comprobar que parametrizar la invitación era abstracción especulativa —hay una sola invitación y 31
+archivos la importan—, así que se documentó el modelo de instanciación en vez de construir el
+mecanismo. 8.4 queda bloqueada hasta que exista un dominio. Falta el primer push real, que confirma
+los dos detalles del workflow que no pudieron verificarse sin red.
+
+**Fuera de alcance, decidido el 2026-09-04:** servir varias bodas desde un único despliegue —exige
+selección de invitación en runtime y reabre la comparación con Astro— y el paso a rutas reales, que
+tocaría los 46 recorridos e2e y la decisión de no indexar.
+
+**No bloquea ni lo bloquea `7.5B`,** pero cambia dos de sus puntos: el smoke test deja de tener
+subpath y el rollback pasa a ser el de Cloudflare. Conviene ejecutar 8.1 y 8.2 antes de abrir
+`7.5B`. Detalle en [`SPRINT_8_PLAN.md`](./SPRINT_8_PLAN.md).
+
+## Sprint 9 — Puesta en producción · Planificado · P0
+
+**Objetivo:** cerrar todo lo que no puede hacerse sin salir de la máquina, y decidir `1.0.0`.
+
+Absorbe `7.5B` y la fase `8.4`, que dependían de las mismas puertas externas. No queda trabajo de
+código pendiente: lo que separa al producto de `1.0.0` es infraestructura, verificación contra un
+despliegue real y juicio humano.
+
+**El orden es una dependencia, no una preferencia.** Sin repositorio no hay push, ni CI, ni
+despliegue, así que `git init` es la fase cero; las extensiones y los secretos de Vault deben estar
+antes del primer push que incluya sus migraciones; y **ninguna invitación con invitados reales sale
+antes de que el cron de purga funcione**, porque los siete días de conservación son una declaración
+del artículo 13.
+
+**Seis fases:** repositorio; infraestructura de Supabase; Cloudflare y primer despliegue;
+verificación contra lo real —CI, e2e contra un stack desplegado, Lighthouse—; juicio humano
+—búlgaro nativo, aprobación artística, dispositivos físicos—, que puede ir en paralelo desde el
+primer día; dominio propio, opcional; y release candidate.
+
+Detalle en [`SPRINT_9_PLAN.md`](./SPRINT_9_PLAN.md).
 
 ## Después de 1.0.0
 

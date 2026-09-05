@@ -29,7 +29,10 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [x] Restricciones alimentarias y texto libre tienen tratamiento revisado.
 - [x] Existen reglas de retención y borrado por invitación.
 - [x] Exportación, corrección y eliminación tienen procedimiento operativo. — Implementado en Admin: edición inline, soft delete, restore, CSV y purge automático.
-- [x] Logs, CSV y capturas de prueba no contienen datos personales reales.
+- [x] Logs, CSV y capturas de prueba no contienen datos personales reales. — Los errores de consola pasan por
+  `lib/devLog.ts` y no se emiten en producción.
+- [x] Las mutaciones administrativas dejan rastro. — `admin_audit`, escrito por triggers, sin contenido del invitado y
+  borrado en cascada con la respuesta para no sobrevivir a la retención declarada.
 
 ## 4. Base de datos y recuperación
 
@@ -45,7 +48,7 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [x] `pnpm install --frozen-lockfile` es reproducible.
 - [x] `pnpm lint` termina sin warnings.
 - [x] `pnpm build` termina correctamente.
-- [x] Pruebas unitarias, integración y E2E pasan. — 61 unitarias, E2E Chromium 33/33, pgTAP 19/19.
+- [x] Pruebas unitarias, integración y E2E pasan. — 137 unitarias, E2E Chromium 46/46, CSP 4/4, pgTAP y harness de migraciones verdes (2026-09-04).
 - [x] Los pull requests ejecutan los mismos gates.
 - [x] Node, pnpm, actions y Supabase CLI usan versiones fijadas y mantenibles.
 
@@ -129,12 +132,18 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 
 - [x] Migración `20260819_add_rsvp_lifecycle.sql` creada y versionada.
 - [x] Migración `20260824_add_purge_automation.sql` creada y versionada.
-- [x] Columnas `updated_at`, `deleted_at`, `deleted_by`, `retained_until` definidas.
+- [x] Columnas `updated_at`, `deleted_at`, `deleted_by` definidas.
+- [x] ~~`retained_until`~~ retirada: la retención se calcula desde la fecha de boda en `invitations`, no por fila.
 - [x] Trigger `set_updated_at` implementado.
-- [x] Policies `UPDATE` y soft `DELETE` para `authenticated` creadas.
-- [x] Función RPC `purge_expired_rsvp` definida con `SECURITY DEFINER`.
+- [x] Una única policy `UPDATE` para `authenticated`. Eran dos permisivas sobre el mismo comando, que Postgres combina
+      con `OR`: la segunda nunca restringió nada. La autoría del borrado la estampa un trigger.
+- [x] ~~`purge_expired_rsvp`~~ sustituida por `purge_all_expired_rsvp()` más un cron nocturno: la purga ya no depende
+      de que un admin abra el panel, y alcanza toda la boda, no solo las filas borradas a mano.
+- [x] `REVOKE` de las funciones `SECURITY DEFINER` nombrando `anon` y `authenticated`. Revocar solo de `PUBLIC` no
+      basta: los privilegios por defecto de Supabase conceden `EXECUTE` directamente a esos roles.
 - [x] Tests pgTAP (`rsvp_lifecycle.test.sql`) creados para UPDATE, DELETE, retención y RPC.
-- [x] `RsvpRepository` extendido con `update`, `softDelete`, `restore`, `purgeExpired`.
+- [x] `RsvpRepository` extendido con `update`, `softDelete`, `restore`, `getStatus` y `updateSchedule`. Sin
+      `purgeExpired`: la purga es un trabajo de la base de datos, no del cliente.
 - [x] `SupabaseRsvpRepository` implementa operaciones filtradas por `wedding_slug`.
 - [x] Mapper actualizado para nuevas columnas de ciclo de vida.
 - [x] UI Admin: edición inline, soft delete, restore, exportación JSON.

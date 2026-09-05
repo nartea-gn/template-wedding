@@ -4,6 +4,8 @@ import {CountdownSection} from '../../features/sections/countdown/CountdownSecti
 import {VideoSection} from '../../features/sections/video/VideoSection'
 import {VenueSection} from '../../features/sections/venue/VenueSection'
 import {RsvpCtaSection} from '../../features/sections/rsvp/RsvpCtaSection'
+import {LodgingSection} from '../../features/sections/lodging/LodgingSection'
+import {GiftsSection} from '../../features/sections/gifts/GiftsSection'
 import type {WeddingMessageKey} from './locales/es'
 import {resolveWeddingAsset} from './assets'
 
@@ -15,5 +17,7 @@ export const weddingSectionRegistry = createSectionRegistry<WeddingMessageKey>({
                                       ? resolveWeddingAsset(props.section.content.posterAssetId)
                                       : undefined}/>,
     venue: VenueSection,
+    lodging: LodgingSection,
+    gifts: GiftsSection,
     'rsvp-cta': RsvpCtaSection,
 })

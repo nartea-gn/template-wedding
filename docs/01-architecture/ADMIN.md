@@ -101,22 +101,34 @@ updatedAt: timestamp
 When status is `closed`:
 
 - the public confirmation CTA is not rendered;
-- direct access to `#/rsvp` cannot submit and shows a localized closed message;
+- direct access to `/rsvp` cannot submit and shows a localized closed message;
 - the Admin displays the current state and last update;
 - reopening restores the public flow without a deployment.
 
-Public clients may read the status, but changing it is an administrative mutation. Sprint 5.1B must not enable anonymous
-`UPDATE` policies or trust `VITE_ADMIN_PASSWORD`, because values bundled with Vite are public. The mutation requires a
-server-validated operation, such as secure Admin authentication plus RLS or a protected server/Edge Function. The exact
-mechanism requires its own architecture decision before implementation.
+Public clients may read the status, but changing it is an administrative mutation. Anonymous `UPDATE` policies are never
+enabled and no value bundled with Vite is trusted, because those are public.
+
+**Delivered.** The deadline and the manual switch live in `public.invitations` (`rsvp_deadline_utc`,
+`rsvp_override`). `public.is_rsvp_open` gates the anonymous `INSERT` policy, so the RSVP closes at the API and not only in
+the interface; `public.get_rsvp_status` gives the client the state and the date in one round trip. Writing is limited to
+those two columns by an admin-membership policy plus a column-list `GRANT`. The panel exposes it through
+`capabilities.admin.mutations.rsvpClosure`, and the change takes effect without a redeployment.
+
+The client revalidates without blocking: it renders with the deadline compiled into the invitation and replaces it when
+the database answers. A failed read leaves the compiled value in place, because the authority is the `WITH CHECK`, not
+the interface -- a genuinely late submission is rejected with `42501` and the guest sees the closed message.
+
+## Delivered since Sprint 7.1D
+
+- editing a submission, with the modal closing only after the write confirms;
+- soft delete and restore, with deletion authorship stamped by the database rather than the client;
+- scheduled RSVP closure, plus the manual open/closed switch described above.
 
 ## Explicitly deferred Admin evolutions
 
 - response detail optimized for mobile and long answers;
 - XLSX export;
-- editing or deleting submissions;
 - audit history for administrative mutations;
-- scheduled RSVP closure;
 - advanced charts and analytics;
 - notifications and bulk guest communication;
 - full guest-list or seating management.
@@ -126,7 +138,7 @@ These items are tracked in [`PRODUCT_BACKLOG.md`](../00-product/PRODUCT_BACKLOG.
 ## Operational checks
 
 1. Submit one attending and one declined RSVP.
-2. Open `#/admin` and refresh.
+2. Open `/admin` and refresh.
 3. Confirm totals, attendance and transport metrics.
 4. Check every filter and locale.
 5. Test horizontal keyboard scrolling on narrow screens.

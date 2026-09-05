@@ -10,13 +10,22 @@ type Props<Message extends string> = {
     isSubmitting: boolean
     hasSubmissionError: boolean
     onSubmit: (answers: Record<string, FormValue>) => Promise<void>
+    /**
+     * Overrides `definition.privacyNotice` with text the page has already composed.
+     *
+     * The article 13 notice has to name the data controller and their contact address, and the
+     * localization contract is `t(key)` with no interpolation. Composing it at the page keeps
+     * that contract untouched while still showing the notice on every step.
+     */
+    privacyNotice?: string
 }
 
 export function FormEngine<Message extends string>({
                                                        definition,
                                                        isSubmitting,
                                                        hasSubmissionError,
-                                                       onSubmit
+                                                       onSubmit,
+                                                       privacyNotice
                                                    }: Readonly<Props<Message>>) {
     const {t} = useLocalization<Message>()
     const engine = useFormEngine(definition)
@@ -46,7 +55,7 @@ export function FormEngine<Message extends string>({
             })
             return
         }
-        if (engine.isLast || engine.completesForm) await onSubmit(engine.answers)
+        if (engine.isLast || engine.completesForm) await onSubmit(engine.visibleAnswers)
         else engine.next()
     }
 
@@ -134,7 +143,7 @@ export function FormEngine<Message extends string>({
         </select>{renderHelp(element)}{renderError(element.id, error)}</div>
 
         if (element.type === 'textarea') return <div key={element.id} className="rsvp-field"><label className="label"
-                                                                                                    htmlFor={element.id}>{t(element.label)}</label><textarea {...common}
+                                                                                                    htmlFor={element.id}>{t(element.label)}</label><textarea {...common} className={[common.className, 'rsvp-textarea'].filter(Boolean).join(' ')}
                                                                                                                                                              rows={4}
                                                                                                                                                              minLength={element.validation?.minLength}
                                                                                                                                                              maxLength={element.validation?.maxLength}
@@ -171,7 +180,11 @@ export function FormEngine<Message extends string>({
                                                 tabIndex={-1}>
                         <p className="rsvp-error-box-text">{t(definition.messages.submitError)}</p>
                     </div>}
-                    {definition.privacyNotice && <p className="rsvp-privacy-notice">{t(definition.privacyNotice)}</p>}
+                    {(privacyNotice ?? (definition.privacyNotice && t(definition.privacyNotice))) && (
+                        <p className="rsvp-privacy-notice">
+                            {privacyNotice ?? t(definition.privacyNotice!)}
+                        </p>
+                    )}
                     <div className={engine.isFirst ? 'rsvp-actions-end' : 'rsvp-actions-between'}>
                         {!engine.isFirst && <button type="button" onClick={engine.back}
                                                     className="btn btn--ghost rsvp-btn-ghost">{t(definition.messages.back)}</button>}

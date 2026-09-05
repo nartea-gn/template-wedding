@@ -61,7 +61,14 @@ export function MapProviderPicker({
                 closePicker()
                 return
             }
-            if (event.key !== 'Tab' || isDesktop || !panelRef.current) return
+            if (event.key !== 'Tab') return
+            if (isDesktop) {
+                // Non-modal popover on desktop: trapping Tab here would be the bug. Close and
+                // let focus continue, matching the language selector.
+                closePicker(false)
+                return
+            }
+            if (!panelRef.current) return
 
             const focusableElements = panelRef.current.querySelectorAll<HTMLElement>('a, button')
             const firstElement = focusableElements.item(0)

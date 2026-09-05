@@ -24,6 +24,14 @@ export type ThemeDefinition = {
         heading: string
         body: string
     }
+    /**
+     * Google Fonts families this theme actually needs, in the `Family+Name:wght@300;400` form.
+     *
+     * Declared rather than derived: the weights never appear in the CSS stack, and a stack can
+     * quote a system face ("Times New Roman") that is not a webfont. Empty when the theme only
+     * uses system fonts. The build reads this to request one theme's families instead of all.
+     */
+    googleFonts: readonly string[]
     shadows: {
         card: string
         cardLarge: string

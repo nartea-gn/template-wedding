@@ -53,24 +53,62 @@
     @apply p-4 align-top font-medium text-(--color-wedding-text) whitespace-normal break-words max-w-72;
 }
 
+.responses-cell-label {
+    @apply hidden;
+}
+
+/* Below this width the grid stops being a grid. Seven columns cannot share 320 px, and the table
+   carries a 760 px floor, so reading a 1000-character message meant scrolling sideways until the
+   guest's name left the screen. Each row becomes a block and every value states its own column.
+   The roles are declared in the markup because `display: block` strips the implicit ones. */
+@media (max-width: 767px) {
+    .responses-scroll {
+        @apply overflow-x-visible;
+    }
+
+    .responses-table-el {
+        @apply block min-w-0;
+    }
+
+    .responses-head-row {
+        @apply sr-only;
+    }
+
+    .responses-body {
+        @apply block divide-y-0;
+    }
+
+    .responses-row {
+        @apply block border-b border-(--color-wedding-border)/50 p-4;
+    }
+
+    .responses-td {
+        @apply block max-w-none px-0 py-1.5;
+    }
+
+    .responses-cell-label {
+        @apply block text-xs uppercase tracking-wide text-(--color-wedding-muted);
+    }
+}
+
+.responses-confirm {
+    @apply flex flex-col gap-1 items-start;
+}
+
+.responses-confirm-question {
+    @apply text-sm font-semibold text-(--color-wedding-text);
+}
+
+.responses-confirm-hint {
+    @apply text-xs text-(--color-wedding-muted);
+}
+
+.responses-confirm-actions {
+    @apply flex flex-wrap gap-2 mt-1;
+}
+
 .responses-retry {
     @apply mt-2 text-xs;
-}
-
-.responses-td-muted {
-    @apply p-4 text-xs text-(--color-wedding-muted);
-}
-
-.responses-td-cap {
-    @apply p-4 text-xs text-(--color-wedding-muted) capitalize;
-}
-
-.responses-td-italic {
-    @apply p-4 text-xs italic text-(--color-wedding-muted);
-}
-
-.responses-td-message {
-    @apply p-4 text-xs text-(--color-wedding-muted) max-w-[200px] truncate;
 }
 
 .responses-badge {
@@ -89,4 +127,9 @@
 .responses-badge--no {
     color: var(--color-wedding-danger);
     background: var(--color-wedding-danger-surface);
+}
+
+.responses-row-error {
+    @apply mt-2 text-xs;
+    color: var(--color-wedding-danger);
 }

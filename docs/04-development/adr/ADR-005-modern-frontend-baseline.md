@@ -11,7 +11,9 @@ Router 7 y TypeScript 7 después de comprobar la compatibilidad del ecosistema.
 ## Decisión
 
 - React: 19.2.7.
-- React Router: 7.18.1 en modo declarativo, manteniendo `HashRouter`.
+- React Router: 7.18.1 en modo declarativo, manteniendo `HashRouter`. **`BrowserRouter` desde
+  [`ADR-022`](./ADR-022-real-paths-routing.md)** (5 de septiembre de 2026); la versión y el modo
+  declarativo no cambian.
 - TypeScript: compilador 7.0.2 para `tsc`, con `@typescript/typescript6` side-by-side para la API que consume
   `typescript-eslint`.
 - Actualizar cada bloque por separado, regenerar lockfile y validar antes de continuar.

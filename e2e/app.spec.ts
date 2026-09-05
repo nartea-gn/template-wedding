@@ -5,21 +5,21 @@ test.beforeEach(async ({page}) => {
 })
 
 test('Landing presenta la invitación y permite llegar al RSVP', async ({page}) => {
-    await page.goto('./#/')
+    await page.goto('./')
 
     await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
     await expect(page.getByText('Falta para el gran día')).toBeVisible()
 
     await page.getByRole('link', {name: 'Confirmar asistencia'}).click()
 
-    await expect(page).toHaveURL(/#\/rsvp$/)
+    await expect(page).toHaveURL(/\/rsvp$/)
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
 })
 
 test('El selector móvil mantiene visibles las tres opciones de mapas', async ({page}) => {
     await page.setViewportSize({width: 360, height: 740})
     await page.emulateMedia({reducedMotion: 'reduce'})
-    await page.goto('./#/')
+    await page.goto('./')
 
     const ceremony = page.locator('.landing-venue-card').filter({hasText: 'Ceremonia'})
     await ceremony.getByRole('button', {name: 'Cómo llegar'}).click()
@@ -41,7 +41,7 @@ test('El selector móvil mantiene visibles las tres opciones de mapas', async ({
 test('Los selectores gestionan foco, teclado y Escape', async ({page}) => {
     await page.setViewportSize({width: 360, height: 740})
     await page.emulateMedia({reducedMotion: 'reduce'})
-    await page.goto('./#/')
+    await page.goto('./')
 
     const languageTrigger = page.getByRole('button', {name: 'Idioma: Español'})
     await languageTrigger.click()
@@ -65,7 +65,7 @@ test('Los selectores gestionan foco, teclado y Escape', async ({page}) => {
 test('ES, EN y BG actualizan contenido, idioma y metadatos sin overflow', async ({page}) => {
     await page.setViewportSize({width: 360, height: 740})
     await page.emulateMedia({reducedMotion: 'reduce'})
-    await page.goto('./#/')
+    await page.goto('./')
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'es')
     await expect(page).toHaveTitle('Invitación de boda de Gala y Valentin')
@@ -92,14 +92,19 @@ test('ES, EN y BG actualizan contenido, idioma y metadatos sin overflow', async 
     expect(hasOverflow).toBe(false)
 })
 
-test('El deadline cierra CTA y ruta RSVP sin ocultar Admin', async ({page}) => {
+test('El deadline cierra el CTA y explica el cierre, sin ocultar Admin', async ({page}) => {
     await page.clock.setFixedTime(new Date('2027-05-13T00:00:00+02:00'))
     await page.goto('./')
 
     await expect(page.getByRole('button', {name: 'Confirmación cerrada'})).toBeDisabled()
-    await page.goto('./#/rsvp')
-    await expect(page.getByText('Ruta no encontrada')).toBeVisible()
-    await page.goto('./#/admin')
+
+    // Un enlace guardado tiene que llegar a la página de cierre, no al comodín: cerrar no es
+    // lo mismo que fallar. La ruta se registra siempre y es Rsvp quien decide qué pinta.
+    await page.goto('./rsvp')
+    await expect(page.getByRole('heading', {name: 'El plazo ha finalizado'})).toBeVisible()
+    await expect(page.getByText('Ruta no encontrada')).toHaveCount(0)
+
+    await page.goto('./admin')
     await expect(page.getByLabel('Contraseña', {exact: true})).toBeVisible()
     await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
 })
@@ -110,7 +115,7 @@ test('RSVP permite declinar y confirma el guardado', async ({page}) => {
         contentType: 'application/json',
         body: '[]',
     }))
-    await page.goto('./#/rsvp')
+    await page.goto('./rsvp')
 
     await page.getByLabel('Nombre y apellidos *').fill('Invitada de Prueba')
     await page.getByLabel('No podré asistir').check()
@@ -126,13 +131,16 @@ test('RSVP completa el recorrido afirmativo multipaso', async ({page}) => {
         contentType: 'application/json',
         body: '[]',
     }))
-    await page.goto('./#/rsvp')
+    await page.goto('./rsvp')
 
     await page.getByLabel('Nombre y apellidos *').fill('Pareja de Prueba')
     await page.getByLabel('Sí, ¡allí estaré!').check()
     await page.getByRole('button', {name: 'Siguiente'}).click()
     await expect(page.getByRole('heading', {name: 'Banquete y logística'})).toBeVisible()
 
+    // Los datos dietéticos son datos de salud: no se piden hasta que el invitado consiente.
+    await expect(page.getByText('Ninguna, como de todo')).toHaveCount(0)
+    await page.getByLabel('Sí, os lo cuento').check()
     await page.getByLabel('Ninguna, como de todo').check()
     await page.getByRole('button', {name: 'Siguiente'}).click()
     await expect(page.getByRole('heading', {name: 'Luna de miel y ritmo'})).toBeVisible()
@@ -151,7 +159,7 @@ test('RSVP mantiene los datos y muestra un error recuperable cuando falla la API
         contentType: 'application/json',
         body: JSON.stringify({message: 'Synthetic test failure'}),
     }))
-    await page.goto('./#/rsvp')
+    await page.goto('./rsvp')
 
     await page.getByLabel('Nombre y apellidos *').fill('Invitado de Prueba')
     await page.getByLabel('No podré asistir').check()
@@ -162,11 +170,31 @@ test('RSVP mantiene los datos y muestra un error recuperable cuando falla la API
 })
 
 test('Admin protege la lectura detrás del acceso con credenciales', async ({page}) => {
-    await page.goto('./#/admin')
+    await page.goto('./admin')
 
     await expect(page.getByRole('heading', {name: 'Respuestas RSVP'})).toBeVisible()
     await expect(page.getByLabel('Correo electrónico')).toBeVisible()
     await expect(page.getByLabel('Contraseña', {exact: true})).toBeVisible()
     await expect(page.getByRole('button', {name: 'Entrar al panel'})).toBeVisible()
     await expect(page.getByText('El acceso está limitado a las personas autorizadas para esta invitación.')).toBeVisible()
+})
+
+// El enlace de salto apunta a `#main-content`, un ancla del documento. Mientras el enrutado vivió
+// en el fragmento, activarlo dejaba la URL en `#main-content`, que el router leía como ruta, no
+// encontraba y resolvía con el comodín: el primer elemento enfocable de la invitación borraba la
+// página, justo para quien usa teclado o lector de pantalla. Con rutas reales el fragmento vuelve
+// a ser solo un ancla. Este test fija las dos mitades, foco y contenido, y sobrevive a cualquier
+// enrutado posterior.
+test('El enlace de salto lleva el foco al contenido sin descartar la página', async ({page}) => {
+    await page.goto('./')
+
+    const skipLink = page.getByRole('link', {name: 'Saltar al contenido'})
+    await page.keyboard.press('Tab')
+    await expect(skipLink).toBeFocused()
+
+    await page.keyboard.press('Enter')
+
+    await expect(page.locator('#main-content')).toBeFocused()
+    await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
+    await expect(page.getByText('Ruta no encontrada')).toHaveCount(0)
 })

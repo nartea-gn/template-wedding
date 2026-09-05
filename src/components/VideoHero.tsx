@@ -51,7 +51,10 @@ export function VideoHero({
         if (!video) return
         setIsLoading(true)
         setHasError(false)
-        requestVideoFullscreen(video)
+        // iOS Safari cannot always play inline and exposes this proprietary API; every other
+        // browser plays inline, where jumping to native fullscreen would be an intrusion.
+        const needsNativeFullscreen = typeof video.webkitEnterFullscreen === 'function'
+        if (needsNativeFullscreen) requestVideoFullscreen(video)
         const playPromise = video.play()
         if (playPromise) {
             playPromise
@@ -68,6 +71,9 @@ export function VideoHero({
              style={{'--video-aspect-ratio': aspectRatio} as CSSProperties}>
             <video
                 ref={videoRef}
+                // Focusable programmatically but out of the natural tab order: the play button
+                // that had focus is unmounted on playback, and focus must not fall to <body>.
+                tabIndex={-1}
                 src={src}
                 poster={poster}
                 controls={hasStarted}
@@ -77,6 +83,7 @@ export function VideoHero({
                 onPlaying={() => {
                     setIsLoading(false)
                     setHasStarted(true)
+                    requestAnimationFrame(() => videoRef.current?.focus())
                 }}
                 onEnded={() => setHasStarted(false)}
                 onError={() => {

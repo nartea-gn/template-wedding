@@ -13,6 +13,10 @@ export const weddingInvitation = {
     timezone: "Europe/Madrid",
     hashtag: "#BodaGalaYValentin",
   },
+  controller: {
+    name: "controller.name",
+    email: "hola@ejemplo.com",
+  },
   theme: {
     id: "royal",
   },
@@ -26,6 +30,7 @@ export const weddingInvitation = {
     selector: {
       visible: true,
     },
+    fallback: {bg: "en", en: "es"},
   },
   sections: [
     {
@@ -44,6 +49,7 @@ export const weddingInvitation = {
       enabled: true,
       content: {
         label: "countdown.label",
+        todayLabel: "countdown.today",
         unitLabels: {
           days: "countdown.days",
           hours: "countdown.hours",
@@ -106,6 +112,62 @@ export const weddingInvitation = {
       },
     },
     {
+      id: "lodging",
+      type: "lodging",
+      enabled: true,
+      content: {
+        label: "lodging.label",
+        noteKey: "lodging.note",
+        bookingLabel: "lodging.book",
+        newTabLabel: "lodging.newTab",
+        priceTierLabels: {
+          1: "lodging.priceTier.affordable",
+          2: "lodging.priceTier.mid",
+          3: "lodging.priceTier.premium",
+        },
+        items: [
+          {
+            id: "hotel-centro",
+            name: "lodging.hotelCentro.name",
+            address: "lodging.hotelCentro.address",
+            bookingUrl: "https://www.booking.com/hotel/es/example-centro.html",
+            priceTier: 2,
+            highlightKey: "lodging.hotelCentro.highlight",
+          },
+          {
+            id: "hostal-retiro",
+            name: "lodging.hostalRetiro.name",
+            address: "lodging.hostalRetiro.address",
+            bookingUrl: "https://www.booking.com/hotel/es/example-retiro.html",
+            priceTier: 1,
+            noteKey: "lodging.hostalRetiro.note",
+          },
+        ],
+      },
+    },
+    {
+      id: "gifts",
+      type: "gifts",
+      enabled: true,
+      content: {
+        label: "gifts.label",
+        noteKey: "gifts.note",
+        fraudWarningKey: "gifts.warning",
+        newTabLabel: "gifts.newTab",
+        account: {
+          iban: "ES00 0000 0000 0000 0000 0000",
+          holderKey: "gifts.account.holder",
+          bizum: "+34 600 000 000",
+          revealOnRequest: true,
+          revealLabel: "gifts.account.reveal",
+          ibanLabel: "gifts.account.iban",
+          bizumLabel: "gifts.account.bizum",
+          copyLabel: "gifts.account.copy",
+          copiedLabel: "gifts.account.copied",
+        },
+      },
+    },
+    {
       id: "rsvp-cta",
       type: "rsvp-cta",
       enabled: true,
@@ -138,6 +200,7 @@ export const weddingInvitation = {
         transportFieldId: "busOption",
         ownTransportValue: "no",
       },
+      mutations: { rsvpClosure: { enabled: true } },
       controls: {
         csvExport: { enabled: true },
         search: { enabled: true },
