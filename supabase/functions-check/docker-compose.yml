@@ -20,7 +20,7 @@
 
 services:
   check:
-    # Pinned like every other tool here (`supabase/postgres:15.8.1.060`, Playwright `1.62.1`):
+    # Pinned like every other tool here (`supabase/postgres:17.6.1.156`, Playwright `1.62.1`):
     # a moving `:alpine` would silently change the compiler under a green result. This is Deno
     # 2.9.6 / TypeScript 6.0.3, the version that first checked these functions clean.
     # CI pins separately with `denoland/setup-deno@v2` and `deno-version: v2.x`.

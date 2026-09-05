@@ -28,7 +28,7 @@ services:
       retries: 40
 
   verify:
-    image: supabase/postgres:15.8.1.060
+    image: supabase/postgres:17.6.1.1560
     depends_on:
       db:
         condition: service_healthy
