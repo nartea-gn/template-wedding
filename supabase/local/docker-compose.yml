@@ -15,7 +15,7 @@
 
 services:
   db:
-    image: supabase/postgres:17.6.1.156
+    image: supabase/postgres:17.6.1.166
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: postgres
@@ -28,7 +28,7 @@ services:
       retries: 40
 
   verify:
-    image: supabase/postgres:17.6.1.1560
+    image: supabase/postgres:17.6.1.166
     depends_on:
       db:
         condition: service_healthy
