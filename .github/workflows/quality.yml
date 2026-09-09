@@ -73,10 +73,33 @@ jobs:
   database:
     name: Database quality
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Raised from 15: this job now also pulls the Postgres image the verification harness runs.
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # `db:verify` shells out to docker compose, so pnpm is needed to resolve the script; there
+      # is no dependency tree to install for it.
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # These two gates used to live only in `deploy.yml`, which runs on push to `main`. A broken
+      # migration or a stale `supabase/schema.sql` therefore passed review in green and failed
+      # only after merging -- with no pull request left to fix it and the production deploy
+      # blocked. They run first here because they are cheaper than starting the whole stack.
+      - name: Verify database migrations
+        run: pnpm run db:verify
+
+      # `db:verify` regenerates supabase/schema.sql from the migrations it applied. A diff means
+      # somebody edited a migration without regenerating the snapshot.
+      - name: Fail if schema.sql drifted from the migrations
+        run: git diff --exit-code -- supabase/schema.sql
 
       - name: Install Supabase CLI
         uses: supabase/setup-cli@v1

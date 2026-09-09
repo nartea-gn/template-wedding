@@ -7,13 +7,21 @@ on:
 permissions:
   contents: read
 
+# Queued, not cancelled. This job writes to production between steps -- `db push`, then the
+# wedding date, then the Edge Function, then the published frontend -- so cancelling a run
+# mid-sequence leaves the database migrated with none of the steps that follow it applied, and
+# nothing reports it. Two pushes in a row to `main` are enough to trigger that.
 concurrency:
   group: "production"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Gates the only job that mutates production behind GitHub's environment protection, so the
+    # migrations that reach the real project do so with a human having looked at the run.
+    environment: production
+    timeout-minutes: 20
     outputs:
       page_url: ${{ steps.deployment.outputs.deployment-url }}
     steps:
@@ -78,6 +86,13 @@ jobs:
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_ID"
+          # Prints the plan before applying it. `db push` reports what it did but not what it was
+          # about to do, so a run that applies several accumulated migrations at once leaves no
+          # record of the gap it closed. Kept in the same step as the push so it cannot run
+          # against an unlinked project.
+          echo "::group::Pending migrations"
+          supabase migration list --linked
+          echo "::endgroup::"
           supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
 
       - name: Sync wedding date for the purge cutoff
@@ -108,6 +123,7 @@ jobs:
   smoke:
     needs: deploy
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
