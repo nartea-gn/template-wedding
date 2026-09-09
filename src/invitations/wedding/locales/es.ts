@@ -215,7 +215,7 @@ export const esMessages = {
     'gifts.account.bizum': 'Bizum',
     'gifts.account.copy': 'Copiar',
     'gifts.account.copied': 'Copiado',
-    'gifts.warning': 'Nunca os pediremos un cambio de número por mensaje privado. Si recibís uno, no es nuestro.',
+    'gifts.warning': 'Nunca os pediremos un cambio de número por mensaje privado.\nSi recibís uno, no es nuestro.',
     'common.yes': 'Sí',
     'common.no': 'No',
     'route.notFound': 'Ruta no encontrada',

@@ -40,7 +40,7 @@
 }
 
 .landing-gifts-warning {
-    @apply mt-4 text-xs leading-relaxed text-center max-w-sm text-(--color-wedding-muted);
+    @apply mt-4 text-xs leading-relaxed text-center max-w-sm whitespace-pre-line text-(--color-wedding-muted);
     border-left: 2px solid var(--color-wedding-border);
     padding-left: 0.75rem;
 }
