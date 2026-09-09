@@ -7,15 +7,23 @@ compartido con React. `toCssVariables` los expone a CSS sin obligar a los compon
 
 ## Categorías actuales
 
-- `colors`: estados globales de compatibilidad que no varían por colección.
-- `spacing`: tamaños adicionales que ya existían.
-- `typography`: fallbacks globales.
 - `radius`: decisiones globales de foco y forma.
 - `shadows`: fundamentos compartidos de foco.
-- `motion`: duraciones globales existentes.
 
-No se crean escalas completas sin consumidores. Los valores variables por identidad pertenecen al Theme, no a los tokens
-globales.
+> **Nota del 2026-09-07.** Eran seis. `colors` (`statusColors`), `typography`, `spacing` y `motion` se eliminaron: ni
+> se exportaban desde el barril ni los importaba nadie, y las variables que `toCssVariables` derivaba de las dos
+> últimas —`--spacing-18/88/128` y `--duration-400/600`— llegaban como estilos en línea en tiempo de ejecución, así que
+> Tailwind no podía compilar utilidades a partir de ellas y ningún `p-18` ni `duration-400` existía. Los estados
+> `success` y `danger` los lleva cada tema, no un token global.
+>
+> Con ellas se fueron las seis variables `--color-wedding-*-rgb` y los 42 valores mantenidos a mano que las
+> alimentaban: cero referencias en CSS o TSX —el código usa `color-mix(in srgb, …)`, que no necesita tripletes— y era
+> el mayor riesgo de corrección del sistema, porque nada detectaba un hex que dejara de coincidir con su copia por
+> canales.
+
+La regla que sigue vigente: no se crean escalas completas sin consumidores.
+
+Los valores variables por identidad pertenecen al Theme, no a los tokens globales.
 
 Theme Engine v2 añade `composition`, `motion`, `surfaces`, `decoration` e `iconography` al contrato de identidad. Estos
 grupos no duplican las escalas globales: expresan decisiones que deben variar coordinadamente entre temas y que ya

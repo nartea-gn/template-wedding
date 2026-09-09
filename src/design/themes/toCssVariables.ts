@@ -1,22 +1,16 @@
-import {focusShadows, globalRadius, motion, spacing} from '../tokens'
+import {focusShadows, globalRadius} from '../tokens'
 import type {ThemeDefinition} from './types'
 
 export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
     return {
         '--color-wedding-bg': theme.colors.background,
-        '--color-wedding-bg-rgb': theme.colors.backgroundRgb,
         '--color-wedding-primary': theme.colors.primary,
-        '--color-wedding-primary-rgb': theme.colors.primaryRgb,
         '--color-wedding-action': theme.colors.action,
         '--color-wedding-on-action': theme.colors.onAction,
         '--color-wedding-text': theme.colors.text,
-        '--color-wedding-text-rgb': theme.colors.textRgb,
         '--color-wedding-surface': theme.colors.surface,
-        '--color-wedding-surface-rgb': theme.colors.surfaceRgb,
         '--color-wedding-border': theme.colors.border,
-        '--color-wedding-border-rgb': theme.colors.borderRgb,
         '--color-wedding-muted': theme.colors.muted,
-        '--color-wedding-muted-rgb': theme.colors.mutedRgb,
         '--color-wedding-control-border': theme.colors.controlBorder,
         '--color-wedding-success': theme.colors.success,
         '--color-wedding-success-surface': theme.colors.successSurface,
@@ -48,10 +42,5 @@ export function toCssVariables(theme: ThemeDefinition): Record<string, string> {
         '--theme-ornament-color': theme.decoration.ornamentColor,
         '--theme-ornament-opacity': theme.decoration.ornamentOpacity,
         '--theme-interface-icon-stroke-width': theme.iconography.interfaceStrokeWidth,
-        '--spacing-18': spacing.sectionCompact,
-        '--spacing-88': spacing.contentWide,
-        '--spacing-128': spacing.contentMax,
-        '--duration-400': motion.durationNormal,
-        '--duration-600': motion.durationSlow,
     }
 }

@@ -1,10 +1,10 @@
-import type {FormDefinition} from '../../core/forms'
-import type {WeddingMessageKey} from './locales/es'
+import type {FormDefinition} from '../../core/forms/index.ts'
+import type {WeddingMessageKey} from './locales/es.ts'
 
 export const weddingRsvpForm = {
     // Bump the version whenever the privacy notice or the consent wording changes: the stored
     // version is what proves which text a guest actually consented to.
-    id: 'wedding-rsvp', version: 2,
+    id: 'wedding-rsvp', version: 3,
     submission: {identityFieldId: 'fullName', attendanceFieldId: 'attending'},
     privacyNotice: 'rsvp.privacy.notice',
     messages: {
@@ -13,6 +13,7 @@ export const weddingRsvpForm = {
         submit: 'rsvp.submit',
         submitting: 'rsvp.submitting',
         submitError: 'rsvp.error.submit',
+        review: 'rsvp.review.title',
         errors: {
             required: 'form.error.required',
             email: 'form.error.email',
@@ -42,11 +43,14 @@ export const weddingRsvpForm = {
                     type: 'radio',
                     label: 'rsvp.attending.label',
                     required: true,
+                    requiredMessage: 'rsvp.attending.required',
                     initialValue: null,
+                    // Sin `completesForm`: declinar ya no envia desde el primer paso, porque
+                    // quien no puede ir sigue teniendo algo que decir y el paso de dedicatoria
+                    // esta ahora abierto para ambas respuestas.
                     options: [{value: true, label: 'rsvp.attending.yes', icon: 'heart'}, {
                         value: false,
                         label: 'rsvp.attending.no',
-                        completesForm: true,
                         icon: 'heart-broken'
                     }]
                 },
@@ -58,25 +62,20 @@ export const weddingRsvpForm = {
             subtitle: 'rsvp.step.meal.subtitle',
             visibleWhen: {fieldId: 'attending', equals: true},
             elements: [
-                {
-                    id: 'dietaryConsent',
-                    type: 'radio',
-                    label: 'rsvp.dietary.consent.label',
-                    help: 'rsvp.dietary.consent.help',
-                    required: true,
-                    initialValue: null,
-                    options: [
-                        {value: true, label: 'rsvp.dietary.consent.yes'},
-                        {value: false, label: 'rsvp.dietary.consent.no'}
-                    ]
-                },
+                // Se pregunta directamente, sin una puerta previa. El aviso va inmediatamente
+                // encima de los campos y el consentimiento del articulo 9 pasa a ser el propio
+                // acto de rellenarlos: afirmativo, informado y voluntario. Los campos siguen
+                // marcados `sensitive`, asi que no entran en el borrador, y el paso completo
+                // sigue condicionado a `attending`, asi que `visibleAnswers` continua
+                // eliminandolos del envio de quien acaba diciendo que no puede ir.
+                {id: 'dietaryNotice', type: 'info', label: 'rsvp.dietary.notice'},
                 {
                     id: 'dietaryOptions',
                     type: 'checkbox-group',
                     label: 'rsvp.dietary.label',
-                    visibleWhen: {fieldId: 'dietaryConsent', equals: true},
+                    sensitive: true,
                     initialValue: [],
-                    options: [{value: 'none', label: 'rsvp.dietary.none'}, {
+                    options: [{value: 'none', label: 'rsvp.dietary.none', exclusive: true}, {
                         value: 'gluten',
                         label: 'rsvp.dietary.gluten'
                     }, {value: 'vegetarian', label: 'rsvp.dietary.vegetarian'}, {
@@ -88,8 +87,8 @@ export const weddingRsvpForm = {
                     id: 'dietaryOther',
                     type: 'text',
                     label: 'rsvp.dietary.other',
-                    visibleWhen: {fieldId: 'dietaryConsent', equals: true},
-                    placeholder: 'rsvp.dietary.other',
+                    sensitive: true,
+                    placeholder: 'rsvp.dietary.otherPlaceholder',
                     initialValue: '',
                     validation: {maxLength: 300}
                 },
@@ -124,7 +123,7 @@ export const weddingRsvpForm = {
             id: 'message',
             title: 'rsvp.step.message.title',
             subtitle: 'rsvp.step.message.subtitle',
-            visibleWhen: {fieldId: 'attending', equals: true},
+            // Sin condicion: es el unico paso que un invitado que declina tambien recorre.
             elements: [{
                 id: 'message',
                 type: 'textarea',

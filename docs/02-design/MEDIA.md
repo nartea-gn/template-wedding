@@ -47,5 +47,5 @@ The list is declared, not derived: the weights never appear in the CSS stack, an
 - `video.mp4`: reduced from 12.5 MB to approximately 4.56 MB, with H.264/AAC and verified `faststart`; configured with
   `preload: 'none'` so the file is not eagerly fetched.
 - `video-poster.webp`: representative frame at 450×806 and approximately 46 KB.
-- `favico.png`: reduced from 4096×4096 / 15 MB to 512×512 / approximately 375 KB and connected through Vite's
+- `favico.png`: reduced from 4096×4096 / 15 MB to 64×64 / approximately 4 KB and connected through Vite's
   `%BASE_URL%`, which keeps the reference correct whatever base the host serves the site from.

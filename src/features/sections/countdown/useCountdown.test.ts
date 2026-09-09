@@ -58,12 +58,26 @@ describe('useCountdown', () => {
         expect(result.current.status).toBe('today')
     })
 
-    it('stops the timer once the day has arrived', () => {
+    // `today` used to be treated as terminal alongside `past`, so a page left open across
+    // midnight in the wedding's timezone showed "today is the day" until somebody reloaded it.
+    it('keeps polling through the day so it can reach past without a reload', () => {
         freezeAt('2027-06-12T12:00:00Z')
         const clearInterval = vi.spyOn(window, 'clearInterval')
         const {result, unmount} = renderHook(() => useCountdown(CEREMONY, MADRID))
 
         expect(result.current.status).toBe('today')
+
+        unmount()
+
+        expect(clearInterval).toHaveBeenCalled()
+    })
+
+    it('stops the timer once the wedding is past', () => {
+        freezeAt('2027-06-14T12:00:00Z')
+        const clearInterval = vi.spyOn(window, 'clearInterval')
+        const {result, unmount} = renderHook(() => useCountdown(CEREMONY, MADRID))
+
+        expect(result.current.status).toBe('past')
 
         unmount()
 

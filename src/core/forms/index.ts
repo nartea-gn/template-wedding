@@ -12,6 +12,6 @@ export type {
     InfoElement,
     TextField,
     VisibilityCondition
-} from './types'
-export {validateElements, validateFormDefinition} from './validation'
-export {isConditionMet} from './visibility'
+} from './types.ts'
+export {validateElements, validateFormDefinition} from './validation.ts'
+export {isConditionMet, isConditionUndetermined} from './visibility.ts'

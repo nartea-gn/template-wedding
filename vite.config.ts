@@ -1,8 +1,8 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { themes, type ThemeId } from "./src/design/themes/themes";
-import { weddingInvitation } from "./src/invitations/wedding/invitation";
+import { themes, type ThemeId } from "./src/design/themes/themes.ts";
+import { weddingInvitation } from "./src/invitations/wedding/invitation.ts";
 
 /**
  * Requests only the webfonts the deployed theme uses.
@@ -75,6 +75,12 @@ function contentSecurityPolicy(supabaseUrl: string): Plugin {
         // Every file here carries a content hash in its name, so it can never go stale.
         "/assets/*",
         "  Cache-Control: public, max-age=31536000, immutable",
+        "",
+        // The icon lives at the root, outside the hashed output, so it was falling back to
+        // Cloudflare's default policy and being revalidated. A week is long enough to matter and
+        // short enough that replacing it does not need a cache purge.
+        "/favico.png",
+        "  Cache-Control: public, max-age=604800",
         "",
       ].join("\n");
 

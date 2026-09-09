@@ -6,7 +6,6 @@ import './RsvpClosureControl.css'
 
 type Props = {
     status: RsvpStatus | null
-    saving: boolean
     onSave: (schedule: RsvpScheduleUpdate) => Promise<boolean>
 }
 
@@ -29,23 +28,39 @@ function toLocalInputValue(iso: string | null): string {
  * follows the Promise<boolean> convention of the rest of the panel, so a failed write never
  * reads as a success.
  */
-export function RsvpClosureControl({status, saving, onSave}: Props) {
+export function RsvpClosureControl({status, onSave}: Props) {
     const {t} = useLocalization<WeddingMessageKey>()
     // `null` means "untouched", so the field keeps following the database until the couple
     // types something. Deriving it beats syncing it from an effect.
     const [draftDeadline, setDraftDeadline] = useState<string | null>(null)
-    const [mode, setMode] = useState<Mode>('auto')
+    // Same convention for the switch, and for a stronger reason. Seeding it with 'auto' meant the
+    // radio reported "automatic" however the couple had actually left it, and because every save
+    // sends the mode, saving a deadline alone then wrote `override: null` and silently reopened a
+    // form they had closed by hand.
+    const [draftMode, setDraftMode] = useState<Mode | null>(null)
     const [failed, setFailed] = useState(false)
+    // Estado propio en vez del `loading` de la tabla: con aquel, un refresco de respuestas
+    // deshabilitaba el boton de guardar el plazo, que no tiene nada que ver.
+    const [saving, setSaving] = useState(false)
+    // Es el guardado de mas peso del panel y era el unico sin confirmacion: solo avisaba al
+    // fallar, asi que un exito no se distinguia de no haber pulsado.
+    const [saved, setSaved] = useState(false)
     const deadline = draftDeadline ?? toLocalInputValue(status?.deadlineUtc ?? null)
+    const mode: Mode = draftMode ?? status?.override ?? 'auto'
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault()
         setFailed(false)
+        setSaved(false)
+        setSaving(true)
         const schedule: RsvpScheduleUpdate = {
             override: mode === 'auto' ? null : mode,
         }
         if (deadline) schedule.deadlineUtc = new Date(deadline).toISOString()
-        if (!await onSave(schedule)) setFailed(true)
+        const succeeded = await onSave(schedule)
+        setSaving(false)
+        if (succeeded) setSaved(true)
+        else setFailed(true)
     }
 
     return (
@@ -62,7 +77,7 @@ export function RsvpClosureControl({status, saving, onSave}: Props) {
                 className="input"
                 type="datetime-local"
                 value={deadline}
-                onChange={event => setDraftDeadline(event.target.value)}
+                onChange={event => { setSaved(false); setDraftDeadline(event.target.value) }}
             />
             <fieldset className="admin-rsvp-closure-modes">
                 <legend className="label">{t('admin.rsvp.mode')}</legend>
@@ -72,7 +87,7 @@ export function RsvpClosureControl({status, saving, onSave}: Props) {
                             type="radio"
                             name="admin-rsvp-mode"
                             checked={mode === option}
-                            onChange={() => setMode(option)}
+                            onChange={() => { setSaved(false); setDraftMode(option) }}
                         />
                         <span>{t(`admin.rsvp.mode.${option}` as WeddingMessageKey)}</span>
                     </label>
@@ -82,6 +97,9 @@ export function RsvpClosureControl({status, saving, onSave}: Props) {
                 {t('admin.rsvp.save')}
             </button>
             {failed && <p className="admin-rsvp-closure-error" role="alert">{t('admin.rsvp.error')}</p>}
+            {saved && !failed && (
+                <p className="admin-rsvp-closure-saved" role="status">{t('admin.rsvp.saved')}</p>
+            )}
         </form>
     )
 }

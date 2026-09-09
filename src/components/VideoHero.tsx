@@ -11,6 +11,8 @@ type Props = {
     playLabel: string
     loadingLabel: string
     errorLabel: string
+    /** Fecha del evento, ya formateada y localizada, para pintarla sobre el poster. */
+    eventDate?: string
 }
 
 type FullscreenVideoElement = HTMLVideoElement & {
@@ -40,6 +42,7 @@ export function VideoHero({
                               playLabel,
                               loadingLabel,
                               errorLabel,
+                              eventDate,
                           }: Readonly<Props>) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [hasStarted, setHasStarted] = useState(false)
@@ -94,6 +97,9 @@ export function VideoHero({
             />
             {!hasStarted && (
                 <div className="video-hero-overlay">
+                    {/* Texto real, no pixeles: se traduce con el catalogo, lo lee un lector de
+                        pantalla y sale de `event.date`, asi que no puede contradecir al contrato. */}
+                    {eventDate && <p className="video-hero-date">{eventDate}</p>}
                     <button type="button" className="play-btn" onClick={handlePlay} disabled={isLoading}
                             aria-label={isLoading ? loadingLabel : playLabel}>
                         {isLoading

@@ -4,6 +4,131 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### El cierre del RSVP deja de ser evitable, y el alta vuelve a funcionar
+
+- **`20260907_enforce_rsvp_closure.sql`.** El trigger `BEFORE INSERT` de `20260904` devolvía
+  `NULL` para redirigir un reenvío a la fila existente, y devolver `NULL` cancela la tupla antes
+  de que Postgres evalúe el `WITH CHECK` de la política: `is_rsvp_open()` nunca se comprobaba en
+  esa vía. Medido en un Postgres desechable con `rsvp_override = 'closed'`: un `INSERT` de `anon`
+  para un invitado con fila devolvía `INSERT 0 0` sin error y cambiaba `attending`. Además de
+  saltarse el cierre, permitía a cualquier portador de la anon key **pública** sobrescribir la
+  respuesta de cualquier invitado escribiendo su nombre — el ataque que la cabecera de `20260904`
+  afirmaba evitar. Lo cierra `require_rsvp_open()`, un trigger anterior que cubre el alta y la
+  corrección con una sola regla, acotado a la vía pública para no romper `service_role`.
+- **Contrato de errores.** `RSVPC` (cerrado) y `RSVPU` (ningún `invitations` para ese slug) se
+  distinguen entre sí y de `42501`, que vuelve a significar solo «sin privilegio».
+  `SupabaseRsvpRepository` traducía todo `42501` a `RsvpClosedError`, así que un proyecto sin la
+  fila de la boda mostraba a todos los invitados «el plazo ha finalizado» sin vía de reintento.
+- **Un cliente Supabase sin sesión para el alta pública.** El panel y el formulario compartían un
+  cliente que persiste la sesión, así que entrar en `/admin` en un navegador rompía `/rsvp` en ese
+  mismo navegador: las peticiones llegaban como `authenticated`, que no tiene INSERT en
+  `rsvp_responses` ni USAGE en su secuencia. Es por lo que la pareja no podía probar su propio
+  formulario.
+- `get_rsvp_status` devuelve `rsvp_override`, y el control del panel arranca en la posición que la
+  pareja dejó. Antes arrancaba siempre en «automático» y guardar solo la fecha límite escribía
+  `override: null`, reabriendo en silencio un RSVP cerrado a mano.
+- La auditoría distingue una corrección de invitado de una edición de administrador, marcada por
+  la propia vía de corrección en vez de inferida de un `actor_id` nulo, que también tienen las
+  purgas y las migraciones.
+- `deploy.yml` pasa `--include-all`: sin él `db push` rechaza `20260000` por estar ordenada antes
+  de la cabeza remota y **no aplica nada**, tumbando los pasos siguientes —de ahí el `23503` con
+  `invitations` vacía—. El runbook para reparar un historial al que se aplicaron migraciones a
+  mano está en `DATABASE_MIGRATIONS.md`.
+
+### El formulario deja de mentir sobre dónde está el invitado
+
+- La barra de progreso marcaba **100 % y `aria-valuenow="100"` en el paso 1 de 4**, con el botón en
+  «Confirmar todo», y responder la primera pregunta la hacía **retroceder al 25 %**:
+  `visibleSteps` mezclaba «descartado» y «todavía sin decidir» en una única ausencia. Ahora se
+  cuentan los pasos que aún pueden desbloquearse, y la posición se muestra como numerales.
+- El aviso del artículo 13 se muestra en el primer paso, no en los cuatro, donde también era lo
+  último que se leía antes de enviar en el paso pensado para ser afectuoso.
+- El error de un grupo de opciones ya no tiñe las opciones, que pintaba «Sí, ¡allí estaré!» en
+  color de error ante un envío en vacío.
+- **Borrador persistente**, versionado con el formulario y **sin los datos de salud**: los campos
+  marcados `sensitive` quedan fuera, igual que `visibleAnswers` los quita del envío.
+- El último paso lista lo que se va a enviar. «Confirmar todo» pedía un compromiso sobre respuestas
+  dadas hasta tres pasos antes sin nada en pantalla con lo que contrastarlas.
+
+### Accesibilidad
+
+- `.input:focus` ya no hace `outline: none`. El anillo que lo sustituía componía a **1,38:1** contra
+  el campo, donde SC 1.4.11 pide 3:1, mientras botones y radios conservaban el contorno global a
+  9,96:1.
+- `aria-required` en los campos obligatorios, y el asterisco se renderiza desde `element.required`
+  en vez de estar escrito a mano en los catálogos — donde ya faltaba en el consentimiento
+  dietético obligatorio — y queda fuera del nombre accesible.
+- La ceremonia y la cuenta atrás pasan a ser encabezados. El esquema medido era
+  `h1 → «Dónde alojarse» → «Regalos»`: navegando por encabezados no se llegaba nunca a la
+  ceremonia, los horarios ni la cuenta atrás. `/rsvp` no tenía `h1` en ningún estado.
+- `prefers-reduced-motion` fallaba en las dos direcciones: no reseteaba `animation-delay`, así que
+  los reveals se encajaban en secuencia a lo largo de ~900 ms como ocho saltos, y la regla general
+  congelaba los tres spinners y la barra de pasos, quitando el estado que existen para mostrar.
+- Objetivos táctiles del selector de idioma: 68×40 y 155×37, ambos bajo el mínimo de 44 px.
+
+### La tarjeta y el mapa leen una sola dirección
+
+- La ceremonia mostraba «Calle Mayor, 1, Madrid» y «Cómo llegar» abría «C. del Nuncio, 14, Centro,
+  28005 Madrid»; el banquete discrepaba igual. `mapsQuery` pasa a ser la fuente —precisa e
+  independiente del idioma, que es lo que un nombre de calle debe ser: el catálogo búlgaro
+  transliteraba la calle como «Кале Майор 1, Мадрид», que se lee bien y no navega a ningún
+  sitio— y `address` queda para un lugar sin dirección navegable. Son mutuamente excluyentes, con
+  una regla de validación que lo dice.
+
+### Rendimiento y limpieza
+
+- `vendor-supabase` sale de la ruta crítica de la Landing: 199,8 KiB en bruto / 51 KiB gzip que se
+  descargaban y ejecutaban en las tres rutas para refrescar un deadline que el bundle ya lleva
+  compilado. La Landing lee el estado con `fetch`. Medido después: `/` pide 4 chunks JS y ninguno
+  es ese.
+- `favico.png` pasa de 512×512 / 374.901 bytes a 64×64 / 7.341 bytes. Era el mayor activo no-vídeo
+  del sitio, pagado en la primera visita sin caché de cada invitado, para un icono de pestaña.
+  `_headers` le da además una política de caché: al estar en la raíz no entraba en `/assets/*`.
+- Fuera lo que nadie lee: seis variables `--color-wedding-*-rgb` y los 42 valores mantenidos a mano
+  detrás de ellas —el mayor riesgo de corrección del sistema de tokens, porque nada detectaba un
+  hex que dejara de coincidir con su triplete—, `--spacing-18/88/128`, `--duration-400/600`,
+  `statusColors`, `typography` y tres `@keyframes` huérfanos. `fadeIn` se conserva: `Rsvp.css:71`
+  lo usa.
+- `Admin.css` referenciaba `--color-wedding-accent`, un rol que ningún tema define, así que ese
+  borde caía en silencio a `currentColor`.
+- Las tres cifras de cabecera del panel se calculan en una pasada memoizada, no en tres barridos
+  completos por cada pulsación en el buscador.
+- La barra de progreso anima `transform` en vez de `width`, la única propiedad de layout animada
+  que quedaba.
+
+### Desarrollo local reproducible
+
+- **`supabase/seed.sql`.** Un stack recién reseteado no permitía ejercitar el producto: sin fila en
+  `invitations` el RSVP rechaza todo con `RSVPU` y sin administrador el panel no pasa del acceso.
+  Siembra la invitación, un admin con contraseña y 60 respuestas ficticias, dos borradas en suave.
+  Es un no-op al repetirse, y no por `ON CONFLICT` —que aquí nunca dispara, porque el trigger de
+  redirección devuelve `NULL` antes— sino por una guarda explícita sobre el slug.
+- **Gate de orden de migraciones** (`src/test/migrationOrder.test.ts`). Ni `db reset` ni
+  `db:verify` pueden atrapar el fallo que tumbó el despliegue: los dos parten de una base vacía y
+  aplican el directorio en orden de nombre, donde una migración fuera de orden es perfectamente
+  válida. Solo un remoto con historial la rechaza. La regla se expresa por tanto contra la versión
+  que producción ya registraba (`20260712`), con `20260000` documentada como la excepción que
+  obliga a `--include-all`.
+
+### Herramientas que no funcionaban
+
+- `quality.yml` ejecuta la matriz multinavegador, que existía y no corría nadie: por eso un fallo
+  de WebKit llevaba ahí sin que nadie lo viera. El test del enlace de salto ya no pulsa Tab, que
+  en WebKit afirma una preferencia de Safari en vez de la página.
+- `check:functions:docker` invoca el harness con `sh`: el script está versionado `0644`, así que
+  llamarlo directo salía con 126.
+- `vitest.config.ts` documenta por qué **no** se usa `pool: 'vmThreads'`, que es lo que vitest
+  sugiere para el 73 % del tiempo que reporta en preparar jsdom: recorta la suite de 11,96 s a
+  1,92 s, pero comparte contexto entre ficheros y bajo él `AppRouter.test.tsx` se queda colgado en
+  el chunk perezoso de `/rsvp`. Medido: 164/164 con `forks` y con `threads`, 163/164 con
+  `vmThreads`, de forma determinista.
+- La cuenta atrás sigue sondeando durante `today`, que nunca avanzaba a `past`: una pestaña abierta
+  al cruzar medianoche en la zona de la boda se quedaba ahí.
+- `/rsvp` se registra solo si la capability está activa. Registrada siempre, `Rsvp` no devolvía nada
+  y pintaba una página en blanco.
+- `send-purge-warnings` comprueba la marca que escribe. Sin comprobarla, un fallo al marcar
+  respondía `ok` igualmente y volvía a enviar los avisos la noche siguiente.
+
 ### La sección «Nuestra historia» desaparece del producto
 
 - `story` deja de existir como tipo de sección. Se retiran la instancia en `invitation.ts` y sus

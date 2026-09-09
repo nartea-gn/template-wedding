@@ -34,15 +34,22 @@ export function VenueSection<Message extends string>({section}: Readonly<Section
 
     return (
         <section className="landing-venue">
-            <p className="landing-venue-label">{t(section.content.label)}</p>
+            {/* A heading, not a styled paragraph: LodgingSection and GiftsSection use h2
+                for the same visual role, so the measured outline went h1 -> "Donde alojarse"
+                -> "Regalos" and somebody navigating by heading never found the ceremony,
+                the times or the countdown. */}
+            <h2 className="landing-section-title">{t(section.content.label)}</h2>
             <div className="landing-venue-grid">
                 {section.content.items.map(item => {
                     const mapsQuery = item.mapsQuery
+                    // One string, two uses. `address` is the fallback for a place with no
+                    // navigable address, which is also the case with no map button.
+                    const shownAddress = item.address ? t(item.address) : mapsQuery
                     return <div key={item.id} className="landing-venue-card card">
                         <p className="landing-venue-type">{t(item.typeLabel)}</p>
                         <p className="landing-venue-name">{t(item.name)}</p>
                         {item.time && <p className="landing-venue-time">{item.time}</p>}
-                        {item.address && <p className="landing-venue-address">{t(item.address)}</p>}
+                        {shownAddress && <p className="landing-venue-address">{shownAddress}</p>}
                         {mapsQuery && (
                             <MapProviderPicker
                                 triggerLabel={t(section.content.mapLabel)}

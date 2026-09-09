@@ -19,3 +19,7 @@
 .admin-rsvp-closure-error {
     @apply text-sm text-(--color-wedding-danger);
 }
+
+.admin-rsvp-closure-saved {
+    @apply text-sm mt-2 text-(--color-wedding-success);
+}

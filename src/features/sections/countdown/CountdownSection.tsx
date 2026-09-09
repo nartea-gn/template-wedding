@@ -32,7 +32,7 @@ export function CountdownSection<Message extends string>({
     // makes the page unusable with a screen reader.
     return (
         <section className="landing-countdown" role="timer" aria-label={t(section.content.label)}>
-            <p className="landing-countdown-label">{t(section.content.label)}</p>
+            <h2 className="landing-countdown-label">{t(section.content.label)}</h2>
             <div className="landing-countdown-row">
                 {units.map((item, index) => (
                     <Fragment key={item.label}>

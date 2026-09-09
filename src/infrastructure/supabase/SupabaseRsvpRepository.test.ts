@@ -3,6 +3,7 @@ import {describe, expect, it, vi} from 'vitest'
 import type {RsvpSubmission} from '../../features/rsvp/domain/RsvpSubmission'
 import {SupabaseRsvpRepository} from './SupabaseRsvpRepository'
 import {RsvpClosedError} from '../../features/rsvp/domain/RsvpClosedError'
+import {RsvpUnregisteredError} from '../../features/rsvp/domain/RsvpUnregisteredError'
 import {toWeddingLegacyColumns} from '../../invitations/wedding/rsvpColumns'
 
 const submission: RsvpSubmission = {
@@ -63,12 +64,47 @@ describe('SupabaseRsvpRepository', () => {
         await expect(repository.submit(submission)).rejects.toBe(providerError)
     })
 
-    it('reports a closed RSVP instead of a generic failure when the policy rejects the insert', async () => {
-        const insert = vi.fn().mockResolvedValue({error: {code: '42501', message: 'new row violates row-level security policy'}})
+    it('reports a closed RSVP instead of a generic failure when the gate rejects the insert', async () => {
+        const insert = vi.fn().mockResolvedValue({error: {code: 'RSVPC', message: 'The RSVP for gala-y-valentin is closed'}})
         const from = vi.fn().mockReturnValue({insert})
         const repository = new SupabaseRsvpRepository({from} as unknown as SupabaseClient)
 
         await expect(repository.submit(submission)).rejects.toBeInstanceOf(RsvpClosedError)
+    })
+
+    it('separates an unregistered invitation from a closed one', async () => {
+        const insert = vi.fn().mockResolvedValue({error: {code: 'RSVPU', message: 'No invitation is registered for wedding_slug x'}})
+        const from = vi.fn().mockReturnValue({insert})
+        const repository = new SupabaseRsvpRepository({from} as unknown as SupabaseClient)
+
+        await expect(repository.submit(submission)).rejects.toBeInstanceOf(RsvpUnregisteredError)
+    })
+
+    // The regression this contract exists for: 42501 covered a closed RSVP, an unregistered slug
+    // and a genuine privilege failure, so a session-carrying request -- refused with `permission
+    // denied for table rsvp_responses` -- was shown to the guest as a passed deadline.
+    it('does not read a missing privilege as a closed RSVP', async () => {
+        const denied = {code: '42501', message: 'permission denied for table rsvp_responses'}
+        const insert = vi.fn().mockResolvedValue({error: denied})
+        const from = vi.fn().mockReturnValue({insert})
+        const repository = new SupabaseRsvpRepository({from} as unknown as SupabaseClient)
+
+        await expect(repository.submit(submission)).rejects.toBe(denied)
+    })
+
+    it('submits through the session-less client so the insert reaches the API as anon', async () => {
+        const insert = vi.fn().mockResolvedValue({error: null})
+        const publicFrom = vi.fn().mockReturnValue({insert})
+        const adminFrom = vi.fn()
+        const repository = new SupabaseRsvpRepository(
+            {from: adminFrom} as unknown as SupabaseClient,
+            {publicClient: {from: publicFrom} as unknown as SupabaseClient},
+        )
+
+        await repository.submit(submission)
+
+        expect(publicFrom).toHaveBeenCalledWith('rsvp_responses')
+        expect(adminFrom).not.toHaveBeenCalled()
     })
 
     it('updates a single response scoped to its invitation', async () => {
@@ -127,24 +163,24 @@ describe('SupabaseRsvpRepository', () => {
     })
 
     it('reads the live RSVP schedule through the status function', async () => {
-        const rpc = vi.fn().mockResolvedValue({data: [{is_open: false, deadline_utc: '2027-05-29T21:59:59Z'}], error: null})
+        const rpc = vi.fn().mockResolvedValue({data: [{is_open: false, deadline_utc: '2027-05-29T21:59:59Z', override: 'closed'}], error: null})
         const repository = new SupabaseRsvpRepository({rpc} as unknown as SupabaseClient)
 
         const status = await repository.getStatus('gala-y-valentin')
 
         expect(rpc).toHaveBeenCalledWith('get_rsvp_status', {p_wedding_slug: 'gala-y-valentin'})
-        expect(status).toEqual({isOpen: false, deadlineUtc: '2027-05-29T21:59:59Z'})
+        expect(status).toEqual({isOpen: false, deadlineUtc: '2027-05-29T21:59:59Z', override: 'closed'})
     })
 
     it('fails loudly when no invitation row backs the requested slug', async () => {
         const rpc = vi.fn().mockResolvedValue({data: [], error: null})
         const repository = new SupabaseRsvpRepository({rpc} as unknown as SupabaseClient)
 
-        await expect(repository.getStatus('unknown-wedding')).rejects.toThrow('unknown-wedding')
+        await expect(repository.getStatus('unknown-wedding')).rejects.toBeInstanceOf(RsvpUnregisteredError)
     })
 
     it('writes only the two scheduling columns and re-reads the resulting state', async () => {
-        const rpc = vi.fn().mockResolvedValue({data: [{is_open: false, deadline_utc: null}], error: null})
+        const rpc = vi.fn().mockResolvedValue({data: [{is_open: false, deadline_utc: null, override: 'closed'}], error: null})
         const eq = vi.fn().mockResolvedValue({error: null})
         const update = vi.fn().mockReturnValue({eq})
         const from = vi.fn().mockReturnValue({update})

@@ -1,13 +1,23 @@
 @reference "tailwindcss";
 
 /* Rsvp page styles */
-.rsvp-success-page {
+
+/* CONFIRMADO Y CERRADO SON DOS PANTALLAS DISTINTAS
+ *
+ * Compartian `rsvp-success-*` -- pagina, tarjeta, titulo, texto, boton -- y hasta el string del
+ * boton, asi que el pico emocional del producto y el rechazo a quien llega tarde recibian el
+ * mismo tratamiento. Cada uno tiene ahora su composicion; lo comun (el fondo a pantalla completa
+ * y la tarjeta de cristal) vive en las dos clases base de abajo. */
+
+.rsvp-confirmed-page,
+.rsvp-closed-page {
     @apply min-h-screen bg-(--color-wedding-bg) text-(--color-wedding-text) flex flex-col items-center justify-center p-6 text-center font-sans;
     min-height: 100svh;
 }
 
-.rsvp-success-card {
-    @apply max-w-md p-8 md:p-10 space-y-6;
+.rsvp-confirmed-card,
+.rsvp-closed-card {
+    @apply p-8 md:p-10;
     background: color-mix(in srgb, var(--color-wedding-surface) var(--theme-form-card-opacity), transparent);
     border: 1px solid color-mix(in srgb, var(--color-wedding-border) 62%, transparent);
     box-shadow: var(--shadow-card-lg);
@@ -15,22 +25,96 @@
     backdrop-filter: blur(10px);
 }
 
-.rsvp-success-icon {
-    @apply size-12 mx-auto mb-2 text-(--color-wedding-action);
+/* Confirmado: mas ancha que la de cierre, porque lleva el recibo de lo enviado. */
+.rsvp-confirmed-card {
+    @apply max-w-xl space-y-6;
 }
 
-.rsvp-success-title {
+/* EL ORNAMENTO SE CENTRA AQUI, NO EN SU PROPIA REGLA
+ *
+ * `.landing-ornament` es `width: 100%` con `max-width: 24rem` y sin margen horizontal: en la
+ * landing lo centra `.landing-hero`, que es `flex flex-col items-center`. Esta tarjeta no es
+ * flex -- es `space-y-6` con hijos en flujo de bloque -- asi que el ornamento se apoyaba en el
+ * borde izquierdo y quedaba 55 px a la izquierda del centro del titulo, medido a 1440 px.
+ *
+ * El centrado vive aqui y no en `.landing-ornament` porque el hero no lo necesita y anadirlo
+ * alli cambiaria una regla compartida para arreglar un solo contexto. */
+.rsvp-confirmed-card .landing-ornament {
+    margin-inline: auto;
+}
+
+.rsvp-confirmed-title {
     @apply font-serif text-3xl md:text-4xl font-light text-(--color-wedding-action);
     font-family: var(--font-heading);
 }
 
-.rsvp-success-text {
-    @apply text-(--color-wedding-muted) text-[0.95rem] leading-relaxed;
+.rsvp-confirmed-lead {
+    @apply text-(--color-wedding-text) text-base leading-relaxed;
 }
 
-.rsvp-success-btn {
-    @apply mt-6;
+.rsvp-confirmed-receipt {
+    @apply text-left p-5 rounded-xl border border-(--color-wedding-border) bg-(--color-wedding-bg)/45;
 }
+
+.rsvp-confirmed-list {
+    @apply mt-3 grid gap-2;
+}
+
+.rsvp-confirmed-row {
+    @apply grid gap-0.5 sm:grid-cols-[10rem_1fr] sm:gap-4;
+}
+
+.rsvp-confirmed-term {
+    @apply text-sm text-(--color-wedding-muted);
+}
+
+.rsvp-confirmed-value {
+    @apply text-sm font-semibold text-(--color-wedding-text);
+}
+
+.rsvp-confirmed-edit {
+    @apply text-sm leading-relaxed text-(--color-wedding-muted);
+}
+
+.rsvp-confirmed-actions {
+    @apply flex flex-col items-center gap-3;
+}
+
+.rsvp-confirmed-hashtag {
+    @apply text-sm tracking-[0.16em] uppercase text-(--color-wedding-action);
+}
+
+/* Cierre: estrecha, quieta y con un correo. Nada que celebrar. */
+.rsvp-closed-card {
+    @apply max-w-md space-y-5;
+}
+
+.rsvp-closed-icon {
+    @apply size-10 mx-auto text-(--color-wedding-muted);
+}
+
+.rsvp-closed-title {
+    @apply font-serif text-2xl md:text-3xl font-light text-(--color-wedding-text);
+    font-family: var(--font-heading);
+}
+
+.rsvp-closed-text {
+    @apply text-(--color-wedding-muted) text-sm leading-relaxed;
+}
+
+.rsvp-closed-contact {
+    @apply text-sm leading-relaxed text-(--color-wedding-text);
+}
+
+.rsvp-closed-btn {
+    @apply mt-2;
+}
+
+
+
+
+
+
 
 .rsvp-page {
     @apply min-h-screen bg-(--color-wedding-bg) text-(--color-wedding-text) flex flex-col items-center justify-center p-4 md:p-8;
@@ -46,13 +130,20 @@
     backdrop-filter: blur(10px);
 }
 
-.rsvp-progress {
-    @apply w-full bg-(--color-wedding-bg) h-1.5 rounded-full mb-10 overflow-hidden;
+.rsvp-progress-track {
+    @apply w-full bg-(--color-wedding-bg) h-1.5 rounded-full overflow-hidden;
+}
+
+.rsvp-progress-position {
+    @apply text-sm text-right mt-2 mb-8 tabular-nums text-(--color-wedding-text);
 }
 
 .rsvp-progress-bar {
-    @apply bg-(--color-wedding-action) h-full rounded-full transition-[width] duration-500 ease-out;
-    width: var(--progress, 0%);
+    /* `scaleX` rather than `width`: the only animated layout property the project had, and the
+       one thing the detector flags on this route at every viewport. Same movement, composited. */
+    @apply bg-(--color-wedding-action) h-full w-full rounded-full origin-left;
+    transform: scaleX(var(--progress-ratio, 0));
+    transition: transform 500ms ease-out;
 }
 
 .rsvp-form {
@@ -124,9 +215,32 @@
     background: color-mix(in srgb, var(--color-wedding-action) 10%, transparent);
 }
 
-.rsvp-option--error {
-    border-color: var(--color-wedding-danger);
-    background: var(--color-wedding-danger-surface);
+.rsvp-review {
+    @apply mt-8 mb-6 p-4 rounded-xl border border-(--color-wedding-border) bg-(--color-wedding-bg)/45;
+}
+
+.rsvp-review-list {
+    @apply mt-3 grid gap-2;
+}
+
+.rsvp-review-row {
+    @apply grid gap-0.5 sm:grid-cols-[10rem_1fr] sm:gap-4;
+}
+
+.rsvp-review-term {
+    @apply text-sm text-(--color-wedding-muted);
+}
+
+.rsvp-review-value {
+    @apply text-sm font-semibold text-(--color-wedding-text);
+}
+
+.rsvp-required-marker {
+    color: var(--color-wedding-danger);
+}
+
+.rsvp-field--error > .label {
+    color: var(--color-wedding-danger);
 }
 
 .rsvp-radio {
@@ -191,4 +305,8 @@
 
 .rsvp-privacy-notice {
     @apply text-xs leading-relaxed text-(--color-wedding-muted);
+}
+
+.rsvp-deadline-notice {
+    @apply text-sm mb-6 text-center text-(--color-wedding-muted);
 }

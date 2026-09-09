@@ -52,8 +52,8 @@ describe('useRsvpAvailability', () => {
     })
 
     it.each([
-        ['closed', {isOpen: false, deadlineUtc: null}, 'closed', 'the couple closed it early'],
-        ['open', {isOpen: true, deadlineUtc: null}, 'open', 'the couple reopened it after the date'],
+        ['closed', {isOpen: false, deadlineUtc: null, override: 'closed'}, 'closed', 'the couple closed it early'],
+        ['open', {isOpen: true, deadlineUtc: null, override: 'open'}, 'open', 'the couple reopened it after the date'],
     ])('lets a live %s status override the compiled deadline, when %s', (_state, status, expected) => {
         vi.useFakeTimers()
         // Compiled deadline already expired, so only the live status can produce "open".
@@ -66,6 +66,61 @@ describe('useRsvpAvailability', () => {
         )
 
         expect(screen.getByText(expected)).toBeInTheDocument()
+    })
+
+    // The timer used to set a `false` the return statement then discarded whenever a live status
+    // existed, and RsvpStatusProvider wraps the whole application -- so in production the timer
+    // never closed anything. Only the no-provider branch, which these tests took, observed it.
+    it('closes the form when the deadline passes even though a live status says it is open', () => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date('2027-05-12T23:59:58+02:00'))
+
+        render(
+            <RsvpStatusContext.Provider value={{isOpen: true, deadlineUtc: deadline, override: null}}>
+                <AvailabilityProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>
+            </RsvpStatusContext.Provider>,
+        )
+
+        expect(screen.getByText('open')).toBeInTheDocument()
+
+        act(() => vi.advanceTimersByTime(1000))
+
+        expect(screen.getByText('closed')).toBeInTheDocument()
+    })
+
+    it('lets a later deadline from the panel reopen a form the timer had closed', () => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date('2027-06-01T00:00:00+02:00'))
+
+        const {rerender} = render(
+            <RsvpStatusContext.Provider value={{isOpen: false, deadlineUtc: deadline, override: null}}>
+                <AvailabilityProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>
+            </RsvpStatusContext.Provider>,
+        )
+
+        expect(screen.getByText('closed')).toBeInTheDocument()
+
+        rerender(
+            <RsvpStatusContext.Provider
+                value={{isOpen: true, deadlineUtc: '2027-12-31T23:59:59+02:00', override: null}}>
+                <AvailabilityProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>
+            </RsvpStatusContext.Provider>,
+        )
+
+        expect(screen.getByText('open')).toBeInTheDocument()
+    })
+
+    it('keeps a manually reopened form open after its deadline', () => {
+        vi.useFakeTimers()
+        vi.setSystemTime(new Date('2027-06-01T00:00:00+02:00'))
+
+        render(
+            <RsvpStatusContext.Provider value={{isOpen: true, deadlineUtc: deadline, override: 'open'}}>
+                <AvailabilityProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>
+            </RsvpStatusContext.Provider>,
+        )
+
+        expect(screen.getByText('open')).toBeInTheDocument()
     })
 
     it('falls back to the compiled deadline while the live status is unknown', () => {

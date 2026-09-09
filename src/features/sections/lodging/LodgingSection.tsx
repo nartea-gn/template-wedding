@@ -16,7 +16,7 @@ export function LodgingSection<Message extends string>({
 
     return (
         <section className="landing-lodging" aria-labelledby={HEADING_ID}>
-            <h2 id={HEADING_ID} className="landing-lodging-label">{t(section.content.label)}</h2>
+            <h2 id={HEADING_ID} className="landing-section-title">{t(section.content.label)}</h2>
             {section.content.noteKey && <p className="landing-lodging-note">{t(section.content.noteKey)}</p>}
             <div className="landing-lodging-grid">
                 {section.content.items.map(item => {
@@ -40,7 +40,7 @@ export function LodgingSection<Message extends string>({
                                 href={item.bookingUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="landing-lodging-book btn btn--outline"
+                                className="landing-lodging-book btn btn--primary"
                                 // The engine opens external links in a new tab everywhere but never
                                 // says so; a screen reader user only finds out after navigating.
                                 aria-label={`${name} — ${bookingLabel} (${newTabLabel})`}

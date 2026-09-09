@@ -138,7 +138,9 @@ Los tiempos son objetivos de diseño y deberán medirse en la primera ejecución
 - Los tests E2E se centran en comportamiento visible y evitan selectores ligados a estilos.
 - La base de datos requiere Docker en local y en el job correspondiente.
 - El workflow de despliegue deja de ser el primer lugar donde se detectan regresiones.
-- La futura matriz completa reutiliza Playwright sin migrar suites.
+- La matriz completa reutiliza Playwright sin migrar suites. Desde el 2026-09-07 corre en CI
+  (`quality.yml`, paso *Cross-browser end-to-end tests*): existía sin que la ejecutara nadie, y por eso un fallo de
+  WebKit en `app.spec.ts` estuvo ahí hasta que alguien la lanzó a mano.
 
 ## Criterios de aceptación
 

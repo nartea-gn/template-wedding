@@ -41,11 +41,15 @@
 }
 
 .admin-subtitle {
-    @apply text-sm text-(--color-wedding-muted) mt-1;
+    @apply text-base text-(--color-wedding-muted) mt-1;
 }
 
+/* `flex-wrap` no es cosmetico: los dos botones miden juntos 376 px y a 320 px de viewport este
+   contenedor llegaba a 353 px, que es exactamente lo que hacia scrollar el panel en horizontal.
+   El desbordamiento ya estaba antes de subir la escala tipografica -- medido revirtiendo el CSS
+   -- y la tabla no lo causa: esa scrollea dentro de `.responses-scroll`. */
 .admin-actions {
-    @apply flex gap-3;
+    @apply flex flex-wrap gap-3;
 }
 
 .admin-action-icon {
@@ -57,20 +61,29 @@
 }
 
 .admin-freshness {
-    @apply text-xs text-(--color-wedding-muted);
+    @apply text-sm text-(--color-wedding-muted);
 }
 
 .admin-security-note {
-    @apply max-w-xs text-xs leading-relaxed text-(--color-wedding-muted) md:text-right;
+    @apply max-w-full sm:max-w-sm text-sm leading-relaxed text-(--color-wedding-muted) md:text-right;
 }
 
 .admin-session-error {
-    @apply max-w-xs text-xs leading-relaxed md:text-right;
+    @apply max-w-full sm:max-w-sm text-sm leading-relaxed md:text-right;
     color: var(--color-wedding-danger);
 }
 
+/* EL CONJUNTO CENTRADO, NO SOLO EL TEXTO
+ *
+ * Este boton usaba `.btn--iconic`, que es un grid de `1fr auto 1fr` con el icono en la primera
+ * columna y un `::after` vacio en la tercera. Centra el TEXTO, pero la tercera columna mide 0, asi
+ * que el icono cuelga fuera del bloque optico y el conjunto quedaba 13 px a la izquierda del centro
+ * del boton, medido a 1440 px.
+ *
+ * `.btn--iconic` se queda como esta porque la usa tambien el selector de mapas de la landing, donde
+ * ese centrado del texto es el que se quiso. Aqui basta un flex que centre los dos hijos juntos. */
 .admin-btn-refresh {
-    @apply text-xs;
+    @apply inline-flex items-center justify-center gap-2 text-sm;
 }
 
 .admin-btn-refresh .admin-action-icon {
@@ -78,7 +91,7 @@
 }
 
 .admin-btn-logout {
-    @apply text-xs;
+    @apply text-sm;
     color: var(--color-wedding-danger);
 }
 
@@ -87,5 +100,22 @@
 }
 
 .admin-data-notice {
-    @apply text-sm opacity-80 border-l-2 border-(--color-wedding-accent) pl-3 my-4;
+    @apply text-base opacity-80 border-l-2 border-(--color-wedding-action) pl-3 my-4;
+}
+
+/* El aviso vivia en la cabecera sin ninguna regla propia, asi que la confirmacion de un borrado
+   aparecia a y=188 mientras el usuario estaba a scrollY=1122: anunciada al lector de pantalla e
+   invisible para quien mira. Fijo al borde inferior, donde esta el pulgar. */
+.admin-action-message {
+    @apply fixed left-1/2 z-40 -translate-x-1/2 rounded-full px-5 py-3 text-sm font-semibold shadow-lg;
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    background: var(--color-wedding-action);
+    color: var(--color-wedding-on-action);
+    max-width: calc(100vw - 2rem);
+}
+
+/* La barra de cierre baja al final: es el control que la pareja toca una vez, y arriba se comia
+   nueve de las diecinueve paradas de tabulacion que habia antes de llegar a los datos. */
+.admin-closure-tail {
+    @apply mt-10;
 }

@@ -1,19 +1,13 @@
 export type ThemeDefinition = {
     colors: {
         background: string
-        backgroundRgb: string
         primary: string
-        primaryRgb: string
         action: string
         onAction: string
         text: string
-        textRgb: string
         surface: string
-        surfaceRgb: string
         border: string
-        borderRgb: string
         muted: string
-        mutedRgb: string
         controlBorder: string
         success: string
         successSurface: string

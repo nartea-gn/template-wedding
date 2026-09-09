@@ -24,7 +24,7 @@ for (const viewport of viewports) {
         await page.goto('./rsvp')
 
         await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
-        await expect(page.getByLabel('Nombre y apellidos *')).toBeVisible()
+        await expect(page.getByLabel('Nombre y apellidos')).toBeVisible()
         expect(await hasHorizontalOverflow(page)).toBe(false)
     })
 }
@@ -38,7 +38,7 @@ for (const locale of Object.keys(longContentByLocale) as LongContentLocale[]) {
         await injectLongLandingContent(page, locale)
 
         await expect(page.locator('.landing-title')).toContainText(longContentByLocale[locale].title)
-        await expect(page.locator('.landing-cta-btn')).toContainText(longContentByLocale[locale].cta)
+        await expect(page.locator('.landing-cta-btn').first()).toContainText(longContentByLocale[locale].cta)
         expect(await hasHorizontalOverflow(page)).toBe(false)
 
         await page.goto('./rsvp')
@@ -58,15 +58,15 @@ test('Landing y RSVP conservan reflow y acciones utilizables con zoom al 200 %',
     await applyTwoHundredPercentZoom(page)
 
     await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
-    await expect(page.getByRole('link', {name: 'Confirmar asistencia'})).toBeVisible()
+    await expect(page.getByRole('link', {name: 'Confirmar asistencia'}).first()).toBeVisible()
     expect(await hasHorizontalOverflow(page)).toBe(false)
 
     await page.goto('./rsvp')
     await applyTwoHundredPercentZoom(page)
 
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
-    await expect(page.getByLabel('Nombre y apellidos *')).toBeVisible()
-    await expect(page.getByRole('button', {name: 'Confirmar todo'})).toBeVisible()
+    await expect(page.getByLabel('Nombre y apellidos')).toBeVisible()
+    await expect(page.getByRole('button', {name: 'Siguiente'})).toBeVisible()
     expect(await hasHorizontalOverflow(page)).toBe(false)
 })
 
@@ -112,7 +112,10 @@ async function injectLongLandingContent(page: Page, locale: LongContentLocale) {
     await page.locator('.landing-venue-address').evaluateAll((elements, value) => {
         for (const element of elements) element.textContent = value
     }, content.address)
-    await page.locator('.landing-cta-btn').evaluate((element, value) => element.textContent = value, content.cta)
+    // Las dos instancias, para que el texto largo se mida en ambas.
+    await page.locator('.landing-cta-btn').evaluateAll((elements, value) => {
+        for (const element of elements) element.textContent = value
+    }, content.cta)
 }
 
 async function injectLongRsvpContent(page: Page, locale: LongContentLocale) {

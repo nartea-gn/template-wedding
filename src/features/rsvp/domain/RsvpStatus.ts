@@ -7,6 +7,14 @@
 export type RsvpStatus = {
     isOpen: boolean
     deadlineUtc: string | null
+    /**
+     * The persisted manual switch, or `null` when the deadline decides.
+     *
+     * Carried separately from {@link RsvpStatus.isOpen} because two consumers need the cause and
+     * not only the effect: the admin panel renders the switch in the position the couple left it,
+     * and the local deadline timer must not close a form the couple deliberately reopened.
+     */
+    override: 'open' | 'closed' | null
 }
 
 /**

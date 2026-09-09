@@ -37,6 +37,30 @@ pnpm exec playwright install chromium firefox webkit
 | `pnpm test:e2e:ui`     | Depuración interactiva de Playwright                            |
 | `pnpm test:db`         | pgTAP contra un stack Supabase ya levantado                     |
 | `pnpm run db:verify`   | **Recomendado en local.** Aplica todas las migraciones a un Postgres desechable en Docker, corre las suites pgTAP y regenera `supabase/schema.sql` |
+
+### Lo que ninguna de estas suites puede atrapar
+
+`db:verify` y `supabase db reset` parten los dos de una **base vacía** y aplican el directorio en orden de nombre,
+donde una migración fuera de orden es perfectamente válida. Solo un remoto con historial la rechaza, y eso es
+exactamente lo que tumbó un despliegue: `supabase db push` encontró un fichero ordenado antes de la cabeza remota,
+respondió *«Found local migration files to be inserted before the last migration on remote database»* y **no aplicó
+nada**, tumbando todos los pasos siguientes.
+
+La regla se expresa por tanto contra la versión que producción ya registraba, en `src/test/migrationOrder.test.ts`:
+nombres con el formato convenido, versiones estrictamente crecientes y ninguna anterior a `20260712`, con `20260000`
+documentada como la excepción que obliga a `--include-all`. Es una prueba unitaria porque no hay forma local de
+simular el historial remoto.
+
+### Datos de desarrollo
+
+`supabase/seed.sql` lo aplica el CLI tras las migraciones en `db reset` y en el primer `start`; ningún camino de
+despliegue lo lee. Siembra la invitación, un administrador con contraseña (`admin@ejemplo.local` / `Revision2026!`) y
+60 respuestas ficticias, dos borradas en suave. Sin él, un stack recién reseteado no permite ejercitar el producto: el
+RSVP rechaza todo con `RSVPU` y el panel se queda en su formulario de acceso.
+
+Es un no-op si el slug ya tiene respuestas, y **no** por `ON CONFLICT` —que aquí nunca dispara, porque
+`rsvp_responses_20_redirect_duplicate` devuelve `NULL` antes y convertiría una segunda pasada en 58 correcciones de
+invitado— sino por una guarda explícita.
 | `pnpm run db:verify:down` | Limpia el harness si una ejecución quedó a medias                 |
 | `pnpm check:functions` | `deno check` sobre las Edge Functions, el único código que no pasa por `tsc -b`. Exige Deno en el host |
 | `pnpm run check:functions:docker` | **Recomendado en local.** Lo mismo dentro de un contenedor, sin instalar Deno |

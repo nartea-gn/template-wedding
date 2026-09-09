@@ -14,6 +14,7 @@ import {
     type AdminFilter,
     getPresentedResponses,
     isAttending,
+    isLive,
     needsTransport,
 } from '../features/admin/presentation/getPresentedResponses';
 import {weddingInvitation} from '../invitations/wedding';
@@ -26,6 +27,24 @@ type Options = {
     paginationEnabled: boolean;
     pageSize: number;
 };
+
+/**
+ * El mensaje que se le puede mostrar a la pareja, o `null` si no hay ninguno legible.
+ *
+ * `cause instanceof Error` no basta: los errores de PostgREST llegan como objetos planos con
+ * `message`, no como instancias de `Error`, asi que caian en `String(cause)` y el panel pintaba
+ * `[object Object]` en el hueco donde deberia ir la explicacion. Devolver `null` cuando no hay
+ * nada que decir deja hablar al texto propio del panel, que para eso esta.
+ */
+function readErrorMessage(cause: unknown): string | null {
+    if (cause instanceof Error) return cause.message
+    if (typeof cause === 'string') return cause
+    if (typeof cause === 'object' && cause !== null && 'message' in cause) {
+        const {message} = cause as {message: unknown}
+        if (typeof message === 'string' && message.trim() !== '') return message
+    }
+    return null
+}
 
 export function useAdminData(isAuthenticated: boolean, options: Options) {
     const [responses, setResponses] = useState<RsvpSubmissionRecord[]>([]);
@@ -57,7 +76,7 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         } catch (cause) {
             devError('Failed to load RSVP responses', cause);
             setHasError(true);
-            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+            setErrorMessage(readErrorMessage(cause));
         } finally {
             setLoading(false);
         }
@@ -98,6 +117,19 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         metrics,
         locale: options.locale,
     }), [filter, identityFieldId, metrics, options.locale, query, responses, sortOrder]);
+    /**
+     * The three headline counts, in one pass.
+     *
+     * They used to be computed in the returned object, outside any memo, so every keystroke in
+     * the search box re-scanned the whole dataset three times on top of the memoized present
+     * pass. Invisible at fifty responses and measurable at a few thousand.
+     */
+    const counts = useMemo(() => responses.filter(isLive).reduce((totals, response) => ({
+        total: totals.total + 1,
+        attending: totals.attending + (isAttending(response, metrics) ? 1 : 0),
+        declined: totals.declined + (isAttending(response, metrics) ? 0 : 1),
+        transport: totals.transport + (needsTransport(response, metrics) ? 1 : 0),
+    }), {total: 0, attending: 0, declined: 0, transport: 0}), [responses, metrics]);
     const effectivePageSize = options.paginationEnabled ? pageSize : Math.max(1, presentedResponses.length);
     const totalPages = Math.max(1, Math.ceil(presentedResponses.length / effectivePageSize));
     const currentPage = Math.min(page, totalPages);
@@ -134,7 +166,7 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         } catch (cause) {
             devError('Failed to update RSVP response', cause);
             setHasError(true);
-            setErrorMessage(cause instanceof Error ? cause.message : String(cause));
+            setErrorMessage(readErrorMessage(cause));
             return false
         } finally {
             setLoading(false);
@@ -185,10 +217,10 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         setQuery,
         sortOrder,
         setSortOrder,
-        totalResponses: responses.length,
-        attendingResponses: responses.filter(response => isAttending(response, metrics)).length,
-        declinedResponses: responses.filter(response => !isAttending(response, metrics)).length,
-        transportResponses: responses.filter(response => needsTransport(response, metrics)).length,
+        totalResponses: counts.total,
+        attendingResponses: counts.attending,
+        declinedResponses: counts.declined,
+        transportResponses: counts.transport,
         resultCount: presentedResponses.length,
         presentedResponses,
         paginatedResponses,

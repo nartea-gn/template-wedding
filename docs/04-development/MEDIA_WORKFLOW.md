@@ -287,3 +287,26 @@ Revisa siempre que las rutas apuntan exactamente a estas carpetas temporales ant
 - [ ] El MP4 no se solicita antes de la interacción.
 - [ ] `pnpm lint` y `pnpm build` pasan.
 
+## Ningún asset lleva texto de datos
+
+Fechas, nombres, direcciones, horas: nada de eso se quema en un asset. Va en el catálogo de
+idiomas o en el contrato de la invitación, y se pinta en DOM encima del medio si hace falta verlo
+sobre él.
+
+No es una preferencia estética. Un dato en un bitmap **no se puede traducir**, no se puede corregir
+sin un editor gráfico, y —lo que de verdad importa— **ninguna validación puede leerlo**. El póster
+del vídeo llegó a imprimir «Wedding Day 26.06.2027» contra el `2027-06-12` de `event.date`, y no
+existe forma de que el código detecte esa contradicción: la regla de validación que ata `address`
+con `mapsQuery` funciona porque los dos son texto.
+
+La sección de vídeo tiene ya el mecanismo: `content.dateOverlay` pinta `event.date` sobre el
+póster, formateada con el mismo `formatDate` que el hero, traducible y accesible. Está **apagada**
+mientras el póster que se envía siga llevando su propia fecha, porque dos fechas distintas a la vez
+son peores que una sola equivocada. Al regenerar el póster sin texto:
+
+1. sustituye `src/assets/video-poster.webp`;
+2. pon `dateOverlay: true` en la sección `video` de `invitation.ts`;
+3. comprueba las tres locales, porque el mes se traduce y la caja crece en búlgaro.
+
+Es una regla del proceso y no una comprobación automática **porque no puede serla**. Eso es
+justamente el motivo de escribirla aquí.

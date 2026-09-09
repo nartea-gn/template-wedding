@@ -57,6 +57,11 @@ jobs:
       - name: Content-Security-Policy tests
         run: pnpm run test:e2e:csp
 
+      - name: Cross-browser end-to-end tests
+        # The matrix existed but nothing ran it, so `app.spec.ts` asserted a Safari preference in
+        # `webkit` and `mobile-webkit` for as long as it took somebody to run it by hand.
+        run: pnpm exec playwright install --with-deps firefox webkit && pnpm run test:e2e:matrix:compat
+
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

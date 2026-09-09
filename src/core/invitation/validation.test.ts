@@ -62,6 +62,30 @@ describe('validateInvitationDefinition', () => {
         )
     })
 
+    // The state the ceremony card was in: two independent strings for one place, free to drift,
+    // with nothing able to compare them semantically.
+    it('rejects a venue item that declares both a displayed address and a map query', () => {
+        const definition = {
+            ...weddingInvitation,
+            sections: weddingInvitation.sections.map(section => section.type === 'venue'
+                ? {
+                    ...section,
+                    content: {
+                        ...section.content,
+                        items: section.content.items.map((item, index) => index === 0
+                            ? {...item, address: 'venue.label' as const}
+                            : item),
+                    },
+                }
+                : section) as unknown as typeof weddingInvitation.sections,
+        }
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Venue section venue items must declare either address or mapsQuery, not both: '
+            + 'the displayed text and the map destination would be free to disagree',
+        )
+    })
+
     it('rejects duplicate section identifiers', () => {
         const firstSection = weddingInvitation.sections[0]
         const definition = {...weddingInvitation, sections: [firstSection, firstSection]}
@@ -125,8 +149,11 @@ describe('validateInvitationDefinition', () => {
             sections: [{...cta, content: {...cta.content, closedLabel: ''}}],
         }
 
+        // El id sale de la seccion encontrada y no de un literal: `rsvp-cta` se puede declarar
+        // mas de una vez, asi que atar la asercion a un id concreto la convertiria en una
+        // asercion sobre el orden de declaracion.
         expect(validateInvitationDefinition(definition)).toContain(
-            'RSVP CTA section rsvp-cta requires open and closed labels',
+            `RSVP CTA section ${cta.id} requires open and closed labels`,
         )
     })
 

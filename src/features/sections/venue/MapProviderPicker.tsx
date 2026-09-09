@@ -164,7 +164,7 @@ export function MapProviderPicker({
             <button
                 ref={triggerRef}
                 type="button"
-                className="landing-venue-map-trigger btn btn--outline"
+                className="landing-venue-map-trigger btn btn--primary btn--iconic"
                 aria-expanded={isOpen}
                 aria-haspopup="dialog"
                 aria-controls={pickerId}

@@ -152,7 +152,9 @@ Tipos actuales:
 - `venue`;
 - `lodging`;
 - `gifts`;
-- `rsvp-cta`.
+- `rsvp-cta`. Se puede declarar **más de una vez**: la invitación la lleva tras la sección de lugar y otra vez al
+  cierre, porque una única llamada al final quedaba a 3,7 pantallas de scroll en móvil. Los ids han de ser distintos y
+  solo la instancia con `closing: true` muestra el hashtag.
 
 Desactivar una sección no requiere tocar Landing:
 
@@ -217,14 +219,21 @@ Cada venue puede incluir `time`, clave localizada de dirección y una consulta e
         time
 :
     '12:00',
-        address
-:
-    'venue.ceremony.address',
         mapsQuery
 :
-    'Dirección postal completa',
+    'C. del Nuncio, 14, Centro, 28005 Madrid',
 }
 ```
+
+**`address` y `mapsQuery` son mutuamente excluyentes, y la validación rechaza un item que declare los dos.** Eran dos
+cadenas independientes para un mismo sitio, libres de separarse sin que nada lo detectara: la tarjeta de la ceremonia
+llegó a mostrar «Calle Mayor, 1, Madrid» mientras «Cómo llegar» abría «C. del Nuncio, 14», y ninguna comprobación puede
+compararlas por significado.
+
+Usa `mapsQuery` para un lugar con dirección navegable: es precisa y **no depende del idioma**, que es lo que debe ser el
+nombre de una calle —el catálogo búlgaro transliteraba la calle como «Кале Майор 1, Мадрид», que se lee bien y no
+navega a ninguna parte—. La tarjeta muestra esa misma cadena. Reserva `address` para un sitio sin dirección navegable
+(«en casa de los abuelos»), que es también el caso en el que no debe aparecer botón de mapa.
 
 `mapProviders` decide si se ofrecen mapa del dispositivo, Google Maps y Apple Maps. Comprueba siempre Android Chrome,
 iOS Safari y escritorio; no presupongas que una app nativa está instalada.
@@ -238,6 +247,11 @@ Elementos v1: `text`, `email`, `number`, `date`, `textarea`, `radio`, `select`, 
 
 Cada clave visible debe existir en todos los catálogos. Utiliza `visibleWhen` solo para comparar una respuesta anterior
 con un valor primitivo y `completesForm` para opciones que terminan el flujo.
+
+`completesForm` sigue en el contrato, pero **la invitación de ejemplo ya no lo usa**: «No podré asistir» lo llevaba y
+enviaba desde el primer paso, y desde el 2026-09-07 el paso de dedicatoria no está condicionado a `attending`, así que
+quien no puede ir también pasa por él —sigue teniendo algo que decir—. Úsalo si tu formulario tiene una respuesta que
+de verdad cierra el flujo sin nada más que preguntar.
 
 Al modificar campos:
 

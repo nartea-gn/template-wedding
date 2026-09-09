@@ -13,7 +13,7 @@ const repository = vi.hoisted(() => ({
     updateSchedule: vi.fn(),
 }))
 
-vi.mock('../invitations/wedding/rsvpRepository', () => ({weddingRsvpRepository: repository}))
+vi.mock('../lib/rsvpStatusApi', () => ({fetchRsvpStatus: repository.getStatus}))
 
 const localization: LocalizationContextValue = {
     locale: 'es',
@@ -35,7 +35,7 @@ describe('AppRouter', () => {
     it('renders the closed page for a bookmarked RSVP link instead of route not found', async () => {
         // The whole point of registering the route unconditionally: a guest who saved the link
         // after the deadline used to fall through to the wildcard and read "route not found".
-        repository.getStatus.mockResolvedValue({isOpen: false, deadlineUtc: '2027-05-12T21:59:59Z'})
+        repository.getStatus.mockResolvedValue({isOpen: false, deadlineUtc: '2027-05-12T21:59:59Z', override: 'closed'})
 
         render(
             <LocalizationContext.Provider value={localization}>
@@ -43,12 +43,21 @@ describe('AppRouter', () => {
             </LocalizationContext.Provider>,
         )
 
-        await waitFor(() => expect(screen.getByText('rsvp.closed.title')).toBeInTheDocument())
+        // 5s, not the default 1s: this waits on the lazy `/rsvp` chunk being imported, and a
+        // dynamic import under machine load is the one thing here that legitimately takes longer
+        // than a second. At 1s it was the only load-sensitive test in the suite.
+        await waitFor(() => expect(screen.getByText('rsvp.closed.title')).toBeInTheDocument(), {timeout: 5000})
         expect(screen.queryByText('route.notFound')).not.toBeInTheDocument()
+        expect(screen.getByText('rsvp.closed.deadline')).toBeInTheDocument()
+
+        // Y qué fecha pasó, no solo que pasó alguna: el plazo gobernaba el cierre sin aparecer en
+        // ninguna superficie. Aquí solo se comprueba que la línea está: el `t` de este mock
+        // devuelve la clave, no la plantilla, así que no hay `{date}` que sustituir. La
+        // sustitución se midió en navegador, en español y en inglés.
     })
 
     it('renders the form while the RSVP is open', async () => {
-        repository.getStatus.mockResolvedValue({isOpen: true, deadlineUtc: '2099-01-01T00:00:00Z'})
+        repository.getStatus.mockResolvedValue({isOpen: true, deadlineUtc: '2099-01-01T00:00:00Z', override: null})
 
         render(
             <LocalizationContext.Provider value={localization}>
@@ -56,6 +65,9 @@ describe('AppRouter', () => {
             </LocalizationContext.Provider>,
         )
 
-        await waitFor(() => expect(screen.getByLabelText('rsvp.fullName.label')).toBeInTheDocument())
+        await waitFor(
+            () => expect(screen.getByRole('textbox', {name: 'rsvp.fullName.label'})).toBeInTheDocument(),
+            {timeout: 5000},
+        )
     })
 })

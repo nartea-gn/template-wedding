@@ -6,12 +6,14 @@
 -- PostgreSQL database dump
 --
 
+
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -73,11 +75,11 @@ $$;
 -- Name: get_rsvp_status(text); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.get_rsvp_status(p_wedding_slug text) RETURNS TABLE(is_open boolean, deadline_utc timestamp with time zone)
+CREATE FUNCTION public.get_rsvp_status(p_wedding_slug text) RETURNS TABLE(is_open boolean, deadline_utc timestamp with time zone, override text)
     LANGUAGE sql STABLE SECURITY DEFINER
     SET search_path TO 'public'
     AS $$
-    SELECT public.is_rsvp_open(inv.wedding_slug), inv.rsvp_deadline_utc
+    SELECT public.is_rsvp_open(inv.wedding_slug), inv.rsvp_deadline_utc, inv.rsvp_override
     FROM public.invitations AS inv
     WHERE inv.wedding_slug = p_wedding_slug;
 $$;
@@ -148,16 +150,19 @@ CREATE FUNCTION public.record_rsvp_response_audit() RETURNS trigger
     SET search_path TO 'public', 'pg_temp'
     AS $$
 DECLARE
+    actor     UUID := auth.uid();
     performed TEXT;
 BEGIN
     performed := CASE
         WHEN OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL THEN 'deleted'
         WHEN OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL THEN 'restored'
+        WHEN COALESCE(current_setting('app.rsvp_guest_correction', true), 'off') = 'on'
+            THEN 'corrected'
         ELSE 'updated'
     END;
 
     INSERT INTO public.admin_audit (response_id, entity, wedding_slug, action, actor_id)
-    VALUES (NEW.id, 'rsvp_response', NEW.wedding_slug, performed, auth.uid());
+    VALUES (NEW.id, 'rsvp_response', NEW.wedding_slug, performed, actor);
 
     RETURN NEW;
 END;
@@ -185,6 +190,8 @@ BEGIN
         RETURN NEW;
     END IF;
 
+    PERFORM set_config('app.rsvp_guest_correction', 'on', true);
+
     UPDATE public.rsvp_responses
     SET answers      = NEW.answers,
         form_id      = NEW.form_id,
@@ -192,8 +199,62 @@ BEGIN
         locale       = NEW.locale
     WHERE id = existing_id;
 
+    PERFORM set_config('app.rsvp_guest_correction', 'off', true);
+
     RETURN NULL;
 END;
+$$;
+
+
+--
+-- Name: require_rsvp_open(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.require_rsvp_open() RETURNS trigger
+    LANGUAGE plpgsql
+    SET search_path TO 'public', 'pg_temp'
+    AS $$
+DECLARE
+    open_state BOOLEAN;
+    found      BOOLEAN;
+BEGIN
+    IF current_user NOT IN ('anon', 'authenticated') THEN
+        RETURN NEW;
+    END IF;
+
+    SELECT state.registered, state.is_open
+    INTO found, open_state
+    FROM public.rsvp_invitation_state(NEW.wedding_slug) AS state;
+
+    IF NOT COALESCE(found, false) THEN
+        RAISE EXCEPTION 'No invitation is registered for wedding_slug %', NEW.wedding_slug
+            USING ERRCODE = 'RSVPU',
+                  HINT = 'Run scripts/sync-invitation.ts against this project.';
+    END IF;
+
+    -- NULL cannot happen once the row is known to exist -- `is_rsvp_open` is total over an
+    -- existing row -- but treating it as closed keeps the fail-closed default if that changes.
+    IF NOT COALESCE(open_state, false) THEN
+        RAISE EXCEPTION 'The RSVP for % is closed', NEW.wedding_slug
+            USING ERRCODE = 'RSVPC';
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: rsvp_invitation_state(text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.rsvp_invitation_state(p_wedding_slug text) RETURNS TABLE(registered boolean, is_open boolean)
+    LANGUAGE sql STABLE SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+    SELECT true, public.is_rsvp_open(inv.wedding_slug)
+    FROM public.invitations AS inv
+    WHERE inv.wedding_slug = p_wedding_slug;
 $$;
 
 
@@ -284,7 +345,7 @@ CREATE TABLE public.admin_audit (
     action text NOT NULL,
     actor_id uuid,
     occurred_at timestamp with time zone DEFAULT now() NOT NULL,
-    CONSTRAINT admin_audit_action_check CHECK ((action = ANY (ARRAY['updated'::text, 'deleted'::text, 'restored'::text, 'schedule_changed'::text]))),
+    CONSTRAINT admin_audit_action_check CHECK ((action = ANY (ARRAY['updated'::text, 'deleted'::text, 'restored'::text, 'schedule_changed'::text, 'corrected'::text]))),
     CONSTRAINT admin_audit_entity_check CHECK ((entity = ANY (ARRAY['rsvp_response'::text, 'invitation'::text]))),
     CONSTRAINT admin_audit_response_required CHECK (((entity = 'rsvp_response'::text) = (response_id IS NOT NULL)))
 );
@@ -481,6 +542,13 @@ CREATE TRIGGER record_schedule_audit AFTER UPDATE ON public.invitations FOR EACH
 
 
 --
+-- Name: rsvp_responses rsvp_responses_05_require_open; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER rsvp_responses_05_require_open BEFORE INSERT ON public.rsvp_responses FOR EACH ROW EXECUTE FUNCTION public.require_rsvp_open();
+
+
+--
 -- Name: rsvp_responses rsvp_responses_10_sync_legacy_columns; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -624,6 +692,7 @@ CREATE POLICY rsvp_responses_update_admin ON public.rsvp_responses FOR UPDATE TO
 --
 
 
+
 -- Privileges
 GRANT USAGE ON SCHEMA public TO postgres;
 GRANT USAGE ON SCHEMA public TO anon;
@@ -650,6 +719,12 @@ REVOKE ALL ON FUNCTION public.record_rsvp_response_audit() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.record_rsvp_response_audit() TO service_role;
 REVOKE ALL ON FUNCTION public.redirect_duplicate_rsvp() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.redirect_duplicate_rsvp() TO service_role;
+REVOKE ALL ON FUNCTION public.require_rsvp_open() FROM PUBLIC;
+GRANT ALL ON FUNCTION public.require_rsvp_open() TO service_role;
+REVOKE ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) FROM PUBLIC;
+GRANT ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) TO anon;
+GRANT ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) TO authenticated;
+GRANT ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) TO service_role;
 GRANT ALL ON FUNCTION public.set_updated_at() TO anon;
 GRANT ALL ON FUNCTION public.set_updated_at() TO authenticated;
 GRANT ALL ON FUNCTION public.set_updated_at() TO service_role;
