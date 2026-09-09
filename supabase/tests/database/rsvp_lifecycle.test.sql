@@ -176,10 +176,14 @@ SELECT ok(
 
 SELECT public.purge_all_expired_rsvp();
 
+-- Scoped to the weddings this file creates. The role is `postgres` from here on, so an unscoped
+-- count also sees `seed.sql`: `supabase start` applies the seed in CI exactly as it does locally,
+-- and its 60 responses belong to a wedding in 2027 that the purge correctly spares.
 SELECT results_eq(
-    'SELECT count(*) FROM public.rsvp_responses',
-    ARRAY[2::bigint],
-    'The purge spares weddings that have not happened yet'
+      $$SELECT count(*) FROM public.rsvp_responses
+      WHERE wedding_slug IN ('test-invitation-a', 'test-invitation-b')$$,
+      ARRAY[2::bigint],
+      'The purge spares weddings that have not happened yet'
 );
 
 UPDATE public.invitations SET event_date_utc = now() - interval '8 days' WHERE wedding_slug = 'test-invitation-a';

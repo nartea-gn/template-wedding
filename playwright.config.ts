@@ -23,6 +23,12 @@ export default defineConfig({
     reporter: process.env.CI ? [['github'], ['html', {open: 'never'}]] : 'list',
     use: {
         baseURL: 'http://127.0.0.1:4173/',
+        // Pinned because `admin.spec.ts` asserts the wall clock an administrator in Spain reads in
+        // the `datetime-local` deadline: the stored instant is UTC and the control renders it in
+        // local time, so an unpinned runner turns 23:59 into 21:59 on CI and passes only in
+        // Europe/Madrid. The `devices` descriptors set no `timezoneId`, so every project inherits
+        // this one.
+        timezoneId: 'Europe/Madrid',
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
