@@ -219,7 +219,8 @@ export const bgMessages = {
     'gifts.account.bizum': 'Bizum',
     'gifts.account.copy': 'Копирай',
     'gifts.account.copied': 'Копирано',
-    'gifts.warning': 'Никога няма да поискаме промяна на номера чрез лично съобщение. Ако получите такова, не е от нас.',
+    'gifts.warning': 'Никога няма да поискаме промяна на номера чрез лично съобщение.\nАко получите такова, не е от' +
+        ' нас.',
     'common.yes': 'Да',
     'common.no': 'Не',
     'route.notFound': 'Страницата не е намерена',
