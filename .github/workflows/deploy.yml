@@ -12,15 +12,15 @@ permissions:
 # mid-sequence leaves the database migrated with none of the steps that follow it applied, and
 # nothing reports it. Two pushes in a row to `main` are enough to trigger that.
 concurrency:
-  group: "production"
+  group: "cloudflare-pages"
   cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # Gates the only job that mutates production behind GitHub's environment protection, so the
+    # Gates the only job that mutates cloudflare-pages behind GitHub's environment protection, so the
     # migrations that reach the real project do so with a human having looked at the run.
-    environment: production
+    environment: cloudflare-pages
     timeout-minutes: 20
     outputs:
       page_url: ${{ steps.deployment.outputs.deployment-url }}
