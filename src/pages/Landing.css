@@ -69,8 +69,22 @@
     z-index: 10;
 }
 
-.landing-venue-label {
-    @apply text-xs uppercase tracking-[0.18em] mb-8 text-(--color-wedding-muted);
+/* El medio que faltaba en la escala.
+ *
+ * Los titulos de seccion eran antetitulos de 12 px en gris apagado -- mas pequenos y con menos
+ * contraste que el cuerpo de 15,2 px que presentaban -- mientras el sistema tenia ya el rol
+ * (`.section-title` en index.css) usado solo dentro del formulario RSVP. Esto es ese rol a una
+ * escala contenida: entre el hero y el cuerpo, en el color de accion, sin competir con los
+ * nombres de la pareja. */
+.landing-section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-wedding-action);
+    margin-bottom: 2rem;
 }
 
 .landing-venue-grid {
@@ -83,7 +97,7 @@
 }
 
 .landing-venue-type {
-    @apply text-[0.72rem] uppercase tracking-[0.16em] text-(--color-wedding-muted);
+    @apply text-xs uppercase tracking-[0.16em] text-(--color-wedding-muted);
 }
 
 .landing-venue-name {
@@ -96,7 +110,7 @@
 }
 
 .landing-venue-address {
-    @apply text-[0.95rem] leading-relaxed max-w-xs text-(--color-wedding-muted);
+    @apply text-sm leading-relaxed max-w-xs text-(--color-wedding-muted);
 }
 
 .landing-venue-map-shell {
@@ -196,7 +210,7 @@
 }
 
 .landing-map-picker-badge {
-    @apply rounded-full border border-(--color-wedding-border) px-2 py-0.5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-(--color-wedding-action);
+    @apply rounded-full border border-(--color-wedding-border) px-2 py-0.5 text-xs font-semibold uppercase tracking-[0.12em] text-(--color-wedding-action);
 }
 
 .landing-map-picker-mark {
@@ -336,12 +350,18 @@
 }
 
 .landing-countdown-unit-label {
-    @apply uppercase text-(--color-wedding-muted);
+    /* `text`, no `muted`: medido a 390 px la etiqueta daba 4,12:1 sobre el arte de fondo -- por
+       debajo del 4,5:1 que pide AA para 12 px -- porque el fondo aqui no es uniforme, es la
+       acuarela del tema. Es el unico par por debajo del umbral que quedaba en todo el producto. */
+    @apply uppercase text-(--color-wedding-text);
     grid-row: 2;
     justify-self: center;
     width: max-content;
     margin-top: 0.25rem;
-    font-size: clamp(0.625rem, 2.6vw, 0.75rem);
+    /* Suelo de 0,75rem, como el resto de la escala. A 0,625rem estas etiquetas bajaban a 10 px
+       en movil -- 10,14 px en bulgaro -- y eran el unico valor por debajo del suelo que declara
+       `.landing-section-title` y compania. */
+    font-size: clamp(0.75rem, 2.6vw, 0.75rem);
     line-height: 1.2;
     letter-spacing: clamp(0.04em, 0.7vw, 0.12em);
     text-align: center;
@@ -436,9 +456,6 @@
     animation: landingReveal var(--theme-reveal-duration) ease-out both;
 }
 
-.landing-lodging-label {
-    @apply text-xs uppercase tracking-[0.18em] mb-8 text-(--color-wedding-muted);
-}
 
 .landing-lodging-note {
     @apply text-sm mb-6 max-w-xl mx-auto text-(--color-wedding-muted);
@@ -454,7 +471,7 @@
 }
 
 .landing-lodging-highlight {
-    @apply text-[0.72rem] uppercase tracking-[0.16em] text-(--color-wedding-action);
+    @apply text-xs uppercase tracking-[0.16em] text-(--color-wedding-action);
 }
 
 .landing-lodging-name {
@@ -464,7 +481,7 @@
 
 .landing-lodging-address,
 .landing-lodging-item-note {
-    @apply text-[0.95rem] leading-relaxed max-w-xs text-(--color-wedding-muted);
+    @apply text-sm leading-relaxed max-w-xs text-(--color-wedding-muted);
 }
 
 .landing-lodging-price {
@@ -473,4 +490,8 @@
 
 .landing-lodging-book {
     @apply mt-2;
+}
+
+.landing-cta-deadline {
+    @apply text-sm mt-4 text-(--color-wedding-muted);
 }

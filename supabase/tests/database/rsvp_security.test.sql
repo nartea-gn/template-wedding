@@ -85,12 +85,14 @@ VALUES ('test-invitation-a', 'Invitado Puntual', true, 'wedding-rsvp', 2, 'es',
 
 SELECT pass('An anonymous guest can submit while the RSVP is open');
 
+-- 20260907 gave the two refusals separate codes: a slug nobody registered is a deployment
+-- problem, and telling that guest the deadline passed sent them to a page with no way to retry.
 SELECT throws_ok(
 $$
     INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers)
     VALUES ('unregistered-wedding', 'Desconocido', true, 'wedding-rsvp', 2, 'es',
             '{"fullName": "Desconocido", "attending": true}'::jsonb)
-$$, '42501', NULL, 'An unregistered wedding fails closed rather than open');
+$$, 'RSVPU', NULL, 'An unregistered wedding is refused, and not as a passed deadline');
 
 SET LOCAL ROLE postgres;
 UPDATE public.invitations SET rsvp_override = 'closed' WHERE wedding_slug = 'test-invitation-a';
@@ -101,7 +103,7 @@ $$
     INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers)
     VALUES ('test-invitation-a', 'Invitado Tardio', true, 'wedding-rsvp', 2, 'es',
             '{"fullName": "Invitado Tardio", "attending": true}'::jsonb)
-$$, '42501', NULL, 'The API rejects a submission once the couple closes the RSVP');
+$$, 'RSVPC', NULL, 'The API rejects a submission once the couple closes the RSVP');
 
 -- Admin side: partitioned by membership, in both directions.
 SET LOCAL ROLE authenticated;

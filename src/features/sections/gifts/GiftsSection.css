@@ -7,8 +7,11 @@
     animation: landingReveal var(--theme-reveal-duration) ease-out both;
 }
 
+/* El tamano, el color y el margen los pone `.landing-section-title`, el rol compartido de titulo
+   de seccion. Esta regla los repetia con la misma especificidad, asi que cual ganaba dependia del
+   orden en que se importaran las dos hojas: una bomba de relojeria. */
 .landing-gifts-label {
-    @apply text-xs uppercase tracking-[0.18em] mb-8 text-(--color-wedding-muted);
+    text-align: center;
 }
 
 .landing-gifts-note {

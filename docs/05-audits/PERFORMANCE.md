@@ -7,7 +7,9 @@
 - La invitación configura `preload: 'none'`; el MP4 se solicita bajo interacción.
 - RSVP y Admin se cargan mediante `lazy` y tienen fallback localizado.
 - Supabase queda detrás de routes/capabilities opcionales y Repository Pattern.
-- El favicon se redujo de unos 15 MB a aproximadamente 375 KB.
+- El favicon se redujo de unos 15 MB a aproximadamente 375 KB, y despues a 64x64 (~4 KB):
+  a 512x512 seguia siendo el mayor activo no-video del sitio, pagado en la primera visita
+  sin cache de cada invitado, para un icono de pestana.
 - Las animaciones reducen trabajo con `prefers-reduced-motion`.
 - Los catálogos secundarios se importan dinámicamente.
 

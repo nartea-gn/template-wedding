@@ -53,7 +53,7 @@ export default function Admin() {
             translate: t,
             booleanLabels: {yes: 'common.yes', no: 'common.no'},
         });
-        downloadCsv(csv, weddingInvitation.id);
+        downloadCsv(csv, weddingInvitation.id, new Date(), filter);
     };
 
     if (auth.phase === 'loading') {
@@ -94,7 +94,8 @@ export default function Admin() {
                     <div className="admin-actions">
                         <button onClick={() => refetch()} disabled={loading}
                                 className="btn btn--outline admin-btn-refresh">
-                            <InterfaceIcon name="refresh" className="admin-action-icon"/> {t('admin.refresh')}
+                            <InterfaceIcon name="refresh" className="admin-action-icon"/>
+                            {t('admin.refresh')}
                         </button>
                         <button onClick={() => void auth.signOut()} disabled={auth.submitting}
                                 className="btn btn--ghost admin-btn-logout">
@@ -116,10 +117,6 @@ export default function Admin() {
 
             <p className="admin-data-notice" role="note">{t('admin.dataNotice')}</p>
 
-            {admin.mutations?.rsvpClosure?.enabled && (
-                <RsvpClosureControl status={rsvpStatus} saving={loading} onSave={updateSchedule}/>
-            )}
-
             <StatsCards total={totalResponses} confirmados={attendingResponses} declinados={declinedResponses}
                         necesitanBus={transportResponses}/>
 
@@ -130,12 +127,26 @@ export default function Admin() {
                           onExport={handleExportCsv}/>
 
             <ResponsesTable responses={paginatedResponses} loading={loading} hasError={hasError} errorMessage={errorMessage} form={rsvp.form}
-                            columns={admin.columns} onRetry={() => refetch()}
+                            columns={admin.columns} columnLabels={admin.columnLabels} onRetry={() => refetch()}
                             onUpdate={updateResponse} onDelete={deleteResponse} onRestore={restoreResponse}
-                            rowError={rowError}/>
+                            rowError={rowError}
+                            isFiltered={filter !== 'all' || query.trim() !== ''}
+                            onClearFilters={() => {
+                                setFilter('all')
+                                setQuery('')
+                            }}/>
 
             {controls?.pagination?.enabled && <PaginationControls currentPage={currentPage} totalPages={totalPages}
-                                                                   onPageChange={setPage}/>}
+                                                                   onPageChange={setPage}
+                                                                   scrollTargetId="admin-responses"/>}
+
+            {/* Al final a proposito: es el control que la pareja toca una vez, y arriba se comia
+                nueve de las diecinueve paradas de tabulacion que habia antes de los datos. */}
+            {admin.mutations?.rsvpClosure?.enabled && (
+                <div className="admin-closure-tail">
+                    <RsvpClosureControl status={rsvpStatus} onSave={updateSchedule}/>
+                </div>
+            )}
         </div>
     </div>;
 }

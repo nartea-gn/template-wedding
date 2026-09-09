@@ -8,37 +8,72 @@ const MAX_TIMEOUT_MS = 2_147_000_000
 /**
  * Whether the RSVP form should be offered.
  *
- * The value compiled into the invitation drives the first render and keeps the local timer
- * running; once the database answers through {@link RsvpStatusProvider}, its verdict wins — that
- * is what lets the couple open or close the form from their panel without a redeploy.
+ * Three inputs decide it, in this order:
+ *
+ * 1. a manual `'open'` override, which the couple set deliberately and which no clock may undo;
+ * 2. the deadline, watched by a local timer so a tab left open closes the form at the instant it
+ *    expires rather than at the next reload;
+ * 3. the verdict from {@link RsvpStatusProvider}, falling back to the deadline compiled into the
+ *    invitation while the database has not answered.
+ *
+ * The timer used to be dead code. It set a `false` that the return statement then discarded
+ * whenever a live status existed -- and `RsvpStatusProvider` wraps the whole application, so in
+ * production a live status almost always exists. Only the tests, which render the hook with no
+ * provider, ever took the branch that observed it.
  */
 export function useRsvpAvailability<Message extends string>(
     capability: InvitationCapabilities<Message>['rsvp'],
 ): boolean {
-    const [isOpen, setIsOpen] = useState(() => isRsvpOpen(capability))
     const liveStatus = useRsvpStatus()
     const enabled = capability?.enabled === true
+    const forcedOpen = liveStatus?.override === 'open'
     const deadline = liveStatus?.deadlineUtc ?? capability?.deadline
+    const deadlineTimestamp = deadline ? parseInstant(deadline) : null
+    // Which deadline the timer has seen expire. Keyed by the instant rather than a boolean, so a
+    // later deadline arriving from the panel reopens the form on its own: the stored instant
+    // stops matching the one being watched, and nothing has to reset it.
+    const [elapsed, setElapsed] = useState<number | null>(null)
+    const deadlinePassed = deadlineTimestamp !== null && elapsed === deadlineTimestamp
 
     useEffect(() => {
-        if (!enabled || !deadline) return
-        const deadlineTimestamp = parseInstant(deadline)
-        if (deadlineTimestamp === null || deadlineTimestamp <= Date.now()) return
+        if (!enabled || forcedOpen || deadlineTimestamp === null) return
 
-        let timeoutId: number
-        const schedule = () => {
+        // The first evaluation is deferred by a zero-delay timeout rather than run inline: the
+        // clock belongs in a callback, not in the body of an effect or of a render.
+        let timeoutId = window.setTimeout(function tick() {
             const remaining = deadlineTimestamp - Date.now()
             if (remaining <= 0) {
-                setIsOpen(false)
+                setElapsed(deadlineTimestamp)
                 return
             }
-            timeoutId = window.setTimeout(schedule, Math.min(remaining, MAX_TIMEOUT_MS))
-        }
+            timeoutId = window.setTimeout(tick, Math.min(remaining, MAX_TIMEOUT_MS))
+        }, 0)
 
-        schedule()
         return () => window.clearTimeout(timeoutId)
-    }, [deadline, enabled])
+    }, [deadlineTimestamp, enabled, forcedOpen])
 
     if (!enabled) return false
-    return liveStatus ? liveStatus.isOpen : isOpen
+    if (forcedOpen) return true
+    if (deadlinePassed) return false
+    return liveStatus ? liveStatus.isOpen : isRsvpOpen(capability)
+}
+
+/**
+ * El plazo que de verdad rige, en ISO, o `undefined` si no hay ninguno.
+ *
+ * El mismo que decide {@link useRsvpAvailability}: el de la base cuando ha respondido, y el
+ * compilado en la invitacion mientras no. Existe porque el plazo gobernaba el cierre y no se le
+ * mostraba al invitado en ninguna superficie ni idioma -- ni en la llamada, ni en el formulario,
+ * ni en la pagina de cierre-- y una urgencia sin fecha es la primera causa de confirmaciones
+ * tardias.
+ *
+ * `null` en `override` no importa aqui: incluso con el switch manual, la fecha sigue siendo la
+ * que la pareja quiere comunicar.
+ */
+export function useRsvpDeadline<Message extends string>(
+    capability: InvitationCapabilities<Message>['rsvp'],
+): string | undefined {
+    const liveStatus = useRsvpStatus()
+    if (capability?.enabled !== true) return undefined
+    return liveStatus?.deadlineUtc ?? capability?.deadline
 }

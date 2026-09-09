@@ -6,7 +6,7 @@ import Landing from '../pages/Landing.tsx';
 import {RouteLoading} from '../components/RouteLoading';
 import {resolveRouteCapabilities} from './routeCapabilities';
 import {RsvpStatusProvider} from '../features/rsvp/hooks/RsvpStatusProvider';
-import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
+import {fetchRsvpStatus} from '../lib/rsvpStatusApi';
 import './AppRouter.css';
 
 const Rsvp = lazy(() => import('../pages/Rsvp.tsx'));
@@ -29,10 +29,12 @@ const Admin = lazy(() => import('../pages/Admin.tsx'));
 export default function AppRouter() {
     const {t} = useLocalization<WeddingMessageKey>();
     const routes = resolveRouteCapabilities(weddingInvitation.capabilities);
-    return <RsvpStatusProvider repository={weddingRsvpRepository} invitationId={weddingInvitation.id}>
+    return <RsvpStatusProvider readStatus={fetchRsvpStatus} invitationId={weddingInvitation.id}>
         <BrowserRouter><main id="main-content" tabIndex={-1}><Routes>
             <Route path="/" element={<Landing/>}/>
-            <Route path="/rsvp" element={<Suspense fallback={<RouteLoading/>}><Rsvp/></Suspense>}/>
+            {routes.rsvp && (
+                <Route path="/rsvp" element={<Suspense fallback={<RouteLoading/>}><Rsvp/></Suspense>}/>
+            )}
             {routes.admin && (
                 <Route path="/admin" element={<Suspense fallback={<RouteLoading/>}><Admin/></Suspense>}/>
             )}

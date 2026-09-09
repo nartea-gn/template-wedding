@@ -22,7 +22,14 @@ siga hablando de esa respuesta es una conservación que nadie declaró.
 `rsvp_responses` y lee `auth.uid()` de la petición que provocó el cambio.
 
 **La acción se deriva del estado, no de lo que diga quien llama.** Se calcula desde la transición de `deleted_at`:
-`NULL → valor` es `deleted`, `valor → NULL` es `restored`, y cualquier otro cambio es `updated`. Un borrado blando no
+`NULL → valor` es `deleted`, `valor → NULL` es `restored`, y cualquier otro cambio es `updated`.
+
+> **Nota del 2026-09-07.** Hay una cuarta acción, `corrected`. El trigger `AFTER UPDATE` también se dispara con el
+> UPDATE que `redirect_duplicate_rsvp()` hace cuando un invitado reenvía el formulario, así que una autocorrección de
+> invitado se registraba como `updated` con `actor_id` NULL: indistinguible de la edición de un administrador y en
+> contra de lo que este documento dice más abajo sobre un actor nulo. La vía de corrección se marca a sí misma con un
+> ajuste local de transacción, en vez de inferirse de un `actor_id` ausente que también tienen las purgas y las
+> migraciones. Añadido en `20260907_enforce_rsvp_closure.sql`. Un borrado blando no
 puede registrarse como una edición.
 
 **Los envíos anónimos no se auditan.** Un invitado rellenando el formulario no es una mutación administrativa.

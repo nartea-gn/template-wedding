@@ -17,6 +17,6 @@ export type {
     VenueItemDefinition,
     VenueSection,
     VideoSection,
-} from './types'
-export {validateInvitationDefinition} from './validation'
-export {isRsvpOpen, isValidTimeZone, parseInstant} from './temporal'
+} from './types.ts'
+export {validateInvitationDefinition} from './validation.ts'
+export {isRsvpOpen, isValidTimeZone, parseInstant} from './temporal.ts'

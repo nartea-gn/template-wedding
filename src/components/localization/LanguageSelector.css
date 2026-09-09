@@ -9,7 +9,9 @@
 .language-selector-trigger {
     display: inline-flex;
     min-width: 4.25rem;
-    min-height: 2.5rem;
+    /* 44px. Measured at 68x40, it was the only control a guest can reach without scrolling and
+       it missed the WCAG 2.5.8 minimum by four pixels. */
+    min-height: 2.75rem;
     align-items: center;
     justify-content: center;
     gap: 0.45rem;
@@ -62,6 +64,8 @@
     align-items: center;
     gap: 0.65rem;
     width: 100%;
+    /* Measured at 155x37: three stacked rows, each under the 44px minimum, operated one-handed. */
+    min-height: 2.75rem;
     padding: 0.65rem 0.75rem;
     border: 0;
     border-radius: var(--radius-sm);
@@ -99,5 +103,32 @@
     .language-selector {
         top: 0.75rem;
         right: 0.75rem;
+    }
+
+    /* Hoja inferior, no desplegable.
+     *
+     * Medido: el menu abria en (210, 57) con 168x133 sobre el `h1` en (86, 62) con 218x146, asi
+     * que tapaba los nombres de la pareja -- el pico emocional de la invitacion -- justo al
+     * abrirlo. Un desplegable cubre lo que tiene debajo por definicion y el disparador vive a
+     * `top: 0.75rem`, asi que abrirlo hacia arriba lo saca de la pantalla: la unica salida es
+     * moverlo a donde no tape nada y donde llega el pulgar.
+     *
+     * Solo cambia la posicion: los roles, el teclado, el retorno de foco y el cierre por
+     * pulsacion externa son los mismos, y el e2e que los cubre sigue valiendo. */
+    .language-selector-menu {
+        position: fixed;
+        top: auto;
+        left: 0.75rem;
+        right: 0.75rem;
+        bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+        min-width: 0;
+        padding: 0.5rem;
+        gap: 0.35rem;
+        border-radius: var(--radius-lg);
+    }
+
+    .language-selector-option {
+        min-height: 3.25rem;
+        font-size: 0.95rem;
     }
 }

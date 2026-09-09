@@ -32,9 +32,11 @@ export function AdminToolbar({
                     <option value="confirmed">{t('admin.filter.confirmed')}</option>
                     <option value="declined">{t('admin.filter.declined')}</option>
                     <option value="bus">{t('admin.filter.bus')}</option>
+                    <option value="dietary">{t('admin.filter.dietary')}</option>
+                    <option value="deleted">{t('admin.filter.deleted')}</option>
                 </select>
             </div>
-            {controls?.search?.enabled && <div className="admin-toolbar-field admin-toolbar-field--search">
+            {controls?.search?.enabled && <div className="admin-toolbar-field">
                 <label htmlFor="admin-response-search"
                        className="label admin-toolbar-label">{t('admin.search.label')}</label>
                 <input id="admin-response-search" type="search" value={query}

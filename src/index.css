@@ -5,20 +5,6 @@
     /* Tailwind aliases backed by the active typed theme. */
     --font-serif: var(--font-heading), Georgia, serif;
     --font-sans: var(--font-body), sans-serif;
-
-    --shadow-wedding: var(--shadow-card);
-    --shadow-wedding-lg: var(--shadow-card-lg);
-    --shadow-wedding-sm: var(--shadow-card-sm);
-
-    --radius-wedding: var(--radius-card);
-    --radius-wedding-sm: var(--radius-sm);
-    --radius-wedding-lg: var(--radius-lg);
-    --radius-wedding-xl: var(--radius-xl);
-
-    --animate-fade-in: fadeIn 0.8s ease-out forwards;
-    --animate-fade-up: fadeUp var(--theme-reveal-duration) ease both;
-    --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
-    --animate-shimmer: shimmer 2s linear infinite;
 }
 
 :root {
@@ -120,35 +106,6 @@
     }
 }
 
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(var(--theme-reveal-distance));
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulseSoft {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.7;
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
@@ -156,9 +113,28 @@
 
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
+        /* Without this the reveals kept their staggered delays and snapped into place one after
+           another across ~900ms: eight instant jumps instead of one smooth motion, which is the
+           opposite of what was asked for. */
+        animation-delay: 0s !important;
         animation-iteration-count: 1 !important;
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
+    }
+
+    /* These carry state, not decoration. Frozen by the blanket rule above, the three spinners
+       became still rings that say nothing -- one of them while a 4.35 MiB video downloads -- and
+       the step bar stopped showing that a step had advanced. Reduced motion asks for less
+       movement, not for less information. */
+    .video-loading-spinner,
+    .route-loading-indicator,
+    .admin-auth-loading-indicator {
+        animation-duration: 1.2s !important;
+        animation-iteration-count: infinite !important;
+    }
+
+    .rsvp-progress-bar {
+        transition-duration: 200ms !important;
     }
 }
 
@@ -248,6 +224,12 @@
         background-color: var(--color-wedding-surface);
     }
 
+    /* Un icono no se encoge para caber en el hueco que deja el `padding`. El de cerrar del modal
+       media 0x20: centrado, si, pero invisible. */
+    .btn > svg {
+        flex-shrink: 0;
+    }
+
     .btn--primary {
         background-color: var(--color-wedding-action);
         color: var(--color-wedding-on-action);
@@ -315,8 +297,41 @@
         background-repeat: no-repeat;
     }
 
+    /* Un boton con icono centra el conjunto icono + hueco + texto, asi que el texto queda
+       desplazado hacia la derecha la mitad de ese ancho.
+
+       Rejilla de tres columnas con la primera y la tercera iguales (`1fr`): el icono se alinea al
+       final de la primera, el texto ocupa la del medio y un `::after` vacio reserva la tercera.
+       El texto queda centrado sobre el ancho completo **sea cual sea el tamano del icono**.
+
+       La primera version sacaba el icono del flujo con `position: absolute; left: 1.25rem` y daba
+       por bueno que el `padding` de 2.25rem reservaba sitio de sobra. No lo reservaba para un
+       icono grande: `Admin.css` sube el de "Refrescar" a 1.125rem en escritorio, y 1.25 + 1.125 =
+       2.375rem se comia 2 px de la primera letra. Esta version no depende de esa aritmetica.
+
+       Es un modificador y no una regla sobre `.btn > svg` a proposito: el boton de cerrar del
+       modal lleva solo el icono, sin texto, y ahi debe seguir centrado. */
+    .btn--iconic {
+        display: inline-grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: center;
+    }
+
+    .btn--iconic > svg {
+        justify-self: end;
+    }
+
+    .btn--iconic::after {
+        content: '';
+    }
+
     .input:focus {
-        outline: none;
+        /* `outline: none` left the ring as the only indicator, and the ring composites to 1.38:1
+           against the field -- SC 1.4.11 asks for 3:1. Buttons and radios kept the global 2px
+           outline at 9.96:1, so focus was strong wherever nothing is typed and invisible
+           wherever everything is. The ring stays as a second, softer cue. */
+        outline: 2px solid var(--color-wedding-action);
+        outline-offset: 2px;
         border-color: var(--color-wedding-action);
         box-shadow: var(--shadow-focus) color-mix(in srgb, var(--color-wedding-action) 18%, transparent);
     }
@@ -349,37 +364,6 @@
         font-size: 0.875rem;
         color: var(--color-wedding-muted);
         letter-spacing: 0.05em;
-    }
-}
-
-/* Custom utilities */
-@layer utilities {
-    .animate-delay-100 {
-        animation-delay: 0.1s;
-    }
-
-    .animate-delay-200 {
-        animation-delay: 0.2s;
-    }
-
-    .animate-delay-300 {
-        animation-delay: 0.3s;
-    }
-
-    .animate-delay-400 {
-        animation-delay: 0.4s;
-    }
-
-    .animate-delay-500 {
-        animation-delay: 0.5s;
-    }
-
-    .text-balance {
-        text-wrap: balance;
-    }
-
-    .bg-gradient-wedding {
-        background: linear-gradient(135deg, var(--color-wedding-bg) 0%, var(--color-wedding-surface) 100%);
     }
 }
 

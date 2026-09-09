@@ -10,7 +10,11 @@ test('Landing presenta la invitación y permite llegar al RSVP', async ({page}) 
     await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
     await expect(page.getByText('Falta para el gran día')).toBeVisible()
 
-    await page.getByRole('link', {name: 'Confirmar asistencia'}).click()
+    // La invitacion declara la llamada una sola vez, al cierre. El conteo se afirma a proposito:
+    // el tipo `rsvp-cta` se puede declarar mas veces, y este test es lo que fija que aqui no.
+    const rsvpLink = page.getByRole('link', {name: 'Confirmar asistencia'})
+    await expect(rsvpLink).toHaveCount(1)
+    await rsvpLink.click()
 
     await expect(page).toHaveURL(/\/rsvp$/)
     await expect(page.getByRole('heading', {name: 'Asistencia'})).toBeVisible()
@@ -96,7 +100,15 @@ test('El deadline cierra el CTA y explica el cierre, sin ocultar Admin', async (
     await page.clock.setFixedTime(new Date('2027-05-13T00:00:00+02:00'))
     await page.goto('./')
 
-    await expect(page.getByRole('button', {name: 'Confirmación cerrada'})).toBeDisabled()
+    // Cerrado no es inoperante: el enlace lleva a la pagina que cuenta que el plazo termino, en
+    // lugar de dejar al invitado ante un boton muerto sin explicacion ni salida.
+    const closedCta = page.getByRole('link', {name: 'Confirmación cerrada'}).first()
+    await expect(closedCta).toBeVisible()
+    await closedCta.click()
+    await expect(page).toHaveURL(/\/rsvp$/)
+    await expect(page.getByRole('heading', {name: 'El plazo ha finalizado'})).toBeVisible()
+    await expect(page.getByRole('link', {name: 'Volver al inicio'})).toBeVisible()
+    await page.goto('./')
 
     // Un enlace guardado tiene que llegar a la página de cierre, no al comodín: cerrar no es
     // lo mismo que fallar. La ruta se registra siempre y es Rsvp quien decide qué pinta.
@@ -117,8 +129,13 @@ test('RSVP permite declinar y confirma el guardado', async ({page}) => {
     }))
     await page.goto('./rsvp')
 
-    await page.getByLabel('Nombre y apellidos *').fill('Invitada de Prueba')
+    await page.getByLabel('Nombre y apellidos').fill('Invitada de Prueba')
     await page.getByLabel('No podré asistir').check()
+    // Quien no puede ir tambien pasa por la dedicatoria, que es el unico paso abierto a las dos
+    // respuestas: sigue teniendo algo que decir.
+    await page.getByRole('button', {name: 'Siguiente'}).click()
+    await expect(page.getByRole('heading', {name: 'Dedicatoria'})).toBeVisible()
+    await page.getByLabel('Tu mensaje').fill('Os deseo lo mejor')
     await page.getByRole('button', {name: 'Confirmar todo'}).click()
 
     await expect(page.getByRole('heading', {name: '¡Muchas gracias!'})).toBeVisible()
@@ -133,14 +150,14 @@ test('RSVP completa el recorrido afirmativo multipaso', async ({page}) => {
     }))
     await page.goto('./rsvp')
 
-    await page.getByLabel('Nombre y apellidos *').fill('Pareja de Prueba')
+    await page.getByLabel('Nombre y apellidos').fill('Pareja de Prueba')
     await page.getByLabel('Sí, ¡allí estaré!').check()
     await page.getByRole('button', {name: 'Siguiente'}).click()
     await expect(page.getByRole('heading', {name: 'Banquete y logística'})).toBeVisible()
 
-    // Los datos dietéticos son datos de salud: no se piden hasta que el invitado consiente.
-    await expect(page.getByText('Ninguna, como de todo')).toHaveCount(0)
-    await page.getByLabel('Sí, os lo cuento').check()
+    // Los datos dietéticos son datos de salud y se piden directamente, con el aviso encima: el
+    // consentimiento es el propio acto de rellenarlos.
+    await expect(page.getByText('Es información de salud.', {exact: false})).toBeVisible()
     await page.getByLabel('Ninguna, como de todo').check()
     await page.getByRole('button', {name: 'Siguiente'}).click()
     await expect(page.getByRole('heading', {name: 'Luna de miel y ritmo'})).toBeVisible()
@@ -161,12 +178,17 @@ test('RSVP mantiene los datos y muestra un error recuperable cuando falla la API
     }))
     await page.goto('./rsvp')
 
-    await page.getByLabel('Nombre y apellidos *').fill('Invitado de Prueba')
+    await page.getByLabel('Nombre y apellidos').fill('Invitado de Prueba')
     await page.getByLabel('No podré asistir').check()
+    await page.getByRole('button', {name: 'Siguiente'}).click()
     await page.getByRole('button', {name: 'Confirmar todo'}).click()
 
     await expect(page.getByRole('alert')).toContainText('Hubo un error al guardar tu asistencia')
-    await expect(page.getByLabel('Nombre y apellidos *')).toHaveValue('Invitado de Prueba')
+
+    // El fallo ocurre en la dedicatoria, asi que el nombre no esta en pantalla: se comprueba que
+    // sigue ahi volviendo atras, que es lo que de verdad importa -- que no se pierda nada.
+    await page.getByRole('button', {name: 'Atrás'}).click()
+    await expect(page.getByLabel('Nombre y apellidos')).toHaveValue('Invitado de Prueba')
 })
 
 test('Admin protege la lectura detrás del acceso con credenciales', async ({page}) => {
@@ -189,7 +211,20 @@ test('El enlace de salto lleva el foco al contenido sin descartar la página', a
     await page.goto('./')
 
     const skipLink = page.getByRole('link', {name: 'Saltar al contenido'})
-    await page.keyboard.press('Tab')
+
+    // WebKit sólo mueve el foco a un enlace con Tab cuando Safari tiene activado «Pulsar Tab para
+    // resaltar cada elemento de una página web», y el WebKit de Playwright lo trae desactivado.
+    // Pulsar Tab aquí afirmaba una preferencia del navegador, no la página, así que fallaba en
+    // `webkit` y en `mobile-webkit` -- sin que nadie lo viera, porque la matriz no entra en CI.
+    // Que el enlace sea el primer elemento enfocable se comprueba por estructura; el foco se
+    // coloca a mano y lo que de verdad importa, que activarlo lleve el foco al contenido, se
+    // ejercita igual con el teclado.
+    const firstFocusable = page
+        .locator('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+        .first()
+    await expect(firstFocusable).toHaveAttribute('href', '#main-content')
+
+    await skipLink.focus()
     await expect(skipLink).toBeFocused()
 
     await page.keyboard.press('Enter')

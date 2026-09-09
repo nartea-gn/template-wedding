@@ -18,15 +18,15 @@ function capabilities(rsvp: boolean, admin: boolean): InvitationCapabilities<str
 
 describe('resolveRouteCapabilities', () => {
     it('exposes Admin for the canonical capability pair', () => {
-        expect(resolveRouteCapabilities(capabilities(true, true))).toEqual({admin: true})
+        expect(resolveRouteCapabilities(capabilities(true, true))).toEqual({rsvp: true, admin: true})
     })
 
     it('removes Admin whenever RSVP is disabled', () => {
-        expect(resolveRouteCapabilities(capabilities(false, true))).toEqual({admin: false})
+        expect(resolveRouteCapabilities(capabilities(false, true))).toEqual({rsvp: false, admin: false})
     })
 
     it('keeps Admin hidden when the invitation does not enable it', () => {
-        expect(resolveRouteCapabilities(capabilities(true, false))).toEqual({admin: false})
+        expect(resolveRouteCapabilities(capabilities(true, false))).toEqual({rsvp: true, admin: false})
     })
 
     it('still exposes Admin when the RSVP is closed, so the couple can reopen it', () => {
@@ -34,6 +34,6 @@ describe('resolveRouteCapabilities', () => {
             ...capabilities(true, true),
             rsvp: {enabled: true, deadline: '2020-01-01T00:00:00+01:00', form: weddingRsvpForm},
         }
-        expect(resolveRouteCapabilities(expired)).toEqual({admin: true})
+        expect(resolveRouteCapabilities(expired)).toEqual({rsvp: true, admin: true})
     })
 })

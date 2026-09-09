@@ -33,6 +33,10 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
     const firstFieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
 
     useEffect(() => {
+        // Quien abrio el modal recupera el foco al cerrarlo. Sin esto quedaba en `BODY`, asi que
+        // un usuario de teclado volvia al enlace de salto y tenia que recorrer ~20 paradas para
+        // regresar a la fila que acababa de editar.
+        const opener = document.activeElement as HTMLElement | null
         firstFieldRef.current?.focus()
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') onCancel()
@@ -50,7 +54,16 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
             }
         }
         document.addEventListener('keydown', handleKeyDown)
-        return () => document.removeEventListener('keydown', handleKeyDown)
+        // El fondo no scrollea mientras el modal esta abierto: sin esto, una rueda o un gesto
+        // sobre el backdrop movia la pagina de debajo y al cerrar el modal el usuario aparecia
+        // en otro sitio de una tabla de 58 filas.
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown)
+            document.body.style.overflow = previousOverflow
+            if (opener?.isConnected) opener.focus()
+        }
     }, [onCancel])
 
     const handleSubmit = async (event: FormEvent) => {
@@ -62,17 +75,25 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
     }
 
     const guestName = String(answers.fullName ?? response.answers.fullName ?? '')
+    // Un toque en el fondo cierra solo si no hay nada escrito. Con cambios sin guardar era una
+    // via de perdida de datos a un dedo de distancia, y en un movil el fondo es casi todo lo que
+    // rodea al modal. Escape y el boton de cerrar siguen cerrando: son actos deliberados.
+    const isDirty = JSON.stringify(answers) !== JSON.stringify(response.answers)
 
     return (
-        <div className="modal-backdrop" onClick={onCancel}>
-            <div className="modal" role="dialog" aria-modal="true" aria-label={t('admin.actions.edit')} ref={modalRef} onClick={event => event.stopPropagation()}>
+        <div className="modal-backdrop" onClick={() => { if (!isDirty) onCancel() }}>
+            {/* El nombre del invitado en el titulo y en el nombre accesible: con 58 filas y un
+                movil, "Editar" a secas no dice de quien es el registro que se esta cambiando. */}
+            <div className="modal" role="dialog" aria-modal="true"
+                 aria-label={`${t('admin.actions.edit')} · ${guestName}`} ref={modalRef} onClick={event => event.stopPropagation()}>
                 <div className="modal-header">
-                    <h2 className="modal-title">{t('admin.actions.edit')}</h2>
+                    <h2 className="modal-title">{t('admin.actions.edit')} · {guestName}</h2>
                     <button type="button" className="btn btn--ghost modal-close" onClick={onCancel} aria-label={t('common.close')}>
                         <InterfaceIcon name="close" className="size-5"/>
                     </button>
                 </div>
-                <form onSubmit={handleSubmit} className="modal-body">
+                <form onSubmit={handleSubmit} className="modal-form">
+                    <div className="modal-body">
                     {columns.map(id => {
                         const field = fieldMap.get(id)
                         if (!field) return null
@@ -80,8 +101,10 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
                         if (field.type === 'checkbox-group') {
                             const selected = Array.isArray(value) ? value : []
                             return (
-                                <div key={id} className="form-field">
-                                    <label className="label">{t(field.label)}</label>
+                                <fieldset key={id} className="form-field">
+                                    {/* `fieldset`/`legend` y no un `<label>` sin `for` usado de
+                                        titulo: aquel no nombraba nada y dejaba el grupo anonimo. */}
+                                    <legend className="label">{t(field.label)}</legend>
                                     <div className="checkbox-group">
                                         {field.options.map(option => (
                                             <label key={String(option.value)} className="checkbox-label">
@@ -99,13 +122,13 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
                                             </label>
                                         ))}
                                     </div>
-                                </div>
+                                </fieldset>
                             )
                         }
                         if (field.type === 'radio' || field.type === 'select') {
                             return (
-                                <div key={id} className="form-field">
-                                    <label className="label">{t(field.label)}</label>
+                                <fieldset key={id} className="form-field">
+                                    <legend className="label">{t(field.label)}</legend>
                                     <div className="radio-group">
                                         {field.options.map(option => (
                                             <label key={String(option.value)} className="radio-label">
@@ -119,14 +142,19 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
                                             </label>
                                         ))}
                                     </div>
-                                </div>
+                                </fieldset>
                             )
                         }
+                        // `htmlFor` e `id` emparejados: los cuatro campos de texto se anunciaban
+                        // sin nombre accesible, asi que editar una respuesta eran cuatro campos
+                        // anonimos seguidos.
+                        const fieldId = `edit-${response.id}-${id}`
                         return (
                             <div key={id} className="form-field">
-                                <label className="label">{t(field.label)}</label>
+                                <label className="label" htmlFor={fieldId}>{t(field.label)}</label>
                                 {field.type === 'textarea' ? (
                                     <textarea
+                                        id={fieldId}
                                         ref={id === columns[0] ? (firstFieldRef as RefObject<HTMLTextAreaElement>) : undefined}
                                         className="input"
                                         value={String(value)}
@@ -135,6 +163,7 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
                                     />
                                 ) : (
                                     <input
+                                        id={fieldId}
                                         ref={id === columns[0] ? (firstFieldRef as RefObject<HTMLInputElement>) : undefined}
                                         type={field.type === 'email' ? 'email' : field.type === 'number' ? 'number' : 'text'}
                                         className="input"
@@ -146,10 +175,11 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
                         )
                     })}
                     {failed && (
-                        <p className="modal-error" role="alert">
-                            {t('admin.actions.updateError').replace('{guest}', guestName)}
-                        </p>
-                    )}
+                            <p className="modal-error" role="alert">
+                                {t('admin.actions.updateError').replace('{guest}', guestName)}
+                            </p>
+                        )}
+                    </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn--ghost" onClick={onCancel} disabled={saving}>
                             {t('common.close')}

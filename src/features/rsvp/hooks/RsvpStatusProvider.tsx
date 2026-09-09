@@ -1,12 +1,17 @@
 import {useEffect, useState, type ReactNode} from 'react'
 import {RsvpStatusContext} from './RsvpStatusContext'
-import {getRsvpStatus} from '../application/getRsvpStatus'
-import type {RsvpRepository} from '../domain/RsvpRepository'
 import type {RsvpStatus} from '../domain/RsvpStatus'
 import {devWarn} from '../../../lib/devLog'
 
 type Props = {
-    repository: RsvpRepository
+    /**
+     * Reads the live schedule for one invitation.
+     *
+     * A function rather than the repository: the landing page mounts this provider, and taking
+     * the repository made `@supabase/supabase-js` a static dependency of the route tree. The
+     * only implementation the application wires is `fetchRsvpStatus`, which uses `fetch`.
+     */
+    readStatus: (invitationId: string) => Promise<RsvpStatus>
     invitationId: string
     children: ReactNode
 }
@@ -21,12 +26,12 @@ type Props = {
  * authority is the INSERT policy, not this hook — a genuinely late submission is rejected by
  * the database and the guest is told so.
  */
-export function RsvpStatusProvider({repository, invitationId, children}: Props) {
+export function RsvpStatusProvider({readStatus, invitationId, children}: Props) {
     const [status, setStatus] = useState<RsvpStatus | null>(null)
 
     useEffect(() => {
         let active = true
-        getRsvpStatus(repository, invitationId)
+        readStatus(invitationId)
             .then(resolved => {
                 if (active) setStatus(resolved)
             })
@@ -34,7 +39,7 @@ export function RsvpStatusProvider({repository, invitationId, children}: Props) 
         return () => {
             active = false
         }
-    }, [repository, invitationId])
+    }, [readStatus, invitationId])
 
     return <RsvpStatusContext.Provider value={status}>{children}</RsvpStatusContext.Provider>
 }

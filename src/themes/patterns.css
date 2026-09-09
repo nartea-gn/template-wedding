@@ -7,6 +7,27 @@
  * module, softened only by a light veil of the theme's own background color.
  */
 
+/* POR QUE SE DESPLIEGAN LOS SIETE TEMAS, Y NO SOLO EL ACTIVO
+ *
+ * `dist/assets/*.webp` son 31 ficheros y 4,8 MiB, de los que royal usa 592 KiB: los otros 4,2 MiB
+ * pertenecen a temas que en runtime nadie puede alcanzar, porque `invitation.ts` fija `theme.id`
+ * y `main.tsx` lo pasa como literal. Parece codigo muerto y no lo es.
+ *
+ * Coste real para el invitado: cero. Las custom properties solo descargan la `url()` del tema
+ * ganador -- medido en las trazas: ningun viewport pidio un webp de otro tema. Lo que se paga es
+ * almacenamiento y tiempo de subida en cada despliegue.
+ *
+ * Filtrarlo en build romperia `e2e/themes.spec.ts`, que inyecta `data-theme` en runtime y exige
+ * `background-image !== 'none'` en los siete temas por cuatro viewports: 24 de esos 28 casos se
+ * caerian, porque los seis temas no activos se quedarian sin imagen. Las alternativas son
+ * compilar siete veces en CI o reducir la matriz al tema activo, y la segunda renuncia justo a la
+ * red que protege lo que esta plantilla vende.
+ *
+ * Decision tomada con el usuario el 7 de septiembre de 2026: se queda como esta. Si algun dia el
+ * peso de despliegue importa mas que el coste de CI, la salida es la matriz de build, no recortar
+ * la cobertura. */
+
+
 [data-theme="royal"] {
     --theme-background-art: url('../assets/themes/royal/backgrounds/royal-watercolor-mobile.webp');
     --theme-background-body-art: url('../assets/themes/royal/backgrounds/royal-body-narrow.webp');
@@ -145,15 +166,29 @@
 /*
  * RSVP: the same selected composition fills the page. `cover` may crop the
  * perimeter, but it never changes the image proportions or stretches artwork.
+ *
+ * LAS DOS PANTALLAS DE CARGA VAN EN LA MISMA LISTA
+ *
+ * `.route-loading` -- el fallback de Suspense de `/rsvp` y `/admin` -- y `.admin-auth-loading`
+ * -- mientras se restaura la sesion -- son pantalla completa y encadenan con pantallas que si
+ * llevan la obra del tema. Sin ellas, entrar en el panel eran dos saltos de fondo seguidos:
+ * plano, plano y de golpe la ilustracion.
+ *
+ * `data-theme` ya esta puesto cuando el fallback se pinta: `ThemeProvider` lo estampa en un
+ * `useLayoutEffect` que envuelve a `App`, asi que corre antes del primer pintado y no despues.
+ *
+ * `.admin-page` no entra a proposito. Es una herramienta de trabajo con una tabla densa y
+ * etiquetas cuyo contraste ya esta al limite de AA; una ilustracion detras competiria con lo
+ * unico que se viene a leer.
  */
-[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page) {
+[data-theme] :is(.rsvp-page, .rsvp-confirmed-page, .rsvp-closed-page, .login-page, .route-loading, .admin-auth-loading) {
     position: relative;
     isolation: isolate;
     overflow: hidden;
     background: var(--color-wedding-bg);
 }
 
-[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page)::before {
+[data-theme] :is(.rsvp-page, .rsvp-confirmed-page, .rsvp-closed-page, .login-page, .route-loading, .admin-auth-loading)::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -166,11 +201,56 @@
     opacity: var(--theme-background-rsvp-opacity);
 }
 
-[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page)::after {
+[data-theme] :is(.rsvp-page, .rsvp-confirmed-page, .rsvp-closed-page, .login-page, .route-loading, .admin-auth-loading)::after {
     content: none;
 }
 
-[data-theme] :is(.rsvp-page, .rsvp-success-page, .login-page) > * {
+[data-theme] :is(.rsvp-page, .rsvp-confirmed-page, .rsvp-closed-page, .login-page, .route-loading, .admin-auth-loading) > * {
+    position: relative;
+    z-index: 1;
+}
+
+/*
+ * EL PANEL LLEVA UN GUINO EN LA CABECERA, NO LA OBRA ENTERA
+ *
+ * Con el tratamiento de RSVP -- `::before` a `inset: 0` y `background-size: cover` -- la
+ * ilustracion no se ve mejor, se ve peor: el panel mide 2.301 px de alto contra 1.200 de
+ * viewport, asi que `cover` la escala 1,92 veces mas que en cualquier otra pantalla y la
+ * composicion se pierde en un moteado sin identidad. Medido con doce respuestas; con cincuenta es
+ * peor.
+ *
+ * Y el panel es lo unico de esta plantilla que no se mira, se lee: una tabla densa cuyas
+ * etiquetas ya estan al limite de AA (ver la nota de `StatsCards.css`), sobre tarjetas
+ * semitransparentes que dejarian pasar lo que hubiera detras.
+ *
+ * De ahi la altura acotada y la mascara, el mismo mecanismo que `.landing-page::before`: la obra
+ * se reconoce donde estan el titulo y los nombres de la pareja, y se ha desvanecido 355 px antes
+ * de que empiece la tabla. Ni un pixel de imagen bajo un dato.
+ */
+[data-theme] .admin-page {
+    position: relative;
+    isolation: isolate;
+}
+
+[data-theme] .admin-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    inset-inline: 0;
+    z-index: 0;
+    height: clamp(12rem, 26vh, 18rem);
+    pointer-events: none;
+    background-image: var(--theme-background-art);
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    /* La mitad de la opacidad que en RSVP: aqui acompana, no presenta. */
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+
+[data-theme] .admin-page > * {
     position: relative;
     z-index: 1;
 }
@@ -245,7 +325,7 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-    [data-theme] :is(.rsvp-card, .rsvp-success-card) {
+    [data-theme] :is(.rsvp-card, .rsvp-confirmed-card, .rsvp-closed-card) {
         background: var(--color-wedding-surface);
     }
 }

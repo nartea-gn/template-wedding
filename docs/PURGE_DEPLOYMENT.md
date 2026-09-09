@@ -104,7 +104,12 @@ ALTER TABLE public.rsvp_responses VALIDATE CONSTRAINT rsvp_responses_wedding_slu
    `rsvp_deadline_utc` a 14 días vista de ella.
 3. `SELECT public.is_rsvp_open('<slug>');` devuelve `true`.
 4. Un `INSERT` anónimo con la anon key tras poner `rsvp_override = 'closed'` debe fallar con
-   `42501`, y la invitación debe enseñar la página de cierre, no un error genérico.
+   **`RSVPC`** —no con `42501`, que desde `20260907_enforce_rsvp_closure.sql` significa solo «sin privilegio»— y la
+   invitación debe enseñar la página de cierre, no un error genérico. Con un slug que no exista en `invitations` el
+   código es `RSVPU`.
+5. **El reenvío de un invitado que ya tiene fila** con `rsvp_override = 'closed'` también debe fallar con `RSVPC`.
+   Antes devolvía `INSERT 0 0` sin error y sobrescribía la respuesta: el trigger de redirección cancelaba la tupla
+   antes de que se evaluara el `WITH CHECK` de la política.
 
 ## Lo que sigue necesitando redespliegue
 

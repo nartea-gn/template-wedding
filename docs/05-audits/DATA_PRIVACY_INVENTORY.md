@@ -7,6 +7,23 @@
 - **Alcance:** captura, almacenamiento, consulta y exportación de respuestas RSVP
 - **Nota:** guía de diseño y operación; no sustituye asesoramiento jurídico
 
+> **Nota del 2026-09-07 — cambia la base del consentimiento dietético.**
+>
+> El campo «Consentimiento dietético» que este inventario lista como obligatorio **ya no existe**. Los campos de
+> alergias se muestran directamente, con el aviso de que son datos de salud inmediatamente encima, y el consentimiento
+> del art. 9.2.a pasa a ser el propio acto de rellenarlos: afirmativo, informado y voluntario, porque dejarlos en
+> blanco es una respuesta válida que deja pasar el formulario.
+>
+> Lo que **no** cambia: siguen siendo categoría especial, siguen sin cederse, siguen borrándose con el resto a los
+> siete días, y `form_version` subió a 3 al cambiar el texto —que es exactamente para lo que existe ese campo—.
+>
+> Lo que sí cambia además de la pregunta: la protección que eliminaba las respuestas dietéticas de un envío al revocar
+> el consentimiento colgaba de la condición de esos campos. Ahora vive en la condición del **paso** completo, que
+> sigue atada a `attending`, así que quien anota una alergia y después declina tampoco la envía. Hay un test de eso en
+> `FormEngine.test.tsx`.
+>
+> El resto del documento se conserva sin editar: es el registro de lo que se decidió en el Sprint 7.1.
+
 ## Datos tratados actualmente
 
 | Dato                             |  Obligatorio | Finalidad de producto               | Destino        | Observación                                               |

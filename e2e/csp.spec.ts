@@ -62,7 +62,7 @@ test('the language and map overlays open under the policy', async ({page}) => {
 
 test('RSVP renders and accepts input under the policy', async ({page}) => {
     await violationsAfterVisiting(page, './rsvp')
-    await page.getByLabel('Nombre y apellidos *').fill('Invitada de prueba')
+    await page.getByLabel('Nombre y apellidos').fill('Invitada de prueba')
     expect(await page.evaluate(() => window.__cspViolations)).toEqual([])
 })
 

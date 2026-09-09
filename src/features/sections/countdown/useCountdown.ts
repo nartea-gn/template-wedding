@@ -33,12 +33,23 @@ export function getTimeLeft(target: string, timeZone: string): TimeLeft {
     return sameDay ? {status: 'today'} : {status: 'past'}
 }
 
+// `today` only has to notice the natural day ending in the wedding's timezone, so it is polled
+// once a minute rather than once a second.
+const TICK_MS: Record<TimeLeft['status'], number> = {pending: 1_000, today: 60_000, past: 0}
+
 export function useCountdown(target: string, timeZone: string): TimeLeft {
     const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(target, timeZone))
     useEffect(() => {
-        // Only `pending` ticks: nothing changes every second once the day has arrived.
-        if (timeLeft.status !== 'pending') return
-        const intervalId = window.setInterval(() => setTimeLeft(getTimeLeft(target, timeZone)), 1000)
+        // `past` is terminal; `today` still has a transition left. Stopping at `pending` left a
+        // page opened before midnight in the wedding's timezone showing "today is the day"
+        // indefinitely, until somebody reloaded it.
+        if (timeLeft.status === 'past') return
+        const intervalId = window.setInterval(() => setTimeLeft(previous => {
+            const next = getTimeLeft(target, timeZone)
+            // Identity is preserved while nothing observable changes, so `today` does not
+            // re-render the section every minute for a value that never moves.
+            return previous.status === 'today' && next.status === 'today' ? previous : next
+        }), TICK_MS[timeLeft.status])
         return () => window.clearInterval(intervalId)
     }, [target, timeZone, timeLeft.status])
     return timeLeft

@@ -1,7 +1,7 @@
 {
   "name": "template-wedding",
   "private": true,
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@11.26.0+sha512.fc0e2bf890b9f983611f1ab68c0637bce914390653699f83c1a78b005ed25f2c81e77920c8fd8eee2ecf0b58b28cdcb00a84d97f69bcf7c56b2f344710238664",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -20,7 +20,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:db": "supabase test db",
     "check:functions": "find supabase/functions -name '*.ts' -exec deno check {} +",
-    "check:functions:docker": "supabase/functions-check/run.sh",
+    "check:functions:docker": "sh supabase/functions-check/run.sh",
     "admin:provision": "node scripts/provision-admins.mjs",
     "admin:provision:local": "node --env-file=.env.admin.local scripts/provision-admins.mjs --local",
     "quality": "pnpm run lint && pnpm run test && pnpm run build",
@@ -29,20 +29,20 @@
     "db:verify:down": "docker compose -f supabase/local/docker-compose.yml down -v"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.115.0",
+    "@supabase/supabase-js": "^2.116.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@playwright/test": "1.62.1",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/vite": "^4.3.3",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "7.0.1",
     "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "14.6.7",
-    "@types/node": "^26.4.1",
+    "@types/node": "^26.5.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@typescript/native": "npm:typescript@7.0.2",
@@ -53,13 +53,13 @@
     "eslint-plugin-react-refresh": "^0.5.6",
     "globals": "^17.12.0",
     "jsdom": "30.0.1",
-    "supabase": "2.116.0",
+    "supabase": "2.117.0",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.13",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-eslint": "^8.69.0",
+    "typescript-eslint": "^8.70.0",
     "vite": "^8.2.2",
     "vitest": "5.0.0",
-    "wrangler": "4.129.0"
+    "wrangler": "4.129.1"
   }
 }

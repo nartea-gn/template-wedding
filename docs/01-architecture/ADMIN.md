@@ -71,6 +71,9 @@ dependency and format-specific behavior.
 - Filtering, searching and sorting run in memory over normalized responses; the table then paginates that result.
 - Server-side query and pagination are deferred until measured volume or latency justifies extending the Repository.
 - Changing filter, search or sorting resets navigation to the first page.
+- The `deleted` filter is the only view that shows soft-deleted rows; every other view excludes them, and so do the
+  headline counts, the result count and the CSV. They stay in the fetched array because restoring them needs them
+  there.
 - The optional page-size selector also resets navigation and only offers values allowed by configuration.
 - The selected page size is intentionally session-local; persistence remains a future enhancement if demanded.
 - The interface displays the current result count and last successful refresh time.
@@ -115,8 +118,14 @@ those two columns by an admin-membership policy plus a column-list `GRANT`. The 
 `capabilities.admin.mutations.rsvpClosure`, and the change takes effect without a redeployment.
 
 The client revalidates without blocking: it renders with the deadline compiled into the invitation and replaces it when
-the database answers. A failed read leaves the compiled value in place, because the authority is the `WITH CHECK`, not
-the interface -- a genuinely late submission is rejected with `42501` and the guest sees the closed message.
+the database answers. A failed read leaves the compiled value in place, because the authority is the database and not the
+interface -- a genuinely late submission is rejected and the guest sees the closed message.
+
+Since `20260907_enforce_rsvp_closure.sql` the refusal carries its reason. `require_rsvp_open()` raises `RSVPC` for a
+closed RSVP and `RSVPU` when no invitation is registered for the slug, so `42501` means only what it says: the caller
+holds no privilege. Before that, all three arrived as `42501` and the repository mapped every one of them to
+`RsvpClosedError`, so a project whose `invitations` row was missing showed every guest a passed deadline with no way to
+retry. The trigger fires ahead of the policy's `WITH CHECK`, which stays in place as a fail-closed backstop.
 
 ## Delivered since Sprint 7.1D
 

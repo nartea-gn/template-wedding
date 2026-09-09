@@ -52,6 +52,39 @@ Dos reglas que estas migraciones fijan, aprendidas al ejecutarlas:
 2. **El orden de los triggers `BEFORE` es alfabético por nombre.** Por eso llevan prefijo numérico
    (`rsvp_responses_10_…`, `…_20_…`): el que corrige un duplicado necesita que `full_name` ya se haya derivado.
 
+## Datos de desarrollo local
+
+`supabase/seed.sql` lo aplica el CLI tras las migraciones en `supabase db reset` y en el primer
+`supabase start`. Ningún camino de despliegue lo lee: `db push` no ejecuta seeds.
+
+Existe porque un stack recién reseteado no permitía ejercitar el producto. Sin fila en
+`invitations` el RSVP rechaza cualquier envío con `RSVPU`, y sin administrador el panel se queda en
+su formulario de acceso, así que las dos superficies con más lógica quedaban fuera de alcance en
+desarrollo y en revisión.
+
+Siembra una invitación (`gala-y-valentin`), un administrador
+(`admin@ejemplo.local` / `Revision2026!`, con el hash generado por `pgcrypto`, nunca escrito a
+mano) y 60 respuestas ficticias, dos de ellas borradas en suave. Es un no-op si el slug ya tiene
+respuestas: `ON CONFLICT` no sirve aquí, porque `rsvp_responses_20_redirect_duplicate` devuelve
+`NULL` antes y convertiría una segunda pasada en 58 correcciones de invitado.
+
+Los nombres y mensajes son inventados. No se pega una lista real de invitados ahí: el fichero está
+versionado y `rsvp_responses` guarda datos de salud del artículo 9.
+
+### El seed y el stack equivocado
+
+Si `supabase db reset` «hace el proceso» y la aplicación no ve nada, comprueba **qué stack** se ha
+reseteado antes de mirar las migraciones:
+
+```
+docker ps --format '{{.Names}}' | grep supabase_
+grep project_id supabase/config.toml
+```
+
+Los contenedores se nombran `supabase_<servicio>_<project_id>`. Un `project_id` que no sea
+`template-wedding` apunta el CLI a otra pila, aplica ahí las migraciones y el seed, y deja intacta
+la que escucha en `54321`.
+
 ## Verificación local
 
 ```bash
@@ -112,6 +145,59 @@ This repository adopted migrations after the initial table already existed. The 
 that table with `CREATE TABLE IF NOT EXISTS` and then uses `ADD COLUMN IF NOT EXISTS`. Do not apply it manually or
 repair the history: the existing project already records `20260712`, while new projects execute it normally.
 
+## Migraciones fuera de orden y `--include-all`
+
+`20260000_enable_extension.sql` lleva a propósito una versión anterior a la primera migración que
+el proyecto de producción registró (`20260712`, ver `ADR-012 §Sprint 7.1`): tiene que ejecutarse
+antes que `20260901` y `20260903`, que dependen de `pg_cron` y `pg_net`.
+
+Eso choca con cómo `supabase db push` decide qué está pendiente. Reconcilia el directorio local
+contra `supabase_migrations.schema_migrations` con dos punteros y **comparación de cadena**; si
+encuentra un fichero local ordenado antes de la cabeza remota, no aplica nada y termina con:
+
+```
+Found local migration files to be inserted before the last migration on remote database.
+Rerun the command with --include-all flag to apply these migrations:
+```
+
+El workflow pasa `--include-all` por eso. Sin él el paso muere, y con él mueren los siguientes:
+`Sync wedding date` no llega a crear la fila de `invitations`, así que el RSVP empieza a devolver
+`23503` («Key is not present in table "invitations"») y ninguna Edge Function se despliega.
+
+### Reparar un historial al que se aplicaron migraciones a mano
+
+Caso distinto al de la sección anterior. Si el pipeline se rompió y alguien aplicó el SQL
+directamente, el esquema tiene los cambios pero el historial no los registra, y el próximo
+`db push --include-all` intentará **re-aplicarlos**. Morirá en la primera sentencia no
+idempotente: `20260904_prevent_duplicate_rsvp.sql` crea un índice único sin `IF NOT EXISTS`.
+
+1. Inventariar la divergencia. Lo que aparezca en `Local` y no en `Remote` es lo que se intentará
+   re-aplicar:
+
+   ```
+   supabase migration list --linked
+   ```
+
+2. Confirmar contra el esquema real —no contra lo que se recuerde— que cada una de esas versiones
+   ya está aplicada. `migration repair` cambia el historial, no la base: registrar como aplicada
+   una migración que no lo está la salta para siempre.
+
+3. Registrar cada versión ya aplicada, una por una:
+
+   ```
+   supabase migration repair --status applied <version>
+   ```
+
+4. Comprobar que no queda nada pendiente antes de volver a desplegar:
+
+   ```
+   supabase db push --linked --include-all --dry-run
+   ```
+
+`SUPABASE_BASELINE_AUDIT.md` prohíbe `migration repair`, y esa prohibición era para la fase de
+auditoría de solo lectura: el paso 6 de su propia estrategia aprobada es «documentar backup,
+rollback y reparación del historial». Esto es ese paso.
+
 ## Verificación de Sprint 7.1
 
 La estrategia se probó en Supabase local de dos formas:
@@ -132,7 +218,8 @@ La actualización conservó el registro. El asesor de seguridad local terminó s
 - `PGRST204` for a new column means the frontend was deployed before its migration.
 - `supabase migration list` compares local and remote history.
 - `supabase db push --dry-run` previews pending migrations.
-- `migration repair` changes history only; use it only after confirming the real schema.
+- `migration repair` changes history only; use it only after confirming the real schema. El
+  procedimiento completo está en «Reparar un historial al que se aplicaron migraciones a mano».
 - Once this workflow is active, do not make production schema changes through Table Editor or SQL Editor.
 
 ## Trabajo obligatorio antes de 1.0.0

@@ -66,6 +66,20 @@ const paths: Record<string, ReactNode> = {
         <path d="M12 4v16M4 12h16"/>
         <path d="m7 7 10 10M17 7 7 17"/>
     </>,
+    pencil: <>
+        <path d="M12 20h9"/>
+        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+    </>,
+    trash: <>
+        <path d="M3 6h18"/>
+        <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/>
+        <path d="m5 6 1 14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-14"/>
+        <path d="M10 11v6M14 11v6"/>
+    </>,
+    'rotate-ccw': <>
+        <path d="M3 12a9 9 0 1 0 2.64-6.36"/>
+        <path d="M3 4v6h6"/>
+    </>,
     rings: <>
         <circle cx="9.5" cy="13" r="5.25"/>
         <circle cx="14.5" cy="13" r="5.25"/>

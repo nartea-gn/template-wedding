@@ -32,7 +32,7 @@ function CopyableDetail({label, value, copyLabel, copiedLabel}: Readonly<Copyabl
         <p className="landing-gifts-detail">
             <span className="landing-gifts-detail-label">{label}</span>
             <span className="landing-gifts-detail-value">{value}</span>
-            <button type="button" className="btn btn--ghost landing-gifts-copy"
+            <button type="button" className="btn btn--ghost"
                     onClick={() => void copy()}
                     aria-label={`${copyLabel} ${label}`}>
                 {copied ? copiedLabel : copyLabel}
@@ -57,12 +57,12 @@ export function GiftsSection<Message extends string>({
 
     return (
         <section className="landing-gifts" aria-labelledby={HEADING_ID}>
-            <h2 id={HEADING_ID} className="landing-gifts-label">{t(section.content.label)}</h2>
+            <h2 id={HEADING_ID} className="landing-section-title landing-gifts-label">{t(section.content.label)}</h2>
             {section.content.noteKey && <p className="landing-gifts-note">{t(section.content.noteKey)}</p>}
 
             {registry && (
                 <a href={registry.url} target="_blank" rel="noopener noreferrer"
-                   className="landing-gifts-registry btn btn--outline"
+                   className="btn btn--outline"
                    aria-label={`${t(registry.labelKey)} (${t(section.content.newTabLabel)})`}>
                     {t(registry.labelKey)}
                 </a>
@@ -81,7 +81,7 @@ export function GiftsSection<Message extends string>({
                             )}
                         </>
                     ) : (
-                        <button type="button" className="btn btn--outline landing-gifts-reveal"
+                        <button type="button" className="btn btn--outline"
                                 onClick={() => setRevealed(true)}>
                             {t(account.revealLabel)}
                         </button>

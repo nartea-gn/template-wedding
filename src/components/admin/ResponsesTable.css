@@ -6,7 +6,7 @@
 }
 
 .responses-state {
-    @apply p-8 md:p-12 text-center text-sm flex flex-col items-center gap-3;
+    @apply p-8 md:p-12 text-center text-base flex flex-col items-center gap-3;
 }
 
 .responses-state--error {
@@ -25,8 +25,17 @@
     @apply inline-block w-6 h-6 border-2 border-(--color-wedding-action) border-t-transparent rounded-full animate-spin mb-3;
 }
 
+/* El desbordamiento esta *contenido* aqui, asi que el documento no desborda y nada delataba que
+   quedaran cientos de pixeles a la derecha con el ancho de escritorio por defecto: medido
+   `clientWidth 1150 / scrollWidth 1419`. Ahi viven Editar y Eliminar, el unico camino de escritura
+   del panel, y con raton parecian no existir.
+
+   La senal la da la sombra de la columna de acciones fijada, mas abajo. Un degradado de
+   `scroll-shadow` en este contenedor no serviria: el fondo se pinta *detras* del contenido y la
+   columna fijada es opaca, asi que lo taparia. Probado y medido antes de descartarlo. */
 .responses-scroll {
     @apply overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-(--color-wedding-action);
+    position: relative;
 }
 
 .responses-table-el {
@@ -34,7 +43,7 @@
 }
 
 .responses-head-row {
-    @apply bg-(--color-wedding-surface)/50 border-b border-(--color-wedding-border) text-xs uppercase text-(--color-wedding-muted);
+    @apply bg-(--color-wedding-surface)/50 border-b border-(--color-wedding-border) text-sm uppercase text-(--color-wedding-muted);
 }
 
 .responses-th {
@@ -42,7 +51,7 @@
 }
 
 .responses-body {
-    @apply divide-y divide-(--color-wedding-border)/50 text-sm;
+    @apply divide-y divide-(--color-wedding-border)/50 text-base;
 }
 
 .responses-row {
@@ -53,15 +62,34 @@
     @apply p-4 align-top font-medium text-(--color-wedding-text) whitespace-normal break-words max-w-72;
 }
 
+/* Acciones fijas al borde derecho mientras la tabla scrollea. Fondo opaco propio -- si no, las
+   celdas de debajo se transparentan al pasar -- y una sombra que marca el corte. */
+@media (min-width: 1024px) {
+    .responses-th:last-child,
+    .responses-row > .responses-td:last-child {
+        position: sticky;
+        right: 0;
+        background: var(--color-wedding-surface);
+        box-shadow: -8px 0 12px -8px color-mix(in srgb, var(--color-wedding-text) 30%, transparent);
+    }
+
+    .responses-th:last-child {
+        z-index: 1;
+    }
+}
+
 .responses-cell-label {
     @apply hidden;
 }
 
-/* Below this width the grid stops being a grid. Seven columns cannot share 320 px, and the table
+/* Hasta 1023 px, no 767: la medicion de la segunda revision dice que el panel movil es mejor que
+   el de escritorio -- tarjetas etiquetadas, acciones al alcance, nada recortado -- asi que portatiles
+   pequenos y tablets se llevan ese layout en vez de una tabla de ocho columnas comprimida.
+   Below this width the grid stops being a grid. Seven columns cannot share 320 px, and the table
    carries a 760 px floor, so reading a 1000-character message meant scrolling sideways until the
    guest's name left the screen. Each row becomes a block and every value states its own column.
    The roles are declared in the markup because `display: block` strips the implicit ones. */
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
     .responses-scroll {
         @apply overflow-x-visible;
     }
@@ -87,8 +115,49 @@
     }
 
     .responses-cell-label {
-        @apply block text-xs uppercase tracking-wide text-(--color-wedding-muted);
+        @apply block text-sm uppercase tracking-wide text-(--color-wedding-muted);
     }
+
+    /* Una tarjeta pintaba los seis campos siempre, con dos o tres guiones por invitado: unos
+       130 px de nada por tarjeta, en filas que ya median 387 px. Un campo sin valor no se pinta. */
+    .responses-td--empty {
+        @apply hidden;
+    }
+}
+
+/* `.responses-actions` se aplicaba y no tenia ninguna regla, asi que los dos botones se
+   envolvian y se apilaban: es lo que hacia las filas de 129 px en escritorio y 387 en movil. */
+.responses-actions {
+    @apply flex flex-wrap items-center gap-1;
+}
+
+@media (min-width: 1024px) {
+    .responses-actions {
+        @apply flex-nowrap justify-end;
+    }
+}
+
+/* ACCIONES DE FILA: SOLO ICONO
+ *
+ * `.responses-action` existia en el `className` sin ninguna regla que la respaldara -- se elimino
+ * en la limpieza de clases huerfanas -- y vuelve aqui con estilo real, porque los botones han
+ * pasado de texto a icono: cuadrados, del tamano de la casilla tactil minima y con el icono
+ * centrado. El nombre accesible sigue en `aria-label`, y `title` da el tooltip en escritorio.
+ *
+ * 44 px de lado: el minimo de WCAG 2.5.5 para un objetivo tactil. Con el icono a 18 px, el area
+ * pulsable la marca el boton y no el dibujo. */
+.responses-action {
+    @apply inline-flex items-center justify-center shrink-0 size-11 p-0;
+}
+
+.responses-action-icon {
+    @apply size-[1.125rem];
+}
+
+/* El tono de peligro, igual que `.stat-icon--red` en las tarjetas de arriba: el color es lo unico
+   que distingue eliminar de editar cuando ya no hay texto que leer. */
+.responses-action--danger {
+    color: var(--color-wedding-danger);
 }
 
 .responses-confirm {
@@ -96,11 +165,11 @@
 }
 
 .responses-confirm-question {
-    @apply text-sm font-semibold text-(--color-wedding-text);
+    @apply text-base font-semibold text-(--color-wedding-text);
 }
 
 .responses-confirm-hint {
-    @apply text-xs text-(--color-wedding-muted);
+    @apply text-sm text-(--color-wedding-muted);
 }
 
 .responses-confirm-actions {
@@ -112,7 +181,7 @@
 }
 
 .responses-badge {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium;
 }
 
 .responses-badge-icon {
@@ -132,4 +201,27 @@
 .responses-row-error {
     @apply mt-2 text-xs;
     color: var(--color-wedding-danger);
+}
+
+/* La clase se aplicaba en `ResponsesTable.tsx:54` y no estaba definida en ninguna parte, asi que
+   una fila eliminada era byte a byte identica a una viva: misma opacidad, mismo fondo, sin
+   tachado. La unica senal era la palabra "RESTAURAR" en el extremo derecho, y para encontrar una
+   entre 58 habia que recorrer seis paginas buscando esa palabra. */
+.responses-row--deleted {
+    opacity: 0.62;
+}
+
+.responses-row--deleted .responses-td {
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in srgb, var(--color-wedding-danger) 55%, transparent);
+    text-decoration-thickness: 1px;
+}
+
+/* Las acciones no se tachan: "Restaurar" es lo unico que hay que poder leer y pulsar aqui. */
+.responses-row--deleted .responses-td:last-child {
+    text-decoration: none;
+}
+
+.responses-clear {
+    @apply mt-3;
 }

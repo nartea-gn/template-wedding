@@ -62,13 +62,23 @@ jobs:
           version: 2.111.0
 
       - name: Apply pending database migrations
+        # `--include-all` because `20260000_enable_extension.sql` is versioned before the first
+        # migration the production project ever recorded (`20260712`, see ADR-012 §Sprint 7.1).
+        # Without it `db push` reconciles local against remote, finds a local file ordered before
+        # the remote head, and exits with "Found local migration files to be inserted before the
+        # last migration on remote database" -- applying nothing and failing every step after it,
+        # which is how the invitations row went missing and the RSVP started reporting 23503.
+        #
+        # This flag is not enough on its own for a project whose migrations were applied by hand:
+        # repair the history first, or `db push` will try to re-apply them. See
+        # docs/01-architecture/DATABASE_MIGRATIONS.md.
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
           supabase link --project-ref "$SUPABASE_PROJECT_ID"
-          supabase db push --linked --password "$SUPABASE_DB_PASSWORD"
+          supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
 
       - name: Sync wedding date for the purge cutoff
         env:

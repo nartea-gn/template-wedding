@@ -1,5 +1,5 @@
-import {isConditionMet} from './visibility'
-import type {FormAnswers, FormDefinition, FormElement, FormErrors, FormValue} from './types'
+import {isConditionMet} from './visibility.ts'
+import type {FormAnswers, FormDefinition, FormElement, FormErrors, FormValue} from './types.ts'
 
 const FORM_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/
 

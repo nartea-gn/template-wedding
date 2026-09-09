@@ -1,8 +1,8 @@
-import type { InvitationDefinition } from "../../core/invitation";
-import { validateInvitationDefinition } from "../../core/invitation";
-import type { WeddingMessageKey } from "./locales/es";
-import type { WeddingLocale } from "./locales/types";
-import { weddingRsvpForm } from "./rsvpForm";
+import type { InvitationDefinition } from "../../core/invitation/index.ts";
+import { validateInvitationDefinition } from "../../core/invitation/index.ts";
+import type { WeddingMessageKey } from "./locales/es.ts";
+import type { WeddingLocale } from "./locales/types.ts";
+import { weddingRsvpForm } from "./rsvpForm.ts";
 
 export const weddingInvitation = {
   id: "gala-y-valentin",
@@ -65,6 +65,11 @@ export const weddingInvitation = {
       content: {
         assetId: "wedding-hero-video",
         posterAssetId: "wedding-hero-video-poster",
+        // Enciende esto **cuando el poster se regenere sin texto**. El actual lleva
+        // "Wedding Day 26.06.2027" quemado contra el 2027-06-12 de `event.date`, asi que con
+        // ambos activos se verian dos fechas distintas a la vez. Ver el comentario del contrato
+        // en core/invitation/types.ts y docs/04-development/MEDIA_WORKFLOW.md.
+        dateOverlay: false,
         preload: "none",
         aspectRatio: "9 / 16",
         label: "video.label",
@@ -97,7 +102,6 @@ export const weddingInvitation = {
             typeLabel: "venue.ceremony.type",
             name: "venue.ceremony.name",
             time: "12:00",
-            address: "venue.ceremony.address",
             mapsQuery: "C. del Nuncio, 14, Centro, 28005 Madrid",
           },
           {
@@ -105,7 +109,6 @@ export const weddingInvitation = {
             typeLabel: "venue.reception.type",
             name: "venue.reception.name",
             time: "14:00",
-            address: "venue.reception.address",
             mapsQuery: "P.º de Fernán Núñez, 4, Retiro, 28009 Madrid",
           },
         ],
@@ -174,6 +177,8 @@ export const weddingInvitation = {
       content: {
         label: "rsvp.cta",
         closedLabel: "rsvp.closed.cta",
+        deadlineNotice: "rsvp.deadline.notice",
+        closing: true,
       },
     },
   ],
@@ -191,14 +196,30 @@ export const weddingInvitation = {
         "fullName",
         "attending",
         "dietaryOptions",
+        // Sin esta columna la alergia escrita a mano no aparecia en la tabla, ni en el modal de
+        // edicion, ni en el CSV que el propio aviso del panel manda dar al catering: un invitado
+        // con "Alergia leve a los frutos secos" se exportaba como "Ninguna, como de todo".
+        "dietaryOther",
         "busOption",
         "songRequest",
         "message",
       ],
+      // Sustantivos para la pareja, no las preguntas que se le hicieron al invitado. El copy ya
+      // estaba escrito en los tres catalogos y no lo usaba nadie.
+      columnLabels: {
+        fullName: "admin.guest",
+        attending: "admin.attends",
+        dietaryOptions: "admin.dietary",
+        dietaryOther: "admin.dietaryOther",
+        busOption: "admin.bus",
+        songRequest: "admin.song",
+        message: "admin.message",
+      },
       metrics: {
         attendanceFieldId: "attending",
         transportFieldId: "busOption",
         ownTransportValue: "no",
+        dietaryFieldIds: ["dietaryOptions", "dietaryOther"],
       },
       mutations: { rsvpClosure: { enabled: true } },
       controls: {

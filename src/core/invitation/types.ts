@@ -30,8 +30,38 @@ export type VideoSection<Message extends string> = Section<'video', {
     playLabel: Message
     loadingLabel: Message
     errorLabel: Message
+    /**
+     * Pinta la fecha del evento sobre el poster, leyendola de `event.date`.
+     *
+     * El poster que se envia hoy la lleva **quemada en el pixel**, y decia «26.06.2027» contra el
+     * `2027-06-12` configurado: dos afirmaciones sobre el mismo dato, una de ellas en un bitmap
+     * que ninguna validacion puede leer. Un dato en una imagen no se puede traducir, ni corregir
+     * sin un editor grafico, ni comprobar contra el contrato.
+     *
+     * Activarlo **exige un poster sin texto**. Con el actual se verian dos fechas distintas a la
+     * vez, que es peor que una sola equivocada. Cuando el asset se regenere, esto se enciende y
+     * la fecha pasa a ser traducible, accesible e imposible de desincronizar.
+     */
+    dateOverlay?: boolean
 }>
 
+/**
+ * One place a guest has to reach.
+ *
+ * `address` and `mapsQuery` are mutually exclusive, and the validator rejects an item carrying
+ * both. Nothing tied them together before: the ceremony card read "Calle Mayor, 1, Madrid" while
+ * "Cómo llegar" opened "C. del Nuncio, 14, Centro, 28005 Madrid", and a guest who read the card
+ * and a guest who tapped the button went to two different places on a day that happens once.
+ *
+ * `mapsQuery` is the better of the two for a real venue, and not only because it is precise: it
+ * is locale-independent. The Bulgarian catalogue transliterated the street as "Кале Майор 1,
+ * Мадрид", which reads correctly and navigates nowhere, so deriving the query from the displayed
+ * string would have replaced one broken direction with another. Street names are proper nouns;
+ * showing the same untranslated string the map receives is both correct and honest.
+ *
+ * `address` remains for a venue with no navigable address -- "en casa de los abuelos" -- which is
+ * exactly the case where no map button should appear either.
+ */
 export type VenueItemDefinition<Message extends string> = {
     id: string
     typeLabel: Message
@@ -57,6 +87,23 @@ export type VenueSection<Message extends string> = Section<'venue', {
 export type RsvpCtaSection<Message extends string> = Section<'rsvp-cta', {
     label: Message
     closedLabel: Message
+    /**
+     * Aviso con la fecha limite, junto a la llamada. Lleva `{date}`, que la seccion sustituye.
+     *
+     * Opcional para no romper una invitacion sin plazo, pero recomendado: la fecha gobernaba el
+     * cierre sin aparecer en ninguna superficie ni idioma, y una urgencia sin fecha es la primera
+     * causa de confirmaciones tardias.
+     */
+    deadlineNotice?: Message
+    /**
+     * Si esta instancia cierra la invitacion.
+     *
+     * La invitacion de esta plantilla declara una sola llamada, la del cierre, y es la que lleva
+     * el hashtag. El campo existe porque el tipo se puede declarar mas de una vez -- con ids
+     * distintos, que `validateInvitationDefinition` exige -- y entonces repetir el hashtag en
+     * cada una seria ruido: solo la marcada aqui lo muestra.
+     */
+    closing?: boolean
 }>
 
 export type LodgingPriceTier = 1 | 2 | 3
@@ -156,7 +203,22 @@ export type InvitationCapabilities<Message extends string> = {
         auth: AdminAuthDefinition
         source: 'rsvp'
         columns: readonly string[]
-        metrics: { attendanceFieldId: string; transportFieldId?: string; ownTransportValue?: string }
+        /**
+         * Rotulo de cada columna en el panel, por id de campo.
+         *
+         * Sin esto la tabla usaba la etiqueta del formulario, o sea **las preguntas que se le
+         * hicieron al invitado**: "¿Podrás asistir?", "Tu mensaje", "Otros detalles...". El panel
+         * lo lee la pareja, no el invitado, y necesita sustantivos -- "Asiste", "Mensaje" -- que
+         * quepan en una cabecera. Los que falten caen a la etiqueta del formulario.
+         */
+        columnLabels?: Readonly<Record<string, string>>
+        metrics: {
+            attendanceFieldId: string
+            transportFieldId?: string
+            ownTransportValue?: string
+            /** Campos cuyo valor significa que ese invitado necesita algo del catering. */
+            dietaryFieldIds?: readonly string[]
+        }
         controls?: AdminReadControls
         mutations?: AdminMutationControls
     }

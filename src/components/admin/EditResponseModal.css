@@ -16,36 +16,64 @@
     @apply text-lg font-semibold text-(--color-wedding-text);
 }
 
+/* `padding: 0` porque el de `.btn` (2.25rem por lado) dejaba una caja de contenido de 2 px y
+   aplastaba el icono a 0x20 de ancho: el boton de salir del dialogo no se veia. Y 2.75rem para
+   que siga cumpliendo el minimo de 44 px sin ese padding. */
 .modal-close {
-    @apply size-8 flex items-center justify-center rounded-full;
+    @apply size-11 flex items-center justify-center rounded-full;
+    padding: 0;
+}
+
+/* El `<form>` envuelve los dos: los campos scrollean y el pie se queda. Antes el propio form era
+   el `.modal-body` con `overflow-y-auto`, asi que "Guardar" se iba de la vista y habia que
+   volver a bajar para encontrarlo. */
+.modal-form {
+    @apply flex flex-col min-h-0 flex-1;
 }
 
 .modal-body {
-    @apply overflow-y-auto p-6 flex flex-col gap-4;
+    @apply overflow-y-auto p-6 flex flex-col gap-4 min-h-0;
 }
 
 .modal-footer {
     @apply flex items-center justify-end gap-3 p-6 border-t border-(--color-wedding-border);
 }
 
+/* `fieldset` porque los grupos de opciones lo necesitan para tener nombre accesible; el reset
+   quita el borde, el margen y el padding que el navegador le pone por defecto, para que se
+   comporte igual que el `div` que era antes. */
 .form-field {
     @apply flex flex-col gap-1.5;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    min-width: 0;
 }
 
 .checkbox-group {
     @apply flex flex-col gap-2;
 }
 
-.checkbox-label {
-    @apply flex items-center gap-2 text-sm text-(--color-wedding-text);
+/* `.checkbox-label` y `.radio-label` las usa tambien `RsvpClosureControl`, que vive en el mismo
+   chunk. Medidos, sus 14 controles eran cajas de 13x13 px con una etiqueta de 20 px de alto: los
+   que cierran el RSVP y los que corrigen una alergia, en un movil, dias antes de la boda. Entre
+   "Abierto siempre" y "Cerrado ya" habia 17 px. */
+.checkbox-label,
+.radio-label {
+    @apply flex items-center gap-3 text-sm text-(--color-wedding-text);
+    min-height: 2.75rem;
+    cursor: pointer;
+}
+
+.checkbox-label > input,
+.radio-label > input {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
 }
 
 .radio-group {
     @apply flex flex-col gap-2;
-}
-
-.radio-label {
-    @apply flex items-center gap-2 text-sm text-(--color-wedding-text);
 }
 
 .modal-error {

@@ -1,6 +1,6 @@
-import type {InvitationDefinition} from './types'
-import {validateFormDefinition} from '../forms'
-import {isValidTimeZone, parseInstant} from './temporal'
+import type {InvitationDefinition} from './types.ts'
+import {validateFormDefinition} from '../forms/index.ts'
+import {isValidTimeZone, parseInstant} from './temporal.ts'
 
 const STABLE_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -162,6 +162,15 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         }
         if (section.content.items.some(item => item.mapsQuery !== undefined && item.mapsQuery.trim().length === 0)) {
             errors.push(`Venue section ${section.id} mapsQuery must not be empty when provided`)
+        }
+        // The divergence-capable state. Two independent strings for one place drifted apart with
+        // nothing to catch it, and no check can compare them semantically -- so the contract does
+        // not allow both.
+        if (section.content.items.some(item => item.address !== undefined && item.mapsQuery !== undefined)) {
+            errors.push(
+                `Venue section ${section.id} items must declare either address or mapsQuery, not both: `
+                + 'the displayed text and the map destination would be free to disagree',
+            )
         }
     }
 

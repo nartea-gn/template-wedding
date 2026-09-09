@@ -60,12 +60,21 @@ Deno.serve(async () => {
             }
         }
 
-        if (allDelivered) {
-            await supabase.from('invitations')
-                .update({purge_warning_sent_at: new Date().toISOString()})
-                .eq('wedding_slug', slug)
-        } else {
+        if (!allDelivered) {
             failed.push(slug)
+            continue
+        }
+
+        // Unchecked, a failed mark left `allDelivered` true and the function answered 'ok', so
+        // the next nightly run mailed every administrator of that wedding a second time, and a
+        // third, with no signal anywhere that anything had gone wrong.
+        const {error: markError} = await supabase.from('invitations')
+            .update({purge_warning_sent_at: new Date().toISOString()})
+            .eq('wedding_slug', slug)
+
+        if (markError) {
+            failed.push(slug)
+            console.error(`Delivered the warning for ${slug} but could not mark it: ${markError.message}`)
         }
     }
 
