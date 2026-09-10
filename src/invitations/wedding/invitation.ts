@@ -3,6 +3,7 @@ import { validateInvitationDefinition } from "../../core/invitation/index.ts";
 import type { WeddingMessageKey } from "./locales/es.ts";
 import type { WeddingLocale } from "./locales/types.ts";
 import { weddingRsvpForm } from "./rsvpForm.ts";
+import { weddingThemeId } from "./theme.ts";
 
 export const weddingInvitation = {
   id: "gala-y-valentin",
@@ -11,14 +12,14 @@ export const weddingInvitation = {
     title: "event.title",
     date: "2027-06-12T12:00:00+02:00",
     timezone: "Europe/Madrid",
-    hashtag: "#BodaGalaYValentin",
+    hashtag: "event.hashtag",
   },
   controller: {
     name: "controller.name",
     email: "hola@ejemplo.com",
   },
   theme: {
-    id: "royal",
+    id: weddingThemeId,
   },
   seo: {
     title: "event.seoTitle",
@@ -160,11 +161,19 @@ export const weddingInvitation = {
         account: {
           iban: "ES00 0000 0000 0000 0000 0000",
           holderKey: "gifts.account.holder",
-          bizum: "+34 600 000 000",
+          bizum: {
+            enabled: true,
+            labelKey: "gifts.account.bizum",
+            // Los nombres salen de las claves del hero: son la misma persona, y asi un cambio de
+            // nombre no hay que perseguirlo por dos sitios ni traducirlo dos veces.
+            numbers: [
+              { labelKey: "hero.partnerOne", value: "+34 600 000 000" },
+              { labelKey: "hero.partnerTwo", value: "+34 611 000 000" },
+            ],
+          },
           revealOnRequest: true,
           revealLabel: "gifts.account.reveal",
           ibanLabel: "gifts.account.iban",
-          bizumLabel: "gifts.account.bizum",
           copyLabel: "gifts.account.copy",
           copiedLabel: "gifts.account.copied",
         },

@@ -1,8 +1,8 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { themes, type ThemeId } from "./src/design/themes/themes.ts";
-import { weddingInvitation } from "./src/invitations/wedding/invitation.ts";
+import { themes } from "./src/design/themes/themes.ts";
+import { weddingThemeId } from "./src/invitations/wedding/theme.ts";
 
 /**
  * Requests only the webfonts the deployed theme uses.
@@ -14,8 +14,7 @@ function themeFonts(): Plugin {
   return {
     name: "nartea-theme-fonts",
     transformIndexHtml(html) {
-      const families: readonly string[] =
-        themes[weddingInvitation.theme.id as ThemeId].googleFonts;
+      const families: readonly string[] = themes[weddingThemeId].googleFonts;
       const link =
         families.length === 0
           ? ""

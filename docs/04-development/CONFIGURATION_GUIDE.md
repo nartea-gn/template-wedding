@@ -23,6 +23,60 @@ política y bloquea las llamadas al nuevo.
 Admin usa usuarios provisionados en Supabase Auth y el método declarado por invitación; consulta el runbook de
 seguridad antes de desplegar.
 
+### La pareja
+
+Los nombres no se escriben en los catálogos: cada idioma declara su gramática alrededor de huecos
+`{partnerOne}`, `{partnerTwo}`, `{surnameOne}` y `{surnameTwo}`, y los valores llegan de una vez desde
+el entorno. `src/invitations/wedding/locales/variables.ts` los sustituye **al cargar cada catálogo**,
+no en cada `t()`, así que el runtime de localización no conoce esta boda.
+
+| Variable | Obligatoria | Para qué |
+|---|---|---|
+| `VITE_PARTNER_ONE` · `VITE_PARTNER_TWO` | No | Nombres de pila. Sin ellos se renderizan los de la plantilla |
+| `VITE_SURNAME_ONE` · `VITE_SURNAME_TWO` | No | Apellidos. **Sin ellos no se escribe nada**, ni el espacio que ocupaban |
+| `VITE_PARTNER_ONE_BG` · `VITE_PARTNER_TWO_BG` · `VITE_SURNAME_ONE_BG` · `VITE_SURNAME_TWO_BG` | No | Grafía de los idiomas que transliteran. Si falta, se usa la base |
+
+Ninguna lanza si falta: sin nombre hay una demo que renderizar, a diferencia de
+`VITE_SUPABASE_URL`. Eso es también lo que mantiene verdes CI, los e2e y un `pnpm dev` recién clonado.
+
+Los apellidos son condicionales de verdad. `gifts.account.holder` lee `Gala García y Valentin Petrov`
+con ambos declarados y `Gala y Valentin` sin ninguno: el hueco se lleva el espacio que tenía delante,
+porque después ningún `trim` podría distinguirlo de un espacio que el idioma sí quería.
+
+Un idioma que translitera y no declara su override muestra la grafía base, mezclando alfabetos
+(`Ана Ruiz и Бруно`). Es el comportamiento buscado —una grafía es mejor que un hueco—, pero declara
+los `_BG` si publicas apellidos.
+
+`catalogs.test.ts` falla si un catálogo vuelve a llevar un nombre escrito a mano. Es la prueba que
+impide que esto se deshaga solo.
+
+#### El hashtag
+
+No tiene variable propia: se deriva de los nombres, así que ponerlos ya lo actualiza. Es una clave de
+catálogo, `event.hashtag`, y de ella **solo se traduce la palabra**:
+
+| Idioma | Clave | Resultado sin variables |
+|---|---|---|
+| es | `#Boda{partnerOneBase}Y{partnerTwoBase}` | `#BodaGalaYValentin` |
+| en | `#Wedding{partnerOneBase}Y{partnerTwoBase}` | `#WeddingGalaYValentin` |
+| bg | `#Wedding{partnerOneBase}Y{partnerTwoBase}` | `#WeddingGalaYValentin` |
+
+Dos detalles deliberados:
+
+- Los nombres usan `{partnerOneBase}`, no `{partnerOne}`: los huecos «base» **se saltan el override
+  por idioma**. Un tag tiene que poder escribirse desde cualquier teclado y buscarse como una sola
+  cadena, así que no se bifurca por alfabeto como sí hace la prosa.
+- El búlgaro hereda la palabra inglesa en vez de traducirla a `#Сватба…`, por lo mismo.
+- El conector se queda en `Y` en los tres. Solo la palabra se traduce.
+
+Aun así, **dos tags no son uno**: quien publique en español y quien publique en inglés caen en muros
+distintos. Es la contrapartida aceptada de traducir la palabra; si algún día pesa más la agregación,
+la vuelta atrás es que los tres catálogos declaren la misma cadena.
+
+**Fuera del alcance del entorno:** el `id` de la invitación (`gala-y-valentin`) sigue nombrando a la
+pareja, porque es el `wedding_slug` con el que están guardadas las respuestas: cambiarlo es una
+migración de datos, no un renombrado.
+
 ## 2. Definir una identidad única
 
 Edita `src/invitations/wedding/invitation.ts`:
@@ -152,9 +206,12 @@ Tipos actuales:
 - `venue`;
 - `lodging`;
 - `gifts`;
-- `rsvp-cta`. Se puede declarar **más de una vez**: la invitación la lleva tras la sección de lugar y otra vez al
-  cierre, porque una única llamada al final quedaba a 3,7 pantallas de scroll en móvil. Los ids han de ser distintos y
-  solo la instancia con `closing: true` muestra el hashtag.
+- `rsvp-cta`. El tipo se puede declarar **más de una vez** —con ids distintos, que
+  `validateInvitationDefinition` exige— y entonces solo la instancia con `closing: true` muestra el hashtag, porque
+  repetirlo en cada llamada sería ruido. Esta invitación declara **una sola**, la del cierre.
+  `deadlineNotice` es opcional y lleva un hueco `{date}` que se rellena con el plazo que de verdad gobierna el
+  cierre —el de la base de datos si ha respondido, el compilado si no—, así que mover el plazo desde el panel mueve
+  la fecha que lee el invitado sin redesplegar. Solo se pinta con el RSVP abierto.
 
 Desactivar una sección no requiere tocar Landing:
 
@@ -169,6 +226,42 @@ Desactivar una sección no requiere tocar Landing:
 
 Una invitación que no ofrece alojamiento o regalos simplemente no declara esa entrada; no hay estado vacío
 que mantener dentro de los componentes.
+
+### Regalos
+
+`account` publica el IBAN; `account.bizum` publica teléfonos, y por eso lleva interruptor propio: una invitación
+puede ofrecer la cuenta sin exponer el móvil de nadie.
+
+```ts
+account: {
+    iban: 'ES00 0000 0000 0000 0000 0000',
+    holderKey: 'gifts.account.holder',
+    bizum: {
+        enabled: true,
+        labelKey: 'gifts.account.bizum',
+        numbers: [
+            { labelKey: 'hero.partnerOne', value: '+34 600 000 000' },
+            { labelKey: 'hero.partnerTwo', value: '+34 611 000 000' },
+        ],
+    },
+    revealOnRequest: true,
+    revealLabel: 'gifts.account.reveal',
+    ibanLabel: 'gifts.account.iban',
+    copyLabel: 'gifts.account.copy',
+    copiedLabel: 'gifts.account.copied',
+}
+```
+
+- **Como máximo dos números**, y al menos uno cuando `enabled` es `true`. Lo aplica
+  `validateInvitationDefinition`, no la convención.
+- Cada número lleva su propio `labelKey`. Apúntalo a la clave que ya tiene el nombre —`hero.partnerOne`— y un
+  renombrado viaja solo en vez de perseguirse por dos sitios y traducirse dos veces.
+- El `labelKey` del grupo nombra el bloque una vez. Sin él las filas serían dos teléfonos sueltos con un nombre
+  delante, y el invitado no sabría por dónde está pagando.
+- **El aviso de fraude (`fraudWarningKey`) se renderiza con los números, no con el bloque de cuenta.** El fraude que
+  corta es el del cambio de teléfono, así que una invitación que solo publica IBAN no muestra aviso, y una que apaga
+  Bizum se lleva los números y el aviso juntos. Aparece cuando el invitado ya tiene los números delante, no antes de
+  pulsar «Ver el número de cuenta».
 
 Para un tipo nuevo, define el contrato Core, implementa la Feature y regístrala en
 `src/invitations/wedding/sectionRegistry.tsx`. No añadas lógica de boda al renderer genérico. `SectionRegistry` es un
@@ -332,8 +425,14 @@ sigue `DATABASE_MIGRATIONS.md` y `RSVP_SECURITY_MIGRATION_RUNBOOK.md`.
 ## 11. Desplegar una segunda boda
 
 El motor sirve **una invitación por despliegue**. No hay selección en runtime ni multi-inquilino:
-`src/invitations/wedding` se importa de forma estática desde `main.tsx` y desde `vite.config.ts`,
-que inyecta las fuentes del tema activo en tiempo de compilación. Un build es una boda.
+`src/invitations/wedding` se importa de forma estática desde `main.tsx`, y `vite.config.ts` importa
+`invitations/wedding/theme.ts` para inyectar las fuentes del tema activo en tiempo de compilación.
+Un build es una boda.
+
+El tema se declara en su propio archivo justamente por eso. `vite.config.ts` corre en Node, donde
+`import.meta.env` no existe; importar `invitation.ts` para leer un string metía todo el grafo del
+navegador en el programa de Node, y el día que la invitación empezó a leer el entorno el build cayó
+con `Cannot read properties of undefined`. Un string, importado por los dos lados.
 
 Eso no es una limitación pendiente de resolver, es el modelo: este repositorio es una plantilla
 que se instancia. Para una segunda boda se copia, se cambia el contenido de `src/invitations/` y se
@@ -342,7 +441,8 @@ despliega con sus propios secretos.
 ### Qué cambia en cada instancia
 
 1. `src/invitations/wedding/` — identidad, `controller`, fechas, tema, secciones, catálogos y
-   formulario. El `id` debe ser único: es el `wedding_slug` que separa las respuestas.
+   formulario. El `id` debe ser único: es el `wedding_slug` que separa las respuestas. Los nombres
+   de la pareja **ya no viven aquí**: llegan por variables de entorno, ver «La pareja» en el punto 1.
 2. Un proyecto propio de Cloudflare Pages.
 3. Un proyecto propio de Supabase, o el mismo con otro `wedding_slug`. La RLS ya aísla por
    invitación desde Sprint 7.1.
@@ -362,6 +462,8 @@ no viajan a ningún despliegue.
 | `SUPABASE_PROJECT_ID` · `SUPABASE_ACCESS_TOKEN` · `SUPABASE_DB_PASSWORD` | Secret | Migraciones y Edge Functions |
 | `SUPABASE_SERVICE_ROLE_KEY` | Secret | Publicar la fecha de boda |
 | `NARTEA_WEDDING_REGISTERED` | Variable | `false` en el primer despliegue de cada boda |
+| `PARTNER_ONE` · `PARTNER_TWO` · `SURNAME_ONE` · `SURNAME_TWO` | Variable | La pareja. Opcionales; sin ellas rinden los nombres de la plantilla. El hashtag se deriva de ellas |
+| `PARTNER_ONE_BG` · `PARTNER_TWO_BG` · `SURNAME_ONE_BG` · `SURNAME_TWO_BG` | Variable | Grafía de los idiomas que transliteran |
 
 **Ojo con la última.** Es por boda, no global: una instancia nueva empieza en `false` para que el
 `INSERT` falle en rojo si el slug ya pertenece a otra, y pasa a `true` tras el primer despliegue

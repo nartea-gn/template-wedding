@@ -445,6 +445,10 @@
     @apply w-full max-w-xs md:max-w-sm;
 }
 
+.landing-cta-deadline {
+    @apply text-sm mt-4 text-(--color-wedding-muted);
+}
+
 .landing-hashtag {
     @apply text-sm italic tracking-wide text-(--color-wedding-muted);
 }
@@ -490,8 +494,4 @@
 
 .landing-lodging-book {
     @apply mt-2;
-}
-
-.landing-cta-deadline {
-    @apply text-sm mt-4 text-(--color-wedding-muted);
 }

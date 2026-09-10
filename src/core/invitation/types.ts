@@ -88,11 +88,11 @@ export type RsvpCtaSection<Message extends string> = Section<'rsvp-cta', {
     label: Message
     closedLabel: Message
     /**
-     * Aviso con la fecha limite, junto a la llamada. Lleva `{date}`, que la seccion sustituye.
+     * Line under the button telling the guest by when to reply. Carries a `{date}` hole, filled
+     * with the deadline the RSVP is actually governed by rather than with a date typed twice.
      *
-     * Opcional para no romper una invitacion sin plazo, pero recomendado: la fecha gobernaba el
-     * cierre sin aparecer en ninguna superficie ni idioma, y una urgencia sin fecha es la primera
-     * causa de confirmaciones tardias.
+     * Only rendered while the RSVP is open: once it has closed the button says so, and a date in
+     * the future next to it would contradict it.
      */
     deadlineNotice?: Message
     /**
@@ -127,10 +127,26 @@ export type LodgingSection<Message extends string> = Section<'lodging', {
     items: readonly LodgingItemDefinition<Message>[]
 }>
 
+/**
+ * One Bizum destination.
+ *
+ * Each number carries its own label because a couple publishes two, one per person, and a shared
+ * "Bizum" label would leave the guest guessing whose phone they are about to pay. Point it at the
+ * key that already holds the name -- `hero.partnerOne` and the like -- so a rename travels.
+ */
+export type BizumNumber<Message extends string> = {
+    labelKey: Message
+    value: string
+}
+
 export type GiftsSection<Message extends string> = Section<'gifts', {
     label: Message
     noteKey?: Message
-    /** Line that cuts the most common fraud: the couple never asks to change the number. */
+    /**
+     * Line that cuts the most common fraud: the couple never asks to change the number. It renders
+     * with the Bizum numbers, the phone the fraud impersonates, so an invitation without them shows
+     * no warning either.
+     */
     fraudWarningKey: Message
     newTabLabel: Message
     registry?: {
@@ -140,7 +156,21 @@ export type GiftsSection<Message extends string> = Section<'gifts', {
     account?: {
         iban: string
         holderKey: Message
-        bizum?: string
+        /**
+         * Bizum carries its own switch because it publishes personal phone numbers, which an IBAN
+         * does not: an invitation can offer the account without exposing anyone's mobile. At most
+         * two numbers, enforced by {@link validateInvitationDefinition}.
+         */
+        bizum?: {
+            enabled: boolean
+            /**
+             * Names the group of numbers. The rows themselves are labelled with the people who own
+             * them, so without this the guest would read two bare phone numbers and never learn
+             * which payment method they belong to.
+             */
+            labelKey: Message
+            numbers: readonly BizumNumber<Message>[]
+        }
         /**
          * Keeps the account details out of the initial HTML until a guest asks for them.
          * Automated scraping is the realistic vector, and a Bizum number is a personal phone.
@@ -148,7 +178,6 @@ export type GiftsSection<Message extends string> = Section<'gifts', {
         revealOnRequest: boolean
         revealLabel: Message
         ibanLabel: Message
-        bizumLabel: Message
         copyLabel: Message
         copiedLabel: Message
     }
@@ -231,7 +260,14 @@ export type InvitationDefinition<Locale extends string, Message extends string> 
         title: Message
         date: string
         timezone: string
-        hashtag?: string
+        /**
+         * Message key, because one word of the tag is translated and the rest is not.
+         *
+         * Spanish writes `#Boda...`, the other catalogs `#Wedding...`, and every catalog writes the
+         * names with `{partnerOneBase}` so the tag never forks per script: a guest with a Cyrillic
+         * keyboard has to be able to type the same tag a guest with a Latin one does.
+         */
+        hashtag?: Message
     }
     /**
      * Data controller under GDPR article 13: the couple, never the agency.

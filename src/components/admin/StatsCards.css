@@ -35,8 +35,9 @@
 
 /* Sin `opacity`. Al 0.78 estas dos etiquetas median 3,69:1 y 4,27:1 contra la tarjeta, por debajo
    del 4,5:1 que pide AA, y la opacidad no aportaba nada que el color no dijera ya. Siguen a 14 px,
-   que para AA es texto pequeno igual que los 12 px que tenian antes: el umbral esta en 18,66 px
-   -- o 14 px en negrita -- asi que el 4,5:1 sigue siendo el que manda. */
+   que para AA es texto pequeno igual que los 12 px que tenian antes: el umbral de texto grande
+   esta en 18 pt = 24 px, o 14 pt = 18,66 px en negrita, asi que el 4,5:1 sigue siendo el que
+   manda. */
 .stat-label--green {
     color: var(--color-wedding-success);
 }

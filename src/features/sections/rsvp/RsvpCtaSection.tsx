@@ -11,6 +11,8 @@ export function RsvpCtaSection<Message extends string>({
     const {t, formatDate} = useLocalization<Message>()
     const isOpen = useRsvpAvailability(capabilities.rsvp)
     const deadline = useRsvpDeadline(capabilities.rsvp)
+    // `t` takes a key and nothing else, so the date is substituted here rather than widening that
+    // contract -- the same way the privacy notice fills in the controller and their address.
     const deadlineNotice = deadline && section.content.deadlineNotice
         ? t(section.content.deadlineNotice).replace(
             '{date}', formatDate(deadline, {year: 'numeric', month: 'long', day: 'numeric'}))
@@ -24,10 +26,11 @@ export function RsvpCtaSection<Message extends string>({
             <Link to="/rsvp" className="landing-cta-btn btn btn--primary">
                 {t(isOpen ? section.content.label : section.content.closedLabel)}
             </Link>
-            {/* La fecha, junto a la accion. Antes solo existia en la configuracion. */}
+            {/* La fecha, junto a la accion y solo mientras se puede actuar: cerrado, el boton ya
+                dice que lo esta y un plazo en futuro lo contradiria. */}
             {isOpen && deadlineNotice && <p className="landing-cta-deadline">{deadlineNotice}</p>}
             {section.content.closing && event.hashtag && (
-                <p className="landing-hashtag">{event.hashtag}</p>
+                <p className="landing-hashtag">{t(event.hashtag)}</p>
             )}
         </section>
     )

@@ -50,6 +50,10 @@ VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 ```
 
+Los nombres de la pareja también llegan por entorno, y todos son opcionales: sin ellos se renderiza la pareja de la
+plantilla, así que un clon recién hecho arranca sin tocar nada. `.env.example` los lista y
+`docs/04-development/CONFIGURATION_GUIDE.md` explica el override por idioma y los apellidos condicionales.
+
 Las variables con prefijo `VITE_` forman parte del bundle público. No incluyas claves `service_role`, contraseñas de
 base de datos ni otros secretos privilegiados. El panel admite dos métodos de acceso intercambiables por configuración
 (`capabilities.admin.auth.method`): código por correo (`otp`) y contraseña (`password`). La boda

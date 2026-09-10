@@ -27,16 +27,61 @@
     font-family: var(--font-heading);
 }
 
+/* UNA REJILLA POR FILA, LAS TRES DEL MISMO ANCHO
+ *
+ * Cada fila era una linea flex centrada y dimensionada por su contenido, asi que la posicion de
+ * cada parte dependia de lo que midiera esa fila: medido, hasta 78 px de dispersion entre las x de
+ * los valores, y a 390 px el boton caia a una segunda linea en unas filas y no en otras.
+ *
+ * Ahora cada fila es una rejilla `1fr auto` a ancho completo del bloque de cuenta. Como todas las
+ * filas miden lo mismo, las dos columnas empiezan y acaban en el mismo sitio en todas, sin fijar
+ * anchos a mano: la etiqueta y el valor se apilan en la primera y el boton ocupa la segunda.
+ *
+ * Y no una tabla de tres columnas: `VALENTIN` (75 px) mas el IBAN (244 px monoespaciado) mas
+ * `COPIAR` (60 px) y los huecos piden 395 px, y solo hay 342 a 390 px de viewport. Por debajo de
+ * ~768 px no cabe, asi que serian dos disenos en vez de uno. */
 .landing-gifts-detail {
-    @apply flex flex-wrap items-center justify-center gap-2 text-sm;
+    @apply grid w-full items-center gap-x-3 text-sm;
+    grid-template-columns: minmax(0, 1fr) auto;
 }
 
+/* `justify-self: start` y no `text-align`: la seccion centra su texto, y una caja estirada a la
+   columna heredaba ese centrado -- las cajas quedaban alineadas y las palabras dentro no, que es
+   justo lo que se venia a arreglar. Encogidas a su contenido, empiezan todas en el borde de la
+   columna. El valor largo sigue pudiendo envolver: al desbordar la columna la ocupa entera. */
 .landing-gifts-detail-label {
-    @apply uppercase tracking-[0.12em] text-xs text-(--color-wedding-muted);
+    @apply uppercase tracking-[0.12em] text-xs text-left text-(--color-wedding-muted);
+    justify-self: start;
 }
 
 .landing-gifts-detail-value {
-    @apply font-mono select-all;
+    @apply font-mono text-left select-all;
+    justify-self: start;
+}
+
+/* El boton ocupa las dos filas de la segunda columna, centrado con el par etiqueta-valor.
+   `justify-self` lo pega al borde derecho, asi que cuando el texto pasa a «Copiado» crece hacia
+   dentro y el borde que el ojo sigue no se mueve. */
+.landing-gifts-copy {
+    grid-area: 1 / 2 / 3 / 3;
+    justify-self: end;
+}
+
+/* El aviso cuelga de los Bizum, no del bloque de cuenta: el fraude que corta es el del cambio de
+   telefono. Agruparlos en un contenedor propio hace que el aviso desaparezca solo cuando la
+   invitacion no publica numeros, sin una segunda condicion en el componente. */
+.landing-gifts-bizum {
+    @apply flex flex-col items-start gap-2 w-full;
+}
+
+.landing-gifts-bizum-heading {
+    @apply uppercase tracking-[0.12em] text-xs text-(--color-wedding-action);
+}
+
+/* El aviso vuelve al centro del bloque: es una nota, no una fila de datos, y alinearlo con la
+   columna lo dejaba colgando de su propio borde izquierdo. */
+.landing-gifts-bizum > .landing-gifts-warning {
+    @apply self-center;
 }
 
 .landing-gifts-warning {

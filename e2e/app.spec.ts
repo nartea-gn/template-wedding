@@ -233,3 +233,41 @@ test('El enlace de salto lleva el foco al contenido sin descartar la página', a
     await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
     await expect(page.getByText('Ruta no encontrada')).toHaveCount(0)
 })
+
+test('los datos de la cuenta se alinean en columna a cualquier ancho', async ({page}) => {
+    // Cada fila era una linea flex centrada y dimensionada por su contenido, asi que la x de cada
+    // parte dependia de lo que midiera esa fila: medido antes del arreglo, hasta 78 px de
+    // dispersion entre los valores, y el boton caia a una segunda linea en unas filas y no en
+    // otras. Se afirma la alineacion y no el diseno concreto: lo que no puede volver es que las
+    // tres filas empiecen en sitios distintos.
+    for (const width of [320, 390, 768, 1440]) {
+        await page.setViewportSize({width, height: 900})
+        await page.goto('./')
+        await page.getByRole('button', {name: 'Ver el número de cuenta'}).click()
+
+        const columnas = await page.locator('.landing-gifts-detail').evaluateAll(rows => {
+            const x = element => Math.round(element.getBoundingClientRect().x)
+            const derecha = element => Math.round(element.getBoundingClientRect().right)
+            // Arrays y no `Set`: un `Set` cruza el puente de Playwright como `{}`.
+            return {
+                etiquetas: rows.map(row => x(row.querySelector('.landing-gifts-detail-label'))),
+                valores: rows.map(row => x(row.querySelector('.landing-gifts-detail-value'))),
+                botones: rows.map(row => derecha(row.querySelector('button'))),
+                filasX: rows.map(row => x(row)),
+                filasDerecha: rows.map(row => derecha(row)),
+            }
+        })
+
+        expect(columnas.etiquetas, `filas a ${width} px`).toHaveLength(3)
+        expect([...new Set(columnas.etiquetas)], `etiquetas a ${width} px`).toHaveLength(1)
+        expect([...new Set(columnas.valores)], `valores a ${width} px`).toHaveLength(1)
+        expect([...new Set(columnas.botones)], `botones a ${width} px`).toHaveLength(1)
+
+        // Que coincidan entre si no basta: tres filas centradas a la vez tambien coinciden, y ese
+        // es justo el estado del que se viene. Las columnas tienen que empezar y acabar en los
+        // bordes del bloque.
+        expect(columnas.etiquetas[0], `etiquetas al borde a ${width} px`).toBe(columnas.filasX[0])
+        expect(columnas.valores[0], `valores al borde a ${width} px`).toBe(columnas.filasX[0])
+        expect(columnas.botones[0], `botones al borde a ${width} px`).toBe(columnas.filasDerecha[0])
+    }
+})

@@ -48,12 +48,6 @@ describe('AppRouter', () => {
         // than a second. At 1s it was the only load-sensitive test in the suite.
         await waitFor(() => expect(screen.getByText('rsvp.closed.title')).toBeInTheDocument(), {timeout: 5000})
         expect(screen.queryByText('route.notFound')).not.toBeInTheDocument()
-        expect(screen.getByText('rsvp.closed.deadline')).toBeInTheDocument()
-
-        // Y qué fecha pasó, no solo que pasó alguna: el plazo gobernaba el cierre sin aparecer en
-        // ninguna superficie. Aquí solo se comprueba que la línea está: el `t` de este mock
-        // devuelve la clave, no la plantilla, así que no hay `{date}` que sustituir. La
-        // sustitución se midió en navegador, en español y en inglés.
     })
 
     it('renders the form while the RSVP is open', async () => {

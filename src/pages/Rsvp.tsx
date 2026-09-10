@@ -8,21 +8,17 @@ import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding'
 import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
 import {InterfaceIcon} from '../components/ui/InterfaceIcon';
 import {formatResponseValue, getFormFields} from '../features/admin/presentation/responsePresentation';
-import {useRsvpAvailability, useRsvpDeadline} from '../features/rsvp/hooks/useRsvpAvailability';
+import {useRsvpAvailability} from '../features/rsvp/hooks/useRsvpAvailability';
 import './Rsvp.css';
 
 const rsvpCapability = weddingInvitation.capabilities.rsvp;
 
 export default function Rsvp() {
     const navigate = useNavigate();
-    const {locale, t, formatDate} = useLocalization<WeddingMessageKey>();
+    const {locale, t} = useLocalization<WeddingMessageKey>();
     const submission = useRsvpSubmission(weddingRsvpRepository);
     const [submittedAnswers, setSubmittedAnswers] = useState<FormAnswers>();
     const available = useRsvpAvailability(rsvpCapability);
-    const deadline = useRsvpDeadline(rsvpCapability);
-    const deadlineText = deadline
-        ? formatDate(deadline, {year: 'numeric', month: 'long', day: 'numeric'})
-        : undefined;
 
     // Defensive only, and what narrows `rsvpCapability` for the rest of this component: the
     // route is not registered at all when the capability is off, so the wildcard answers instead
@@ -61,12 +57,6 @@ export default function Rsvp() {
                     <InterfaceIcon name="lock" className="rsvp-closed-icon"/>
                     <h1 className="rsvp-closed-title">{t('rsvp.closed.title')}</h1>
                     <p className="rsvp-closed-text">{t('rsvp.closed.text')}</p>
-                    {/* Que fecha paso, no solo que paso alguna. */}
-                    {deadlineText && (
-                        <p className="rsvp-closed-text">
-                            {t('rsvp.closed.deadline').replace('{date}', deadlineText)}
-                        </p>
-                    )}
                     {/* Un humano a quien escribir. El correo estaba en la configuracion y en el
                         aviso de privacidad del formulario abierto, y se le negaba justo a quien
                         llega tarde y lo necesita. */}
@@ -147,7 +137,7 @@ export default function Rsvp() {
                             {t('rsvp.success.home')}
                         </button>
                         {weddingInvitation.event.hashtag && (
-                            <p className="rsvp-confirmed-hashtag">{weddingInvitation.event.hashtag}</p>
+                            <p className="rsvp-confirmed-hashtag">{t(weddingInvitation.event.hashtag)}</p>
                         )}
                     </div>
                 </div>
@@ -157,11 +147,6 @@ export default function Rsvp() {
 
     return (
         <div className="rsvp-page">
-            {deadlineText && (
-                <p className="rsvp-deadline-notice">
-                    {t('rsvp.deadline.notice').replace('{date}', deadlineText)}
-                </p>
-            )}
             <FormEngine
                 definition={rsvpCapability.form}
                 headingLevel={1}

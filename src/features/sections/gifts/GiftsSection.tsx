@@ -5,16 +5,22 @@ import './GiftsSection.css'
 import {devWarn} from '../../../lib/devLog'
 
 const HEADING_ID = 'landing-gifts-heading'
+const BIZUM_HEADING_ID = 'landing-gifts-bizum-heading'
 
 type CopyableProps = {
     label: string
     value: string
     copyLabel: string
     copiedLabel: string
+    /**
+     * Prepended to the button's accessible name. A Bizum row is labelled with a person, so on its
+     * own the button would announce "Copy Gala" and lose what is being copied.
+     */
+    groupLabel?: string
 }
 
 /** One account detail with a copy button, so nobody retypes an IBAN by hand. */
-function CopyableDetail({label, value, copyLabel, copiedLabel}: Readonly<CopyableProps>) {
+function CopyableDetail({label, value, copyLabel, copiedLabel, groupLabel}: Readonly<CopyableProps>) {
     const [copied, setCopied] = useState(false)
 
     const copy = async () => {
@@ -32,9 +38,9 @@ function CopyableDetail({label, value, copyLabel, copiedLabel}: Readonly<Copyabl
         <p className="landing-gifts-detail">
             <span className="landing-gifts-detail-label">{label}</span>
             <span className="landing-gifts-detail-value">{value}</span>
-            <button type="button" className="btn btn--ghost"
+            <button type="button" className="btn btn--ghost landing-gifts-copy"
                     onClick={() => void copy()}
-                    aria-label={`${copyLabel} ${label}`}>
+                    aria-label={[copyLabel, groupLabel, label].filter(Boolean).join(' ')}>
                 {copied ? copiedLabel : copyLabel}
             </button>
         </p>
@@ -46,7 +52,9 @@ function CopyableDetail({label, value, copyLabel, copiedLabel}: Readonly<Copyabl
  *
  * Account details stay out of the initial HTML until a guest asks for them: publishing an IBAN
  * and a personal phone number openly makes impersonation cheap ("the couple's number changed").
- * The warning line next to them cuts the most common version of that fraud.
+ * The warning line belongs to the Bizum numbers rather than to the account block, because the
+ * phone is what that fraud impersonates: an invitation that publishes only an IBAN has nothing
+ * to warn about, and one that switches Bizum off drops the numbers and the warning together.
  */
 export function GiftsSection<Message extends string>({
                                                          section,
@@ -54,6 +62,9 @@ export function GiftsSection<Message extends string>({
     const {t} = useLocalization<Message>()
     const {registry, account} = section.content
     const [revealed, setRevealed] = useState(() => account?.revealOnRequest === false)
+    const bizum = account?.bizum?.enabled === true && account.bizum.numbers.length > 0
+        ? account.bizum
+        : undefined
 
     return (
         <section className="landing-gifts" aria-labelledby={HEADING_ID}>
@@ -75,9 +86,23 @@ export function GiftsSection<Message extends string>({
                         <>
                             <CopyableDetail label={t(account.ibanLabel)} value={account.iban}
                                             copyLabel={t(account.copyLabel)} copiedLabel={t(account.copiedLabel)}/>
-                            {account.bizum && (
-                                <CopyableDetail label={t(account.bizumLabel)} value={account.bizum}
-                                                copyLabel={t(account.copyLabel)} copiedLabel={t(account.copiedLabel)}/>
+                            {bizum && (
+                                <div className="landing-gifts-bizum" role="group"
+                                     aria-labelledby={BIZUM_HEADING_ID}>
+                                    <p id={BIZUM_HEADING_ID} className="landing-gifts-bizum-heading">
+                                        {t(bizum.labelKey)}
+                                    </p>
+                                    {bizum.numbers.map(number => (
+                                        <CopyableDetail key={number.labelKey} label={t(number.labelKey)}
+                                                        value={number.value}
+                                                        copyLabel={t(account.copyLabel)}
+                                                        copiedLabel={t(account.copiedLabel)}
+                                                        groupLabel={t(bizum.labelKey)}/>
+                                    ))}
+                                    <p className="landing-gifts-warning" role="note">
+                                        {t(section.content.fraudWarningKey)}
+                                    </p>
+                                </div>
                             )}
                         </>
                     ) : (
@@ -86,7 +111,6 @@ export function GiftsSection<Message extends string>({
                             {t(account.revealLabel)}
                         </button>
                     )}
-                    <p className="landing-gifts-warning" role="note">{t(section.content.fraudWarningKey)}</p>
                 </div>
             )}
         </section>

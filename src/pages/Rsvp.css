@@ -306,7 +306,3 @@
 .rsvp-privacy-notice {
     @apply text-xs leading-relaxed text-(--color-wedding-muted);
 }
-
-.rsvp-deadline-notice {
-    @apply text-sm mb-6 text-center text-(--color-wedding-muted);
-}
