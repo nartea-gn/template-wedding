@@ -3,6 +3,7 @@ import { validateInvitationDefinition } from "../../core/invitation/index.ts";
 import type { WeddingMessageKey } from "./locales/es.ts";
 import type { WeddingLocale } from "./locales/types.ts";
 import { weddingRsvpForm } from "./rsvpForm.ts";
+import { weddingRsvpSections } from "./rsvpSections.ts";
 import { weddingThemeId } from "./theme.ts";
 
 export const weddingInvitation = {
@@ -201,16 +202,17 @@ export const weddingInvitation = {
       enabled: true,
       auth: { method: "password" },
       source: "rsvp",
+      // Las columnas siguen a las secciones que el formulario pregunta: una seccion apagada no
+      // deja una columna de guiones en la tabla, ni en el CSV que se entrega al catering.
       columns: [
         "fullName",
         "attending",
-        "dietaryOptions",
-        // Sin esta columna la alergia escrita a mano no aparecia en la tabla, ni en el modal de
+        // Sin `dietaryOther` la alergia escrita a mano no aparecia en la tabla, ni en el modal de
         // edicion, ni en el CSV que el propio aviso del panel manda dar al catering: un invitado
         // con "Alergia leve a los frutos secos" se exportaba como "Ninguna, como de todo".
-        "dietaryOther",
-        "busOption",
-        "songRequest",
+        ...(weddingRsvpSections.dietary ? ["dietaryOptions", "dietaryOther"] : []),
+        ...(weddingRsvpSections.bus ? ["busOption"] : []),
+        ...(weddingRsvpSections.song ? ["songRequest"] : []),
         "message",
       ],
       // Sustantivos para la pareja, no las preguntas que se le hicieron al invitado. El copy ya
@@ -224,11 +226,17 @@ export const weddingInvitation = {
         songRequest: "admin.song",
         message: "admin.message",
       },
+      // Igual que las columnas: sin autobus no hay tarjeta de transporte que contar, y la que
+      // habia contaba a todo el mundo como "transporte propio" porque nadie podia responder otra
+      // cosa.
       metrics: {
         attendanceFieldId: "attending",
-        transportFieldId: "busOption",
-        ownTransportValue: "no",
-        dietaryFieldIds: ["dietaryOptions", "dietaryOther"],
+        ...(weddingRsvpSections.bus
+          ? { transportFieldId: "busOption", ownTransportValue: "no" }
+          : {}),
+        ...(weddingRsvpSections.dietary
+          ? { dietaryFieldIds: ["dietaryOptions", "dietaryOther"] }
+          : {}),
       },
       mutations: { rsvpClosure: { enabled: true } },
       controls: {

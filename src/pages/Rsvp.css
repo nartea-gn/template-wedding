@@ -30,17 +30,14 @@
     @apply max-w-xl space-y-6;
 }
 
-/* EL ORNAMENTO SE CENTRA AQUI, NO EN SU PROPIA REGLA
- *
- * `.landing-ornament` es `width: 100%` con `max-width: 24rem` y sin margen horizontal: en la
- * landing lo centra `.landing-hero`, que es `flex flex-col items-center`. Esta tarjeta no es
- * flex -- es `space-y-6` con hijos en flujo de bloque -- asi que el ornamento se apoyaba en el
- * borde izquierdo y quedaba 55 px a la izquierda del centro del titulo, medido a 1440 px.
- *
- * El centrado vive aqui y no en `.landing-ornament` porque el hero no lo necesita y anadirlo
- * alli cambiaria una regla compartida para arreglar un solo contexto. */
-.rsvp-confirmed-card .landing-ornament {
-    margin-inline: auto;
+/* La pregunta de identidad: misma tarjeta del formulario, porque el invitado sigue dentro de el
+   y no ha fallado nada. */
+.rsvp-identity-card {
+    @apply text-center space-y-5;
+}
+
+.rsvp-identity-actions {
+    @apply flex flex-col gap-3 pt-2;
 }
 
 .rsvp-confirmed-title {

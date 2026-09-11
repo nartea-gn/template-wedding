@@ -95,18 +95,57 @@ BEGIN
         RAISE EXCEPTION 'the legacy column sync trigger did not derive the flat columns';
     END IF;
 
-    -- A repeat submission corrects the existing row instead of adding a second one.
-    INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers)
+    -- A repeat submission that says nothing is refused: the name alone does not say whether it
+    -- is the same person coming back or a second guest who shares it (20260911).
+    BEGIN
+        INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers)
+        VALUES ('gala-y-valentin', 'ignored', false, 'wedding-rsvp', 2, 'es',
+                '{"fullName": "  gala garcía ", "attending": false}'::jsonb);
+        RAISE EXCEPTION 'a repeat submission with no intent should have been refused';
+    EXCEPTION WHEN SQLSTATE 'RSVPD' THEN
+        NULL;
+    END;
+
+    -- Saying it is the same person corrects the existing row, normalisation included.
+    INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers, submission_intent)
     VALUES ('gala-y-valentin', 'ignored', false, 'wedding-rsvp', 2, 'es',
-            '{"fullName": "  gala garcía ", "attending": false}'::jsonb);
+            '{"fullName": "  gala garcía ", "attending": false}'::jsonb, 'correction');
 
     SELECT count(*) INTO row_count FROM public.rsvp_responses WHERE wedding_slug = 'gala-y-valentin';
     IF row_count <> 1 THEN
-        RAISE EXCEPTION 'a repeat submission created % rows instead of correcting the first', row_count;
+        RAISE EXCEPTION 'a correction created % rows instead of correcting the first', row_count;
     END IF;
     IF (SELECT attending FROM public.rsvp_responses WHERE wedding_slug = 'gala-y-valentin') THEN
         RAISE EXCEPTION 'the correction did not overwrite the previous answer';
     END IF;
+
+    -- A second guest with the same name gets a row of their own, and the first one is left alone.
+    INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers, submission_intent)
+    VALUES ('gala-y-valentin', 'ignored', true, 'wedding-rsvp', 2, 'es',
+            '{"fullName": "Gala García", "attending": true, "songRequest": "otra"}'::jsonb, 'namesake');
+
+    SELECT count(*) INTO row_count FROM public.rsvp_responses WHERE wedding_slug = 'gala-y-valentin';
+    IF row_count <> 2 THEN
+        RAISE EXCEPTION 'a namesake should have created a second row, found %', row_count;
+    END IF;
+    IF (SELECT count(*) FROM public.rsvp_responses
+        WHERE wedding_slug = 'gala-y-valentin' AND NOT attending) <> 1 THEN
+        RAISE EXCEPTION 'the namesake overwrote the answer of the guest who was already there';
+    END IF;
+
+    -- And once two share the name, a correction can no longer be attributed to either.
+    BEGIN
+        INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers, submission_intent)
+        VALUES ('gala-y-valentin', 'ignored', false, 'wedding-rsvp', 2, 'es',
+                '{"fullName": "gala garcía", "attending": false}'::jsonb, 'correction');
+        RAISE EXCEPTION 'an ambiguous correction should have been refused';
+    EXCEPTION WHEN SQLSTATE 'RSVPM' THEN
+        NULL;
+    END;
+
+    -- The second row is removed so the assertions that follow count what they expect.
+    DELETE FROM public.rsvp_responses
+    WHERE wedding_slug = 'gala-y-valentin' AND identity_discriminator IS NOT NULL;
 
     -- The purge only reaches weddings past their retention window.
     PERFORM public.purge_all_expired_rsvp();

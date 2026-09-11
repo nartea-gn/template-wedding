@@ -127,6 +127,15 @@ holds no privilege. Before that, all three arrived as `42501` and the repository
 `RsvpClosedError`, so a project whose `invitations` row was missing showed every guest a passed deadline with no way to
 retry. The trigger fires ahead of the policy's `WITH CHECK`, which stays in place as a fail-closed backstop.
 
+`20260911_distinguish_namesakes.sql` adds two more codes, both of them about who a submission belongs to.
+`resolve_rsvp_identity()` raises `RSVPD` when the name already has an answer and the guest has not said whether they are
+correcting their own or are a second person with the same name, and `RSVPM` when a correction arrives for a name several
+guests now share, which no longer identifies a row. Before it, identity was the normalised name alone and a repeat
+submission was redirected onto the existing row: two real guests called Ana López shared one, the second silently
+overwrote the first, and the couple read one row where there were two people. The guest answers the question with
+`submission_intent` -- `correction` or `namesake` -- which the trigger reads and clears, so it is never stored.
+`identity_discriminator` separates the rows and is outside the anonymous column grant: only the trigger allocates it.
+
 ## Delivered since Sprint 7.1D
 
 - editing a submission, with the modal closing only after the write confirms;

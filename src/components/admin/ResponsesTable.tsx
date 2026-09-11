@@ -3,7 +3,7 @@ import type {RsvpRecordUpdate, RsvpSubmissionRecord} from '../../features/rsvp/d
 import {useLocalization} from '../../app/providers/useLocalization';
 import {useEffect, useRef, useState} from 'react';
 import type {WeddingMessageKey} from '../../invitations/wedding';
-import {formatResponseValue, getFormFields} from '../../features/admin/presentation/responsePresentation';
+import {formatResponseValue, getFormFields, withNamesakeMark} from '../../features/admin/presentation/responsePresentation';
 import {InterfaceIcon} from '../ui/InterfaceIcon';
 import {EditResponseModal} from './EditResponseModal';
 import './ResponsesTable.css';
@@ -40,6 +40,8 @@ export function ResponsesTable({responses, loading, hasError, errorMessage, form
         return fields.has(id) ? t(fields.get(id)!.label) : id;
     };
     const [editingId, setEditingId] = useState<number | null>(null)
+    /** El boton que abrio el modal, para devolverle el foco al cerrarlo. */
+    const editOpenerRef = useRef<HTMLButtonElement | null>(null)
     const [confirmingId, setConfirmingId] = useState<number | null>(null)
     const editingResponse = responses.find(item => item.id === editingId) ?? null
 
@@ -85,6 +87,11 @@ export function ResponsesTable({responses, loading, hasError, errorMessage, form
                                         {yes: 'common.yes', no: 'common.no'},
                                     );
                                     const label = columnLabel(id);
+                                    // Dos filas "Ana López" son dos personas desde 20260911, y sin
+                                    // la marca la pareja no tiene con que distinguirlas.
+                                    const readable = id === form.submission.identityFieldId
+                                        ? withNamesakeMark(formattedValue, response.namesakeMark)
+                                        : formattedValue;
                                     // Vacio en el sentido del panel: sin valor que leer. En movil
                                     // la celda desaparece en vez de pintar un guion.
                                     const isEmpty = typeof value !== 'boolean'
@@ -97,8 +104,8 @@ export function ResponsesTable({responses, loading, hasError, errorMessage, form
                                             className={`responses-badge responses-badge--${value ? 'yes' : 'no'}`}>
                                             <InterfaceIcon name={value ? 'check' : 'close'}
                                                            className="responses-badge-icon"/>
-                                            {formattedValue}
-                                        </span> : formattedValue}
+                                            {readable}
+                                        </span> : readable}
                                     </td>;
                                 })}
                                 <td role="cell" className="responses-td">
@@ -111,7 +118,13 @@ export function ResponsesTable({responses, loading, hasError, errorMessage, form
                                         <button type="button" className="btn btn--ghost responses-action"
                                                 aria-label={t('admin.actions.edit')}
                                                 title={t('admin.actions.edit')}
-                                                onClick={() => setEditingId(response.id)}>
+                                                onClick={event => {
+                                                    // El boton pulsado, no `document.activeElement`:
+                                                    // WebKit no enfoca un boton al hacer clic, asi
+                                                    // que el modal no tenia a donde devolver el foco.
+                                                    editOpenerRef.current = event.currentTarget
+                                                    setEditingId(response.id)
+                                                }}>
                                             <InterfaceIcon name="pencil" className="responses-action-icon"/>
                                         </button>
                                         {response.deletedAt
@@ -156,6 +169,7 @@ export function ResponsesTable({responses, loading, hasError, errorMessage, form
                 }}
                 onCancel={() => setEditingId(null)}
                 saving={loading}
+                openerRef={editOpenerRef}
             />
         )}
     </section>;

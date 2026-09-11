@@ -274,12 +274,14 @@ export function FormEngine<Message extends string>({
                                                 tabIndex={-1}>
                         <p className="rsvp-error-box-text">{t(definition.messages.submitError)}</p>
                     </div>}
-                    {/* On the first step only. Repeated on all four, the retention clause was
-                        also the last thing a guest read before pressing submit on the step meant
-                        to be affectionate. Article 13 asks for it at the point of collection,
-                        which is where the form starts; the health-data field carries its own,
-                        more specific notice next to the question that collects it. */}
-                    {engine.isFirst && (privacyNotice ?? (definition.privacyNotice && t(definition.privacyNotice))) && (
+                    {/* On the last step only, immediately above the button that sends. Article
+                        13 asks for the notice at the point of collection, and nothing is
+                        collected until this button is pressed: on step one it was read before the
+                        guest had decided to answer at all, and by the time they committed it was
+                        four screens behind them. Repeating it on every step is what this replaced.
+                        The health-data field keeps its own, more specific notice next to the
+                        question that collects it. */}
+                    {engine.isLast && (privacyNotice ?? (definition.privacyNotice && t(definition.privacyNotice))) && (
                         <p className="rsvp-privacy-notice">
                             {privacyNotice ?? t(definition.privacyNotice!)}
                         </p>

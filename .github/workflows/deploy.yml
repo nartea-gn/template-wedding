@@ -75,9 +75,8 @@ jobs:
           VITE_SURNAME_TWO_BG: ${{ vars.SURNAME_TWO_BG }}
         run: pnpm run build
 
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
-
+      # The CLI is the `supabase` devDependency, already installed above -- see the note in
+      # `quality.yml` on why `supabase/setup-cli` is gone.
       - name: Apply pending database migrations
         # `--include-all` because `20260000_enable_extension.sql` is versioned before the first
         # migration the production project ever recorded (`20260712`, see ADR-012 §Sprint 7.1).
@@ -94,15 +93,15 @@ jobs:
           SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
         run: |
-          supabase link --project-ref "$SUPABASE_PROJECT_ID"
+          pnpm exec supabase link --project-ref "$SUPABASE_PROJECT_ID"
           # Prints the plan before applying it. `db push` reports what it did but not what it was
           # about to do, so a run that applies several accumulated migrations at once leaves no
           # record of the gap it closed. Kept in the same step as the push so it cannot run
           # against an unlinked project.
           echo "::group::Pending migrations"
-          supabase migration list --linked
+          pnpm exec supabase migration list --linked
           echo "::endgroup::"
-          supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
+          pnpm exec supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
 
       - name: Sync wedding date for the purge cutoff
         env:
@@ -117,7 +116,7 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
-        run: supabase functions deploy send-purge-warnings --project-ref "$SUPABASE_PROJECT_ID"
+        run: pnpm exec supabase functions deploy send-purge-warnings --project-ref "$SUPABASE_PROJECT_ID"
 
       # Cloudflare only receives the built output. The gates above -- migrations, schema drift,
       # end-to-end tests -- stay in GitHub because Cloudflare's own build cannot run them.

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import {weddingRsvpForm} from '../../invitations/wedding'
 import {validateElements, validateFormDefinition} from './validation'

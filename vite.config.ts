@@ -1,28 +1,6 @@
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { themes } from "./src/design/themes/themes.ts";
-import { weddingThemeId } from "./src/invitations/wedding/theme.ts";
-
-/**
- * Requests only the webfonts the deployed theme uses.
- *
- * Every theme declares its own families, so activating a theme can never leave the page asking
- * for someone else's fonts -- or silently rendering with the wrong ones.
- */
-function themeFonts(): Plugin {
-  return {
-    name: "nartea-theme-fonts",
-    transformIndexHtml(html) {
-      const families: readonly string[] = themes[weddingThemeId].googleFonts;
-      const link =
-        families.length === 0
-          ? ""
-          : `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?${families.map((family) => `family=${family}`).join("&")}&display=swap"/>`;
-      return html.replace("<!--theme-fonts-->", link);
-    },
-  };
-}
 
 /**
  * Emits `_headers`, the file Cloudflare Pages turns into response headers.
@@ -48,8 +26,8 @@ function contentSecurityPolicy(supabaseUrl: string): Plugin {
         // React's style prop, which writes via CSSOM -- `style-src` does not govern that,
         // only `<style>` elements and style attributes parsed from markup, and the build
         // emits neither. `e2e/csp.spec.ts` is what keeps this honest.
-        "style-src 'self' https://fonts.googleapis.com",
-        "font-src 'self' https://fonts.gstatic.com",
+        "style-src 'self'",
+        "font-src 'self'",
         "img-src 'self' data:",
         "media-src 'self'",
         `connect-src 'self' ${supabaseOrigin}`,
@@ -105,13 +83,21 @@ export default defineConfig(({ mode, command }) => {
     plugins: [
       react(),
       tailwindcss(),
-      themeFonts(),
       ...(supabaseUrl ? [contentSecurityPolicy(supabaseUrl)] : []),
     ],
     // Cloudflare Pages sirve en la raíz del proyecto, no en un subpath del usuario.
     base: "/",
     build: {
       sourcemap: false,
+      /*
+       * Ninguna fuente viaja dentro del CSS.
+       *
+       * Vite empotra como base64 cualquier asset por debajo de 4 KiB, y 38 de los 69 subconjuntos
+       * woff2 lo estan: el CSS de entrada -- que bloquea el pintado -- pasaba de 51,6 a 83,6 KiB
+       * (9,3 a 20,8 gzip) para llevar dentro, sobre todo, fuentes de los seis temas que no estan
+       * activos. Como fichero aparte, el navegador solo pide las que la pagina usa de verdad.
+       */
+      assetsInlineLimit: (ruta: string) => (ruta.endsWith(".woff2") ? false : undefined),
       chunkSizeWarningLimit: 300,
       reportCompressedSize: true,
       rollupOptions: {

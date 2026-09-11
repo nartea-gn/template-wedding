@@ -139,11 +139,13 @@ SELECT results_eq(
     'An update to answers re-derives the flat columns'
 );
 
--- A repeat submission corrects the existing row rather than adding a second one, and matches on
--- a normalised name so trailing spaces and casing do not create a duplicate.
-INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers)
+-- A guest who says they are correcting their own answer reuses their row rather than adding a
+-- second one, and matches on a normalised name so trailing spaces and casing do not duplicate.
+-- Without `submission_intent` the submission is refused instead (20260911); that path and the
+-- namesake's own row are covered in `rsvp_namesakes.test.sql`.
+INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers, submission_intent)
 VALUES ('test-invitation-a', 'ignored', true, 'wedding-rsvp', 2, 'es',
-        '{"fullName": "  invitada a DEFINITIVA ", "attending": true}'::jsonb);
+        '{"fullName": "  invitada a DEFINITIVA ", "attending": true}'::jsonb, 'correction');
 
 SELECT results_eq(
     $$SELECT count(*) FROM public.rsvp_responses WHERE wedding_slug = 'test-invitation-a'$$,

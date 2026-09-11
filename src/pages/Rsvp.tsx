@@ -71,6 +71,63 @@ export default function Rsvp() {
         );
     }
 
+    /*
+     * El nombre ya tiene respuesta, y solo el invitado sabe cual de las dos cosas es.
+     *
+     * Se queda en la misma pagina del formulario, con sus respuestas intactas detras: no ha
+     * fallado nada y mandarle a una pantalla aparte lo contaria como un error. Las dos opciones
+     * reenvian lo mismo que ya escribio, diciendo esta vez quien es.
+     */
+    if (submission.isNameTaken && submittedAnswers) {
+        const typedName = String(submittedAnswers[rsvpCapability.form.submission.identityFieldId] ?? '')
+
+        return (
+            <div className="rsvp-page">
+                <div className="card rsvp-card rsvp-identity-card">
+                    <h1 className="rsvp-confirmed-title">{t('rsvp.nameTaken.title')}</h1>
+                    <p className="rsvp-confirmed-lead">
+                        {t('rsvp.nameTaken.text').replace('{name}', typedName)}
+                    </p>
+                    {submission.isError && (
+                        <div className="rsvp-error-box" role="alert">
+                            <p className="rsvp-error-box-text">{t('rsvp.error.submit')}</p>
+                        </div>
+                    )}
+                    <div className="rsvp-identity-actions">
+                        <button type="button" className="btn btn--primary" disabled={submission.isLoading}
+                                onClick={() => void submission.resolveIdentity('correction')}>
+                            {t('rsvp.nameTaken.correction')}
+                        </button>
+                        <button type="button" className="btn btn--outline" disabled={submission.isLoading}
+                                onClick={() => void submission.resolveIdentity('namesake')}>
+                            {t('rsvp.nameTaken.namesake')}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    /*
+     * Varias respuestas comparten el nombre, asi que ninguna se puede atribuir sin adivinar.
+     *
+     * Adivinar es exactamente el fallo que esto corrige, de modo que aqui se para y se le da un
+     * humano: la pareja si ve las filas y sabe distinguirlas.
+     */
+    if (submission.isNameAmbiguous) {
+        return (
+            <div className="rsvp-page">
+                <div className="card rsvp-card rsvp-identity-card">
+                    <h1 className="rsvp-confirmed-title">{t('rsvp.ambiguous.title')}</h1>
+                    <p className="rsvp-confirmed-lead">
+                        {t('rsvp.ambiguous.text').replace('{email}', weddingInvitation.controller.email)}
+                    </p>
+                    <Link to="/" className="btn btn--outline">{t('rsvp.success.home')}</Link>
+                </div>
+            </div>
+        );
+    }
+
     if (submission.isSuccess && submittedAnswers) {
         // Recibo de lo que acaba de enviar, resuelto a etiquetas con los mismos helpers que usa la
         // tabla del panel. Un invitado que acaba de comprometerse socialmente recibia una tarjeta
@@ -93,13 +150,8 @@ export default function Rsvp() {
         return (
             <div className="rsvp-confirmed-page">
                 <div className="card rsvp-confirmed-card">
-                    {/* El mismo ornamento del hero: la pantalla que cierra el recorrido habla el
-                        idioma visual del que lo abrio. */}
-                    <div className="landing-ornament" aria-hidden="true">
-                        <span className="landing-ornament-line"/>
-                        <InterfaceIcon name="rings" className="landing-ornament-icon"/>
-                        <span className="landing-ornament-line"/>
-                    </div>
+                    {/* Sin el ornamento del hero: aqui no abre nada, y por encima del titulo
+                        retrasaba la unica frase que el invitado ha venido a leer. */}
                     <h1 className="rsvp-confirmed-title">{t('rsvp.success.title')}</h1>
                     <p className="rsvp-confirmed-lead">
                         {submittedAnswers.attending
@@ -122,8 +174,14 @@ export default function Rsvp() {
                     )}
 
                     {/* La regla del upsert se contaba en el paso 1 y no aqui, que es donde importa:
-                        el invitado ya ha enviado y quiere saber si puede rectificar. */}
-                    <p className="rsvp-confirmed-edit">{t('rsvp.fullName.help')}</p>
+                        el invitado ya ha enviado y quiere saber si puede rectificar. Y quien acaba
+                        de declararse homonimo es justo a quien esa regla no le sirve: con dos filas
+                        bajo un nombre, la base no puede atribuir una correccion a ninguna de las
+                        dos. Se lo decimos ahora y no semanas despues, al volver a entrar. */}
+                    <p className="rsvp-confirmed-edit">
+                        {t(submission.resolvedAs === 'namesake' ? 'rsvp.success.namesake' : 'rsvp.fullName.help')
+                            .replace('{email}', weddingInvitation.controller.email)}
+                    </p>
 
                     <div className="rsvp-confirmed-actions">
                         <button

@@ -168,7 +168,7 @@ internos de React ni simular RLS mediante mocks.
 
 ### Database quality
 
-1. Supabase CLI 2.111.0;
+1. instalación con lockfile, que trae el CLI de Supabase que fija `package.json`;
 2. stack local nuevo;
 3. `db lint`;
 4. pgTAP;

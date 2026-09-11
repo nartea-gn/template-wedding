@@ -21,6 +21,9 @@ export function toInsertRow(submission: RsvpSubmission) {
         form_version: submission.formVersion,
         locale: submission.locale,
         answers: submission.answers,
+        // Omitted and not sent as null on a first attempt: `resolve_rsvp_identity()` reads it,
+        // acts on it and clears it, so it is a request and never a stored fact.
+        ...(submission.intent ? {submission_intent: submission.intent} : {}),
     }
 }
 
@@ -28,8 +31,10 @@ export function fromDatabaseRow(row: DatabaseRow, readLegacyAnswers?: LegacyAnsw
     const storedAnswers = row.answers && typeof row.answers === 'object' && !Array.isArray(row.answers)
         ? row.answers as FormAnswers
         : undefined
+    const namesakeMark = Number(row.identity_discriminator)
     return {
         id: Number(row.id),
+        namesakeMark: Number.isFinite(namesakeMark) && namesakeMark > 0 ? namesakeMark : undefined,
         createdAt: String(row.created_at),
         updatedAt: row.updated_at ? String(row.updated_at) : undefined,
         deletedAt: row.deleted_at ? String(row.deleted_at) : undefined,

@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import type {LocalizationDefinition} from './types'
 import {getFallbackChain, getLocaleStorageKey, isSupportedLocale} from './runtime'
