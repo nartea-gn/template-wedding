@@ -101,23 +101,27 @@ jobs:
       - name: Fail if schema.sql drifted from the migrations
         run: git diff --exit-code -- supabase/schema.sql
 
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: 2.111.0
+      # The CLI is the `supabase` devDependency, so the tree has to be on disk for `pnpm exec`
+      # to resolve it. Installed here and not above: the two gates need none of it, and they are
+      # the cheap ones.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
+      # `pnpm exec` and not `supabase/setup-cli`: the action installs the release it is pinned
+      # to, which had drifted from the `supabase` version package.json pins, so CI and the
+      # repository ran different CLIs. package.json is the single source of truth now.
       - name: Start local Supabase
-        run: supabase start
+        run: pnpm exec supabase start
 
       - name: Lint database
-        run: supabase db lint --level warning
+        run: pnpm exec supabase db lint --level warning
 
       - name: Test migrations and RLS
-        run: supabase test db
+        run: pnpm exec supabase test db
 
       - name: Stop local Supabase
         if: ${{ always() }}
-        run: supabase stop --no-backup
+        run: pnpm exec supabase stop --no-backup
 
   edge-functions:
     name: Edge Function quality

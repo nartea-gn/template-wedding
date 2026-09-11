@@ -1,6 +1,4 @@
 allowBuilds:
   esbuild: true
+  supabase: set this to true or false
   workerd: true
-minimumReleaseAgeExclude:
-  - miniflare@5.20260908.0-alpha
-  - wrangler@4.130.0

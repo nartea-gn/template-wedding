@@ -23,3 +23,14 @@ export function formatResponseValue<Message extends string>(
     }
     return Array.isArray(value) ? value.map(labelFor).join(', ') : labelFor(String(value))
 }
+
+/**
+ * The guest's name as the couple has to read it when two of them share one.
+ *
+ * Appended rather than stored: `answers.fullName` is what the guest typed, and both of them typed
+ * the same thing. The mark is the database's, and it is the only thing that tells the two rows
+ * apart in a table, in the edit modal's heading and in the CSV handed to the caterer.
+ */
+export function withNamesakeMark(value: string, mark: number | undefined) {
+    return mark ? `${value} (${mark})` : value
+}

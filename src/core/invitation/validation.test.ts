@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import {weddingInvitation} from '../../invitations/wedding'
 import {validateInvitationDefinition} from './validation'
@@ -18,6 +19,22 @@ describe('validateInvitationDefinition', () => {
         expect(validateInvitationDefinition(definition)).toContain(
             'The data controller requires a name message key and a contact email',
         )
+    })
+
+    it('rejects a declared hashtag that names no message key', () => {
+        const definition = {...weddingInvitation, event: {...weddingInvitation.event, hashtag: '  '}}
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Event hashtag must name a message key when declared',
+        )
+    })
+
+    it('accepts an invitation that declares no hashtag', () => {
+        const event = {...weddingInvitation.event} as Record<string, unknown>
+        delete event.hashtag
+        const definition = {...weddingInvitation, event} as typeof weddingInvitation
+
+        expect(validateInvitationDefinition(definition)).toEqual([])
     })
 
     it('rejects an administrative capability without RSVP', () => {
@@ -241,6 +258,115 @@ describe('validateInvitationDefinition', () => {
 
         expect(validateInvitationDefinition(definition)).toContain(
             'Lodging section lodging requires priceTierLabels when an item declares priceTier',
+        )
+    })
+
+    it('rejects a declared deadline notice that names no message key', () => {
+        const definition = withOnlySection('rsvp-cta', section => ({
+            ...section, content: {...section.content, deadlineNotice: '   '},
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'RSVP CTA section rsvp-cta deadlineNotice must name a message key when declared',
+        )
+    })
+
+    it('accepts a call to action that declares no deadline notice', () => {
+        const definition = withOnlySection('rsvp-cta', section => {
+            const content = {...section.content} as Record<string, unknown>
+            delete content.deadlineNotice
+            return {...section, content}
+        })
+
+        expect(validateInvitationDefinition(definition)).not.toContain(
+            'RSVP CTA section rsvp-cta deadlineNotice must name a message key when declared',
+        )
+    })
+
+    it('rejects a gifts section with more than two Bizum numbers', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {
+                    ...section.content.account,
+                    bizum: {
+                        enabled: true,
+                        labelKey: 'gifts.account.bizum',
+                        numbers: [
+                            {labelKey: 'hero.partnerOne', value: '+34 600 000 000'},
+                            {labelKey: 'hero.partnerTwo', value: '+34 611 000 000'},
+                            {labelKey: 'hero.partnerOne', value: '+34 622 000 000'},
+                        ],
+                    },
+                },
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts accepts at most two Bizum numbers',
+        )
+    })
+
+    it('rejects an enabled Bizum with no number to copy', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {...section.content.account, bizum: {...section.content.account?.bizum, numbers: []}},
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts requires a Bizum number when Bizum is enabled',
+        )
+    })
+
+    it('accepts a disabled Bizum with no number to copy', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {...section.content.account, bizum: {...section.content.account?.bizum, enabled: false, numbers: []}},
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).not.toContain(
+            'Gifts section gifts requires a Bizum number when Bizum is enabled',
+        )
+    })
+
+    it.each([
+        ['a label message key', {labelKey: '   ', value: '+34 600 000 000'}],
+        ['a value', {labelKey: 'hero.partnerOne', value: ''}],
+    ])('rejects a Bizum number without %s', (_case, number) => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {
+                    ...section.content.account,
+                    bizum: {...section.content.account?.bizum, numbers: [number]},
+                },
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts Bizum numbers require a label message key and a value',
+        )
+    })
+
+    it('rejects a Bizum block with no name for the group', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {...section.content.account, bizum: {...section.content.account?.bizum, labelKey: ''}},
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts Bizum requires a label message key',
         )
     })
 

@@ -42,6 +42,10 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         errors.push('Event timezone must be a valid IANA timezone')
     }
 
+    if (definition.event.hashtag !== undefined && hasBlankValue([definition.event.hashtag])) {
+        errors.push('Event hashtag must name a message key when declared')
+    }
+
     if (!definition.localization.supportedLocales.includes(definition.localization.defaultLocale)) {
         errors.push('defaultLocale must be included in supportedLocales')
     }
@@ -116,6 +120,11 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         ])) {
             errors.push(`RSVP CTA section ${section.id} requires open and closed labels`)
         }
+        if (section.type === 'rsvp-cta'
+            && section.content.deadlineNotice !== undefined
+            && hasBlankValue([section.content.deadlineNotice])) {
+            errors.push(`RSVP CTA section ${section.id} deadlineNotice must name a message key when declared`)
+        }
         if (section.type === 'lodging') {
             const itemIds = section.content.items.map(item => item.id)
             if (section.enabled && itemIds.length === 0) errors.push(`Lodging section ${section.id} requires an item`)
@@ -145,6 +154,23 @@ export function validateInvitationDefinition<Locale extends string, Message exte
             }
             if (hasBlankValue([section.content.fraudWarningKey])) {
                 errors.push(`Gifts section ${section.id} requires a fraud warning message key`)
+            }
+            const bizum = section.content.account?.bizum
+            if (bizum) {
+                if (bizum.numbers.length > 2) {
+                    errors.push(`Gifts section ${section.id} accepts at most two Bizum numbers`)
+                }
+                if (bizum.enabled && bizum.numbers.length === 0) {
+                    errors.push(`Gifts section ${section.id} requires a Bizum number when Bizum is enabled`)
+                }
+                if (hasBlankValue([bizum.labelKey])) {
+                    errors.push(`Gifts section ${section.id} Bizum requires a label message key`)
+                }
+                if (bizum.numbers.some(number => hasBlankValue([number.labelKey, number.value]))) {
+                    errors.push(
+                        `Gifts section ${section.id} Bizum numbers require a label message key and a value`,
+                    )
+                }
             }
         }
         // Everything below is venue-specific. This guard must stay last in the loop body.

@@ -326,10 +326,14 @@
 
 .landing-countdown-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.15fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr) auto minmax(0, 1fr) auto;
     grid-template-rows: var(--countdown-value-line-height) auto;
     align-items: start;
     width: min(100%, 42rem);
+    /* Los rotulos desbordan su columna a los dos lados, y el ultimo es el mas ancho: sin este
+       margen "SEGUNDOS" llegaba al borde de la pantalla. Se retira por debajo de 420 px, donde el
+       espacio hace falta para que los rotulos no se toquen entre si. */
+    padding-inline: clamp(0.5rem, 4vw - 1rem, 1.25rem);
     column-gap: clamp(0.05rem, 0.8vw, 0.35rem);
     --countdown-value-size: clamp(3.1rem, 13vw, 5.6rem);
     --countdown-value-line-height: calc(var(--countdown-value-size) * 1.02);
@@ -356,7 +360,19 @@
     @apply uppercase text-(--color-wedding-text);
     grid-row: 2;
     justify-self: center;
-    width: max-content;
+    /*
+     * ANCHO CERO: LA COLUMNA LA MIDEN LOS DIGITOS, NO SU ROTULO
+     *
+     * "SEGUNDOS" es mas ancho que "00" por debajo de 768 px, asi que con `max-content` la columna
+     * la fijaba el rotulo y los huecos alrededor de cada ornamento volvian a salir distintos
+     * -- 3,5 px en el primero contra 18,6 en el tercero, medido a 320. Centrado sobre un ancho
+     * cero, el texto desborda a los dos lados por igual y no participa en el reparto.
+     */
+    width: 0;
+    min-width: 0;
+    display: flex;
+    justify-content: center;
+    overflow: visible;
     margin-top: 0.25rem;
     /* Suelo de 0,75rem, como el resto de la escala. A 0,625rem estas etiquetas bajaban a 10 px
        en movil -- 10,14 px en bulgaro -- y eran el unico valor por debajo del suelo que declara
@@ -366,6 +382,18 @@
     letter-spacing: clamp(0.04em, 0.7vw, 0.12em);
     text-align: center;
     white-space: nowrap;
+}
+
+/*
+ * Por debajo de 420 px los cuatro rotulos suman mas ancho que los digitos, asi que son ellos los
+ * que deciden si la fila cabe. El tracking es lo unico que se puede ceder: el cuerpo tiene suelo
+ * de 0,75rem por contraste (ver arriba) y el texto no se abrevia. Medido a 320: con 0,12em los
+ * rotulos se solapaban 9,9 px en `royal`.
+ */
+@media (max-width: 419px) {
+    .landing-countdown-unit-label {
+        letter-spacing: 0.02em;
+    }
 }
 
 .landing-countdown-sep {
@@ -445,6 +473,10 @@
     @apply w-full max-w-xs md:max-w-sm;
 }
 
+.landing-cta-deadline {
+    @apply text-sm mt-4 text-(--color-wedding-muted);
+}
+
 .landing-hashtag {
     @apply text-sm italic tracking-wide text-(--color-wedding-muted);
 }
@@ -490,8 +522,4 @@
 
 .landing-lodging-book {
     @apply mt-2;
-}
-
-.landing-cta-deadline {
-    @apply text-sm mt-4 text-(--color-wedding-muted);
 }

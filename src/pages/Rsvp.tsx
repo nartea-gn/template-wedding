@@ -8,21 +8,17 @@ import {weddingInvitation, type WeddingMessageKey} from '../invitations/wedding'
 import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
 import {InterfaceIcon} from '../components/ui/InterfaceIcon';
 import {formatResponseValue, getFormFields} from '../features/admin/presentation/responsePresentation';
-import {useRsvpAvailability, useRsvpDeadline} from '../features/rsvp/hooks/useRsvpAvailability';
+import {useRsvpAvailability} from '../features/rsvp/hooks/useRsvpAvailability';
 import './Rsvp.css';
 
 const rsvpCapability = weddingInvitation.capabilities.rsvp;
 
 export default function Rsvp() {
     const navigate = useNavigate();
-    const {locale, t, formatDate} = useLocalization<WeddingMessageKey>();
+    const {locale, t} = useLocalization<WeddingMessageKey>();
     const submission = useRsvpSubmission(weddingRsvpRepository);
     const [submittedAnswers, setSubmittedAnswers] = useState<FormAnswers>();
     const available = useRsvpAvailability(rsvpCapability);
-    const deadline = useRsvpDeadline(rsvpCapability);
-    const deadlineText = deadline
-        ? formatDate(deadline, {year: 'numeric', month: 'long', day: 'numeric'})
-        : undefined;
 
     // Defensive only, and what narrows `rsvpCapability` for the rest of this component: the
     // route is not registered at all when the capability is off, so the wildcard answers instead
@@ -61,12 +57,6 @@ export default function Rsvp() {
                     <InterfaceIcon name="lock" className="rsvp-closed-icon"/>
                     <h1 className="rsvp-closed-title">{t('rsvp.closed.title')}</h1>
                     <p className="rsvp-closed-text">{t('rsvp.closed.text')}</p>
-                    {/* Que fecha paso, no solo que paso alguna. */}
-                    {deadlineText && (
-                        <p className="rsvp-closed-text">
-                            {t('rsvp.closed.deadline').replace('{date}', deadlineText)}
-                        </p>
-                    )}
                     {/* Un humano a quien escribir. El correo estaba en la configuracion y en el
                         aviso de privacidad del formulario abierto, y se le negaba justo a quien
                         llega tarde y lo necesita. */}
@@ -76,6 +66,63 @@ export default function Rsvp() {
                     <Link to="/" className="btn btn--outline rsvp-closed-btn">
                         {t('rsvp.success.home')}
                     </Link>
+                </div>
+            </div>
+        );
+    }
+
+    /*
+     * El nombre ya tiene respuesta, y solo el invitado sabe cual de las dos cosas es.
+     *
+     * Se queda en la misma pagina del formulario, con sus respuestas intactas detras: no ha
+     * fallado nada y mandarle a una pantalla aparte lo contaria como un error. Las dos opciones
+     * reenvian lo mismo que ya escribio, diciendo esta vez quien es.
+     */
+    if (submission.isNameTaken && submittedAnswers) {
+        const typedName = String(submittedAnswers[rsvpCapability.form.submission.identityFieldId] ?? '')
+
+        return (
+            <div className="rsvp-page">
+                <div className="card rsvp-card rsvp-identity-card">
+                    <h1 className="rsvp-confirmed-title">{t('rsvp.nameTaken.title')}</h1>
+                    <p className="rsvp-confirmed-lead">
+                        {t('rsvp.nameTaken.text').replace('{name}', typedName)}
+                    </p>
+                    {submission.isError && (
+                        <div className="rsvp-error-box" role="alert">
+                            <p className="rsvp-error-box-text">{t('rsvp.error.submit')}</p>
+                        </div>
+                    )}
+                    <div className="rsvp-identity-actions">
+                        <button type="button" className="btn btn--primary" disabled={submission.isLoading}
+                                onClick={() => void submission.resolveIdentity('correction')}>
+                            {t('rsvp.nameTaken.correction')}
+                        </button>
+                        <button type="button" className="btn btn--outline" disabled={submission.isLoading}
+                                onClick={() => void submission.resolveIdentity('namesake')}>
+                            {t('rsvp.nameTaken.namesake')}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    /*
+     * Varias respuestas comparten el nombre, asi que ninguna se puede atribuir sin adivinar.
+     *
+     * Adivinar es exactamente el fallo que esto corrige, de modo que aqui se para y se le da un
+     * humano: la pareja si ve las filas y sabe distinguirlas.
+     */
+    if (submission.isNameAmbiguous) {
+        return (
+            <div className="rsvp-page">
+                <div className="card rsvp-card rsvp-identity-card">
+                    <h1 className="rsvp-confirmed-title">{t('rsvp.ambiguous.title')}</h1>
+                    <p className="rsvp-confirmed-lead">
+                        {t('rsvp.ambiguous.text').replace('{email}', weddingInvitation.controller.email)}
+                    </p>
+                    <Link to="/" className="btn btn--outline">{t('rsvp.success.home')}</Link>
                 </div>
             </div>
         );
@@ -103,13 +150,8 @@ export default function Rsvp() {
         return (
             <div className="rsvp-confirmed-page">
                 <div className="card rsvp-confirmed-card">
-                    {/* El mismo ornamento del hero: la pantalla que cierra el recorrido habla el
-                        idioma visual del que lo abrio. */}
-                    <div className="landing-ornament" aria-hidden="true">
-                        <span className="landing-ornament-line"/>
-                        <InterfaceIcon name="rings" className="landing-ornament-icon"/>
-                        <span className="landing-ornament-line"/>
-                    </div>
+                    {/* Sin el ornamento del hero: aqui no abre nada, y por encima del titulo
+                        retrasaba la unica frase que el invitado ha venido a leer. */}
                     <h1 className="rsvp-confirmed-title">{t('rsvp.success.title')}</h1>
                     <p className="rsvp-confirmed-lead">
                         {submittedAnswers.attending
@@ -132,8 +174,14 @@ export default function Rsvp() {
                     )}
 
                     {/* La regla del upsert se contaba en el paso 1 y no aqui, que es donde importa:
-                        el invitado ya ha enviado y quiere saber si puede rectificar. */}
-                    <p className="rsvp-confirmed-edit">{t('rsvp.fullName.help')}</p>
+                        el invitado ya ha enviado y quiere saber si puede rectificar. Y quien acaba
+                        de declararse homonimo es justo a quien esa regla no le sirve: con dos filas
+                        bajo un nombre, la base no puede atribuir una correccion a ninguna de las
+                        dos. Se lo decimos ahora y no semanas despues, al volver a entrar. */}
+                    <p className="rsvp-confirmed-edit">
+                        {t(submission.resolvedAs === 'namesake' ? 'rsvp.success.namesake' : 'rsvp.fullName.help')
+                            .replace('{email}', weddingInvitation.controller.email)}
+                    </p>
 
                     <div className="rsvp-confirmed-actions">
                         <button
@@ -147,7 +195,7 @@ export default function Rsvp() {
                             {t('rsvp.success.home')}
                         </button>
                         {weddingInvitation.event.hashtag && (
-                            <p className="rsvp-confirmed-hashtag">{weddingInvitation.event.hashtag}</p>
+                            <p className="rsvp-confirmed-hashtag">{t(weddingInvitation.event.hashtag)}</p>
                         )}
                     </div>
                 </div>
@@ -157,11 +205,6 @@ export default function Rsvp() {
 
     return (
         <div className="rsvp-page">
-            {deadlineText && (
-                <p className="rsvp-deadline-notice">
-                    {t('rsvp.deadline.notice').replace('{date}', deadlineText)}
-                </p>
-            )}
             <FormEngine
                 definition={rsvpCapability.form}
                 headingLevel={1}

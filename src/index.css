@@ -1,13 +1,43 @@
 @import "tailwindcss";
+@import './assets/fonts/fonts.css';
 @import './themes/patterns.css';
 
 @theme {
     /* Tailwind aliases backed by the active typed theme. */
     --font-serif: var(--font-heading), Georgia, serif;
     --font-sans: var(--font-body), sans-serif;
+
+    /*
+     * EL SUELO DE LA ESCALA SUBE, EL TECHO NO SE TOCA
+     *
+     * `text-xs` y `text-sm` cubren 59 de los usos de tamano de la plantilla, y sus valores de
+     * fabrica -- 12 y 14 px -- son los que se leian mal: medido, la etiqueta de la cuenta atras
+     * salia a 12 px, y las etiquetas de formulario a 13 en mayuscula con 0,08em de espaciado,
+     * que es el peor caso de los tres. Los titulos ya estaban bien y se quedan donde estaban.
+     *
+     * Redefinirlas aqui y no regla a regla es lo que hace que el cambio no se deshaga solo: la
+     * siguiente clase que escriba `text-sm` hereda el suelo nuevo sin que nadie se acuerde.
+     */
+    --text-xs: 0.8125rem;   /* 13 px, era 12 */
+    --text-sm: 0.9375rem;   /* 15 px, era 14 */
+    --text-base: 1.0625rem; /* 17 px, era 16 */
 }
 
 :root {
+    /*
+     * LA ESCALA SE REPITE AQUI PORQUE `@theme` SOLA NO LLEGA
+     *
+     * Tailwind solo emite una variable de `@theme` si alguna plantilla usa su utilidad. Los
+     * ficheros con `@reference "tailwindcss"` -- que son casi todos los de componente -- compilan
+     * `@apply text-xs` a `var(--text-xs, .75rem)`, y como `text-xs` no aparece en ningun JSX, la
+     * variable no se emitia y ganaba el valor de fabrica: la etiqueta de la cuenta atras seguia a
+     * 12 px despues de subir la escala, mientras `text-sm` si bajaba el valor nuevo porque esa
+     * utilidad si se escribe en markup. Declaradas aqui, las lee cualquiera de los dos caminos.
+     */
+    --text-xs: 0.8125rem;
+    --text-sm: 0.9375rem;
+    --text-base: 1.0625rem;
+
     /* First-paint fallback mirrors the configured royal theme. */
     --color-wedding-bg: #F8F9FB;
     --color-wedding-primary: #1B3A6B;
@@ -148,7 +178,7 @@
         font-family: var(--font-body);
         min-height: 3rem;
         text-align: center;
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
         font-weight: 600;
         letter-spacing: 0.14em;
         text-transform: uppercase;
@@ -278,7 +308,9 @@
         background-color: var(--color-wedding-bg);
         color: var(--color-wedding-text);
         font-family: var(--font-body);
-        font-size: 0.9375rem;
+        /* 1rem y no menos: por debajo de 16 px Safari en iOS amplia la pagina al enfocar el
+           campo, y el invitado se encuentra el formulario desplazado sin haberlo tocado. */
+        font-size: 1rem;
         line-height: 1.35;
         transition: border-color var(--theme-interaction-duration) ease,
         box-shadow var(--theme-interaction-duration) ease;
@@ -339,12 +371,12 @@
     .input::placeholder {
         color: var(--color-wedding-muted);
         opacity: 1;
-        font-size: 0.9375rem;
+        font-size: 1rem;
     }
 
     .label {
         display: block;
-        font-size: 0.8125rem;
+        font-size: 0.875rem;
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
@@ -361,7 +393,7 @@
     }
 
     .section-subtitle {
-        font-size: 0.875rem;
+        font-size: 1rem;
         color: var(--color-wedding-muted);
         letter-spacing: 0.05em;
     }

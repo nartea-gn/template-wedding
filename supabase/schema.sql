@@ -170,43 +170,6 @@ $$;
 
 
 --
--- Name: redirect_duplicate_rsvp(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.redirect_duplicate_rsvp() RETURNS trigger
-    LANGUAGE plpgsql SECURITY DEFINER
-    SET search_path TO 'public'
-    AS $$
-DECLARE
-    existing_id BIGINT;
-BEGIN
-    SELECT id INTO existing_id
-    FROM public.rsvp_responses
-    WHERE wedding_slug = NEW.wedding_slug
-      AND identity_key = lower(btrim(NEW.full_name))
-      AND deleted_at IS NULL;
-
-    IF existing_id IS NULL THEN
-        RETURN NEW;
-    END IF;
-
-    PERFORM set_config('app.rsvp_guest_correction', 'on', true);
-
-    UPDATE public.rsvp_responses
-    SET answers      = NEW.answers,
-        form_id      = NEW.form_id,
-        form_version = NEW.form_version,
-        locale       = NEW.locale
-    WHERE id = existing_id;
-
-    PERFORM set_config('app.rsvp_guest_correction', 'off', true);
-
-    RETURN NULL;
-END;
-$$;
-
-
---
 -- Name: require_rsvp_open(); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -240,6 +203,81 @@ BEGIN
     END IF;
 
     RETURN NEW;
+END;
+$$;
+
+
+--
+-- Name: resolve_rsvp_identity(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.resolve_rsvp_identity() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO 'public'
+    AS $$
+DECLARE
+    intent      TEXT;
+    base_key    TEXT;
+    existing_id BIGINT;
+    holders     INTEGER;
+    next_mark   SMALLINT;
+BEGIN
+    intent := lower(btrim(COALESCE(NEW.submission_intent, '')));
+    base_key := lower(btrim(NEW.full_name));
+
+    -- Both are the trigger's to decide, never the caller's.
+    NEW.submission_intent := NULL;
+    NEW.identity_discriminator := NULL;
+
+    SELECT count(*), min(id)
+    INTO holders, existing_id
+    FROM public.rsvp_responses
+    WHERE wedding_slug = NEW.wedding_slug
+      AND lower(btrim(full_name)) = base_key
+      AND deleted_at IS NULL;
+
+    IF holders = 0 THEN
+        -- Nobody answered under this name. A 'namesake' claim with no original is simply a first
+        -- answer, and saying so would only puzzle a guest who mistyped their own name once.
+        RETURN NEW;
+    END IF;
+
+    IF intent = 'correction' THEN
+        IF holders > 1 THEN
+            RAISE EXCEPTION 'Several responses share the name % for %', NEW.full_name, NEW.wedding_slug
+                USING ERRCODE = 'RSVPM',
+                      HINT = 'Ask the couple to correct it: the row cannot be identified by name.';
+        END IF;
+
+        PERFORM set_config('app.rsvp_guest_correction', 'on', true);
+
+        UPDATE public.rsvp_responses
+        SET answers      = NEW.answers,
+            form_id      = NEW.form_id,
+            form_version = NEW.form_version,
+            locale       = NEW.locale
+        WHERE id = existing_id;
+
+        PERFORM set_config('app.rsvp_guest_correction', 'off', true);
+
+        RETURN NULL;
+    END IF;
+
+    IF intent = 'namesake' THEN
+        SELECT COALESCE(max(identity_discriminator), 1) + 1
+        INTO next_mark
+        FROM public.rsvp_responses
+        WHERE wedding_slug = NEW.wedding_slug
+          AND lower(btrim(full_name)) = base_key
+          AND deleted_at IS NULL;
+
+        NEW.identity_discriminator := next_mark;
+        RETURN NEW;
+    END IF;
+
+    RAISE EXCEPTION 'A response already exists under the name % for %', NEW.full_name, NEW.wedding_slug
+        USING ERRCODE = 'RSVPD',
+              HINT = 'Resubmit with submission_intent set to correction or namesake.';
 END;
 $$;
 
@@ -419,7 +457,9 @@ CREATE TABLE public.rsvp_responses (
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone,
     deleted_by uuid,
-    identity_key text GENERATED ALWAYS AS (lower(btrim(full_name))) STORED,
+    identity_discriminator smallint,
+    submission_intent text,
+    identity_key text GENERATED ALWAYS AS ((lower(btrim(full_name)) || COALESCE(('#'::text || (identity_discriminator)::text), ''::text))) STORED,
     CONSTRAINT rsvp_responses_answers_check CHECK (((answers IS NULL) OR ((jsonb_typeof(answers) = 'object'::text) AND (octet_length((answers)::text) <= 16384)))),
     CONSTRAINT rsvp_responses_bus_option_check CHECK (((bus_option IS NULL) OR (char_length(bus_option) <= 100))),
     CONSTRAINT rsvp_responses_dietary_options_check CHECK (((cardinality(dietary_options) <= 16) AND (octet_length((dietary_options)::text) <= 2000))),
@@ -432,6 +472,20 @@ CREATE TABLE public.rsvp_responses (
     CONSTRAINT rsvp_responses_song_request_check CHECK (((song_request IS NULL) OR (char_length(song_request) <= 500))),
     CONSTRAINT rsvp_responses_wedding_slug_check CHECK (((char_length(btrim(wedding_slug)) >= 1) AND (char_length(btrim(wedding_slug)) <= 100)))
 );
+
+
+--
+-- Name: COLUMN rsvp_responses.identity_discriminator; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.rsvp_responses.identity_discriminator IS 'Allocated by resolve_rsvp_identity() for a guest who shares a name with someone who already answered. NULL for the first holder of a name. Never accepted from the client.';
+
+
+--
+-- Name: COLUMN rsvp_responses.submission_intent; Type: COMMENT; Schema: public; Owner: -
+--
+
+COMMENT ON COLUMN public.rsvp_responses.submission_intent IS 'Request field read and cleared by resolve_rsvp_identity(): correction or namesake. Always NULL at rest.';
 
 
 --
@@ -556,10 +610,10 @@ CREATE TRIGGER rsvp_responses_10_sync_legacy_columns BEFORE INSERT OR UPDATE ON 
 
 
 --
--- Name: rsvp_responses rsvp_responses_20_redirect_duplicate; Type: TRIGGER; Schema: public; Owner: -
+-- Name: rsvp_responses rsvp_responses_20_resolve_identity; Type: TRIGGER; Schema: public; Owner: -
 --
 
-CREATE TRIGGER rsvp_responses_20_redirect_duplicate BEFORE INSERT ON public.rsvp_responses FOR EACH ROW EXECUTE FUNCTION public.redirect_duplicate_rsvp();
+CREATE TRIGGER rsvp_responses_20_resolve_identity BEFORE INSERT ON public.rsvp_responses FOR EACH ROW EXECUTE FUNCTION public.resolve_rsvp_identity();
 
 
 --
@@ -717,10 +771,10 @@ REVOKE ALL ON FUNCTION public.record_invitation_schedule_audit() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.record_invitation_schedule_audit() TO service_role;
 REVOKE ALL ON FUNCTION public.record_rsvp_response_audit() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.record_rsvp_response_audit() TO service_role;
-REVOKE ALL ON FUNCTION public.redirect_duplicate_rsvp() FROM PUBLIC;
-GRANT ALL ON FUNCTION public.redirect_duplicate_rsvp() TO service_role;
 REVOKE ALL ON FUNCTION public.require_rsvp_open() FROM PUBLIC;
 GRANT ALL ON FUNCTION public.require_rsvp_open() TO service_role;
+REVOKE ALL ON FUNCTION public.resolve_rsvp_identity() FROM PUBLIC;
+GRANT ALL ON FUNCTION public.resolve_rsvp_identity() TO service_role;
 REVOKE ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) TO anon;
 GRANT ALL ON FUNCTION public.rsvp_invitation_state(p_wedding_slug text) TO authenticated;
@@ -769,5 +823,6 @@ GRANT UPDATE(answers) ON TABLE public.rsvp_responses TO authenticated;
 GRANT UPDATE(updated_at) ON TABLE public.rsvp_responses TO authenticated;
 GRANT UPDATE(deleted_at) ON TABLE public.rsvp_responses TO authenticated;
 GRANT UPDATE(deleted_by) ON TABLE public.rsvp_responses TO authenticated;
+GRANT INSERT(submission_intent) ON TABLE public.rsvp_responses TO anon;
 GRANT ALL ON SEQUENCE public.rsvp_responses_id_seq TO service_role;
 GRANT USAGE ON SEQUENCE public.rsvp_responses_id_seq TO anon;

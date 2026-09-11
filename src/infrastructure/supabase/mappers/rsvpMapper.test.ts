@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import type {RsvpSubmission} from '../../../features/rsvp/domain/RsvpSubmission'
 import {fromDatabaseRow, toInsertRow} from './rsvpMapper'
@@ -28,6 +29,21 @@ describe('RSVP mapper', () => {
             locale: 'es',
             answers: submission.answers,
         })
+    })
+
+    // La marca separa a dos invitados que escribieron el mismo nombre (20260911). Un cero o un
+    // NULL son el primer titular del nombre, que no lleva marca ninguna.
+    it('reads which holder of a shared name a row is, and only when there is one', () => {
+        const base = {
+            id: 4,
+            created_at: '2026-08-03T10:00:00Z',
+            wedding_slug: 'gala-y-valentin',
+            answers: {fullName: 'Ana López', attending: true},
+        }
+
+        expect(fromDatabaseRow({...base, identity_discriminator: 2}).namesakeMark).toBe(2)
+        expect(fromDatabaseRow(base).namesakeMark).toBeUndefined()
+        expect(fromDatabaseRow({...base, identity_discriminator: null}).namesakeMark).toBeUndefined()
     })
 
     it('prefers current structured answers when present', () => {

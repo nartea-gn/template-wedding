@@ -25,7 +25,9 @@ siga hablando de esa respuesta es una conservación que nadie declaró.
 `NULL → valor` es `deleted`, `valor → NULL` es `restored`, y cualquier otro cambio es `updated`.
 
 > **Nota del 2026-09-07.** Hay una cuarta acción, `corrected`. El trigger `AFTER UPDATE` también se dispara con el
-> UPDATE que `redirect_duplicate_rsvp()` hace cuando un invitado reenvía el formulario, así que una autocorrección de
+> UPDATE que `redirect_duplicate_rsvp()` hace cuando un invitado reenvía el formulario -- desde
+`20260911_distinguish_namesakes.sql` esa rama vive en `resolve_rsvp_identity()`, con el mismo
+indicador --, así que una autocorrección de
 > invitado se registraba como `updated` con `actor_id` NULL: indistinguible de la edición de un administrador y en
 > contra de lo que este documento dice más abajo sobre un actor nulo. La vía de corrección se marca a sí misma con un
 > ajuste local de transacción, en vez de inferirse de un `actor_id` ausente que también tienen las purgas y las

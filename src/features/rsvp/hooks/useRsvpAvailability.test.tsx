@@ -2,7 +2,7 @@ import {act, render, screen} from '@testing-library/react'
 import {afterEach, describe, expect, it, vi} from 'vitest'
 import type {InvitationCapabilities} from '../../../core/invitation'
 import {weddingRsvpForm} from '../../../invitations/wedding/rsvpForm'
-import {useRsvpAvailability} from './useRsvpAvailability'
+import {useRsvpAvailability, useRsvpDeadline} from './useRsvpAvailability'
 import {RsvpStatusContext} from './RsvpStatusContext'
 import type {RsvpStatus} from '../domain/RsvpStatus'
 
@@ -134,5 +134,63 @@ describe('useRsvpAvailability', () => {
         )
 
         expect(screen.getByText('open')).toBeInTheDocument()
+    })
+})
+
+function DeadlineProbe({
+                           capability,
+                       }: Readonly<{
+    capability: InvitationCapabilities<string>['rsvp']
+}>) {
+    return <span>{useRsvpDeadline(capability) ?? 'none'}</span>
+}
+
+function withStatus(status: RsvpStatus | null, children: React.ReactNode) {
+    return <RsvpStatusContext.Provider value={status}>{children}</RsvpStatusContext.Provider>
+}
+
+describe('useRsvpDeadline', () => {
+    it('answers with the deadline compiled into the invitation while the database has not', () => {
+        // Given an enabled RSVP and no live status
+        // When the deadline is read
+        render(<DeadlineProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>)
+
+        // Then the compiled instant answers
+        expect(screen.getByText(deadline)).toBeInTheDocument()
+    })
+
+    it('prefers the deadline the panel moved', () => {
+        // Given a live status carrying a later deadline
+        const live = '2027-06-01T23:59:59+02:00'
+
+        // When the deadline is read
+        render(withStatus(
+            {isOpen: true, deadlineUtc: live, override: null},
+            <DeadlineProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>,
+        ))
+
+        // Then the date the guest reads is the one the couple moved it to
+        expect(screen.getByText(live)).toBeInTheDocument()
+    })
+
+    it('keeps the date when the couple reopened the form by hand', () => {
+        // Given a manual override that reopens an expired form
+        // When the deadline is read
+        render(withStatus(
+            {isOpen: true, deadlineUtc: deadline, override: 'open'},
+            <DeadlineProbe capability={{enabled: true, deadline, form: weddingRsvpForm}}/>,
+        ))
+
+        // Then the date still answers: the switch decides who may reply, not what to communicate
+        expect(screen.getByText(deadline)).toBeInTheDocument()
+    })
+
+    it('answers with nothing when the RSVP is disabled', () => {
+        // Given an RSVP that is not offered
+        // When the deadline is read
+        render(<DeadlineProbe capability={{enabled: false, deadline, form: weddingRsvpForm}}/>)
+
+        // Then there is no date to print
+        expect(screen.getByText('none')).toBeInTheDocument()
     })
 })

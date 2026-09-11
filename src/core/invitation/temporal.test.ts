@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import {isRsvpOpen, isValidTimeZone, parseInstant} from './temporal'
 import {weddingRsvpForm} from '../../invitations/wedding/rsvpForm'

@@ -55,6 +55,20 @@ function renderTable(overrides: Partial<ComponentProps<typeof ResponsesTable>> =
 }
 
 describe('ResponsesTable', () => {
+    // Desde 20260911 dos filas pueden llamarse igual y ser dos personas. Sin la marca, la pareja
+    // no tiene con que distinguirlas para editar la correcta.
+    it('tells two guests who share a name apart', () => {
+        renderTable({
+            responses: [
+                response,
+                {...response, id: 2, namesakeMark: 2, answers: {fullName: 'Invitada de Prueba', attending: false}},
+            ],
+        })
+
+        expect(screen.getByText('Invitada de Prueba')).toBeInTheDocument()
+        expect(screen.getByText('Invitada de Prueba (2)')).toBeInTheDocument()
+    })
+
     it('announces the loading state', () => {
         renderTable({loading: true})
 

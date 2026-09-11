@@ -17,11 +17,26 @@ const localization: LocalizationContextValue = {
     formatDate: value => String(value),
 }
 
-function renderForm(onSubmit: (answers: FormAnswers) => Promise<void>, privacyNotice?: string) {
+/**
+ * Una definicion que si declara el resumen previo al envio.
+ *
+ * El formulario de la boda dejo de declararlo: su resumen vive en la pantalla de gracias. El
+ * motor sigue pintandolo para quien lo pida, y eso es lo que estas pruebas cubren.
+ */
+const formWithReview = {
+    ...weddingRsvpForm,
+    messages: {...weddingRsvpForm.messages, review: 'rsvp.review.title'},
+} as const
+
+function renderForm(
+    onSubmit: (answers: FormAnswers) => Promise<void>,
+    privacyNotice?: string,
+    definition: typeof weddingRsvpForm | typeof formWithReview = weddingRsvpForm,
+) {
     return render(
         <LocalizationContext.Provider value={localization}>
             <FormEngine
-                definition={weddingRsvpForm}
+                definition={definition}
                 isSubmitting={false}
                 hasSubmissionError={false}
                 onSubmit={onSubmit}
@@ -41,12 +56,12 @@ async function advanceToSubmit(user: ReturnType<typeof userEvent.setup>) {
     await user.click(screen.getByRole('button', {name: 'rsvp.submit'}))
 }
 
-/** Fills in the first step affirmatively and lands on the meal step. */
-async function reachMealStep(user: ReturnType<typeof userEvent.setup>) {
+/** Fills in the first step affirmatively and lands on the allergies step. */
+async function reachDietaryStep(user: ReturnType<typeof userEvent.setup>) {
     await user.type(screen.getByRole('textbox', {name: 'rsvp.fullName.label'}), 'Gala García')
     await user.click(screen.getByLabelText('rsvp.attending.yes'))
     await user.click(screen.getByRole('button', {name: 'rsvp.next'}))
-    await screen.findByRole('heading', {name: 'rsvp.step.meal.title'})
+    await screen.findByRole('heading', {name: 'rsvp.step.dietary.title'})
 }
 
 describe('FormEngine', () => {
@@ -77,7 +92,7 @@ describe('FormEngine', () => {
         await user.click(screen.getByLabelText('rsvp.attending.yes'))
         await user.click(screen.getByRole('button', {name: 'rsvp.next'}))
 
-        expect(await screen.findByRole('heading', {name: 'rsvp.step.meal.title'})).toBeInTheDocument()
+        expect(await screen.findByRole('heading', {name: 'rsvp.step.dietary.title'})).toBeInTheDocument()
     })
 
     // Declinar ya no envia desde el primer paso: quien no puede ir sigue pasando por la
@@ -99,16 +114,22 @@ describe('FormEngine', () => {
         }))
     })
 
-    // Article 13 asks for the notice at the point of collection, which is where the form starts.
-    // Repeated on all four steps it was also the last thing a guest read before submitting, on
-    // the step meant to be affectionate; the health-data question carries its own notice.
-    it('renders the privacy notice where the collection starts and not on every step', async () => {
+    // Article 13 asks for the notice at the point of collection: nothing is collected until the
+    // final button is pressed, so it goes there and not on every step. The health-data question
+    // carries its own notice next to the field that collects it.
+    it('renders the privacy notice on the step that sends, and on no other', async () => {
         const user = userEvent.setup()
         renderForm(vi.fn(), 'Aviso del responsable')
 
-        expect(screen.getByText('Aviso del responsable')).toBeInTheDocument()
-        await reachMealStep(user)
         expect(screen.queryByText('Aviso del responsable')).not.toBeInTheDocument()
+        await reachDietaryStep(user)
+        expect(screen.queryByText('Aviso del responsable')).not.toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', {name: 'rsvp.next'}))
+        await user.click(screen.getByRole('button', {name: 'rsvp.next'}))
+        await screen.findByRole('button', {name: 'rsvp.submit'})
+
+        expect(screen.getByText('Aviso del responsable')).toBeInTheDocument()
     })
 
     // The regression that made a guest press a final submit on step one: `visibleSteps` counted a
@@ -148,7 +169,7 @@ describe('FormEngine', () => {
         const user = userEvent.setup()
         const {unmount} = renderForm(vi.fn())
 
-        await reachMealStep(user)
+        await reachDietaryStep(user)
         await user.click(screen.getByLabelText('rsvp.dietary.none'))
 
         const draftKey = `nartea:form-draft:${weddingRsvpForm.id}:v${weddingRsvpForm.version}`
@@ -184,9 +205,9 @@ describe('FormEngine', () => {
     // nothing on screen to check them against.
     it('shows what is about to be sent on the step that sends it', async () => {
         const user = userEvent.setup()
-        renderForm(vi.fn())
+        renderForm(vi.fn(), undefined, formWithReview)
 
-        await reachMealStep(user)
+        await reachDietaryStep(user)
         // Las alergias se dejan en blanco: nada obligatorio en este paso, y asi el artículo 9
         // no entra en la aserción.
         await user.click(screen.getByRole('button', {name: 'rsvp.next'}))
@@ -202,7 +223,7 @@ describe('FormEngine', () => {
 
     it('shows the summary to a guest who declines, on the step that sends it', async () => {
         const user = userEvent.setup()
-        renderForm(vi.fn())
+        renderForm(vi.fn(), undefined, formWithReview)
 
         await user.type(screen.getByRole('textbox', {name: 'rsvp.fullName.label'}), 'Gala García')
         await user.click(screen.getByLabelText('rsvp.attending.no'))
@@ -217,8 +238,8 @@ describe('FormEngine', () => {
     // ya esta en pantalla.
     it('keeps the summary off a form that only ever has one step', () => {
         const single = {
-            ...weddingRsvpForm,
-            steps: [weddingRsvpForm.steps[0]],
+            ...formWithReview,
+            steps: [formWithReview.steps[0]],
         }
         render(
             <LocalizationContext.Provider value={localization}>
@@ -230,6 +251,21 @@ describe('FormEngine', () => {
         expect(screen.queryByRole('region', {name: 'rsvp.review.title'})).not.toBeInTheDocument()
     })
 
+    // El formulario de la boda, que es el que se sirve, no declara `review`: lo que ha respondido
+    // se le devuelve una sola vez, ya enviado, en la pantalla de gracias.
+    it('keeps the summary out of the wedding form, which shows it once it has been sent', async () => {
+        const user = userEvent.setup()
+        renderForm(vi.fn())
+
+        await user.type(screen.getByRole('textbox', {name: 'rsvp.fullName.label'}), 'Gala García')
+        await user.click(screen.getByLabelText('rsvp.attending.no'))
+        await user.click(screen.getByRole('button', {name: 'rsvp.next'}))
+        await screen.findByRole('heading', {name: 'rsvp.step.message.title'})
+
+        expect(screen.getByRole('button', {name: 'rsvp.submit'})).toBeInTheDocument()
+        expect(screen.queryByRole('region', {name: 'rsvp.review.title'})).not.toBeInTheDocument()
+    })
+
     // Ya no hay una pregunta previa que abrir: los campos estan a la vista y el aviso de que son
     // datos de salud va justo encima, que es lo que hace del acto de rellenarlos un
     // consentimiento informado.
@@ -237,7 +273,7 @@ describe('FormEngine', () => {
         const user = userEvent.setup()
         renderForm(vi.fn())
 
-        await reachMealStep(user)
+        await reachDietaryStep(user)
 
         expect(screen.getByText('rsvp.dietary.notice')).toBeInTheDocument()
         expect(screen.getByText('rsvp.dietary.label')).toBeInTheDocument()
@@ -250,7 +286,7 @@ describe('FormEngine', () => {
         const user = userEvent.setup()
         renderForm(vi.fn())
 
-        await reachMealStep(user)
+        await reachDietaryStep(user)
         await user.click(screen.getByLabelText('rsvp.dietary.gluten'))
         await user.click(screen.getByLabelText('rsvp.dietary.lactose'))
         expect(screen.getByLabelText('rsvp.dietary.gluten')).toBeChecked()
@@ -281,7 +317,7 @@ describe('FormEngine', () => {
         const onSubmit = vi.fn().mockResolvedValue(undefined)
         renderForm(onSubmit)
 
-        await reachMealStep(user)
+        await reachDietaryStep(user)
         await advanceToSubmit(user)
 
         const answers = onSubmit.mock.calls[0][0]
@@ -297,7 +333,7 @@ describe('FormEngine', () => {
         const onSubmit = vi.fn().mockResolvedValue(undefined)
         renderForm(onSubmit)
 
-        await reachMealStep(user)
+        await reachDietaryStep(user)
         await user.click(screen.getByLabelText('rsvp.dietary.gluten'))
         await user.click(screen.getByRole('button', {name: 'rsvp.back'}))
         await user.click(screen.getByLabelText('rsvp.attending.no'))

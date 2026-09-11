@@ -15,6 +15,18 @@ type Props = {
     onSave: (changes: Partial<RsvpRecordUpdate>) => Promise<boolean>
     onCancel: () => void
     saving: boolean
+    /**
+     * Ref to the control that opened the dialog, so focus can be handed back to it on close.
+     *
+     * Handed over rather than read from `document.activeElement`: on macOS, WebKit does not move
+     * focus to a button when it is clicked with a mouse, so the active element at mount was
+     * already `BODY` and the couple was returned to the top of a 58-row table. Chromium focuses
+     * it, which is why the e2e caught this only in the cross-browser run.
+     *
+     * A ref and not the element itself: reading `.current` during the parent's render is what the
+     * compiler forbids, and the only moment this is needed is inside the effect below.
+     */
+    openerRef?: RefObject<HTMLElement | null>
 }
 
 /**
@@ -23,7 +35,7 @@ type Props = {
  * Keyboard focus is trapped inside the dialog while it is open, so `aria-modal="true"`
  * matches the actual behaviour instead of only describing it.
  */
-export function EditResponseModal({response, form, columns, onSave, onCancel, saving}: Props) {
+export function EditResponseModal({response, form, columns, onSave, onCancel, saving, openerRef}: Props) {
     const {t} = useLocalization<WeddingMessageKey>()
     const fields = form.steps.flatMap(step => step.elements)
     const fieldMap = new Map(fields.map(field => [field.id, field]))
@@ -32,12 +44,37 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
     const modalRef = useRef<HTMLDivElement>(null)
     const firstFieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null)
 
+    /*
+     * QUIEN ABRIO EL MODAL RECUPERA EL FOCO AL CERRARLO
+     *
+     * Sin esto el foco quedaba en `BODY`, asi que un usuario de teclado volvia al enlace de salto
+     * y tenia que recorrer ~20 paradas para regresar a la fila que acababa de editar.
+     *
+     * Se resuelve una sola vez y en su propio efecto. Antes vivia junto al listener de teclado,
+     * cuyas dependencias incluyen `onCancel` -- una flecha nueva en cada render del panel -- de
+     * modo que el efecto se rehacia continuamente: cada pasada devolvia el foco al "opener" y lo
+     * volvia a llevar al primer campo, y a partir de la segunda el "opener" leido de
+     * `document.activeElement` ya era un campo del propio modal, que al cerrarse esta desmontado
+     * y no acepta foco.
+     */
     useEffect(() => {
-        // Quien abrio el modal recupera el foco al cerrarlo. Sin esto quedaba en `BODY`, asi que
-        // un usuario de teclado volvia al enlace de salto y tenia que recorrer ~20 paradas para
-        // regresar a la fila que acababa de editar.
-        const opener = document.activeElement as HTMLElement | null
+        const opening = openerRef?.current ?? (document.activeElement as HTMLElement | null)
         firstFieldRef.current?.focus()
+        // El fondo no scrollea mientras el modal esta abierto: sin esto, una rueda o un gesto
+        // sobre el backdrop movia la pagina de debajo y al cerrar el modal el usuario aparecia
+        // en otro sitio de una tabla de 58 filas.
+        const previousOverflow = document.body.style.overflow
+        document.body.style.overflow = 'hidden'
+        return () => {
+            document.body.style.overflow = previousOverflow
+            if (opening?.isConnected) opening.focus()
+        }
+        // `openerRef` es un `useRef` del panel: su identidad no cambia, asi que esto sigue
+        // corriendo una sola vez -- que es justo lo que hace falta para no devolver el foco a
+        // mitad de la edicion.
+    }, [openerRef])
+
+    useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') onCancel()
             if (event.key === 'Tab' && modalRef.current) {
@@ -54,16 +91,7 @@ export function EditResponseModal({response, form, columns, onSave, onCancel, sa
             }
         }
         document.addEventListener('keydown', handleKeyDown)
-        // El fondo no scrollea mientras el modal esta abierto: sin esto, una rueda o un gesto
-        // sobre el backdrop movia la pagina de debajo y al cerrar el modal el usuario aparecia
-        // en otro sitio de una tabla de 58 filas.
-        const previousOverflow = document.body.style.overflow
-        document.body.style.overflow = 'hidden'
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown)
-            document.body.style.overflow = previousOverflow
-            if (opener?.isConnected) opener.focus()
-        }
+        return () => document.removeEventListener('keydown', handleKeyDown)
     }, [onCancel])
 
     const handleSubmit = async (event: FormEvent) => {
