@@ -4,10 +4,11 @@ import {useLocalization} from '../../../app/providers/useLocalization'
 import {InterfaceIcon} from '../../../components/ui/InterfaceIcon'
 import {useCountdown} from './useCountdown'
 
-export function CountdownSection<Message extends string>({
-                                                             section,
-                                                             event,
-                                                         }: Readonly<SectionComponentProps<Message, 'countdown'>>) {
+export function CountdownSection<Message extends string>(
+    {
+        section,
+        event,
+    }: Readonly<SectionComponentProps<Message, 'countdown'>>) {
     const {t} = useLocalization<Message>()
     const timeLeft = useCountdown(event.date, event.timezone)
     if (timeLeft.status === 'past') return null

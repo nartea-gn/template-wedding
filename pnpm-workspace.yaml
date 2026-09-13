@@ -1,4 +1,6 @@
 allowBuilds:
   esbuild: true
-  supabase: set this to true or false
+  # supabase@2.117.0 publishes no install/postinstall/preinstall script, so there is no build to
+  # approve. Recorded as `false` rather than dropped so pnpm does not ask again on the next bump.
+  supabase: false
   workerd: true

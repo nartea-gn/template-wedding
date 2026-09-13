@@ -3,6 +3,27 @@
 Una versión estable solo puede publicarse cuando todos los puntos obligatorios están verificados contra el mismo commit
 candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolución documentados.
 
+## Última re-verificación automática
+
+**2026-09-13**, contra el HEAD de la revisión, **todas las puertas de la CI en la misma máquina y
+el mismo árbol**: 277 unitarias, E2E Chromium 80/80, matriz compat 112/112, CSP 5/5, `pnpm lint` sin
+warnings, `pnpm build` limpio, `pnpm audit` sin vulnerabilidades conocidas, `db:verify` con sus 72
+aserciones pgTAP y sin deriva en `supabase/schema.sql`, `supabase db lint` sin errores de esquema,
+`pnpm test:db` verde por la vía del CLI y `check:functions` con el type-check de la Edge Function
+limpio bajo Deno 2.9.6.
+
+Cubre las casillas que esas suites ejercitan: §5 entera, §4 salvo la fila de backup, §6, §7 y las
+filas automatizables de §8 y §9. Con un límite que conviene no olvidar: los recorridos E2E corren
+contra un Supabase falso, así que son evidencia de interfaz y no de persistencia real —la misma base
+sobre la que se marcaron originalmente, ahora escrita en vez de supuesta.
+
+Lo que **no** cubre y sigue pendiente igual: las filas que dependen de hardware real (Safari iOS y
+Chrome Android), la medición manual de Lighthouse, y el procedimiento de backup y rollback, que no
+es una prueba sino un documento que no existe.
+
+Las marcas anteriores se conservan. La regla del commit candidato se aplica al ejecutar este
+checklist para una release, y Sprint 9 no ha empezado.
+
 ## 1. Alcance y versionado
 
 - [ ] El alcance de la release está congelado.
@@ -36,10 +57,10 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 
 ## 4. Base de datos y recuperación
 
-- [x] Una instalación vacía se crea desde una baseline versionada. — `supabase/migrations/` contiene el schema inicial y deltas versionadas.
+- [x] Una instalación vacía se crea desde una baseline versionada. — `supabase/migrations/` contiene el schema inicial y deltas versionadas. `db:verify` las aplica desde cero y regenera `supabase/schema.sql` sin deriva (2026-09-13).
 - [x] Un proyecto existente puede actualizarse sin reaplicar migraciones. — `IF NOT EXISTS` y migraciones idempotentes.
 - [x] `supabase migration list` coincide local/remoto. — Depende de aplicar migraciones pendientes en remoto.
-- [x] La migración se prueba antes del frontend que la consume. — pgTAP local verifica RLS, grants y ciclo de vida.
+- [x] La migración se prueba antes del frontend que la consume. — pgTAP verifica RLS, grants y ciclo de vida: 4 ficheros, 72 aserciones, ejecutadas por las dos vías (el harness de `db:verify` y `supabase test db`) el 2026-09-13.
 - [ ] Backup, rollback y recuperación ante fallo parcial están documentados. — Pendiente de documentar procedimiento operativo.
 - [x] No se han realizado cambios manuales fuera del historial aprobado. — Todos los cambios pasan por migración o PR.
 
@@ -48,9 +69,9 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [x] `pnpm install --frozen-lockfile` es reproducible.
 - [x] `pnpm lint` termina sin warnings.
 - [x] `pnpm build` termina correctamente.
-- [x] Pruebas unitarias, integración y E2E pasan. — 137 unitarias, E2E Chromium 46/46, CSP 4/4, pgTAP y harness de migraciones verdes (2026-09-04).
+- [x] Pruebas unitarias, integración y E2E pasan. — 277 unitarias, E2E Chromium 80/80, CSP 5/5, matriz compat 112/112, pgTAP 72/72 por sus dos vías, `supabase db lint` sin errores de esquema y type-check de Edge Functions limpio bajo Deno 2.9.6. Todo el 2026-09-13, contra el mismo árbol.
 - [x] Los pull requests ejecutan los mismos gates.
-- [x] Node, pnpm, actions y Supabase CLI usan versiones fijadas y mantenibles.
+- [x] Node, pnpm, actions y Supabase CLI usan versiones fijadas y mantenibles. — `pnpm audit` sin vulnerabilidades conocidas (2026-09-13).
 
 ## 6. Flujos funcionales
 
@@ -92,7 +113,7 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [x] Bottom sheets y overlays respetan safe areas.
 - [ ] Safari iOS y Chrome Android completan RSVP, mapas y vídeo. — Pendiente validación en hardware real.
 - [x] Navegadores de escritorio completan los flujos críticos.
-- [x] Los cinco temas pasan la matriz Landing × RSVP × Admin.
+- [x] Los siete temas pasan la matriz Landing × RSVP × Admin. — `themes.spec.ts` itera `Object.keys(themes)`, así que la matriz crece con el catálogo: `lavender` y `terracotta` entraron después de que esta casilla se escribiera con cinco.
 
 ## 10. Rendimiento
 
@@ -101,23 +122,23 @@ candidato. Una excepción requiere propietario, motivo, riesgo y fecha de resolu
 - [x] Poster y medios reservan dimensiones para evitar CLS.
 - [x] Imágenes y vídeo cumplen presupuesto o tienen excepción documentada.
 - [x] Rutas y catálogos opcionales mantienen carga diferida.
-- [ ] Fuentes no utilizadas y coste por tema están medidos. — Pendiente medición manual.
+- [x] Fuentes no utilizadas y coste por tema están medidos. — `85658ca` alojó las familias en este origen: peticiones a terceros 2 → 0 y first contentful paint 416 → 332 ms. Solo viaja la familia del tema activo, y `app.spec.ts` comprueba en cada ejecución que abrir la invitación no pide nada a terceros (2026-09-13).
 
 ## 11. Despliegue y operación
 
 - [x] Variables y secretos existen en el entorno objetivo. — Configurados en `.env.example` y workflow de despliegue.
-- [x] El workflow valida antes de migrar y desplegar. — `deploy.yml` ejecuta lint, build y smoke test.
+- [x] El workflow valida antes de migrar y desplegar. — `deploy.yml` ejecuta lint, `db:verify`, E2E Chromium y build antes de tocar la base o publicar; el smoke test corre en un job posterior, contra la URL ya desplegada.
 - [x] Se realiza smoke test sobre la URL pública y su subpath.
-- [x] Hash routes `/`, `/rsvp` y `/admin` funcionan según capabilities.
+- [x] Las rutas `/`, `/rsvp` y `/admin` funcionan según capabilities. Son rutas reales, no fragmentos, desde ADR-022.
 - [ ] Existe procedimiento de rollback de frontend y base de datos. — Pendiente documentar.
 - [ ] Se conoce responsable de responder a errores de despliegue o datos. — Pendiente asignar.
 
 ## 12. Documentación
 
-- [x] README reproduce instalación y ejecución desde cero.
+- [x] README reproduce instalación y ejecución desde cero. — Revisado el 2026-09-13: fijaba un major de pnpm caducado y omitía `test:e2e:csp` de los gates; ambos corregidos.
 - [x] Guía de configuración coincide con los tipos actuales.
-- [x] Roadmap, backlog, ADR y auditorías no se contradicen.
-- [x] Changelog contiene cambios y limitaciones reales.
+- [x] Roadmap, backlog, ADR y auditorías no se contradicen. — Barrido el 2026-09-13 sobre los 68 markdown: `THEMES.md` y `MEDIA.md` documentaban un plugin retirado y este fichero describía el pipeline al revés. Corregidos.
+- [x] Changelog contiene cambios y limitaciones reales. — Consolidada la cola de la revisión en `Unreleased` el 2026-09-13.
 - [x] La documentación no contiene secretos ni datos personales.
 
 ## Aprobación de release

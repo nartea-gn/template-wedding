@@ -67,7 +67,7 @@ BEGIN
         'e5b7c1a4-0000-4000-8000-000000000001',
         'authenticated', 'authenticated',
         'admin@ejemplo.local',
-        extensions.crypt('Revision2026!', extensions.gen_salt('bf')),
+        extensions.crypt('Test1234!', extensions.gen_salt('bf')),
         now(), now(), now(),
         '{"provider": "email", "providers": ["email"]}'::jsonb,
         '{}'::jsonb,

@@ -2,6 +2,9 @@ import {useAdminData} from '../hooks/useAdminData';
 import {useAdminSession} from '../hooks/useAdminSession';
 import {LoginForm} from '../components/admin/LoginForm';
 import {StatsCards} from '../components/admin/StatsCards';
+import {StatsBreakdown} from '../components/admin/StatsBreakdown';
+import type {AdminFilter} from '../features/admin/presentation/getPresentedResponses';
+import {weddingRsvpForm} from '../invitations/wedding/rsvpForm';
 import {AdminToolbar} from '../components/admin/AdminToolbar';
 import {PaginationControls} from '../components/admin/PaginationControls';
 import {ResponsesTable} from '../components/admin/ResponsesTable';
@@ -24,6 +27,28 @@ function resolveAuthMethod(auth: AdminAuthDefinition | undefined): AdminAuthMeth
     return auth?.method ?? 'otp';
 }
 
+/**
+ * Un grupo de filtro por cada reparto declarado, con sus opciones tal y como las leyo el invitado.
+ *
+ * Se deriva del formulario y no de los valores guardados, igual que el recuento: asi el orden es el
+ * de la pregunta y una opcion que nadie ha elegido sigue apareciendo, para poder comprobar que no
+ * hay nadie en ella.
+ */
+function choiceFilterGroups(fieldIds: readonly string[], translate: (key: WeddingMessageKey) => string) {
+    const fields = new Map(weddingRsvpForm.steps.flatMap(step => step.elements).map(element => [element.id, element]));
+    return fieldIds.flatMap(fieldId => {
+        const field = fields.get(fieldId);
+        if (!field || !('options' in field)) return [];
+        return [{
+            groupLabel: translate(field.label as WeddingMessageKey),
+            options: field.options.map(option => ({
+                value: `choice:${fieldId}:${String(option.value)}` as AdminFilter,
+                label: translate(option.label as WeddingMessageKey),
+            })),
+        }];
+    });
+}
+
 export default function Admin() {
     const {t, locale, formatDate} = useLocalization<WeddingMessageKey>();
     const rsvp = weddingInvitation.capabilities.rsvp;
@@ -34,7 +59,7 @@ export default function Admin() {
     const controls = admin?.controls;
     const {
         loading, hasError, errorMessage, actionMessage, lastUpdatedAt, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
-        totalResponses, attendingResponses, declinedResponses, transportResponses, resultCount,
+        totalResponses, attendingResponses, declinedResponses, transportResponses, breakdowns, resultCount,
         presentedResponses, paginatedResponses, currentPage, totalPages, pageSize, setPageSize, setPage, refetch,
         updateResponse, deleteResponse, restoreResponse, rsvpStatus, updateSchedule, rowError,
     } = useAdminData(isAuthenticated, {
@@ -119,8 +144,10 @@ export default function Admin() {
 
             <StatsCards total={totalResponses} confirmados={attendingResponses} declinados={declinedResponses}
                         necesitanBus={transportResponses}/>
+            <StatsBreakdown breakdowns={breakdowns} form={weddingRsvpForm}/>
 
             <AdminToolbar controls={controls} filter={filter} setFilter={setFilter} query={query} setQuery={setQuery}
+                          choiceFilters={choiceFilterGroups(breakdowns.map(b => b.fieldId), t)}
                           sortOrder={sortOrder} setSortOrder={setSortOrder} resultCount={resultCount}
                           totalResponses={totalResponses} pageSize={pageSize} setPageSize={setPageSize}
                           exportDisabled={loading || resultCount === 0}

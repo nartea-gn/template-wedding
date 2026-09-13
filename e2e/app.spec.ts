@@ -80,7 +80,7 @@ test('ES, EN y BG actualizan contenido, idioma y metadatos sin overflow', async 
     await expect(page).toHaveTitle('Gala and Valentin’s wedding invitation')
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
         'content',
-        'Join us to celebrate our special day.',
+        'Join us to celebrate: let the party begin.',
     )
     await expect(page.getByText('Let the party begin in…')).toBeVisible()
 
@@ -131,8 +131,8 @@ test('RSVP permite declinar y confirma el guardado', async ({page}) => {
 
     await page.getByLabel('Nombre y apellidos').fill('Invitada de Prueba')
     await page.getByLabel('No podré asistir').check()
-    // Quien no puede ir tambien pasa por la dedicatoria, que es el unico paso abierto a las dos
-    // respuestas: sigue teniendo algo que decir.
+    // Quien no puede ir pasa por la dedicatoria, que es ahora el unico paso que ve y el unico que
+    // no ve quien confirma: sigue teniendo algo que decir.
     await page.getByRole('button', {name: 'Siguiente'}).click()
     await expect(page.getByRole('heading', {name: 'Dedicatoria'})).toBeVisible()
     await page.getByLabel('Tu mensaje').fill('Os deseo lo mejor')
@@ -151,22 +151,33 @@ test('RSVP completa el recorrido afirmativo multipaso', async ({page}) => {
     await page.goto('./rsvp')
 
     await page.getByLabel('Nombre y apellidos').fill('Pareja de Prueba')
+    await page.getByLabel('¿Podrás acompañarnos?', {exact: false}).first().isVisible()
     await page.getByLabel('Sí, ¡allí estaré!').check()
     await page.getByRole('button', {name: 'Siguiente'}).click()
-    await expect(page.getByRole('heading', {name: 'En la mesa'})).toBeVisible()
+    await expect(page.getByRole('heading', {name: 'Gestión'})).toBeVisible()
 
-    // Los datos dietéticos son datos de salud y se piden directamente, con el aviso encima: el
-    // consentimiento es el propio acto de rellenarlos.
-    await expect(page.getByText('Es información de salud.', {exact: false})).toBeVisible()
+    // Menu, alergias y autobus comparten paso, cada uno bajo su rotulo. El del menu va por encima
+    // del aviso: elegir carne o pescado no es declarar un dato de salud.
+    const aviso = page.getByText('Es información de salud.', {exact: false})
+    await expect(aviso).toBeVisible()
+    await expect(page.getByText('Banquete', {exact: true})).toBeVisible()
+    await expect(page.getByText('Transporte', {exact: true})).toBeVisible()
+
+    // Ninguna de las dos preguntas obligatorias se puede saltar.
+    await page.getByRole('button', {name: 'Siguiente'}).click()
+    await expect(page.getByText('Elige un menú', {exact: false})).toBeVisible()
+    await expect(page.getByText('Si comes de todo', {exact: false})).toBeVisible()
+
+    await page.getByLabel('Carne').check()
     await page.getByLabel('Ninguna, como de todo').check()
-    await page.getByRole('button', {name: 'Siguiente'}).click()
-    await expect(page.getByRole('heading', {name: 'Los detalles'})).toBeVisible()
-
-    // Autobus y cancion comparten paso; las alergias se quedaron solas en el suyo.
     await page.getByLabel('Plaza en autobús').selectOption('ida_vuelta')
-    await page.getByLabel('Canción para la pista').fill('Canción de prueba')
     await page.getByRole('button', {name: 'Siguiente'}).click()
-    await page.getByLabel('Tu mensaje').fill('Mensaje ficticio para el test')
+
+    // La cancion se queda sola en el ultimo paso, y la dedicatoria no esta en este recorrido: el
+    // boton que cierra el formulario sale aqui y no hay una pantalla mas pidiendo escribir a mano.
+    await expect(page.getByRole('heading', {name: 'Último detalle'})).toBeVisible()
+    await page.getByLabel('Canción para la pista').fill('Canción de prueba')
+    await expect(page.getByLabel('Tu mensaje')).toBeHidden()
     await page.getByRole('button', {name: 'Enviar confirmación'}).click()
 
     await expect(page.getByText('Tu asistencia ha sido confirmada. ¡Nos vemos pronto!')).toBeVisible()
@@ -290,8 +301,11 @@ test('la cuenta atras deja el mismo aire a los dos lados de cada ornamento', asy
             })
         })
 
-        // Uno solo distinto delata la columna desigual, que es como estaba.
-        expect(new Set(huecos).size, `${ancho} px: ${huecos.join(', ')}`).toBe(1)
+        // Igualdad exacta no: firefox reparte el `fr` en subpixeles que chromium no produce y da
+        // 2,6 contra 2,5 a 320. La columna desigual que esto vigila medía 3,3 contra 5,6 a 390 y
+        // 6,2 contra 11 a 1440, asi que 1 px la delata igual y el redondeo del motor no cuenta.
+        const desviacion = Math.max(...huecos) - Math.min(...huecos)
+        expect(desviacion, `${ancho} px: ${huecos.join(', ')}`).toBeLessThanOrEqual(1)
     }
 })
 

@@ -3,11 +3,12 @@ import type {SectionComponentProps} from '../../../app/invitation'
 import {useLocalization} from '../../../app/providers/useLocalization'
 import {useRsvpAvailability, useRsvpDeadline} from '../../rsvp/hooks/useRsvpAvailability'
 
-export function RsvpCtaSection<Message extends string>({
-                                                           section,
-                                                           event,
-                                                           capabilities,
-                                                       }: Readonly<SectionComponentProps<Message, 'rsvp-cta'>>) {
+export function RsvpCtaSection<Message extends string>(
+    {
+        section,
+        event,
+        capabilities,
+    }: Readonly<SectionComponentProps<Message, 'rsvp-cta'>>) {
     const {t, formatDate} = useLocalization<Message>()
     const isOpen = useRsvpAvailability(capabilities.rsvp)
     const deadline = useRsvpDeadline(capabilities.rsvp)

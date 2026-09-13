@@ -210,6 +210,9 @@ export const weddingInvitation = {
         // Sin `dietaryOther` la alergia escrita a mano no aparecia en la tabla, ni en el modal de
         // edicion, ni en el CSV que el propio aviso del panel manda dar al catering: un invitado
         // con "Alergia leve a los frutos secos" se exportaba como "Ninguna, como de todo".
+        // El menu manda al catering un recuento, no un texto: es la columna que decide cuantos
+        // platos de cada tipo se encargan.
+        ...(weddingRsvpSections.menu ? ["menuChoice"] : []),
         ...(weddingRsvpSections.dietary ? ["dietaryOptions", "dietaryOther"] : []),
         ...(weddingRsvpSections.bus ? ["busOption"] : []),
         ...(weddingRsvpSections.song ? ["songRequest"] : []),
@@ -237,6 +240,9 @@ export const weddingInvitation = {
         ...(weddingRsvpSections.dietary
           ? { dietaryFieldIds: ["dietaryOptions", "dietaryOther"] }
           : {}),
+        // El catering no pregunta quien eligio que, pregunta cuantos de cada: sin este reparto la
+        // pareja contaba menus a mano sobre el CSV.
+        ...(weddingRsvpSections.menu ? { breakdownFieldIds: ["menuChoice"] } : {}),
       },
       mutations: { rsvpClosure: { enabled: true } },
       controls: {

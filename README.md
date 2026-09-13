@@ -7,12 +7,13 @@ Supabase.
 ## Estado del proyecto
 
 El producto está en fase previa a `1.0.0`. La experiencia pública, RSVP, Admin opcional, localización, Theme Engine v2,
-el baseline visual responsive y la base local de seguridad están implementados. Sprint 7.2 incorpora pruebas automáticas
-y quality gates de Pull Request. Privacidad operativa, despliegue alojado y QA de release siguen siendo puertas
-obligatorias antes de publicar una versión estable.
+el baseline visual responsive y la base local de seguridad están implementados. Las pruebas automáticas y los quality
+gates de Pull Request están en marcha desde Sprint 7.2. Sprint 8 está entregado salvo su fase de dominio, y Sprint 9
+—la puesta en producción— está planificado y sin empezar. Privacidad operativa, despliegue alojado y QA de release
+siguen siendo puertas obligatorias antes de publicar una versión estable.
 
 Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/PRODUCT_BACKLOG.md) y el
-[plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md). El
+[plan de Sprint 9](docs/00-product/SPRINT_9_PLAN.md), que es el vigente. El
 [checklist de release](docs/04-development/RELEASE_CHECKLIST.md) mantiene las puertas verificables para `1.0.0`.
 
 ## Stack
@@ -23,14 +24,15 @@ Consulta el [roadmap](docs/00-product/ROADMAP.md), el [backlog](docs/00-product/
 - Supabase mediante un adaptador de infraestructura.
 - Vitest, React Testing Library, Playwright y pgTAP para validación por capas.
 - Cloudflare Pages como host estático, servido en la raíz, con rutas reales.
-- pnpm 10.34.5 como único gestor de paquetes; `pnpm-lock.yaml` es autoritativo.
+- pnpm como único gestor de paquetes, en la versión que fija `packageManager` en `package.json`; `pnpm-lock.yaml` es
+  autoritativo.
 
 ## Puesta en marcha
 
 ### Requisitos
 
 - Node.js 24.
-- Corepack y pnpm 10.34.5.
+- Corepack, que instala la versión de pnpm declarada en `packageManager`.
 - Docker Desktop para Supabase local y las pruebas de base de datos.
 - Un proyecto Supabase preparado con el esquema y las migraciones del repositorio.
 
@@ -83,14 +85,22 @@ pnpm lint
 pnpm test
 pnpm build
 pnpm test:e2e
+pnpm test:e2e:csp
 pnpm test:e2e:matrix
 pnpm preview
 ```
 
 `pnpm build` ejecuta primero el compilador TypeScript y después Vite. `pnpm test:e2e` inicia automáticamente la
-aplicación y usa Chromium como gate rápido. `pnpm test:e2e:matrix` añade Firefox, WebKit y perfiles móviles emulados;
-requiere instalar los motores una vez mediante `pnpm exec playwright install chromium firefox webkit`. Las pruebas RLS
-se ejecutan contra Supabase local con `pnpm test:db`. Consulta la
+aplicación y usa Chromium como gate rápido. `pnpm test:e2e:csp` sirve el build con `wrangler` y falla si la política
+bloquea algo o desaparece; es la única suite que carga una página con CSP real. `pnpm test:e2e:matrix` añade Firefox,
+WebKit y perfiles móviles emulados.
+
+Los motores se instalan con `pnpm exec playwright install chromium firefox webkit`, y **no basta con hacerlo una vez**:
+cada versión de Playwright fija sus propias revisiones, así que un bump del paquete deja las descargadas obsoletas y
+toda suite falla en el arranque con `browserType.launch: Executable doesn't exist`. La CI lo reinstala en cada job; una
+copia de trabajo no.
+
+Las pruebas RLS se ejecutan contra Supabase local con `pnpm test:db`. Consulta la
 [estrategia de pruebas](docs/04-development/TESTING.md).
 
 ## Configurar una invitación
@@ -142,12 +152,13 @@ Documentos de referencia:
 - [Internacionalización](docs/01-architecture/INTERNATIONALIZATION.md)
 - [Theme Engine](docs/02-design/THEMES.md)
 - [Backgrounds temáticos](docs/02-design/BACKGROUNDS.md)
+- [Teselado de los módulos de cuerpo](docs/02-design/BACKGROUND_TILING.md)
 - [Admin](docs/01-architecture/ADMIN.md)
 - [Operación del acceso Admin](docs/04-development/ADMIN_ACCESS_OPERATIONS.md)
 - [Migraciones](docs/01-architecture/DATABASE_MIGRATIONS.md)
 - [Estrategia de pruebas](docs/04-development/TESTING.md)
 - [Architecture Decision Records](docs/04-development/adr)
-- [Plan de Sprint 7](docs/00-product/SPRINT_7_PLAN.md)
+- [Plan de Sprint 9](docs/00-product/SPRINT_9_PLAN.md)
 - [Modelo de amenazas](docs/05-audits/SECURITY_THREAT_MODEL.md)
 - [Inventario de datos y privacidad](docs/05-audits/DATA_PRIVACY_INVENTORY.md)
 - [Auditoría de baseline de Supabase](docs/05-audits/SUPABASE_BASELINE_AUDIT.md)
@@ -159,8 +170,9 @@ pendientes y publica el resultado en Cloudflare Pages. El workflow se queda en G
 Postgres y ejecutar los recorridos; Cloudflare solo recibe la carpeta construida. Los secretos operativos de Supabase
 y de Cloudflare se configuran en GitHub Actions y nunca llegan al bundle.
 
-El pipeline no sustituye la revisión de seguridad. La release de Sprint 7.1 debe publicar conjuntamente la migración RLS
-y el frontend OTP, provisionar los usuarios autorizados y completar el checklist de release.
+El pipeline no sustituye la revisión de seguridad. La release que active OTP debe publicar conjuntamente la migración
+RLS y el frontend OTP, provisionar los usuarios autorizados y completar el
+[checklist de release](docs/04-development/RELEASE_CHECKLIST.md). El panel sigue hoy en `password`.
 
 ## Historial
 

@@ -15,7 +15,8 @@
 }
 
 .landing-gifts-note {
-    @apply text-sm mb-6 max-w-xl text-center text-(--color-wedding-muted);
+    @apply mb-6 max-w-xl text-center text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .landing-gifts-account {
@@ -41,7 +42,8 @@
  * `COPIAR` (60 px) y los huecos piden 395 px, y solo hay 342 a 390 px de viewport. Por debajo de
  * ~768 px no cabe, asi que serian dos disenos en vez de uno. */
 .landing-gifts-detail {
-    @apply grid w-full items-center gap-x-3 text-sm;
+    @apply grid w-full items-center gap-x-3;
+    font-size: var(--landing-body);
     grid-template-columns: minmax(0, 1fr) auto;
 }
 
@@ -50,7 +52,8 @@
    justo lo que se venia a arreglar. Encogidas a su contenido, empiezan todas en el borde de la
    columna. El valor largo sigue pudiendo envolver: al desbordar la columna la ocupa entera. */
 .landing-gifts-detail-label {
-    @apply uppercase tracking-[0.12em] text-xs text-left text-(--color-wedding-muted);
+    @apply uppercase tracking-[0.12em] text-left text-(--color-wedding-muted);
+    font-size: var(--landing-eyebrow);
     justify-self: start;
 }
 
@@ -75,7 +78,8 @@
 }
 
 .landing-gifts-bizum-heading {
-    @apply uppercase tracking-[0.12em] text-xs text-(--color-wedding-action);
+    @apply uppercase tracking-[0.12em] text-(--color-wedding-action);
+    font-size: var(--landing-eyebrow);
 }
 
 /* El aviso vuelve al centro del bloque: es una nota, no una fila de datos, y alinearlo con la
@@ -85,7 +89,8 @@
 }
 
 .landing-gifts-warning {
-    @apply mt-4 text-xs leading-relaxed text-center max-w-sm whitespace-pre-line text-(--color-wedding-muted);
+    @apply mt-4 leading-relaxed text-center max-w-sm whitespace-pre-line text-(--color-wedding-muted);
+    font-size: var(--landing-body);
     border-left: 2px solid var(--color-wedding-border);
     padding-left: 0.75rem;
 }

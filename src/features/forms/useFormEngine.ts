@@ -6,18 +6,19 @@ import {
     type FormValue,
     isConditionMet,
     isConditionUndetermined,
+    isDecoration,
     validateElements
 } from '../../core/forms'
 
 function createInitialAnswers<Message extends string>(definition: FormDefinition<Message>): FormAnswers {
-    return Object.fromEntries(definition.steps.flatMap(step => step.elements).filter(element => element.type !== 'info').map(element => [element.id, element.initialValue ?? (element.type === 'checkbox-group' ? [] : '')]))
+    return Object.fromEntries(definition.steps.flatMap(step => step.elements).filter(element => !isDecoration(element)).map(element => [element.id, element.initialValue ?? (element.type === 'checkbox-group' ? [] : '')]))
 }
 
 /** Field ids the draft is allowed to hold: everything not marked `sensitive`. */
 function draftableIds<Message extends string>(definition: FormDefinition<Message>): Set<string> {
     return new Set(definition.steps
         .flatMap(step => step.elements)
-        .filter(element => element.type !== 'info' && !('sensitive' in element && element.sensitive))
+        .filter(element => !isDecoration(element) && !('sensitive' in element && element.sensitive))
         .map(element => element.id))
 }
 

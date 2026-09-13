@@ -9,9 +9,10 @@ const HEADING_ID = 'landing-lodging-heading'
  * No empty-state guard: `validateInvitationDefinition` already rejects an enabled lodging
  * section with no items, exactly as it does for venue.
  */
-export function LodgingSection<Message extends string>({
-                                                           section,
-                                                       }: Readonly<SectionComponentProps<Message, 'lodging'>>) {
+export function LodgingSection<Message extends string>(
+    {
+        section,
+    }: Readonly<SectionComponentProps<Message, 'lodging'>>) {
     const {t} = useLocalization<Message>()
 
     return (

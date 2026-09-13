@@ -53,16 +53,17 @@ function LoginFrame({title, description, children}: LoginFrameProps) {
     )
 }
 
-function OtpLoginForm({
-                          title,
-                          phase,
-                          requestedEmail,
-                          error,
-                          submitting,
-                          onRequestCode,
-                          onVerifyCode,
-                          onChangeEmail,
-                      }: OtpLoginFormProps) {
+function OtpLoginForm(
+    {
+        title,
+        phase,
+        requestedEmail,
+        error,
+        submitting,
+        onRequestCode,
+        onVerifyCode,
+        onChangeEmail,
+    }: OtpLoginFormProps) {
     const {t} = useLocalization<WeddingMessageKey>()
     const [email, setEmail] = useState('')
     const [code, setCode] = useState('')

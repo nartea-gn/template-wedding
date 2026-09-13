@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import type {FormAnswers} from '../core/forms';
+import {isDecoration} from '../core/forms';
 import {FormEngine} from '../features/forms/FormEngine';
 import {useRsvpSubmission} from '../features/rsvp/hooks/useRsvpSubmission';
 import {useLocalization} from '../app/providers/useLocalization';
@@ -138,7 +139,7 @@ export default function Rsvp() {
         // paso no se unifican en un `flatMap`.
         const fields = getFormFields(rsvpCapability.form);
         const receipt = [...fields.values()]
-            .filter(element => element.type !== 'info')
+            .filter(element => !isDecoration(element))
             .map(element => ({
                 id: element.id,
                 label: t(element.label),

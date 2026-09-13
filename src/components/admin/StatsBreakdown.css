@@ -1,0 +1,33 @@
+@reference "tailwindcss";
+
+.breakdown {
+    @apply mt-4;
+}
+
+/* El titulo es la propia pregunta del formulario, asi que la pareja lee en el panel lo mismo que
+   leyo el invitado. En `--color-wedding-action` y no en `--color-wedding-border`: medido contra
+   `surface`, `border` no pasa de 2,24:1 en ninguno de los siete temas y AA pide 4,5:1 para texto.
+   `action` va de 4,74 a 9,96. */
+.breakdown-title {
+    @apply mb-3 text-sm uppercase font-semibold tracking-wider text-(--color-wedding-action);
+}
+
+.breakdown-list {
+    @apply grid grid-cols-2 md:grid-cols-5 gap-3 list-none p-0 m-0;
+}
+
+/* Etiqueta y cifra en linea, no apiladas como en `StatsCards`. Aquellas son cuatro numeros que se
+   leen de un vistazo; estas son una lista que se recorre para copiarla a un pedido, y en columna
+   el ojo sigue el borde izquierdo sin saltar. */
+.breakdown-item {
+    @apply flex items-baseline justify-between gap-3 px-4 py-3;
+}
+
+.breakdown-label {
+    @apply text-sm text-(--color-wedding-muted);
+}
+
+.breakdown-value {
+    @apply font-serif text-2xl font-light text-(--color-wedding-action);
+    font-family: var(--font-heading);
+}

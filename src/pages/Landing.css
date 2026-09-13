@@ -97,7 +97,8 @@
 }
 
 .landing-venue-type {
-    @apply text-xs uppercase tracking-[0.16em] text-(--color-wedding-muted);
+    @apply uppercase tracking-[0.16em] text-(--color-wedding-muted);
+    font-size: var(--landing-eyebrow);
 }
 
 .landing-venue-name {
@@ -106,11 +107,13 @@
 }
 
 .landing-venue-time {
-    @apply text-xs uppercase tracking-[0.12em] text-(--color-wedding-muted);
+    @apply uppercase tracking-[0.12em] text-(--color-wedding-muted);
+    font-size: var(--landing-eyebrow);
 }
 
 .landing-venue-address {
-    @apply text-sm leading-relaxed max-w-xs text-(--color-wedding-muted);
+    @apply leading-relaxed max-w-xs text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .landing-venue-map-shell {
@@ -474,11 +477,13 @@
 }
 
 .landing-cta-deadline {
-    @apply text-sm mt-4 text-(--color-wedding-muted);
+    @apply mt-4 text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .landing-hashtag {
-    @apply text-sm italic tracking-wide text-(--color-wedding-muted);
+    @apply italic tracking-wide text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .landing-lodging {
@@ -490,7 +495,8 @@
 
 
 .landing-lodging-note {
-    @apply text-sm mb-6 max-w-xl mx-auto text-(--color-wedding-muted);
+    @apply mb-6 max-w-xl mx-auto text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .landing-lodging-grid {
@@ -503,7 +509,8 @@
 }
 
 .landing-lodging-highlight {
-    @apply text-xs uppercase tracking-[0.16em] text-(--color-wedding-action);
+    @apply uppercase tracking-[0.16em] text-(--color-wedding-action);
+    font-size: var(--landing-eyebrow);
 }
 
 .landing-lodging-name {
@@ -513,11 +520,13 @@
 
 .landing-lodging-address,
 .landing-lodging-item-note {
-    @apply text-sm leading-relaxed max-w-xs text-(--color-wedding-muted);
+    @apply leading-relaxed max-w-xs text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .landing-lodging-price {
-    @apply text-xs uppercase tracking-[0.12em] text-(--color-wedding-muted);
+    @apply uppercase tracking-[0.12em] text-(--color-wedding-muted);
+    font-size: var(--landing-eyebrow);
 }
 
 .landing-lodging-book {

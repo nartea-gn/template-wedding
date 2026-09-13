@@ -8,9 +8,10 @@ import type {RsvpStatus} from '../domain/RsvpStatus'
 
 const deadline = '2027-05-12T23:59:59+02:00'
 
-function AvailabilityProbe({
-                               capability,
-                           }: Readonly<{
+function AvailabilityProbe(
+    {
+        capability,
+    }: Readonly<{
     capability: InvitationCapabilities<string>['rsvp']
 }>) {
     return <span>{useRsvpAvailability(capability) ? 'open' : 'closed'}</span>
@@ -137,9 +138,10 @@ describe('useRsvpAvailability', () => {
     })
 })
 
-function DeadlineProbe({
-                           capability,
-                       }: Readonly<{
+function DeadlineProbe(
+    {
+        capability,
+    }: Readonly<{
     capability: InvitationCapabilities<string>['rsvp']
 }>) {
     return <span>{useRsvpDeadline(capability) ?? 'none'}</span>

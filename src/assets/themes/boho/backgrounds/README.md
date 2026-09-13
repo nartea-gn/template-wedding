@@ -18,9 +18,16 @@ original y continúa sobre un módulo de cuerpo repetible de la misma familia.
 
 | Variante                |    Dimensiones | Entrega          | Uso           |
 |-------------------------|---------------:|------------------|---------------|
-| `boho-body-narrow.webp` | 1024 × 1536 px | WebP, calidad 88 | 320–767 px    |
-| `boho-body-medium.webp` | 1448 × 1086 px | WebP, calidad 88 | 768–1279 px   |
-| `boho-body-wide.webp`   |  1672 × 941 px | WebP, calidad 88 | Desde 1280 px |
+| `boho-body-narrow.webp` | 1024 × 1533 px | WebP, calidad 88 | 320–767 px    |
+| `boho-body-medium.webp` | 1448 × 1078 px | WebP, calidad 88 | 768–1279 px   |
+| `boho-body-wide.webp`   |  1672 × 901 px | WebP, calidad 88 | Desde 1280 px |
+
+**Las alturas no son redondas a propósito.** Cada módulo se ha recortado por abajo lo justo para que
+su última fila y su primera queden contiguas en la obra original, que es lo que hace que se repita
+sin costura. Lo que se retira son entre 3 y 48 filas según el asset, fundidas contra el borde
+opuesto; el motivo no se toca. Medido en `ratio` —la costura dividida por la diferencia que ya hay
+entre dos filas vecinas de la propia obra—: por debajo de 1,25 la unión no se distingue de
+cualquier otra transición. Detalle y método en `FONDO-COSTURA.md`.
 
 Los módulos se generaron el 2026-07-29 a partir de las aperturas como referencia visual. Mantienen papel marfil,
 botánica oliva, hierbas secas y gestos terracota en los márgenes, con el centro sereno y una base tonal preparada para

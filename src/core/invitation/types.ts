@@ -247,6 +247,14 @@ export type InvitationCapabilities<Message extends string> = {
             ownTransportValue?: string
             /** Campos cuyo valor significa que ese invitado necesita algo del catering. */
             dietaryFieldIds?: readonly string[]
+            /**
+             * Campos de opcion unica cuyo reparto hay que contar, no solo listar.
+             *
+             * Una columna dice que eligio cada invitado; esto dice cuantos eligieron cada cosa,
+             * que es la pregunta que se le lleva a un proveedor. Generico a proposito: cuenta los
+             * valores de cualquier campo de eleccion, y quien lo declara decide cual.
+             */
+            breakdownFieldIds?: readonly string[]
         }
         controls?: AdminReadControls
         mutations?: AdminMutationControls

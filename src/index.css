@@ -38,6 +38,21 @@
     --text-sm: 0.9375rem;
     --text-base: 1.0625rem;
 
+    /* EL CUERPO DE LAS SECCIONES DE LA LANDING, FLUIDO COMO SUS TITULOS
+     *
+     * `.landing-section-title` lleva `clamp(1.25rem, 3vw, 1.75rem)` desde siempre, pero el texto
+     * que va debajo se quedo en tokens fijos: medido, `.landing-venue-type` daba 13 px tanto a
+     * 390 como a 1440, bajo un titulo que a 1440 ya media 28. Subir el token otro pixel repite el
+     * parche y deja el desajuste con el ancho intacto, asi que estas dos escalan.
+     *
+     * Dos y no una: en mayuscula con 0.12-0.16em de tracking el mismo numero se lee mas pequeno
+     * que en minuscula, y son justo las lineas que el ojo pierde -- `Ceremonia`, la hora, `€€`.
+     * `--landing-eyebrow` es para esas; `--landing-body` para la prosa que se lee entera.
+     *
+     * El minimo es el suelo de 320 px, donde `responsive.spec.ts` vigila el desbordamiento. */
+    --landing-eyebrow: clamp(0.875rem, 0.8rem + 0.4vw, 1rem);
+    --landing-body: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
+
     /* First-paint fallback mirrors the configured royal theme. */
     --color-wedding-bg: #F8F9FB;
     --color-wedding-primary: #1B3A6B;

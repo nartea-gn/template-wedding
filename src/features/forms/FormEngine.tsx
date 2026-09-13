@@ -1,7 +1,7 @@
 import {type CSSProperties, type FormEvent, useEffect, useRef} from 'react'
 import {useLocalization} from '../../app/providers/useLocalization'
 import type {FormDefinition, FormElement, FormValue} from '../../core/forms'
-import {isConditionMet} from '../../core/forms'
+import {isConditionMet, isDecoration} from '../../core/forms'
 import {useFormEngine} from './useFormEngine'
 import {InterfaceIcon} from '../../components/ui/InterfaceIcon'
 
@@ -27,14 +27,15 @@ type Props<Message extends string> = {
     headingLevel?: 1 | 2
 }
 
-export function FormEngine<Message extends string>({
-                                                       definition,
-                                                       isSubmitting,
-                                                       hasSubmissionError,
-                                                       onSubmit,
-                                                       privacyNotice,
-                                                       headingLevel = 2,
-                                                   }: Readonly<Props<Message>>) {
+export function FormEngine<Message extends string>(
+    {
+        definition,
+        isSubmitting,
+        hasSubmissionError,
+        onSubmit,
+        privacyNotice,
+        headingLevel = 2,
+    }: Readonly<Props<Message>>) {
     const {t} = useLocalization<Message>()
     const StepHeading = headingLevel === 1 ? 'h1' : 'h2'
     const engine = useFormEngine(definition)
@@ -141,7 +142,7 @@ export function FormEngine<Message extends string>({
     const reviewedFields = definition.steps
         .filter(candidate => isConditionMet(candidate.visibleWhen, engine.answers))
         .flatMap(candidate => candidate.elements)
-        .filter(element => element.type !== 'info')
+        .filter(element => !isDecoration(element))
         .filter(element => isConditionMet(element.visibleWhen, engine.answers))
         .map(element => ({element, value: readableValue(element)}))
         .filter(entry => entry.value !== '')
@@ -164,6 +165,10 @@ export function FormEngine<Message extends string>({
 
     const renderField = (element: FormElement<Message>) => {
         if (!isConditionMet(element.visibleWhen, engine.answers)) return null
+        if (element.type === 'section') return <p key={element.id} className="rsvp-section-heading">
+            <span className="rsvp-section-heading-label">{t(element.label)}</span>
+            {element.note && <span className="rsvp-section-heading-note">{t(element.note)}</span>}
+        </p>
         if (element.type === 'info') return <div key={element.id} className="rsvp-info-box">{t(element.label)}</div>
         const value = engine.answers[element.id]
         const error = errorMessage(element.id)

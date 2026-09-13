@@ -147,10 +147,52 @@
     @apply w-full;
 }
 
+/* EL AIRE ES POR CAMPO, NO POR PASO
+ *
+ * `gap-10` esta bien dimensionado para un paso que pregunta dos o tres cosas, que es lo que habia
+ * cuando se escribio. El paso de gestion tiene nueve hijos -- tres rotulos, un aviso, tres campos
+ * y dos notas --, asi que esos 40 px se cobraban ocho veces: medido, 1877 px de alto a 390 de
+ * ancho, de los que 320 eran hueco. Con seis o mas hijos el aire baja a la mitad y la pantalla
+ * cierra en 1650. Los pasos cortos no se enteran.
+ */
 .rsvp-step {
     @apply flex flex-col gap-10 md:gap-12;
     animation: fadeIn 0.6s ease-out forwards;
     opacity: 0;
+}
+
+.rsvp-step:has(> :nth-child(6)) {
+    @apply gap-5 md:gap-6;
+}
+
+/* EL ROTULO QUE PARTE UN PASO EN BLOQUES
+ *
+ * En `--color-wedding-action` y no en `--color-wedding-border`, que es lo que pedia el ojo: medido
+ * contra `surface`, `border` da entre 1,28 y 2,24 de contraste en los siete temas y no llega al
+ * 4,5 que exige un texto en ningun caso. Es un color de borde, para el 3:1 no textual -- y ahi
+ * es donde se usa, en el filete. `action` pasa AA en los siete, de 4,74 a 9,96, y `themes.test.ts`
+ * ya lo vigila.
+ */
+.rsvp-section-heading {
+    @apply flex flex-col;
+    margin-bottom: -0.5rem;
+}
+
+.rsvp-section-heading-label {
+    @apply flex items-center gap-3 uppercase font-semibold text-(--color-wedding-action);
+    font-size: var(--landing-eyebrow);
+    letter-spacing: 0.14em;
+}
+
+.rsvp-section-heading-label::after {
+    @apply block flex-1 h-px;
+    content: '';
+    background: var(--color-wedding-border);
+}
+
+.rsvp-section-heading-note {
+    @apply mt-1 text-(--color-wedding-muted);
+    font-size: var(--landing-body);
 }
 
 .rsvp-step-header {

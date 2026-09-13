@@ -18,13 +18,14 @@ function escapeCsvCell(value: string) {
     return `"${protectSpreadsheetCell(value).replaceAll('"', '""')}"`
 }
 
-export function buildResponsesCsv<Message extends string>({
-                                                              responses,
-                                                              columns,
-                                                              form,
-                                                              translate,
-                                                              booleanLabels,
-                                                          }: Arguments<Message>) {
+export function buildResponsesCsv<Message extends string>(
+    {
+        responses,
+        columns,
+        form,
+        translate,
+        booleanLabels,
+    }: Arguments<Message>) {
     const fields = getFormFields(form)
     const header = columns.map(id => escapeCsvCell(fields.has(id) ? translate(fields.get(id)!.label) : id))
     const identityFieldId = form.submission.identityFieldId

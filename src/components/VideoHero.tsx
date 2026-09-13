@@ -33,17 +33,18 @@ function requestVideoFullscreen(video: FullscreenVideoElement) {
     video.webkitEnterFullscreen?.()
 }
 
-export function VideoHero({
-                              src,
-                              poster,
-                              preload,
-                              aspectRatio,
-                              label,
-                              playLabel,
-                              loadingLabel,
-                              errorLabel,
-                              eventDate,
-                          }: Readonly<Props>) {
+export function VideoHero(
+    {
+        src,
+        poster,
+        preload,
+        aspectRatio,
+        label,
+        playLabel,
+        loadingLabel,
+        errorLabel,
+        eventDate,
+    }: Readonly<Props>) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [hasStarted, setHasStarted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)

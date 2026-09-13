@@ -9,12 +9,21 @@ type Props = {
     query: string; setQuery: (value: string) => void; sortOrder: AdminSortOrder;
     setSortOrder: (value: AdminSortOrder) => void; resultCount: number; totalResponses: number;
     pageSize: number; setPageSize: (value: number) => void; exportDisabled: boolean; onExport: () => void;
+    /**
+     * Vistas por lo que el invitado eligio en un campo de opcion.
+     *
+     * Llegan resueltas en vez de derivarse aqui: la barra no conoce el formulario, y que lo
+     * conociera la ataria a esta boda. Vacio -- porque la seccion esta apagada o porque la
+     * invitacion no declara ningun reparto -- y el selector se queda como estaba.
+     */
+    choiceFilters?: readonly {groupLabel: string; options: readonly {value: AdminFilter; label: string}[]}[];
 };
 
-export function AdminToolbar({
-                                 controls, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
-                                 resultCount, totalResponses, pageSize, setPageSize, exportDisabled, onExport
-                             }: Props) {
+export function AdminToolbar(
+    {
+        controls, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
+        resultCount, totalResponses, pageSize, setPageSize, exportDisabled, onExport, choiceFilters
+    }: Props) {
     const {t} = useLocalization<WeddingMessageKey>();
     const pageSizeSelector = controls?.pagination?.pageSizeSelector;
     const pageSizeOptions = controls?.pagination?.enabled && pageSizeSelector?.enabled
@@ -34,6 +43,13 @@ export function AdminToolbar({
                     <option value="bus">{t('admin.filter.bus')}</option>
                     <option value="dietary">{t('admin.filter.dietary')}</option>
                     <option value="deleted">{t('admin.filter.deleted')}</option>
+                    {choiceFilters?.map(group => (
+                        <optgroup key={group.groupLabel} label={group.groupLabel}>
+                            {group.options.map(option => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </optgroup>
+                    ))}
                 </select>
             </div>
             {controls?.search?.enabled && <div className="admin-toolbar-field">

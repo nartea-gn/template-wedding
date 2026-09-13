@@ -56,9 +56,10 @@ function CopyableDetail({label, value, copyLabel, copiedLabel, groupLabel}: Read
  * phone is what that fraud impersonates: an invitation that publishes only an IBAN has nothing
  * to warn about, and one that switches Bizum off drops the numbers and the warning together.
  */
-export function GiftsSection<Message extends string>({
-                                                         section,
-                                                     }: Readonly<SectionComponentProps<Message, 'gifts'>>) {
+export function GiftsSection<Message extends string>(
+    {
+        section,
+    }: Readonly<SectionComponentProps<Message, 'gifts'>>) {
     const {t} = useLocalization<Message>()
     const {registry, account} = section.content
     const [revealed, setRevealed] = useState(() => account?.revealOnRequest === false)

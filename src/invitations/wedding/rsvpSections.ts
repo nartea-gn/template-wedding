@@ -12,13 +12,19 @@
  *
  * `dietary` also governs the article 9 notice that travels with it: turning it off removes the
  * health question and the consent text together, which is the only correct way to remove either.
+ *
+ * `menu` is deliberately not covered by that notice. Beef or fish is a preference and a child's
+ * menu is an age, so neither is health data: putting them under the article 9 text would claim a
+ * consent nothing there needs, and dilute the one the allergies do need.
  */
 export const weddingRsvpSections = {
-    /** Allergies and intolerances. Their own step. */
+    /** Which menu the guest eats. Its own block, above the allergies. */
+    menu: true,
+    /** Allergies and intolerances. Shares the logistics step, under its own label. */
     dietary: true,
-    /** Seat on the coach. Shares a step with {@link song}. */
+    /** Seat on the coach. Shares the logistics step, under its own label. */
     bus: true,
-    /** A song for the dance floor. Shares a step with {@link bus}. */
+    /** A song for the dance floor. The whole last step is this one question. */
     song: true,
 } as const
 
