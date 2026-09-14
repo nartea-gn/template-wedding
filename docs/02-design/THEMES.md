@@ -90,8 +90,11 @@ combinaciones tipográficas, pero deben mantener una jerarquía y legibilidad eq
 
 1. Añadir una entrada completa en `src/design/themes/themes.ts` que satisfaga `ThemeDefinition`.
 2. Elegir valores semánticos; no copiar reglas CSS o nombres de componentes dentro del objeto.
-3. Declarar sus familias de Google Fonts en `googleFonts`. El build inyecta en `index.html` solo las del tema
-   activo, así que una lista vacía significa «este tema usa únicamente fuentes de sistema», no «hereda las de otro».
+3. Declarar sus familias en `googleFonts` y ejecutar `node scripts/vendor-fonts.mjs`. El campo ya no inyecta nada en
+   `index.html` —el plugin que lo hacía se retiró al dejar de pedirle las fuentes a Google—: es la lista de la que el
+   script descarga las caras a `src/assets/fonts` y regenera `fonts.css`. Sin ese paso la familia no existe en disco y
+   `fonts.test.ts` falla, que es lo que impide que un tema caiga al tipo del sistema en silencio. Una lista vacía sigue
+   significando «este tema usa únicamente fuentes de sistema», no «hereda las de otro».
 4. Añadir un bloque `[data-theme="..."]` en `src/themes/patterns.css`. El arte de fondo es opcional y sigue
    `BACKGROUNDS.md`, pero el bloque debe existir: `themes.test.ts` falla si un tema no lo declara, para que ninguno
    pierda su fondo en silencio al renombrarlo.

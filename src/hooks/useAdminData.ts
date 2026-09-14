@@ -16,6 +16,7 @@ import {
     isAttending,
     isLive,
     needsTransport,
+    tallyField
 } from '../features/admin/presentation/getPresentedResponses';
 import {weddingInvitation} from '../invitations/wedding';
 import {weddingRsvpRepository} from '../invitations/wedding/rsvpRepository';
@@ -130,6 +131,21 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         declined: totals.declined + (isAttending(response, metrics) ? 0 : 1),
         transport: totals.transport + (needsTransport(response, metrics) ? 1 : 0),
     }), {total: 0, attending: 0, declined: 0, transport: 0}), [responses, metrics]);
+    /**
+     * El reparto de cada campo declarado en `breakdownFieldIds`, entre quienes asisten.
+     *
+     * Fuera del `reduce` de arriba a proposito: aquel acumula cuatro enteros por respuesta y este
+     * recorre un array por campo, asi que meterlos juntos cambiaria una suma de contadores por un
+     * objeto reconstruido en cada iteracion. Son pasadas distintas sobre la misma lista y ninguna
+     * de las dos vuelve a mirar el dato ya visto.
+     */
+    const breakdowns = useMemo(
+        () => (metrics?.breakdownFieldIds ?? []).map(fieldId => ({
+            fieldId,
+            tally: tallyField(responses, fieldId, metrics),
+        })),
+        [responses, metrics],
+    );
     const effectivePageSize = options.paginationEnabled ? pageSize : Math.max(1, presentedResponses.length);
     const totalPages = Math.max(1, Math.ceil(presentedResponses.length / effectivePageSize));
     const currentPage = Math.min(page, totalPages);
@@ -221,6 +237,7 @@ export function useAdminData(isAuthenticated: boolean, options: Options) {
         attendingResponses: counts.attending,
         declinedResponses: counts.declined,
         transportResponses: counts.transport,
+        breakdowns,
         resultCount: presentedResponses.length,
         presentedResponses,
         paginatedResponses,

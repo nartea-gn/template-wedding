@@ -1,10 +1,11 @@
 import type {SectionComponentProps} from '../../../app/invitation'
 import {useLocalization} from '../../../app/providers/useLocalization'
 
-export function HeroSection<Message extends string>({
-                                                        section,
-                                                        event
-                                                    }: Readonly<SectionComponentProps<Message, 'hero'>>) {
+export function HeroSection<Message extends string>(
+    {
+        section,
+        event
+    }: Readonly<SectionComponentProps<Message, 'hero'>>) {
     const {t, formatDate} = useLocalization<Message>()
     const displayDate = formatDate(event.date, {year: 'numeric', month: 'long', day: 'numeric'})
 

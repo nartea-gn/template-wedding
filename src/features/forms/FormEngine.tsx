@@ -1,7 +1,7 @@
 import {type CSSProperties, type FormEvent, useEffect, useRef} from 'react'
 import {useLocalization} from '../../app/providers/useLocalization'
 import type {FormDefinition, FormElement, FormValue} from '../../core/forms'
-import {isConditionMet} from '../../core/forms'
+import {isConditionMet, isDecoration} from '../../core/forms'
 import {useFormEngine} from './useFormEngine'
 import {InterfaceIcon} from '../../components/ui/InterfaceIcon'
 
@@ -27,14 +27,15 @@ type Props<Message extends string> = {
     headingLevel?: 1 | 2
 }
 
-export function FormEngine<Message extends string>({
-                                                       definition,
-                                                       isSubmitting,
-                                                       hasSubmissionError,
-                                                       onSubmit,
-                                                       privacyNotice,
-                                                       headingLevel = 2,
-                                                   }: Readonly<Props<Message>>) {
+export function FormEngine<Message extends string>(
+    {
+        definition,
+        isSubmitting,
+        hasSubmissionError,
+        onSubmit,
+        privacyNotice,
+        headingLevel = 2,
+    }: Readonly<Props<Message>>) {
     const {t} = useLocalization<Message>()
     const StepHeading = headingLevel === 1 ? 'h1' : 'h2'
     const engine = useFormEngine(definition)
@@ -141,7 +142,7 @@ export function FormEngine<Message extends string>({
     const reviewedFields = definition.steps
         .filter(candidate => isConditionMet(candidate.visibleWhen, engine.answers))
         .flatMap(candidate => candidate.elements)
-        .filter(element => element.type !== 'info')
+        .filter(element => !isDecoration(element))
         .filter(element => isConditionMet(element.visibleWhen, engine.answers))
         .map(element => ({element, value: readableValue(element)}))
         .filter(entry => entry.value !== '')
@@ -164,6 +165,10 @@ export function FormEngine<Message extends string>({
 
     const renderField = (element: FormElement<Message>) => {
         if (!isConditionMet(element.visibleWhen, engine.answers)) return null
+        if (element.type === 'section') return <p key={element.id} className="rsvp-section-heading">
+            <span className="rsvp-section-heading-label">{t(element.label)}</span>
+            {element.note && <span className="rsvp-section-heading-note">{t(element.note)}</span>}
+        </p>
         if (element.type === 'info') return <div key={element.id} className="rsvp-info-box">{t(element.label)}</div>
         const value = engine.answers[element.id]
         const error = errorMessage(element.id)
@@ -274,12 +279,14 @@ export function FormEngine<Message extends string>({
                                                 tabIndex={-1}>
                         <p className="rsvp-error-box-text">{t(definition.messages.submitError)}</p>
                     </div>}
-                    {/* On the first step only. Repeated on all four, the retention clause was
-                        also the last thing a guest read before pressing submit on the step meant
-                        to be affectionate. Article 13 asks for it at the point of collection,
-                        which is where the form starts; the health-data field carries its own,
-                        more specific notice next to the question that collects it. */}
-                    {engine.isFirst && (privacyNotice ?? (definition.privacyNotice && t(definition.privacyNotice))) && (
+                    {/* On the last step only, immediately above the button that sends. Article
+                        13 asks for the notice at the point of collection, and nothing is
+                        collected until this button is pressed: on step one it was read before the
+                        guest had decided to answer at all, and by the time they committed it was
+                        four screens behind them. Repeating it on every step is what this replaced.
+                        The health-data field keeps its own, more specific notice next to the
+                        question that collects it. */}
+                    {engine.isLast && (privacyNotice ?? (definition.privacyNotice && t(definition.privacyNotice))) && (
                         <p className="rsvp-privacy-notice">
                             {privacyNotice ?? t(definition.privacyNotice!)}
                         </p>

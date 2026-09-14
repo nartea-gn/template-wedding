@@ -31,9 +31,16 @@ copia JPEG de seguridad conserva calidad 92.
 
 | Variante                 | Dimensiones | Entrega          | Uso                                       |
 |--------------------------|------------:|------------------|-------------------------------------------|
-| `royal-body-narrow.webp` | 1024 × 1536 | WebP, calidad 84 | Continuidad vertical por debajo de 768 px |
-| `royal-body-medium.webp` | 1448 × 1086 | WebP, calidad 84 | Continuidad entre 768 y 1279 px           |
-| `royal-body-wide.webp`   |  1672 × 941 | WebP, calidad 84 | Continuidad desde 1280 px                 |
+| `royal-body-narrow.webp` | 1024 × 1526 | WebP, calidad 84 | Continuidad vertical por debajo de 768 px |
+| `royal-body-medium.webp` | 1448 × 1074 | WebP, calidad 84 | Continuidad entre 768 y 1279 px           |
+| `royal-body-wide.webp`   |  1672 × 921 | WebP, calidad 84 | Continuidad desde 1280 px                 |
+
+**Las alturas no son redondas a propósito.** Cada módulo se ha recortado por abajo lo justo para que
+su última fila y su primera queden contiguas en la obra original, que es lo que hace que se repita
+sin costura. Lo que se retira son entre 3 y 48 filas según el asset, fundidas contra el borde
+opuesto; el motivo no se toca. Medido en `ratio` —la costura dividida por la diferencia que ya hay
+entre dos filas vecinas de la propia obra—: por debajo de 1,25 la unión no se distingue de
+cualquier otra transición. Detalle y método en `FONDO-COSTURA.md`.
 
 Los módulos mantienen un centro marfil limpio y concentran acuarela y botánica de baja intensidad en los extremos. Se
 repiten verticalmente detrás de Landing y quedan cubiertos por la apertura en el primer viewport. La unión utiliza

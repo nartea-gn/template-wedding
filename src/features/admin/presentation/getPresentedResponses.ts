@@ -1,7 +1,25 @@
 import type {AdminSortOrder} from '../../../core/invitation'
 import type {RsvpSubmissionRecord} from '../../rsvp/domain/RsvpSubmission'
 
-export type AdminFilter = 'all' | 'confirmed' | 'declined' | 'bus' | 'dietary' | 'deleted'
+/**
+ * Que subconjunto de respuestas se esta mirando.
+ *
+ * Los seis primeros son vistas fijas. `choice:<campo>:<valor>` es una familia: filtra por lo que
+ * un invitado eligio en un campo de opcion, y quien la declara es la invitacion, no este tipo. El
+ * caso que la pidio es sacar la lista de quien come pescado sin exportar el CSV y filtrarlo fuera.
+ */
+export type AdminFilter =
+    | 'all' | 'confirmed' | 'declined' | 'bus' | 'dietary' | 'deleted'
+    | `choice:${string}`
+
+/** El campo y el valor que codifica un filtro `choice:`, o `null` si no lo es. */
+export function parseChoiceFilter(filter: AdminFilter) {
+    if (!filter.startsWith('choice:')) return null
+    const resto = filter.slice('choice:'.length)
+    const corte = resto.indexOf(':')
+    if (corte <= 0) return null
+    return {fieldId: resto.slice(0, corte), value: resto.slice(corte + 1)}
+}
 
 /**
  * Whether a response still counts.
@@ -22,6 +40,35 @@ type Metrics = {
     ownTransportValue?: string
     /** Campos que, con valor, significan que ese invitado necesita algo del catering. */
     dietaryFieldIds?: readonly string[]
+    /** Campos de eleccion unica cuyo reparto se cuenta. */
+    breakdownFieldIds?: readonly string[]
+}
+
+/** Cuantos invitados que asisten han elegido cada valor de un campo. */
+export type Tally = Readonly<Record<string, number>>
+
+/**
+ * El reparto de un campo de eleccion entre quienes asisten.
+ *
+ * Solo cuenta a quien viene: el menu de quien declina no se cocina, y sumarlo daria al catering un
+ * numero mayor que el de comensales. Un valor vacio no cuenta como categoria propia -- si la
+ * pregunta es obligatoria no lo habra, y si no lo es, el hueco se lee restando del total de
+ * asistentes, que es la cifra que ya esta en pantalla justo encima.
+ */
+export function tallyField(
+    responses: readonly RsvpSubmissionRecord[],
+    fieldId: string,
+    metrics: Metrics | undefined,
+): Tally {
+    const tally: Record<string, number> = {}
+    for (const response of responses) {
+        if (!isLive(response) || !isAttending(response, metrics)) continue
+        const value = response.answers[fieldId]
+        if (value === undefined || value === null || value === '') continue
+        const key = String(value)
+        tally[key] = (tally[key] ?? 0) + 1
+    }
+    return tally
 }
 
 export function isAttending(response: RsvpSubmissionRecord, metrics: Metrics | undefined) {
@@ -61,15 +108,16 @@ type Arguments = {
     locale: string
 }
 
-export function getPresentedResponses({
-                                          responses,
-                                          filter,
-                                          query,
-                                          sortOrder,
-                                          identityFieldId,
-                                          metrics,
-                                          locale,
-                                      }: Arguments) {
+export function getPresentedResponses(
+    {
+        responses,
+        filter,
+        query,
+        sortOrder,
+        identityFieldId,
+        metrics,
+        locale,
+    }: Arguments) {
     const normalizedQuery = query.trim().toLocaleLowerCase(locale)
     const collator = new Intl.Collator(locale, {sensitivity: 'base', numeric: true})
     const filtered = responses.filter(response => {
@@ -79,6 +127,11 @@ export function getPresentedResponses({
         if (filter === 'declined' && isAttending(response, metrics)) return false
         if (filter === 'bus' && !needsTransport(response, metrics)) return false
         if (filter === 'dietary' && !needsDiet(response, metrics)) return false
+        // Solo entre quienes asisten, por la misma razon que el recuento: el menu de quien declina
+        // no se cocina, y su respuesta vieja seguiria en la fila si cambio de idea.
+        const choice = parseChoiceFilter(filter)
+        if (choice && (!isAttending(response, metrics)
+            || String(response.answers[choice.fieldId] ?? '') !== choice.value)) return false
         if (!normalizedQuery) return true
         return String(response.answers[identityFieldId] ?? '').toLocaleLowerCase(locale).includes(normalizedQuery)
     })

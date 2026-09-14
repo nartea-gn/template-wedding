@@ -88,11 +88,11 @@ export type RsvpCtaSection<Message extends string> = Section<'rsvp-cta', {
     label: Message
     closedLabel: Message
     /**
-     * Aviso con la fecha limite, junto a la llamada. Lleva `{date}`, que la seccion sustituye.
+     * Line under the button telling the guest by when to reply. Carries a `{date}` hole, filled
+     * with the deadline the RSVP is actually governed by rather than with a date typed twice.
      *
-     * Opcional para no romper una invitacion sin plazo, pero recomendado: la fecha gobernaba el
-     * cierre sin aparecer en ninguna superficie ni idioma, y una urgencia sin fecha es la primera
-     * causa de confirmaciones tardias.
+     * Only rendered while the RSVP is open: once it has closed the button says so, and a date in
+     * the future next to it would contradict it.
      */
     deadlineNotice?: Message
     /**
@@ -127,10 +127,26 @@ export type LodgingSection<Message extends string> = Section<'lodging', {
     items: readonly LodgingItemDefinition<Message>[]
 }>
 
+/**
+ * One Bizum destination.
+ *
+ * Each number carries its own label because a couple publishes two, one per person, and a shared
+ * "Bizum" label would leave the guest guessing whose phone they are about to pay. Point it at the
+ * key that already holds the name -- `hero.partnerOne` and the like -- so a rename travels.
+ */
+export type BizumNumber<Message extends string> = {
+    labelKey: Message
+    value: string
+}
+
 export type GiftsSection<Message extends string> = Section<'gifts', {
     label: Message
     noteKey?: Message
-    /** Line that cuts the most common fraud: the couple never asks to change the number. */
+    /**
+     * Line that cuts the most common fraud: the couple never asks to change the number. It renders
+     * with the Bizum numbers, the phone the fraud impersonates, so an invitation without them shows
+     * no warning either.
+     */
     fraudWarningKey: Message
     newTabLabel: Message
     registry?: {
@@ -140,7 +156,21 @@ export type GiftsSection<Message extends string> = Section<'gifts', {
     account?: {
         iban: string
         holderKey: Message
-        bizum?: string
+        /**
+         * Bizum carries its own switch because it publishes personal phone numbers, which an IBAN
+         * does not: an invitation can offer the account without exposing anyone's mobile. At most
+         * two numbers, enforced by {@link validateInvitationDefinition}.
+         */
+        bizum?: {
+            enabled: boolean
+            /**
+             * Names the group of numbers. The rows themselves are labelled with the people who own
+             * them, so without this the guest would read two bare phone numbers and never learn
+             * which payment method they belong to.
+             */
+            labelKey: Message
+            numbers: readonly BizumNumber<Message>[]
+        }
         /**
          * Keeps the account details out of the initial HTML until a guest asks for them.
          * Automated scraping is the realistic vector, and a Bizum number is a personal phone.
@@ -148,7 +178,6 @@ export type GiftsSection<Message extends string> = Section<'gifts', {
         revealOnRequest: boolean
         revealLabel: Message
         ibanLabel: Message
-        bizumLabel: Message
         copyLabel: Message
         copiedLabel: Message
     }
@@ -172,7 +201,27 @@ export type AdminAuthDefinition =
     | { method: 'password' }
 
 export type AdminReadControls = {
-    csvExport?: { enabled: boolean }
+    csvExport?: {
+        enabled: boolean
+        /**
+         * Columnas del fichero exportado, cuando no son las de la tabla.
+         *
+         * La tabla la lee la pareja y el CSV acaba en manos de un catering o de quien organiza,
+         * asi que no quieren las mismas columnas: la dedicatoria y la cancion son suyas y no
+         * organizan nada, y un fichero que se manda fuera es el peor sitio para pasearlas. Sin
+         * declarar, el export lleva las columnas de la tabla.
+         */
+        columns?: readonly string[]
+        /**
+         * Rotulo de una opcion en el fichero, por id de campo y por valor.
+         *
+         * Las etiquetas de las opciones estan escritas para el invitado que responde -- "No, ire en
+         * mi propio transporte", "Ninguna, como de todo" -- porque eso es lo que se le pregunta. En
+         * una lista que alguien ordena, filtra y cuenta, esa frase es la respuesta correcta escrita
+         * de la peor forma posible. Las que no se declaran salen con la etiqueta del formulario.
+         */
+        valueLabels?: Readonly<Record<string, Readonly<Record<string, string>>>>
+    }
     search?: { enabled: boolean }
     sorting?: { enabled: boolean; default: AdminSortOrder }
     pagination?: {
@@ -212,12 +261,30 @@ export type InvitationCapabilities<Message extends string> = {
          * quepan en una cabecera. Los que falten caen a la etiqueta del formulario.
          */
         columnLabels?: Readonly<Record<string, string>>
+        /**
+         * Titulo del bloque de reparto, por id de campo.
+         *
+         * Mismo fallo que `columnLabels` y un sitio distinto: sin esto el bloque se titulaba con la
+         * etiqueta del formulario, o sea "¿Que menu prefieres?" -- la pregunta que se le hace a un
+         * invitado, encima de un recuento que lee la pareja. No lo resuelve `columnLabels` porque
+         * una cabecera de columna rotula una respuesta ("Menu") y el bloque cuenta todas ("Menus").
+         * Los que falten caen a la etiqueta del formulario.
+         */
+        breakdownLabels?: Readonly<Record<string, string>>
         metrics: {
             attendanceFieldId: string
             transportFieldId?: string
             ownTransportValue?: string
             /** Campos cuyo valor significa que ese invitado necesita algo del catering. */
             dietaryFieldIds?: readonly string[]
+            /**
+             * Campos de opcion unica cuyo reparto hay que contar, no solo listar.
+             *
+             * Una columna dice que eligio cada invitado; esto dice cuantos eligieron cada cosa,
+             * que es la pregunta que se le lleva a un proveedor. Generico a proposito: cuenta los
+             * valores de cualquier campo de eleccion, y quien lo declara decide cual.
+             */
+            breakdownFieldIds?: readonly string[]
         }
         controls?: AdminReadControls
         mutations?: AdminMutationControls
@@ -231,7 +298,14 @@ export type InvitationDefinition<Locale extends string, Message extends string> 
         title: Message
         date: string
         timezone: string
-        hashtag?: string
+        /**
+         * Message key, because one word of the tag is translated and the rest is not.
+         *
+         * Spanish writes `#Boda...`, the other catalogs `#Wedding...`, and every catalog writes the
+         * names with `{partnerOneBase}` so the tag never forks per script: a guest with a Cyrillic
+         * keyboard has to be able to type the same tag a guest with a Latin one does.
+         */
+        hashtag?: Message
     }
     /**
      * Data controller under GDPR article 13: the couple, never the agency.

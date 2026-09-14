@@ -9,10 +9,11 @@ type Props<Locale extends string, Message extends string> = {
     registry: SectionRegistry<Message>
 }
 
-export function InvitationRenderer<Locale extends string, Message extends string>({
-                                                                                      definition,
-                                                                                      registry
-                                                                                  }: Readonly<Props<Locale, Message>>) {
+export function InvitationRenderer<Locale extends string, Message extends string>(
+    {
+        definition,
+        registry
+    }: Readonly<Props<Locale, Message>>) {
     return <>{definition.sections.filter(section => section.enabled).map(section => {
         if (!hasSectionRenderer(registry, section.type)) {
             devError(`Missing section renderer: ${section.type}`)

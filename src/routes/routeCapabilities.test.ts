@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import type {InvitationCapabilities} from '../core/invitation'
 import {weddingRsvpForm} from '../invitations/wedding/rsvpForm'

@@ -11,12 +11,14 @@ La decisión de herramientas y sus límites se registra en
 ## Requisitos locales
 
 - Node 24;
-- pnpm 10.34.5 mediante Corepack;
+- pnpm mediante Corepack, en la versión que fija `packageManager` en `package.json`;
 - Docker Desktop para Supabase local;
 - Chromium, Firefox y WebKit administrados por Playwright;
 - Deno, solo para `pnpm check:functions`. El resto de la suite no lo necesita.
 
-Instala las dependencias y el navegador una vez:
+Instala las dependencias y los navegadores. No es un paso de una sola vez: cada versión de Playwright fija sus propias
+revisiones, así que hay que repetirlo después de cada bump del paquete o las suites fallan al arrancar con
+`browserType.launch: Executable doesn't exist`.
 
 ```bash
 corepack pnpm install --frozen-lockfile
@@ -168,7 +170,7 @@ internos de React ni simular RLS mediante mocks.
 
 ### Database quality
 
-1. Supabase CLI 2.111.0;
+1. instalación con lockfile, que trae el CLI de Supabase que fija `package.json`;
 2. stack local nuevo;
 3. `db lint`;
 4. pgTAP;

@@ -87,7 +87,7 @@ for (const themeId of themeIds) {
         await page.getByLabel('No podré asistir').check()
         await page.getByRole('button', {name: 'Siguiente'}).click()
         await page.getByLabel('Tu mensaje').fill('Os deseo lo mejor')
-        await page.getByRole('button', {name: 'Confirmar todo'}).click()
+        await page.getByRole('button', {name: 'Enviar confirmación'}).click()
 
         // El titulo primero: `evaluate` no reintenta, asi que la espera automatica de Playwright es
         // la que garantiza que se mide la pantalla ya pintada y no la anterior.

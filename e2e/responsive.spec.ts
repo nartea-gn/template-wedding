@@ -18,7 +18,7 @@ for (const viewport of viewports) {
         await page.goto('./')
 
         await expect(page.getByRole('heading', {name: /Gala.*Valentin/})).toBeVisible()
-        await expect(page.getByText('Falta para el gran día')).toBeVisible()
+        await expect(page.getByText('Que empiece la fiesta en…')).toBeVisible()
         expect(await hasHorizontalOverflow(page)).toBe(false)
 
         await page.goto('./rsvp')

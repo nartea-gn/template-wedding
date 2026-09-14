@@ -51,6 +51,39 @@ tipadas; los cargadores permanecerán en la composición de la aplicación para 
 Una clave ausente produce un diagnóstico en desarrollo. En producción puede recurrir al catálogo predeterminado, pero
 nunca debe mostrar silenciosamente la clave técnica.
 
+## Variables de contenido
+
+Los catálogos no escriben los nombres de la pareja. Cada idioma declara su gramática alrededor de huecos
+—`{partnerOne}`, `{partnerTwo}`, `{surnameOne}`, `{surnameTwo}`— y los valores llegan de una sola fuente:
+
+```ts
+'event.seoTitle': 'Invitación de boda de {partnerOne} y {partnerTwo}',
+'gifts.account.holder': '{partnerOne} {surnameOne} y {partnerTwo} {surnameTwo}',
+```
+
+La sustitución ocurre **una vez al cargar cada catálogo** (`invitations/wedding/locales/variables.ts`), no dentro de
+`t()`. Interpolar en `t()` habría pagado el coste en cada render y habría metido un vocabulario de esta boda —los
+nombres de dos personas— dentro del runtime genérico de localización, que así no conoce la invitación que sirve.
+
+Reglas del mecanismo:
+
+- El hueco se lleva **el espacio que tiene delante**. Un apellido no declarado deja «Gala y Valentin», no
+  «Gala  y Valentin »; después ningún `trim` podría distinguir ese espacio de uno que el idioma sí quería.
+- Un hueco que no corresponde a ninguna variable se deja **literal**. Una errata tiene que verse en pantalla en
+  lugar de resolverse en silencio a una cadena vacía.
+- El conjunto de claves no cambia: es el que recorre la cadena de fallback.
+- Los valores salen del entorno y admiten **override por idioma**, porque una variable no puede contener dos
+  alfabetos: el búlgaro translitera («Ана») y el resto usa la grafía base. Sin override se usa la base, lo que mezcla
+  alfabetos («Ана Ruiz и Бруно»); es preferible a un hueco, pero declara el override si publicas ese dato.
+- `{partnerOneBase}` y `{partnerTwoBase}` **se saltan el override por idioma** y responden con la grafía que todos
+  los idiomas comparten. Los escribe `event.hashtag`: un hashtag tiene que poder teclearse desde cualquier teclado y
+  buscarse como una sola cadena, así que no se bifurca por alfabeto como sí hace la prosa.
+- `locales/catalogs.test.ts` falla si un catálogo vuelve a llevar un nombre escrito a mano, y comprueba que los tres
+  hashtags resuelven a lo declarado y en alfabeto latino. Es lo que impide que el mecanismo se deshaga solo.
+
+Esto no contradice la política de no añadir librería: es sustitución posicional de un puñado de variables declaradas,
+sin pluralización, formatos ni gestión remota.
+
 ## Contenido cubierto
 
 - Secciones y navegación.
@@ -75,8 +108,9 @@ Se usarán `Intl.DateTimeFormat`, `Intl.NumberFormat` y APIs equivalentes. El id
 ## Rendimiento
 
 Los catálogos secundarios se dividen por locale mediante imports dinámicos. La invitación actual usa español como
-catálogo inicial y carga inglés o búlgaro cuando se solicitan. No se añadirá una librería hasta que pluralización,
-interpolación o gestión remota justifiquen su coste y funciones.
+catálogo inicial y carga inglés o búlgaro cuando se solicitan. La interpolación que existe hoy es la
+de «Variables de contenido», resuelta al cargar el catálogo y sin dependencias. No se añadirá una librería hasta que
+pluralización, formatos por idioma o gestión remota justifiquen su coste y funciones.
 
 ## Fuera de alcance inicial
 

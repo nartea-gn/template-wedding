@@ -3,6 +3,8 @@ import { validateInvitationDefinition } from "../../core/invitation/index.ts";
 import type { WeddingMessageKey } from "./locales/es.ts";
 import type { WeddingLocale } from "./locales/types.ts";
 import { weddingRsvpForm } from "./rsvpForm.ts";
+import { weddingRsvpSections } from "./rsvpSections.ts";
+import { weddingThemeId } from "./theme.ts";
 
 export const weddingInvitation = {
   id: "gala-y-valentin",
@@ -11,14 +13,14 @@ export const weddingInvitation = {
     title: "event.title",
     date: "2027-06-12T12:00:00+02:00",
     timezone: "Europe/Madrid",
-    hashtag: "#BodaGalaYValentin",
+    hashtag: "event.hashtag",
   },
   controller: {
     name: "controller.name",
     email: "hola@ejemplo.com",
   },
   theme: {
-    id: "royal",
+    id: weddingThemeId,
   },
   seo: {
     title: "event.seoTitle",
@@ -160,11 +162,19 @@ export const weddingInvitation = {
         account: {
           iban: "ES00 0000 0000 0000 0000 0000",
           holderKey: "gifts.account.holder",
-          bizum: "+34 600 000 000",
+          bizum: {
+            enabled: true,
+            labelKey: "gifts.account.bizum",
+            // Los nombres salen de las claves del hero: son la misma persona, y asi un cambio de
+            // nombre no hay que perseguirlo por dos sitios ni traducirlo dos veces.
+            numbers: [
+              { labelKey: "hero.partnerOne", value: "+34 600 000 000" },
+              { labelKey: "hero.partnerTwo", value: "+34 611 000 000" },
+            ],
+          },
           revealOnRequest: true,
           revealLabel: "gifts.account.reveal",
           ibanLabel: "gifts.account.iban",
-          bizumLabel: "gifts.account.bizum",
           copyLabel: "gifts.account.copy",
           copiedLabel: "gifts.account.copied",
         },
@@ -192,38 +202,91 @@ export const weddingInvitation = {
       enabled: true,
       auth: { method: "password" },
       source: "rsvp",
+      // Las columnas siguen a las secciones que el formulario pregunta: una seccion apagada no
+      // deja una columna de guiones en la tabla, ni en el CSV que se entrega al catering.
       columns: [
         "fullName",
         "attending",
-        "dietaryOptions",
-        // Sin esta columna la alergia escrita a mano no aparecia en la tabla, ni en el modal de
+        // Sin `dietaryOther` la alergia escrita a mano no aparecia en la tabla, ni en el modal de
         // edicion, ni en el CSV que el propio aviso del panel manda dar al catering: un invitado
         // con "Alergia leve a los frutos secos" se exportaba como "Ninguna, como de todo".
-        "dietaryOther",
-        "busOption",
-        "songRequest",
+        // El menu manda al catering un recuento, no un texto: es la columna que decide cuantos
+        // platos de cada tipo se encargan.
+        ...(weddingRsvpSections.menu ? ["menuChoice"] : []),
+        ...(weddingRsvpSections.dietary ? ["dietaryOptions", "dietaryOther"] : []),
+        ...(weddingRsvpSections.bus ? ["busOption"] : []),
+        ...(weddingRsvpSections.song ? ["songRequest"] : []),
         "message",
       ],
       // Sustantivos para la pareja, no las preguntas que se le hicieron al invitado. El copy ya
       // estaba escrito en los tres catalogos y no lo usaba nadie.
+      // Condicionados por seccion como las columnas que rotulan. Sin esto, apagar `menu` dejaba un
+      // rotulo apuntando a un campo que el formulario ya no construye, y la validacion tumbaba la
+      // invitacion entera al arrancar: la bandera existia y no se podia usar.
       columnLabels: {
         fullName: "admin.guest",
         attending: "admin.attends",
-        dietaryOptions: "admin.dietary",
-        dietaryOther: "admin.dietaryOther",
-        busOption: "admin.bus",
-        songRequest: "admin.song",
+        ...(weddingRsvpSections.menu ? { menuChoice: "admin.menu" } : {}),
+        // Los dos rotulos de alergias estaban cruzados: la lista que el invitado marca --
+        // "Gluten", "Marisco" -- se llamaba "Restricciones alimentarias", y el texto libre de
+        // "otras necesidades" se llamaba "Alergias". Escondido en la tabla era confuso; en el CSV
+        // que encarga la comida, es la clase de cruce que acaba en un plato equivocado.
+        ...(weddingRsvpSections.dietary
+          ? { dietaryOptions: "admin.dietary", dietaryOther: "admin.dietaryOther" }
+          : {}),
+        ...(weddingRsvpSections.bus ? { busOption: "admin.bus" } : {}),
+        ...(weddingRsvpSections.song ? { songRequest: "admin.song" } : {}),
         message: "admin.message",
       },
+      // El bloque de reparto se titulaba con la pregunta del formulario. Una cabecera de columna
+      // rotula una respuesta -- "Menu" --; el bloque las cuenta todas, asi que es "Menus".
+      ...(weddingRsvpSections.menu ? { breakdownLabels: { menuChoice: "admin.menus" } } : {}),
+      // Igual que las columnas: sin autobus no hay tarjeta de transporte que contar, y la que
+      // habia contaba a todo el mundo como "transporte propio" porque nadie podia responder otra
+      // cosa.
       metrics: {
         attendanceFieldId: "attending",
-        transportFieldId: "busOption",
-        ownTransportValue: "no",
-        dietaryFieldIds: ["dietaryOptions", "dietaryOther"],
+        ...(weddingRsvpSections.bus
+          ? { transportFieldId: "busOption", ownTransportValue: "no" }
+          : {}),
+        ...(weddingRsvpSections.dietary
+          ? { dietaryFieldIds: ["dietaryOptions", "dietaryOther"] }
+          : {}),
+        // El catering no pregunta quien eligio que, pregunta cuantos de cada: sin este reparto la
+        // pareja contaba menus a mano sobre el CSV.
+        ...(weddingRsvpSections.menu ? { breakdownFieldIds: ["menuChoice"] } : {}),
       },
       mutations: { rsvpClosure: { enabled: true } },
       controls: {
-        csvExport: { enabled: true },
+        csvExport: {
+          enabled: true,
+          // Lo que organiza la comida y el transporte, y nada mas. La cancion y la dedicatoria son
+          // de la pareja: no encargan nada y el fichero que las llevaria se manda a un proveedor.
+          columns: [
+            "fullName",
+            "attending",
+            ...(weddingRsvpSections.menu ? ["menuChoice"] : []),
+            ...(weddingRsvpSections.dietary ? ["dietaryOptions", "dietaryOther"] : []),
+            ...(weddingRsvpSections.bus ? ["busOption"] : []),
+          ],
+          // Las opciones que el invitado lee como frase y quien organiza necesita como dato. El
+          // menu y las alergias sueltas ya son sustantivos; estas cinco no lo eran.
+          valueLabels: {
+            ...(weddingRsvpSections.dietary
+              ? { dietaryOptions: { none: "admin.export.dietary.none" } }
+              : {}),
+            ...(weddingRsvpSections.bus
+              ? {
+                  busOption: {
+                    ida_vuelta: "admin.export.bus.roundTrip",
+                    solo_ida: "admin.export.bus.outbound",
+                    solo_vuelta: "admin.export.bus.return",
+                    no: "admin.export.bus.no",
+                  },
+                }
+              : {}),
+          },
+        },
         search: { enabled: true },
         sorting: { enabled: true, default: "newest" },
         pagination: {

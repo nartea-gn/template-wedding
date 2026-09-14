@@ -11,14 +11,15 @@ import {devWarn} from '../../lib/devLog'
 
 type Props<Locale extends string> = LocalizationRuntimeConfig<Locale> & { timeZone: string; children: ReactNode }
 
-export function LocalizationProvider<Locale extends string>({
-                                                                invitationId,
-                                                                definition,
-                                                                defaultCatalog,
-                                                                loaders,
-                                                                timeZone,
-                                                                children
-                                                            }: Readonly<Props<Locale>>) {
+export function LocalizationProvider<Locale extends string>(
+    {
+        invitationId,
+        definition,
+        defaultCatalog,
+        loaders,
+        timeZone,
+        children
+    }: Readonly<Props<Locale>>) {
     const [locale, setActiveLocale] = useState<Locale>(definition.defaultLocale)
     const [catalogs, setCatalogs] = useState<readonly MessageCatalog[]>([defaultCatalog])
     const [isLoading, setIsLoading] = useState(false)

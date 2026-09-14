@@ -40,11 +40,13 @@ INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, 
 VALUES ('closure-open', 'Ana Lopez', true, 'wedding-rsvp', 2, 'es',
         '{"fullName": "Ana Lopez", "attending": true}'::jsonb);
 
-INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers)
+-- `submission_intent` since 20260911: the guest says they are the same person, because the name
+-- on its own does not distinguish a correction from a second guest who shares it.
+INSERT INTO public.rsvp_responses (wedding_slug, full_name, attending, form_id, form_version, locale, answers, submission_intent)
 VALUES ('closure-open', '  ana lopez  ', false, 'wedding-rsvp', 2, 'es',
-        '{"fullName": "  ana lopez  ", "attending": false}'::jsonb);
+        '{"fullName": "  ana lopez  ", "attending": false}'::jsonb, 'correction');
 
-SELECT pass('A repeat submission is accepted while the RSVP is open');
+SELECT pass('A correction is accepted while the RSVP is open');
 
 SET LOCAL ROLE postgres;
 

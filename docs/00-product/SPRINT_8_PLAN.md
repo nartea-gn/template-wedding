@@ -77,7 +77,8 @@ Inventario cerrado el 2026-09-04. Cualquier otro que aparezca se añade aquí:
 
 No hay red en la máquina donde se planificó esto. Confirmar antes de darlos por buenos:
 
-- [x] `wrangler pages dev` sirve el archivo `_headers` — **confirmado el 2026-09-04** con wrangler 4.129.0
+- [x] `wrangler pages dev` sirve el archivo `_headers` — **confirmado el 2026-09-04** con wrangler 4.129.0,
+      y de nuevo el 2026-09-11 con 4.131.0 (`pnpm run test:e2e:csp`, 5 tests)
 - [ ] Nombre e invocación exactos del despliegue con `wrangler pages deploy`
 - [ ] Si Cloudflare añade HSTS por su cuenta o hay que declararlo en `_headers`
 
@@ -151,7 +152,8 @@ URL vacía y **fallaría en rojo**, que es el modo correcto de equivocarse.
 **Objetivo:** cerrar el hueco que 7.5A dejó abierto y aprovechar lo único que un `<meta>` no puede
 dar.
 
-- [x] `wrangler` como devDependency, fijado en `4.129.0` — aplazado desde 8.1, aquí sí hace falta
+- [x] `wrangler` como devDependency, con versión exacta — aplazado desde 8.1, aquí sí hace falta.
+      Hoy `4.131.0`: 4.129.0 arrastraba un `sharp` con GHSA-rgj7-g3m4-5g8c
 - [x] El build emite `dist/_headers`, generado por el mismo plugin que hoy compone la CSP: el
       origen de Supabase sigue siendo una variable de compilación
 - [x] La CSP se sirve como cabecera y **gana `frame-ancestors 'none'`**

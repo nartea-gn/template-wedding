@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import {weddingInvitation} from '../../invitations/wedding'
 import {validateInvitationDefinition} from './validation'
@@ -18,6 +19,64 @@ describe('validateInvitationDefinition', () => {
         expect(validateInvitationDefinition(definition)).toContain(
             'The data controller requires a name message key and a contact email',
         )
+    })
+
+    it('rejects a declared hashtag that names no message key', () => {
+        const definition = {...weddingInvitation, event: {...weddingInvitation.event, hashtag: '  '}}
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Event hashtag must name a message key when declared',
+        )
+    })
+
+    it('accepts an invitation that declares no hashtag', () => {
+        const event = {...weddingInvitation.event} as Record<string, unknown>
+        delete event.hashtag
+        const definition = {...weddingInvitation, event} as typeof weddingInvitation
+
+        expect(validateInvitationDefinition(definition)).toEqual([])
+    })
+
+    // Un id mal escrito en `columns` o en `metrics` no rompia nada: daba una columna en blanco, un
+    // reparto vacio y un filtro que no casa con nadie, los tres indistinguibles de "todavia no hay
+    // respuestas". Dentro del formulario esto ya fallaba; fuera, no.
+    it.each([
+        ['columns', {columns: ['fullName', 'menuChoise']}, 'Admin column references unknown field menuChoise'],
+        ['columnLabels', {columnLabels: {menuChoise: 'admin.menu'}}, 'Admin column label references unknown field menuChoise'],
+        ['breakdownLabels', {breakdownLabels: {menuChoise: 'admin.menus'}}, 'Admin breakdown label references unknown field menuChoise'],
+        ['csvExport columns', {controls: {csvExport: {enabled: true, columns: ['menuChoise']}}}, 'Admin export column references unknown field menuChoise'],
+        ['csvExport valueLabels', {controls: {csvExport: {enabled: true, valueLabels: {menuChoise: {meat: 'admin.menu'}}}}}, 'Admin export value label references unknown field menuChoise'],
+    ])('rejects an admin %s that names a field the form does not have', (_case, override, expected) => {
+        // Given a panel configured against a field id that does not exist
+        const admin = weddingInvitation.capabilities.admin
+        const definition = {
+            ...weddingInvitation,
+            capabilities: {...weddingInvitation.capabilities, admin: {...admin, ...override}},
+        } as unknown as typeof weddingInvitation
+
+        // When the invitation is validated
+        // Then it is rejected by name, instead of rendering an empty column
+        expect(validateInvitationDefinition(definition)).toContain(expected)
+    })
+
+    it.each([
+        ['transportFieldId', {transportFieldId: 'busOptions'}, 'Admin transport metric references unknown field busOptions'],
+        ['dietaryFieldIds', {dietaryFieldIds: ['dietaryOption']}, 'Admin dietary metric references unknown field dietaryOption'],
+        ['breakdownFieldIds', {breakdownFieldIds: ['menuchoice']}, 'Admin breakdown metric references unknown field menuchoice'],
+    ])('rejects an admin metric %s that names a field the form does not have', (_case, override, expected) => {
+        // Given a metric pointing at a field id that does not exist
+        const admin = weddingInvitation.capabilities.admin
+        const definition = {
+            ...weddingInvitation,
+            capabilities: {
+                ...weddingInvitation.capabilities,
+                admin: {...admin, metrics: {...admin!.metrics, ...override}},
+            },
+        } as unknown as typeof weddingInvitation
+
+        // When the invitation is validated
+        // Then it is rejected by name
+        expect(validateInvitationDefinition(definition)).toContain(expected)
     })
 
     it('rejects an administrative capability without RSVP', () => {
@@ -242,6 +301,140 @@ describe('validateInvitationDefinition', () => {
         expect(validateInvitationDefinition(definition)).toContain(
             'Lodging section lodging requires priceTierLabels when an item declares priceTier',
         )
+    })
+
+    it('rejects a declared deadline notice that names no message key', () => {
+        const definition = withOnlySection('rsvp-cta', section => ({
+            ...section, content: {...section.content, deadlineNotice: '   '},
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'RSVP CTA section rsvp-cta deadlineNotice must name a message key when declared',
+        )
+    })
+
+    it('accepts a call to action that declares no deadline notice', () => {
+        const definition = withOnlySection('rsvp-cta', section => {
+            const content = {...section.content} as Record<string, unknown>
+            delete content.deadlineNotice
+            return {...section, content}
+        })
+
+        expect(validateInvitationDefinition(definition)).not.toContain(
+            'RSVP CTA section rsvp-cta deadlineNotice must name a message key when declared',
+        )
+    })
+
+    it('rejects a gifts section with more than two Bizum numbers', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {
+                    ...section.content.account,
+                    bizum: {
+                        enabled: true,
+                        labelKey: 'gifts.account.bizum',
+                        numbers: [
+                            {labelKey: 'hero.partnerOne', value: '+34 600 000 000'},
+                            {labelKey: 'hero.partnerTwo', value: '+34 611 000 000'},
+                            {labelKey: 'hero.partnerOne', value: '+34 622 000 000'},
+                        ],
+                    },
+                },
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts accepts at most two Bizum numbers',
+        )
+    })
+
+    it('rejects an enabled Bizum with no number to copy', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {...section.content.account, bizum: {...section.content.account?.bizum, numbers: []}},
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts requires a Bizum number when Bizum is enabled',
+        )
+    })
+
+    it('accepts a disabled Bizum with no number to copy', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {...section.content.account, bizum: {...section.content.account?.bizum, enabled: false, numbers: []}},
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).not.toContain(
+            'Gifts section gifts requires a Bizum number when Bizum is enabled',
+        )
+    })
+
+    it.each([
+        ['a label message key', {labelKey: '   ', value: '+34 600 000 000'}],
+        ['a value', {labelKey: 'hero.partnerOne', value: ''}],
+    ])('rejects a Bizum number without %s', (_case, number) => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {
+                    ...section.content.account,
+                    bizum: {...section.content.account?.bizum, numbers: [number]},
+                },
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts Bizum numbers require a label message key and a value',
+        )
+    })
+
+    it('rejects a Bizum block with no name for the group', () => {
+        const definition = withOnlySection('gifts', section => ({
+            ...section,
+            content: {
+                ...section.content,
+                account: {...section.content.account, bizum: {...section.content.account?.bizum, labelKey: ''}},
+            },
+        }))
+
+        expect(validateInvitationDefinition(definition)).toContain(
+            'Gifts section gifts Bizum requires a label message key',
+        )
+    })
+
+    // Un valor mal escrito no rotula nada y deja salir la frase larga del formulario, que es lo
+    // mismo que se veria sin declararlo: el fallo se esconde detras de su propio efecto.
+    it('rejects an export value label that names an option the field does not have', () => {
+        // Given an export label written against an option value that does not exist
+        const admin = weddingInvitation.capabilities.admin
+        const definition = {
+            ...weddingInvitation,
+            capabilities: {
+                ...weddingInvitation.capabilities,
+                admin: {
+                    ...admin,
+                    controls: {
+                        ...admin?.controls,
+                        csvExport: {enabled: true, valueLabels: {busOption: {roundtrip: 'admin.export.bus.roundTrip'}}},
+                    },
+                },
+            },
+        } as unknown as typeof weddingInvitation
+
+        // When the invitation is validated
+        // Then it is rejected by option and by field, instead of exporting the guest's sentence
+        expect(validateInvitationDefinition(definition))
+            .toContain('Admin export value label references unknown option roundtrip of field busOption')
     })
 
 })

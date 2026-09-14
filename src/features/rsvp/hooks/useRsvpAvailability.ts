@@ -21,6 +21,24 @@ const MAX_TIMEOUT_MS = 2_147_000_000
  * production a live status almost always exists. Only the tests, which render the hook with no
  * provider, ever took the branch that observed it.
  */
+/**
+ * The deadline instant to show the guest, or `undefined` when there is no RSVP to show it for.
+ *
+ * The same one {@link useRsvpAvailability} decides with: the database's once it has answered, the
+ * one compiled into the invitation while it has not. So a deadline the couple moves from the panel
+ * moves the date the landing prints, without a redeploy.
+ *
+ * A manual `'open'` override does not blank it. The switch decides whether the form accepts
+ * answers; the date is still the one the couple wants to communicate.
+ */
+export function useRsvpDeadline<Message extends string>(
+    capability: InvitationCapabilities<Message>['rsvp'],
+): string | undefined {
+    const liveStatus = useRsvpStatus()
+    if (capability?.enabled !== true) return undefined
+    return liveStatus?.deadlineUtc ?? capability?.deadline
+}
+
 export function useRsvpAvailability<Message extends string>(
     capability: InvitationCapabilities<Message>['rsvp'],
 ): boolean {
@@ -56,24 +74,4 @@ export function useRsvpAvailability<Message extends string>(
     if (forcedOpen) return true
     if (deadlinePassed) return false
     return liveStatus ? liveStatus.isOpen : isRsvpOpen(capability)
-}
-
-/**
- * El plazo que de verdad rige, en ISO, o `undefined` si no hay ninguno.
- *
- * El mismo que decide {@link useRsvpAvailability}: el de la base cuando ha respondido, y el
- * compilado en la invitacion mientras no. Existe porque el plazo gobernaba el cierre y no se le
- * mostraba al invitado en ninguna superficie ni idioma -- ni en la llamada, ni en el formulario,
- * ni en la pagina de cierre-- y una urgencia sin fecha es la primera causa de confirmaciones
- * tardias.
- *
- * `null` en `override` no importa aqui: incluso con el switch manual, la fecha sigue siendo la
- * que la pareja quiere comunicar.
- */
-export function useRsvpDeadline<Message extends string>(
-    capability: InvitationCapabilities<Message>['rsvp'],
-): string | undefined {
-    const liveStatus = useRsvpStatus()
-    if (capability?.enabled !== true) return undefined
-    return liveStatus?.deadlineUtc ?? capability?.deadline
 }

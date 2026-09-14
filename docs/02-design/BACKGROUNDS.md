@@ -23,6 +23,13 @@ licencia y contexto de uso, se consideran una referencia conversacional y no evi
 Las referencias se utilizan para identificar principios. No se copiarán ilustraciones, composiciones ni assets de
 terceros.
 
+## Teselado de los módulos de cuerpo
+
+El módulo de cuerpo se repite en vertical, así que su primera fila tiene que continuar la última o
+la landing enseña una línea horizontal cada pocos cientos de píxeles. El criterio de aceptación, la
+medida y el arreglo mecánico están en
+[`BACKGROUND_TILING.md`](./BACKGROUND_TILING.md).
+
 ## Relación con Nartea Studio
 
 [Nartea Studio](https://github.com/nartea-gn/nartea-studio) es la fuente normativa para principios visuales, color,

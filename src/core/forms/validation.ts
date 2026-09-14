@@ -1,5 +1,6 @@
 import {isConditionMet} from './visibility.ts'
 import type {FormAnswers, FormDefinition, FormElement, FormErrors, FormValue} from './types.ts'
+import {isDecoration} from './types.ts'
 
 const FORM_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*$/
 
@@ -27,7 +28,7 @@ export function validateFormDefinition<Message extends string>(definition: FormD
     for (const element of elements) {
         if (element.visibleWhen && !idSet.has(element.visibleWhen.fieldId)) errors.push(`Element ${element.id} references an unknown field`)
         if ('options' in element && new Set(element.options.map(option => String(option.value))).size !== element.options.length) errors.push(`Element ${element.id} has duplicate option values`)
-        if (element.type === 'info' || !element.validation) continue
+        if (isDecoration(element) || !element.validation) continue
         const {minLength, maxLength, minWords} = element.validation
         if (minLength !== undefined && (!Number.isInteger(minLength) || minLength < 1)) {
             errors.push(`Element ${element.id} minLength must be a positive integer`)
@@ -52,7 +53,7 @@ function isEmpty(value: FormValue | undefined): boolean {
 export function validateElements<Message extends string>(elements: readonly FormElement<Message>[], answers: FormAnswers): FormErrors {
     const errors: FormErrors = {}
     for (const element of elements) {
-        if (element.type === 'info' || !isConditionMet(element.visibleWhen, answers)) continue
+        if (isDecoration(element) || !isConditionMet(element.visibleWhen, answers)) continue
         const value = answers[element.id]
         if (element.required && isEmpty(value)) {
             errors[element.id] = 'required';

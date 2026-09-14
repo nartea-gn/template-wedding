@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client'
 import './index.css'
 import App from './App'
 import {ThemeProvider} from './components/ThemeProvider'
-import {esMessages, weddingCatalogLoaders, weddingInvitation} from './invitations/wedding'
+import {weddingCatalogLoaders, weddingDefaultCatalog, weddingInvitation} from './invitations/wedding'
 import {LocalizationProvider} from './app/providers/LocalizationProvider'
 
 const rootElement = document.getElementById('root')
@@ -13,7 +13,7 @@ createRoot(rootElement).render(
         <LocalizationProvider
             invitationId={weddingInvitation.id}
             definition={weddingInvitation.localization}
-            defaultCatalog={esMessages}
+            defaultCatalog={weddingDefaultCatalog}
             loaders={weddingCatalogLoaders}
             timeZone={weddingInvitation.event.timezone}
         >

@@ -10,13 +10,14 @@ type Arguments<Message extends string> = {
     booleanLabels: { yes: Message; no: Message }
 }
 
-export function buildResponsesJson<Message extends string>({
-                                                              responses,
-                                                              columns,
-                                                              form,
-                                                              translate,
-                                                              booleanLabels,
-                                                          }: Arguments<Message>) {
+export function buildResponsesJson<Message extends string>(
+    {
+        responses,
+        columns,
+        form,
+        translate,
+        booleanLabels,
+    }: Arguments<Message>) {
     const fields = getFormFields(form)
     const payload = responses.map(response => {
         const row: Record<string, unknown> = {id: response.id}

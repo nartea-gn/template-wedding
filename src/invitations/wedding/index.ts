@@ -1,7 +1,7 @@
 export {weddingInvitation} from './invitation'
 export {esMessages} from './locales/es'
 export type {WeddingMessageKey} from './locales/es'
-export {weddingCatalogLoaders} from './locales/loaders'
+export {weddingCatalogLoaders, weddingDefaultCatalog} from './locales/loaders'
 export type {WeddingLocale} from './locales/types'
 export {weddingSectionRegistry} from './sectionRegistry'
 export {weddingRsvpForm} from './rsvpForm'

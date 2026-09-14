@@ -4,6 +4,7 @@ import type {RsvpRecordUpdate, RsvpSubmission} from '../../features/rsvp/domain/
 import type {RsvpScheduleUpdate, RsvpStatus} from '../../features/rsvp/domain/RsvpStatus'
 import {RsvpClosedError} from '../../features/rsvp/domain/RsvpClosedError'
 import {RsvpUnregisteredError} from '../../features/rsvp/domain/RsvpUnregisteredError'
+import {RsvpAmbiguousNameError, RsvpNameTakenError} from '../../features/rsvp/domain/RsvpNameTakenError'
 import {fromDatabaseRow, toInsertRow, type LegacyAnswersReader, type LegacyColumnMapper} from './mappers/rsvpMapper'
 import {toRsvpStatus, type RsvpStatusRow} from './mappers/rsvpStatusMapper'
 
@@ -13,6 +14,11 @@ import {toRsvpStatus, type RsvpStatusRow} from './mappers/rsvpStatusMapper'
 // misconfigured. 42501 now means only what it says: the caller holds no INSERT on the table.
 const RSVP_CLOSED = 'RSVPC'
 const RSVP_UNREGISTERED = 'RSVPU'
+// Raised by `resolve_rsvp_identity()`, added in 20260911_distinguish_namesakes.sql. Neither is a
+// failure of the form: the first asks the guest which of two people they are, and the second says
+// the answer can no longer be attributed from a name alone.
+const RSVP_NAME_TAKEN = 'RSVPD'
+const RSVP_NAME_AMBIGUOUS = 'RSVPM'
 
 export class SupabaseRsvpRepository implements RsvpRepository {
     private readonly client: SupabaseClient
@@ -49,6 +55,8 @@ export class SupabaseRsvpRepository implements RsvpRepository {
         const {error} = await this.publicClient.from('rsvp_responses').insert([row])
         if (error?.code === RSVP_CLOSED) throw new RsvpClosedError()
         if (error?.code === RSVP_UNREGISTERED) throw new RsvpUnregisteredError()
+        if (error?.code === RSVP_NAME_TAKEN) throw new RsvpNameTakenError()
+        if (error?.code === RSVP_NAME_AMBIGUOUS) throw new RsvpAmbiguousNameError()
         if (error) throw error
     }
 

@@ -188,9 +188,22 @@
     background: var(--color-wedding-bg);
 }
 
+/*
+ * `fixed` Y NO `absolute`: LA OBRA SE ANCLA AL VIEWPORT, NO AL PASO
+ *
+ * Con `absolute` la caja del `::before` era la del contenedor, y `cover` escala a esa caja. Los
+ * pasos no miden lo mismo: el de alergias mide 1.080 px de alto a 390 de ancho y 1.109 a 1440,
+ * contra 844 y 900 de los otros cuatro y de la pantalla de gracias. Medido con un hash de la
+ * banda superior de fondo: cuatro pasos identicos entre si y el de alergias distinto, en los dos
+ * anchos -- un salto de fondo a mitad del formulario, justo al cambiar de paso.
+ *
+ * Anclada al viewport, la composicion es la misma en los cinco y coincide con la que cierra el
+ * recorrido. Un paso mas alto que la pantalla ahora desplaza su contenido sobre una obra quieta,
+ * que es como se comporta la landing.
+ */
 [data-theme] :is(.rsvp-page, .rsvp-confirmed-page, .rsvp-closed-page, .login-page, .route-loading, .admin-auth-loading)::before {
     content: '';
-    position: absolute;
+    position: fixed;
     inset: 0;
     z-index: 0;
     pointer-events: none;

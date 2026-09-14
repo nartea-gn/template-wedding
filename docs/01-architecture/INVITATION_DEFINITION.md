@@ -44,7 +44,10 @@ invitación TypeScript y los catálogos secundarios se cargan bajo demanda.
 - `defaultLocale` pertenece a `supportedLocales`.
 - Una invitación con un solo locale no muestra selector.
 - Un selector visible requiere al menos dos locales.
-- Todos los catálogos comparten las claves obligatorias.
+- Todos los catálogos comparten las claves obligatorias, y ninguno escribe los nombres de la pareja: los declara
+  mediante huecos que se resuelven al cargarlo. Ver `INTERNATIONALIZATION.md`.
+- La sección de regalos admite **como máximo dos números de Bizum**, y exige al menos uno cuando Bizum está activo.
+  Cada número declara su clave de etiqueta y su valor; el grupo declara la suya.
 
 La definición puede dividirse en archivos de contenido, tema, secciones y formularios; el motor recibe el objeto
 agregado.
@@ -58,6 +61,12 @@ agregado.
 - La ruta `/rsvp` se registra siempre. Cerrar no es lo mismo que no existir: un enlace guardado llega a la página que
   explica el cierre, no al comodín de ruta no encontrada.
 - `event.date` es la fuente única para hero y countdown; countdown no declara un target alternativo.
+- El aviso de fraude de regalos se renderiza con los números de Bizum, no con el bloque de cuenta: una invitación que
+  solo publica IBAN no lo muestra, y apagar Bizum se lleva números y aviso juntos.
+- `theme.id` se declara en su propio archivo porque lo leen dos programas: el bundle del navegador y `vite.config.ts`,
+  que corre en Node y no dispone de `import.meta.env`.
+- `event.hashtag` es una clave de catálogo, no una cadena: de un hashtag se traduce la palabra y no los nombres, que
+  se escriben con los huecos «base» para que el tag no se bifurque por alfabeto.
 - Admin puede permanecer disponible después del cierre para consultar respuestas existentes.
 - `capabilities.admin.auth.method` selecciona una única variante de acceso; la autorización continúa fuera de la
   definición mediante membresías y RLS.

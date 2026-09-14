@@ -61,11 +61,34 @@ export type CheckboxGroupField<Message extends string> = FieldBase<'checkbox-gro
 }
 export type InfoElement<Message extends string> = ElementBase<'info', Message>
 
+/**
+ * A label that divides one step into blocks.
+ *
+ * Not a field: it carries no answer, no validation and never reaches the submission. It exists
+ * because a step that asks three unrelated things -- a menu, an allergy and a coach seat -- reads
+ * as one undifferentiated list without them, and splitting it into three steps is a different
+ * decision with its own cost.
+ *
+ * Rendered as a paragraph, not a heading: the step title is the page's `h1`, and real headings
+ * inside the form would change the document outline that the keyboard and screen-reader suites
+ * already assert.
+ */
+export type SectionElement<Message extends string> = ElementBase<'section', Message> & {
+    /** Optional line under the label, for what the block is for. */
+    note?: Message
+}
+
 export type FormElement<Message extends string> =
     TextField<Message>
     | ChoiceField<Message>
     | CheckboxGroupField<Message>
     | InfoElement<Message>
+    | SectionElement<Message>
+
+/** Elements that carry no answer: they render and nothing else. */
+export function isDecoration<Message extends string>(element: FormElement<Message>) {
+    return element.type === 'info' || element.type === 'section'
+}
 
 export type FormStep<Message extends string> = {
     id: string

@@ -33,17 +33,18 @@ function requestVideoFullscreen(video: FullscreenVideoElement) {
     video.webkitEnterFullscreen?.()
 }
 
-export function VideoHero({
-                              src,
-                              poster,
-                              preload,
-                              aspectRatio,
-                              label,
-                              playLabel,
-                              loadingLabel,
-                              errorLabel,
-                              eventDate,
-                          }: Readonly<Props>) {
+export function VideoHero(
+    {
+        src,
+        poster,
+        preload,
+        aspectRatio,
+        label,
+        playLabel,
+        loadingLabel,
+        errorLabel,
+        eventDate,
+    }: Readonly<Props>) {
     const videoRef = useRef<HTMLVideoElement>(null)
     const [hasStarted, setHasStarted] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -54,10 +55,12 @@ export function VideoHero({
         if (!video) return
         setIsLoading(true)
         setHasError(false)
-        // iOS Safari cannot always play inline and exposes this proprietary API; every other
-        // browser plays inline, where jumping to native fullscreen would be an intrusion.
-        const needsNativeFullscreen = typeof video.webkitEnterFullscreen === 'function'
-        if (needsNativeFullscreen) requestVideoFullscreen(video)
+        // Touch screens get fullscreen: inline, the player is a stamp in a page the guest is
+        // still scrolling. A desktop browser keeps it inline, where the video already has room
+        // and taking over the screen would be an intrusion. Gating on webkitEnterFullscreen
+        // instead only ever matched iOS Safari, so Android phones and tablets played inline.
+        const wantsFullscreen = window.matchMedia('(pointer: coarse)').matches
+        if (wantsFullscreen) requestVideoFullscreen(video)
         const playPromise = video.play()
         if (playPromise) {
             playPromise

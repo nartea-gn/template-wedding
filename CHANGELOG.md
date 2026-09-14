@@ -4,6 +4,38 @@ Este archivo registra hitos consolidados. El detalle de trabajo futuro pertenece
 
 ## Unreleased
 
+### Las dependencias se ponen al día, y la documentación deja de mentirle a un clon nuevo
+
+- **Bump de seguridad.** `@playwright/test` 1.62.1 → 1.63.0, el CLI de Supabase 2.116.0 → 2.117.0 y
+  Vite 8.2.2 → 8.3.0. `pnpm audit` no reporta vulnerabilidades conocidas sobre el árbol resultante.
+- **`pnpm-workspace.yaml` llevaba una pregunta sin contestar.** `supabase: set this to true or
+  false` es el placeholder que escribe pnpm cuando quiere aprobar un build y no puede preguntar;
+  nadie eligió nunca, así que la entrada no significaba nada. Queda en `false`: supabase 2.117.0 no
+  publica script de `install`, `preinstall` ni `postinstall`.
+- **Los navegadores de Playwright no son un paso de una sola vez.** Cada versión fija sus propias
+  revisiones, así que el bump dejó obsoletas las descargadas y las suites E2E fallaban al arrancar
+  con `browserType.launch: Executable doesn't exist` — 80 pruebas en 0 ms, ninguna llegando a abrir
+  la página. La CI reinstala en cada job y nunca lo ve; una copia de trabajo sí. `README.md` y
+  `TESTING.md` lo dicen ahora.
+- **Un test exigía a dos motores el mismo subpíxel.** El que vigila el aire a los lados de cada
+  ornamento del countdown comparaba los seis huecos con igualdad exacta de floats. Firefox reparte
+  el `fr` en subpíxeles que Chromium no produce y medía 2,6 contra 2,5 a 320 px. La columna desigual
+  que el test vigila medía 3,3 contra 5,6 a 390 y 6,2 contra 11 a 1440, así que pasa a una
+  tolerancia de 1 px: sigue delatando la regresión y deja de afirmar un número que ningún motor
+  promete. De paso, Firefox reventaba en el primer viewport y nunca llegaba a medir 390 ni 1440.
+- **`event.seoDescription` era el último sitio con el registro viejo.** Decía «nuestro gran día», la
+  fórmula que ya se había retirado del countdown y del día de la boda. Con `noindex, nofollow` no la
+  lee Google: la leen WhatsApp y Telegram bajo el enlace. Los tres catálogos toman ahora la frase de
+  su propio `countdown.label`, conservando la mitad que explica el enlace.
+- **Documentación.** `README.md` fijaba «pnpm 10.34.5» cuando el manifiesto declara 11.26.0 —lo
+  hacía ya en el baseline— y omitía `test:e2e:csp` de los gates locales, siendo check obligatorio en
+  `quality.yml`. `THEMES.md` y `MEDIA.md` seguían documentando el plugin que inyectaba los
+  `googleFonts` en `index.html`, borrado al alojar las fuentes en el propio origen. El estado del
+  proyecto iba dos sprints por detrás. `RELEASE_CHECKLIST.md` describía el pipeline al revés —el
+  smoke test corre después del despliegue, no antes— y todavía llamaba «hash routes» a las rutas
+  reales. Las actas fechadas (matriz de QA, ADR, planes de sprint) se dejan intactas a propósito:
+  editarlas falsificaría la evidencia en vez de actualizarla.
+
 ### El cierre del RSVP deja de ser evitable, y el alta vuelve a funcionar
 
 - **`20260907_enforce_rsvp_closure.sql`.** El trigger `BEFORE INSERT` de `20260904` devolvía

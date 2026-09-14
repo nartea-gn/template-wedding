@@ -41,6 +41,14 @@ type RowOptions = {
     busOption?: string
     /** Cualquier valor que no sea la opción excluyente `none` cuenta como necesidad alimentaria. */
     dietaryOptions?: readonly string[]
+    /**
+     * El menú elegido, que solo tiene sentido en quien asiste: el reparto cuenta comensales.
+     *
+     * Vacío por defecto y no con un menú cualquiera. Una fila sin menú es real -- las guardadas
+     * antes de que el campo existiera no lo traen -- y es la única forma de que el total del
+     * bloque se separe de "Asistirán", que es justo lo que el bloque tiene que poder mostrar.
+     */
+    menuChoice?: string
     /** Una fila borrada en blando: sigue llegando del servidor y solo la ve el filtro "Eliminadas". */
     deleted?: boolean
     /** Día de julio en que se creó, para que ordenar por fecha tenga algo que ordenar. */
@@ -54,7 +62,7 @@ type RowOptions = {
  * `transportFieldId: "busOption"` y nadie mira ese otro nombre.
  */
 function responseRow(id: number, fullName: string, attending: boolean, options: RowOptions = {}) {
-    const {busOption = 'no', dietaryOptions = ['none'], deleted = false, day = 1} = options
+    const {busOption = 'no', dietaryOptions = ['none'], deleted = false, day = 1, menuChoice = ''} = options
     return {
         id,
         created_at: `2026-07-${String(day).padStart(2, '0')}T10:00:00Z`,
@@ -68,6 +76,7 @@ function responseRow(id: number, fullName: string, attending: boolean, options: 
         answers: {
             fullName,
             attending,
+            menuChoice,
             dietaryOptions,
             dietaryOther: '',
             busOption,
@@ -79,9 +88,9 @@ function responseRow(id: number, fullName: string, attending: boolean, options: 
 
 /** Las tres filas que ve el panel: una que asiste con autobús, una que declina y una que asiste. */
 export const ADMIN_RESPONSE_ROWS = [
-    responseRow(1, 'Ana Ejemplo', true, {busOption: 'ida_vuelta'}),
+    responseRow(1, 'Ana Ejemplo', true, {busOption: 'ida_vuelta', menuChoice: 'meat'}),
     responseRow(2, 'Bruno Ejemplo', false),
-    responseRow(3, 'Clara Ejemplo', true),
+    responseRow(3, 'Clara Ejemplo', true, {menuChoice: 'fish'}),
 ]
 
 /*
@@ -92,19 +101,24 @@ export const ADMIN_RESPONSE_ROWS = [
  * cambiar el conjunto no obligue a perseguir numeros sueltos por el fichero de tests.
  */
 export const ADMIN_DATASET = [
-    responseRow(1, 'Ana Confirmada', true, {day: 1, busOption: 'ida_vuelta'}),
-    responseRow(2, 'Bruno Confirmado', true, {day: 2, busOption: 'solo_ida'}),
-    responseRow(3, 'Carla Confirmada', true, {day: 3, busOption: 'solo_vuelta'}),
-    responseRow(4, 'Diego Confirmado', true, {day: 4, dietaryOptions: ['gluten']}),
-    responseRow(5, 'Elena Confirmada', true, {day: 5, dietaryOptions: ['vegetarian', 'lactose']}),
-    responseRow(6, 'Fabio Confirmado', true, {day: 6}),
-    responseRow(7, 'Gema Confirmada', true, {day: 7}),
+    responseRow(1, 'Ana Confirmada', true, {day: 1, busOption: 'ida_vuelta', menuChoice: 'meat'}),
+    responseRow(2, 'Bruno Confirmado', true, {day: 2, busOption: 'solo_ida', menuChoice: 'meat'}),
+    responseRow(3, 'Carla Confirmada', true, {day: 3, busOption: 'solo_vuelta', menuChoice: 'meat'}),
+    responseRow(4, 'Diego Confirmado', true, {day: 4, dietaryOptions: ['gluten'], menuChoice: 'fish'}),
+    responseRow(5, 'Elena Confirmada', true, {day: 5, dietaryOptions: ['vegetarian', 'lactose'], menuChoice: 'fish'}),
+    responseRow(6, 'Fabio Confirmado', true, {day: 6, menuChoice: 'vegetarian'}),
+    responseRow(7, 'Gema Confirmada', true, {day: 7, menuChoice: 'child'}),
+    // Sin menú a propósito, y no porque se pueda dejar en blanco: `menuChoice` es obligatorio
+    // siempre que la sección esté activa, así que una fila así solo llega de las guardadas antes de
+    // que el campo existiera. Son las que hacen que el total del bloque no pueda copiar "Asistirán"
+    // -- siete contra ocho -- y las que el catering paga si nadie las mira.
     responseRow(8, 'Zenobia Singular', true, {day: 8}),
     responseRow(9, 'Hugo Declinado', false, {day: 9}),
     responseRow(10, 'Irene Declinada', false, {day: 10}),
     responseRow(11, 'Julio Declinado', false, {day: 11}),
     responseRow(12, 'Karla Declinada', false, {day: 12}),
-    responseRow(13, 'Lucas Borrado', true, {day: 13, deleted: true}),
+    // Borrada y con menú: si el reparto dejara de filtrar por vivas, "Carne" contaria cuatro.
+    responseRow(13, 'Lucas Borrado', true, {day: 13, deleted: true, menuChoice: 'meat'}),
     responseRow(14, 'Marta Borrada', false, {day: 14, deleted: true}),
 ]
 
@@ -121,6 +135,20 @@ export const ADMIN_DATASET_COUNTS = {
     pages: 2,
     /** Nombre que no comparte ninguna palabra con el resto, para la búsqueda. */
     uniqueName: 'Zenobia',
+    /**
+     * El reparto de menús entre las filas vivas que asisten, por etiqueta del panel.
+     *
+     * `Vegano` a cero y `total` uno por debajo de `confirmed` son datos, no descuidos: el bloque
+     * tiene que enseñar la opción que nadie eligió y no puede copiar la cifra de asistentes.
+     */
+    menu: {
+        Carne: 3,
+        Pescado: 2,
+        Vegetariano: 1,
+        Vegano: 0,
+        'Menú infantil': 1,
+        total: 7,
+    },
 }
 
 /**

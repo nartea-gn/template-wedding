@@ -1,9 +1,11 @@
+// @vitest-environment node
 import type {SupabaseClient} from '@supabase/supabase-js'
 import {describe, expect, it, vi} from 'vitest'
 import type {RsvpSubmission} from '../../features/rsvp/domain/RsvpSubmission'
 import {SupabaseRsvpRepository} from './SupabaseRsvpRepository'
 import {RsvpClosedError} from '../../features/rsvp/domain/RsvpClosedError'
 import {RsvpUnregisteredError} from '../../features/rsvp/domain/RsvpUnregisteredError'
+import {RsvpAmbiguousNameError, RsvpNameTakenError} from '../../features/rsvp/domain/RsvpNameTakenError'
 import {toWeddingLegacyColumns} from '../../invitations/wedding/rsvpColumns'
 
 const submission: RsvpSubmission = {
@@ -26,6 +28,39 @@ describe('SupabaseRsvpRepository', () => {
         expect(insert).toHaveBeenCalledWith([
             expect.objectContaining({wedding_slug: 'gala-y-valentin', full_name: 'Gala García'}),
         ])
+    })
+
+    // Los dos codigos de 20260911. Ninguno es un fallo del formulario: el primero es una pregunta
+    // para el invitado y el segundo le manda a la pareja, y confundirlos con el error generico le
+    // diria que no se ha guardado nada cuando lo que pasa es otra cosa.
+    it('asks who the guest is instead of failing when the name already answered', async () => {
+        const insert = vi.fn().mockResolvedValue({error: {code: 'RSVPD', message: 'A response already exists under the name Ana Lopez'}})
+        const from = vi.fn().mockReturnValue({insert})
+        const repository = new SupabaseRsvpRepository({from} as unknown as SupabaseClient)
+
+        await expect(repository.submit(submission)).rejects.toBeInstanceOf(RsvpNameTakenError)
+    })
+
+    it('reports an unattributable correction apart from a name that simply answered', async () => {
+        const insert = vi.fn().mockResolvedValue({error: {code: 'RSVPM', message: 'Several responses share the name Ana Lopez'}})
+        const from = vi.fn().mockReturnValue({insert})
+        const repository = new SupabaseRsvpRepository({from} as unknown as SupabaseClient)
+
+        await expect(repository.submit(submission)).rejects.toBeInstanceOf(RsvpAmbiguousNameError)
+    })
+
+    // El intento es una peticion, no un dato: sin el, la columna no viaja, y el trigger no tiene
+    // que distinguir un primer envio de uno que pide explicitamente nada.
+    it('sends the intent only once the guest has stated one', async () => {
+        const insert = vi.fn().mockResolvedValue({error: null})
+        const from = vi.fn().mockReturnValue({insert})
+        const repository = new SupabaseRsvpRepository({from} as unknown as SupabaseClient)
+
+        await repository.submit(submission)
+        expect(insert.mock.calls[0][0][0]).not.toHaveProperty('submission_intent')
+
+        await repository.submit({...submission, intent: 'namesake'})
+        expect(insert.mock.calls[1][0][0]).toMatchObject({submission_intent: 'namesake'})
     })
 
     it('scopes and orders administrative reads by invitation', async () => {

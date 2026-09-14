@@ -1,3 +1,4 @@
+// @vitest-environment node
 import {describe, expect, it} from 'vitest'
 import {getPresentedResponses, isLive, needsDiet, needsTransport} from './getPresentedResponses'
 import type {RsvpSubmissionRecord} from '../../rsvp/domain/RsvpSubmission'
