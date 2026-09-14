@@ -100,6 +100,26 @@ test('exportar CSV entrega solo lo que el filtro deja a la vista', async ({page}
     const everything = await downloadCsv(page)
     // Cabecera mas las doce vivas. Las dos borradas no viajan.
     expect(everything.rows).toHaveLength(COUNTS.live + 1)
+    /*
+     * Lo que el fichero dice de si mismo a quien lo abre, que no es la pareja.
+     *
+     * Cabeceras con el sustantivo declarado y no la pregunta que se le hizo al invitado, y sin las
+     * dos columnas que no organizan nada: la cancion y la dedicatoria son de la pareja y este
+     * fichero se manda fuera. Es lo unico que sale del navegador, asi que se comprueba sobre el
+     * fichero descargado y no sobre la configuracion que deberia producirlo.
+     */
+    // `rows` viene de partir por `\n` sobre el texto ya recortado, asi que la cabecera llega sin el
+    // BOM que abre el fichero y con el `\r` del salto todavia pegado.
+    expect(everything.rows[0].replace('\r', ''))
+        .toBe('"Invitado","Asiste","Menú","Alergias","Otras necesidades","Autobús"')
+    expect(everything.text).not.toContain('¿Qué menú prefieres?')
+    expect(everything.text).not.toContain('Canción de prueba')
+    // Y los valores, que eran el mismo fallo una capa mas abajo: la opcion del invitado se lee como
+    // frase -- "No, ire en mi propio transporte" -- y en una lista se cuenta como dato.
+    expect(everything.text).toContain('"Ana Confirmada","Sí","Carne","Ninguna","","Ida y vuelta"')
+    expect(everything.text).not.toContain('No, iré en mi propio transporte')
+    // Sin menu por ser una fila heredada: celda vacia, no una raya que hay que quitar para ordenar.
+    expect(everything.text).toContain('"Zenobia Singular","Sí","","Ninguna","","No"')
     expect(everything.text).toContain('Ana Confirmada')
     expect(everything.text).toContain('Hugo Declinado')
     expect(everything.text).not.toContain('Lucas Borrado')
@@ -150,6 +170,36 @@ test('la ordenación recorre los cuatro criterios', async ({page}) => {
     await expect(firstDataRow(page)).toContainText('Ana Confirmada')
     await page.getByLabel('Ordenar por').selectOption({label: 'Invitado Z–A'})
     await expect(firstDataRow(page)).toContainText('Carla Confirmada')
+})
+
+test('el reparto de menús cuenta los platos, no las respuestas', async ({page}) => {
+    await signInToAdminPanel(page, ADMIN_DATASET)
+
+    // El bloque se titula con un sustantivo, no con la pregunta que se le hizo al invitado. En
+    // mayusculas lo pone el CSS, asi que el texto del DOM sigue siendo el que se compara.
+    const breakdown = page.getByRole('region', {name: 'Reparto de menús'})
+    await expect(breakdown.getByRole('heading')).toHaveText('Menús')
+
+    for (const [label, expected] of Object.entries(COUNTS.menu)) {
+        if (label === 'total') continue
+        await expect(breakdown.getByRole('listitem').filter({hasText: label}).first())
+            .toContainText(String(expected))
+    }
+
+    // Las dos cifras que el bloque tiene que saber decir y que ningun otro control dice:
+    //
+    // `Vegano` a cero porque las opciones se leen del formulario y no de las respuestas, asi que
+    // la que nadie eligio sigue teniendo tarjeta -- es el numero que el catering necesita ver
+    // escrito, no deducido de una ausencia.
+    //
+    // Y el total, que cuenta a quien respondio esta pregunta: siete, con ocho asistiendo. Zenobia
+    // asiste sin menu, Lucas tiene menu y esta borrado. Si el reparto contara respuestas en vez de
+    // platos, o dejara de filtrar por vivas, esta cifra seria otra.
+    const total = breakdown.getByRole('listitem').filter({hasText: 'Total'})
+    await expect(total).toContainText(String(COUNTS.menu.total))
+    await expect(total).toContainText('comensales')
+    // `exact`: sin el, "No asistirán" tambien casa y el localizador se vuelve ambiguo.
+    await expect(page.getByText('Asistirán', {exact: true}).locator('..')).toContainText(String(COUNTS.confirmed))
 })
 
 test('editar una respuesta la guarda y la deja en la tabla', async ({page}) => {

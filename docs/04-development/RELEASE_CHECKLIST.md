@@ -61,7 +61,7 @@ checklist para una release, y Sprint 9 no ha empezado.
 - [x] Un proyecto existente puede actualizarse sin reaplicar migraciones. — `IF NOT EXISTS` y migraciones idempotentes.
 - [x] `supabase migration list` coincide local/remoto. — Depende de aplicar migraciones pendientes en remoto.
 - [x] La migración se prueba antes del frontend que la consume. — pgTAP verifica RLS, grants y ciclo de vida: 4 ficheros, 72 aserciones, ejecutadas por las dos vías (el harness de `db:verify` y `supabase test db`) el 2026-09-13.
-- [ ] Backup, rollback y recuperación ante fallo parcial están documentados. — Pendiente de documentar procedimiento operativo.
+- [x] Backup, rollback y recuperación ante fallo parcial están documentados. — [`BACKUP_AND_ROLLBACK.md`](./BACKUP_AND_ROLLBACK.md) (2026-09-13). Queda un paso sin ejercitar, señalado allí: restaurar una fila desde un `pg_dump` contra un proyecto de pruebas.
 - [x] No se han realizado cambios manuales fuera del historial aprobado. — Todos los cambios pasan por migración o PR.
 
 ## 5. Calidad automática
@@ -130,7 +130,7 @@ checklist para una release, y Sprint 9 no ha empezado.
 - [x] El workflow valida antes de migrar y desplegar. — `deploy.yml` ejecuta lint, `db:verify`, E2E Chromium y build antes de tocar la base o publicar; el smoke test corre en un job posterior, contra la URL ya desplegada.
 - [x] Se realiza smoke test sobre la URL pública y su subpath.
 - [x] Las rutas `/`, `/rsvp` y `/admin` funcionan según capabilities. Son rutas reales, no fragmentos, desde ADR-022.
-- [ ] Existe procedimiento de rollback de frontend y base de datos. — Pendiente documentar.
+- [x] Existe procedimiento de rollback de frontend y base de datos. — [`BACKUP_AND_ROLLBACK.md`](./BACKUP_AND_ROLLBACK.md): rollback de Pages en un clic, y migración compensatoria como vía preferente en base, porque `supabase db rollback` no existe.
 - [ ] Se conoce responsable de responder a errores de despliegue o datos. — Pendiente asignar.
 
 ## 12. Documentación

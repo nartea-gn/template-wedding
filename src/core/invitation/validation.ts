@@ -80,6 +80,52 @@ export function validateInvitationDefinition<Locale extends string, Message exte
         errors.push('Admin requires a supported authentication method')
     }
 
+    /*
+     * EL PANEL NO PUEDE APUNTAR A CAMPOS QUE NO EXISTEN
+     *
+     * `columns`, `columnLabels` y `metrics` nombran campos del formulario por id, y hasta aqui
+     * nadie comprobaba que existieran. Un id mal escrito no daba error: daba una columna en blanco
+     * en la tabla y en el CSV que se entrega al catering, un reparto vacio, y un filtro que no casa
+     * con nadie -- los tres callados, y los tres indistinguibles de "no hay respuestas todavia".
+     *
+     * Es el mismo fallo que `validateFormDefinition` ya impide dentro del formulario, donde una
+     * condicion que lee un campo inexistente si falla. Esto lo extiende al otro lado del contrato.
+     */
+    const admin = definition.capabilities.admin
+    if (hasEnabledAdmin && admin) {
+        const formFields = new Map(
+            (definition.capabilities.rsvp?.form.steps ?? [])
+                .flatMap(step => step.elements)
+                .map(element => [element.id, element] as const),
+        )
+        const checkField = (fieldId: string, where: string) => {
+            if (!formFields.has(fieldId)) errors.push(`Admin ${where} references unknown field ${fieldId}`)
+        }
+        for (const fieldId of admin.columns ?? []) checkField(fieldId, 'column')
+        for (const fieldId of Object.keys(admin.columnLabels ?? {})) checkField(fieldId, 'column label')
+        for (const fieldId of Object.keys(admin.breakdownLabels ?? {})) checkField(fieldId, 'breakdown label')
+        for (const fieldId of admin.controls?.csvExport?.columns ?? []) checkField(fieldId, 'export column')
+        /*
+         * Un rotulo de exportacion nombra un campo y, dentro de el, un valor. Los dos pueden estar
+         * mal escritos y ninguno de los dos se queja solo: el valor equivocado no rotula nada y la
+         * frase larga sale igual, que es indistinguible de no haberlo declarado.
+         */
+        for (const [fieldId, values] of Object.entries(admin.controls?.csvExport?.valueLabels ?? {})) {
+            checkField(fieldId, 'export value label')
+            const field = formFields.get(fieldId)
+            const options = field && 'options' in field ? field.options : []
+            for (const value of Object.keys(values)) {
+                if (!options.some(option => String(option.value) === value)) {
+                    errors.push(`Admin export value label references unknown option ${value} of field ${fieldId}`)
+                }
+            }
+        }
+        checkField(admin.metrics.attendanceFieldId, 'attendance metric')
+        if (admin.metrics.transportFieldId) checkField(admin.metrics.transportFieldId, 'transport metric')
+        for (const fieldId of admin.metrics.dietaryFieldIds ?? []) checkField(fieldId, 'dietary metric')
+        for (const fieldId of admin.metrics.breakdownFieldIds ?? []) checkField(fieldId, 'breakdown metric')
+    }
+
     const deadline = definition.capabilities.rsvp?.deadline
     const deadlineTimestamp = deadline ? parseInstant(deadline) : null
     if (definition.capabilities.rsvp && deadlineTimestamp === null) {

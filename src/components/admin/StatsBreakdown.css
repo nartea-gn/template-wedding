@@ -12,15 +12,25 @@
     @apply mb-3 text-sm uppercase font-semibold tracking-wider text-(--color-wedding-action);
 }
 
+/* En ancho, una fila de columnas iguales sea cual sea el numero de opciones: `grid-cols-5` fijo
+   dejaba la tarjeta de total sola en una segunda fila en cuanto se sumo. */
 .breakdown-list {
-    @apply grid grid-cols-2 md:grid-cols-5 gap-3 list-none p-0 m-0;
+    @apply grid grid-cols-2 md:grid-flow-col md:auto-cols-fr gap-3 list-none p-0 m-0;
 }
 
-/* Etiqueta y cifra en linea, no apiladas como en `StatsCards`. Aquellas son cuatro numeros que se
-   leen de un vistazo; estas son una lista que se recorre para copiarla a un pedido, y en columna
-   el ojo sigue el borde izquierdo sin saltar. */
+/* Cifra arriba y etiqueta debajo, centradas como en `StatsCards`: el bloque se lee de un vistazo
+   junto a las tarjetas de cabecera en vez de competir con ellas con otra forma. */
 .breakdown-item {
-    @apply flex items-baseline justify-between gap-3 px-4 py-3;
+    @apply flex flex-col items-center text-center gap-1 px-4 py-4;
+}
+
+/* La ultima tarjeta cierra la cuenta, y se distingue del recuento que suma: mismo tipo de dato, otra
+   clase de dato. `--color-wedding-bg` es el fondo de la pagina, asi que se lee como un total y no
+   como una opcion mas del menu. Medido antes de usarlo, que es lo unico que lo autoriza: sobre `bg`
+   los dos colores de texto de la tarjeta van de 4,93:1 (`muted`, en `linen`) y de 5,22:1 (`action`,
+   en `boho`) para arriba en los siete temas, por encima del 4,5:1 que pide AA. */
+.breakdown-item--total {
+    @apply bg-(--color-wedding-bg);
 }
 
 .breakdown-label {
@@ -28,6 +38,14 @@
 }
 
 .breakdown-value {
-    @apply font-serif text-2xl font-light text-(--color-wedding-action);
+    @apply font-serif text-3xl font-light text-(--color-wedding-action);
     font-family: var(--font-heading);
+}
+
+/* "comensales": la unidad de la cifra de total, no una etiqueta mas. Al 12 px va por debajo de la
+   etiqueta en jerarquia, y en `--color-wedding-muted` como ella: minimo 4,61:1 sobre `surface` y
+   4,93:1 sobre `bg`, que es donde vive esta tarjeta. Los 12 px son texto pequeno para AA -- el
+   umbral de texto grande esta en 24 px -- asi que el 4,5:1 es el que manda. */
+.breakdown-note {
+    @apply text-xs text-(--color-wedding-muted);
 }

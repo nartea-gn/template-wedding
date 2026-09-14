@@ -10,6 +10,15 @@ type Props = {
     setSortOrder: (value: AdminSortOrder) => void; resultCount: number; totalResponses: number;
     pageSize: number; setPageSize: (value: number) => void; exportDisabled: boolean; onExport: () => void;
     /**
+     * Vistas que existen solo si su seccion esta encendida.
+     *
+     * `bus` y `dietary` se escribian aqui como opciones fijas, asi que una boda sin autobus seguia
+     * ofreciendo la vista "Autobus" -- que no casa con nadie, porque `needsTransport` devuelve
+     * `false` cuando no hay `transportFieldId`. Un filtro que no puede llenarse nunca es peor que
+     * no tenerlo, y es la misma regla que ya siguen la columna y la tarjeta.
+     */
+    sectionFilters?: readonly AdminFilter[];
+    /**
      * Vistas por lo que el invitado eligio en un campo de opcion.
      *
      * Llegan resueltas en vez de derivarse aqui: la barra no conoce el formulario, y que lo
@@ -22,13 +31,17 @@ type Props = {
 export function AdminToolbar(
     {
         controls, filter, setFilter, query, setQuery, sortOrder, setSortOrder,
-        resultCount, totalResponses, pageSize, setPageSize, exportDisabled, onExport, choiceFilters
+        resultCount, totalResponses, pageSize, setPageSize, exportDisabled, onExport, sectionFilters, choiceFilters
     }: Props) {
     const {t} = useLocalization<WeddingMessageKey>();
     const pageSizeSelector = controls?.pagination?.pageSizeSelector;
     const pageSizeOptions = controls?.pagination?.enabled && pageSizeSelector?.enabled
         ? pageSizeSelector.options
         : undefined;
+    // Las tres primeras existen en cualquier invitacion: no dependen de ninguna seccion. El
+    // respaldo esta para que un consumidor que no pase la lista siga viendo un selector util en
+    // vez de uno con "Borrados" a secas.
+    const vistas = sectionFilters ?? (['all', 'confirmed', 'declined'] as const);
     return <section className="admin-toolbar" aria-label={t('admin.controls.label')}>
         <div className="admin-toolbar-fields">
             <div className="admin-toolbar-field">
@@ -37,11 +50,9 @@ export function AdminToolbar(
                 <select id="admin-response-filter" value={filter}
                         onChange={event => setFilter(event.target.value as AdminFilter)}
                         className="input admin-toolbar-select">
-                    <option value="all">{t('admin.filter.all')}</option>
-                    <option value="confirmed">{t('admin.filter.confirmed')}</option>
-                    <option value="declined">{t('admin.filter.declined')}</option>
-                    <option value="bus">{t('admin.filter.bus')}</option>
-                    <option value="dietary">{t('admin.filter.dietary')}</option>
+                    {vistas.map(value => (
+                        <option key={value} value={value}>{t(`admin.filter.${value}` as WeddingMessageKey)}</option>
+                    ))}
                     <option value="deleted">{t('admin.filter.deleted')}</option>
                     {choiceFilters?.map(group => (
                         <optgroup key={group.groupLabel} label={group.groupLabel}>

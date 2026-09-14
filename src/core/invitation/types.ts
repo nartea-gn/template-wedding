@@ -201,7 +201,27 @@ export type AdminAuthDefinition =
     | { method: 'password' }
 
 export type AdminReadControls = {
-    csvExport?: { enabled: boolean }
+    csvExport?: {
+        enabled: boolean
+        /**
+         * Columnas del fichero exportado, cuando no son las de la tabla.
+         *
+         * La tabla la lee la pareja y el CSV acaba en manos de un catering o de quien organiza,
+         * asi que no quieren las mismas columnas: la dedicatoria y la cancion son suyas y no
+         * organizan nada, y un fichero que se manda fuera es el peor sitio para pasearlas. Sin
+         * declarar, el export lleva las columnas de la tabla.
+         */
+        columns?: readonly string[]
+        /**
+         * Rotulo de una opcion en el fichero, por id de campo y por valor.
+         *
+         * Las etiquetas de las opciones estan escritas para el invitado que responde -- "No, ire en
+         * mi propio transporte", "Ninguna, como de todo" -- porque eso es lo que se le pregunta. En
+         * una lista que alguien ordena, filtra y cuenta, esa frase es la respuesta correcta escrita
+         * de la peor forma posible. Las que no se declaran salen con la etiqueta del formulario.
+         */
+        valueLabels?: Readonly<Record<string, Readonly<Record<string, string>>>>
+    }
     search?: { enabled: boolean }
     sorting?: { enabled: boolean; default: AdminSortOrder }
     pagination?: {
@@ -241,6 +261,16 @@ export type InvitationCapabilities<Message extends string> = {
          * quepan en una cabecera. Los que falten caen a la etiqueta del formulario.
          */
         columnLabels?: Readonly<Record<string, string>>
+        /**
+         * Titulo del bloque de reparto, por id de campo.
+         *
+         * Mismo fallo que `columnLabels` y un sitio distinto: sin esto el bloque se titulaba con la
+         * etiqueta del formulario, o sea "¿Que menu prefieres?" -- la pregunta que se le hace a un
+         * invitado, encima de un recuento que lee la pareja. No lo resuelve `columnLabels` porque
+         * una cabecera de columna rotula una respuesta ("Menu") y el bloque cuenta todas ("Menus").
+         * Los que falten caen a la etiqueta del formulario.
+         */
+        breakdownLabels?: Readonly<Record<string, string>>
         metrics: {
             attendanceFieldId: string
             transportFieldId?: string

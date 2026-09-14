@@ -5,6 +5,8 @@ import {formatResponseValue, getFormFields, withNamesakeMark, type Translate} fr
 type Arguments<Message extends string> = {
     responses: readonly RsvpSubmissionRecord[]
     columns: readonly string[]
+    columnLabels?: Readonly<Record<string, string>>
+    valueLabels?: Readonly<Record<string, Readonly<Record<string, string>>>>
     form: FormDefinition<Message>
     translate: Translate<Message>
     booleanLabels: { yes: Message; no: Message }
@@ -22,15 +24,36 @@ export function buildResponsesCsv<Message extends string>(
     {
         responses,
         columns,
+        columnLabels,
+        valueLabels,
         form,
         translate,
         booleanLabels,
     }: Arguments<Message>) {
     const fields = getFormFields(form)
-    const header = columns.map(id => escapeCsvCell(fields.has(id) ? translate(fields.get(id)!.label) : id))
+    /*
+     * El rotulo declarado para la columna, y la etiqueta del formulario solo si no lo hay.
+     *
+     * La tabla del panel ya lo hacia y el CSV no, asi que el fichero que se entrega al catering
+     * encabezaba cada columna con la pregunta que se le hizo al invitado: "¿Que menu prefieres?",
+     * "¿Tienes alguna intolerancia o alergia?". Es el sitio donde peor cae -- la pareja sabe que
+     * pregunto, y quien recibe el fichero no.
+     */
+    const header = columns.map(id => escapeCsvCell(
+        columnLabels?.[id]
+            ? translate(columnLabels[id] as Message)
+            : fields.has(id) ? translate(fields.get(id)!.label) : id,
+    ))
     const identityFieldId = form.submission.identityFieldId
     const rows = responses.map(response => columns.map(id => {
-        const value = formatResponseValue(response.answers[id], fields.get(id), translate, booleanLabels)
+        /*
+         * Celda vacia y no una raya donde no hay respuesta: en la tabla la raya dice "aqui no hay
+         * nada" y en una hoja de calculo es un caracter que hay que quitar para ordenar o filtrar.
+         */
+        const value = formatResponseValue(response.answers[id], fields.get(id), translate, booleanLabels, {
+            valueLabels: valueLabels?.[id],
+            empty: '',
+        })
         // Dos invitados con el mismo nombre son dos lineas iguales en la lista del catering si la
         // marca se queda solo en la pantalla.
         return escapeCsvCell(id === identityFieldId ? withNamesakeMark(value, response.namesakeMark) : value)

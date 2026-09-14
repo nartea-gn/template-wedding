@@ -156,6 +156,7 @@ Documentos de referencia:
 - [Admin](docs/01-architecture/ADMIN.md)
 - [Operación del acceso Admin](docs/04-development/ADMIN_ACCESS_OPERATIONS.md)
 - [Migraciones](docs/01-architecture/DATABASE_MIGRATIONS.md)
+- [Backup y rollback](docs/04-development/BACKUP_AND_ROLLBACK.md)
 - [Estrategia de pruebas](docs/04-development/TESTING.md)
 - [Architecture Decision Records](docs/04-development/adr)
 - [Plan de Sprint 9](docs/00-product/SPRINT_9_PLAN.md)

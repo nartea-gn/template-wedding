@@ -144,6 +144,54 @@ for (const banda of [2,3,4,6,8,10,12,16,20,24,32,40,48,64,80,96,128]) { … }  /
 - **Se mide el fichero que va a entrar**, después del `toFile` final, no el del barrido. El
   codificador introduce diferencias del orden de lo que se mide.
 
+## Encargo listo para un generador de imágenes
+
+Lo que hay repartido por los README —dimensiones, calidad, breakpoint, paleta, prompt maestro—
+describe **la apertura**, no el módulo de cuerpo, y ninguno de esos prompts menciona la única
+condición que decide si el módulo sirve: que se pueda repetir. Un generador al que se le pase el
+prompt maestro devolverá una obra bonita que corta.
+
+Este es el encargo que sí funciona. Se rellena con los datos de la tabla del README del tema y con
+los hexadecimales de `src/design/themes/themes.ts`.
+
+```text
+A seamlessly tileable vertical background strip for a wedding invitation website.
+
+Size: {ancho} × {alto} px.
+Palette, exact: {hex de background, surface, primary, border y muted del tema en themes.ts}.
+Style: {estilo del prompt maestro del tema — acuarela, papel, botánica, lo que sea}.
+Use the theme's opening artwork as the style reference; this is its continuation downwards.
+
+HARD CONSTRAINTS, in order of importance:
+
+1. TILEABLE. The image repeats vertically forever. Its top edge must continue its own bottom
+   edge, so that stacking two copies shows no line where they meet.
+2. QUIET BORDERS. The top 6% and the bottom 6% must contain no recognisable motif: no leaf,
+   flower, stem or hard edge. Washes and paper texture only. This band is what allows the seam
+   to be corrected afterwards if the tiling is not perfect.
+3. CALM CENTRE. The middle 60% horizontally stays low-contrast: readable text sits on top of it.
+4. No text, letters, numbers, people, frames, UI, logos or watermark.
+5. No obvious wallpaper repetition inside the image itself.
+```
+
+**La restricción 2 es la que hay que exigir aunque el generador acierte con la 1.** Ningún modelo de
+imagen garantiza el teselado: la banda tranquila es lo que permite corregirlo después sin emborronar
+nada, y es exactamente lo que les falta a `magnolia-body-narrow` y `magnolia-body-wide`, que por eso
+no tienen arreglo mecánico.
+
+### Cómo comprobar lo que devuelva
+
+No a ojo. Con la misma medida de este documento: **ratio ≤ 1,25**, y el pico interno donde ya
+estaba. Si el ratio sale entre 1,25 y 3 pero la banda de los bordes está limpia, el fundido
+circular lo baja; si el motivo toca un borde, se pide otra.
+
+### Un hueco que conviene tapar de paso
+
+`royal` documenta el prompt de sus módulos de cuerpo. **`magnolia` no**: su README solo guarda el
+prompt de la apertura. Justo las dos obras que hay que rehacer son las que no tienen de dónde
+partir, así que el encargo de arriba es todo lo que hay — y conviene escribir el prompt resultante
+en su README cuando se generen, para no repetir el hueco.
+
 ## Para una obra nueva
 
 Antes de aceptar un módulo de cuerpo:
